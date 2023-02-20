@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "photon_ex/fs_scsb/black_plastic"
+	"$bumpmap" "schmal/shared/flat"
+	"$phong" 1
+	"$phongtint" "[.25 .25 .3]"
+	"$phongexponent" 1
+	"$phongboost" 1
+	"$phongfresnelranges" "[1 1 1]"
+	"$nocull" 1
+	"$normalmapalphaenvmapmask" 1
+	"$nodecal" "1"
+	"$colorfix" "{32 32 32}"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $colorfix
+			resultVar	$color
+		}
+	}
+ }

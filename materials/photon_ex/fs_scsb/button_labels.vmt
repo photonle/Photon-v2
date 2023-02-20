@@ -1,0 +1,27 @@
+"VertexlitGeneric"
+{
+	//"$basetexture" "photon_ex/fs_scsb/default_labels"
+	"$basetexture" "photon_ex/fs_scsb/buttons_dim"
+	"$selfillum" 1
+	"$selfIllumFresnel" 1
+	"$selfIllumFresnelMinMaxExp" "[0.0 1.75 1.0]"
+	"$envmapfresnel" 1
+	"$bumpmap" "schmal/shared/flat"
+	"$phong" 1
+	"$phongtint" "[.25 .25 .3]"
+	"$phongexponent" 1
+	"$phongboost" 1
+	"$phongfresnelranges" "[1 1 1]"
+	"$nocull" 1
+	"$normalmapalphaenvmapmask" 1
+	"$nodecal" "1"
+	"$colorfix" "{255 255 255}"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $colorfix
+			resultVar	$color
+		}
+	}
+ }
