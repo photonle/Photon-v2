@@ -10,24 +10,12 @@ COMPONENT.PrintName = "Federal Signal Jet Solaris"
 COMPONENT.Model = "models/schmal/fedsig_jetsolaris.mdl"
 
 COMPONENT.Lighting = {
-	-- Light Class
-	-- 2D is what's used by Photon v1
 	["2D"] = {
-		-- Light Template (similar to COMPONENT.Meta)
-		-- Name must be unique, regardless of its light class
 		Main = {
 			Width 		= 7.4,
 			Height		= 7.4,
-
-			-- Material is equivalent to Sprite
-			-- Specifies the material used for the light source
 			Material 	= "sprites/emv/legend_wide",
-
-			-- Scales the size of the light glow
 			Scale 		= 1.5,
-
-			-- Ratio is equivalent to WMult
-			-- Default is 1. > 1 widens glow, < 1 narrows glow.
 			Ratio 		= 1.5
 		},
 		Edge = {
@@ -41,7 +29,6 @@ COMPONENT.Lighting = {
 }
 
 COMPONENT.Lights = {
-	-- Default syntax: { Template name, Vector local position, Angle local angle }
 	[ 1] = { "Main", Vector(0, 6.11, 0), Angle(0, 0, 0) },
 	[ 2] = { "Main", Vector(-6.58, 6.11, 0), Angle(0, 0, 0) },
 	[ 3] = { "Main", Vector(6.58, 6.11, 0), Angle(0, 0, 0) },
@@ -63,6 +50,21 @@ COMPONENT.Lights = {
 	--[13] = MacroFunc({ "param", Vector(), Angle()})
 }
 
+COMPONENT.ColorMap = {
+	[ 1] = { "R" },
+	[ 2] = { "R" },
+	[ 3] = { "R" },
+	[ 4] = { "R" },
+	[ 5] = { "R" },
+	[ 6] = { "R" },
+	[ 7] = { "R" },
+	[ 8] = { "R" },
+	[ 9] = { "R" },
+	[10] = { "R" },
+	[11] = { "R" },
+	[12] = { "B" },
+}
+
 -- Allows for multiple lights to be treated as one when desired
 COMPONENT.LightGroups = {
 	["LeftEdge"] = { 5, 7, 9 },
@@ -76,23 +78,29 @@ end
 COMPONENT.Segments = {
 	Edge = {
 		Frames = {
+			-- Frame[0] defines the segment's default state (usually all lights off)
+			-- it's only here for reference, as this will ultimately be handled automatically behind-the-scenes
+			[0] = { {1, "OFF"}, {2, "OFF"}, {3, "OFF"}, {4, "OFF"}, {5, "OFF"}, {6, "OFF"}, {7, "OFF"}, {8, "OFF"}, {9, "OFF"}, {10, "OFF"}, {11, "OFF"}, },
 			[1] = { { 4, "R" }, { 6, "R" }, { 8, "R" } },
-			[2] = { { 5, "B"}, { 7, "B" }, { 9, "B" } }
+			[2] = { { 5, "B" }, { 7, "B" }, { 9, "B" } },
+			[3] = {  },
+			[4] = {  }, 
 		},
 		Sequences = {
-			["ALT"] = (alternate())
+			["ALT"] = {1, 1, 1, 2, 2, 2}
 		},
-
 	}
 }
 
--- TODO
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
-		["Mode1"] ={
-			-- ["a"] = {}
+		["Mode1"] = {
+			Edge = {
+				Sequence = "ALT",
+				If = {
+					["Vehicle.Brake"] = { "Off" }
+				}
+			}
 		}
 	}
 }
-
-PrintTable(COMPONENT)

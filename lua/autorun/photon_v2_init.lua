@@ -15,6 +15,13 @@ local libraries = {
 
 if SERVER then
 
+	-- send meta files to client (required here for file reloading to work)
+	fol = "photon_v2/meta/"
+	files, folders = file.Find( fol .. "sh_*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		AddCSLuaFile( fol .. fil )
+	end
+
 	-- load exlib utilities library
 	fol = "photon_v2/exlib/"
 

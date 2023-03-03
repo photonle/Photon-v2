@@ -1,7 +1,7 @@
 if (exmeta.ReloadFile("photon_v2/meta/sh_light_2d.lua")) then return end
 
 NAME = "photon_light_2d"
-BASE = "photon_light_base"
+BASE = "photon_base_light"
 
 local Light = META
 

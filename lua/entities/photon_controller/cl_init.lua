@@ -12,7 +12,7 @@ end
 
 function ENT:Initialize()
 	self.cl_Components = {}
-	addTestEquipment(self)
+	//addTestEquipment(self)
 end
 
 function ENT:ConnectComponent( ent )
@@ -31,9 +31,20 @@ function ENT:OnChannelStateChanged( channel, newState, oldState )
 	end
 end
 
-function ENT.ChannelStateChanged( ent, name, oldValue, newValue )
-	if (ent.IsPhotonController and string.StartsWith(name,"Photon2:CS:")) then
-		ent:OnChannelStateChanged( name, newValue, oldValue )
+function ENT:SetupVehicle( name )
+	if not (Photon2.Index.Vehicles[name]) then
+		Photon2.Debug.Print("Unable to locate vehicle [" .. tostring(name) .."].")
+		return
 	end
 end
-hook.Add("EntityNetworkedVarChanged", "Photon2:PhotonController", ENT.ChannelStateChanged)
+
+function ENT.NetworkedVarChanged( ent, name, oldValue, newValue )
+	if (ent.IsPhotonController) then
+		if (string.StartsWith(name,"Photon2:CS:")) then
+			ent:OnChannelStateChanged( name, newValue, oldValue )
+		elseif (name == "Photon2:VehicleName") then
+			ent:SetupVehicle( newValue )
+		end
+	end
+end
+hook.Add("EntityNetworkedVarChanged", "Photon2:PhotonController", ENT.NetworkedVarChanged)

@@ -2,7 +2,7 @@ ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
 ENT.PrintName = "Photon Component"
 ENT.Authors = "Photon Lighting Group"
-ENT.IsPhotonComponent = true
+ENT.IsPhotonComponentEntity = true
 
 ENT.DefaultInputPriorities = {
 	["Emergency.Cut"] 				= 140,

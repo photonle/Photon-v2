@@ -22,7 +22,7 @@ Photon 2 adopts the new system of Component behavior used in Photon S (the S&box
 ## Compatibility
 
 # Development
-Lessons from my previous dumb ideas in Photon.
+Use EmmyLua. It exists in VS Code as both a stand-alone plugin, and is incorpoated with the sumneko Lua package. It simulates Lua as if it were strongly-typed language, and makes coding orders of magnitude easier (like with C#).
 
 ## Structure
 All core addon functions and properties should be made under the global `Photon2` table.
