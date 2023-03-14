@@ -2,30 +2,57 @@
 if not exmeta then return end
 
 print("misc_testing.lua")
+local function metaTableTests()
+	exmeta.LoadTable("TableA", nil, {
+		Vector1 = Vector(1, 1, 1),
+		GetVector1 = function(self)
+			return self.Vector1
+		end,
+	}, true)
 
--- exmeta.LoadTable("TableA", nil, {
--- 	Vector1 = Vector(1, 1, 1),
--- 	GetVector1 = function(self)
--- 		return self.Vector1
--- 	end,
--- }, true)
+	exmeta.LoadTable("TableB", "TableA", {
+		Vector2 = Vector(2, 2, 2)
+	}, true)
 
--- exmeta.LoadTable("TableB", "TableA", {
--- 	Vector2 = Vector(2, 2, 2)
--- }, true)
+	exmeta.LoadTable("TableC", "TableB", {
+		Vector3 = Vector(3, 3, 3),
+		GetVector1 = function(self)
+			return Vector(99, 99, 99)
+		end
+	}, true)
 
--- exmeta.LoadTable("TableC", "TableB", {
--- 	Vector3 = Vector(3, 3, 3)
--- }, true)
+	local tableA = exmeta.SetMetaTable({}, "TableA")
+	local tableC = exmeta.SetMetaTable({}, "TableC")
 
--- local tableC = exmeta.SetMetaTable({}, "TableC")
+	tableC.Vector1 = Vector(1, 0, 0)
 
--- tableC.Vector1 = Vector(1, 0, 0)
+	-- print(tableC:GetVector1())
+	-- print(tableC.Vector3)
+	-- tableC.Vector1 = nil
+	-- print(tableC.Vector1)
 
--- print(tableC:GetVector1())
--- print(tableC.Vector3)
--- tableC.Vector1 = nil
--- print(tableC.Vector1)
+
+	print("TABLE C ======================================")
+	-- print(debug.getmetatable(tableC).__index)
+	print(tableC:GetVector1())
+	-- example of calling a base class function via the end-object
+	-- self.Base.functionName(self)
+	print(tableC.Base.GetVector1(tableC))
+	-- print(debug.getmetatable(tableC).__index:GetVector1())
+	print("\nTABLE A ======================================")
+	-- print(tableA:GetVector1())
+	-- example of calling a base class function via the base class itself
+	print(TableA.GetVector1(tableC))
+end
+
+local function componentTestA()
+	-- PrintTable(Photon2.Index["photon_fedsig_jetsolaris"])
+	-- 03-13 passes
+	PrintTable(Photon2.Index.Components)
+	local instance = Photon2.Index.Components["photon_fedsig_jetsolaris"]
+end
+
+componentTestA()
 
 -- tableB.Vector1 = nil
 
@@ -77,10 +104,10 @@ print("misc_testing.lua")
 
 -- PrintTable(buildDependencies(dependencyTest))
 
-local x = {
-	[0] = 1,
-	[2] = 3,
+-- local x = { 1, 2, 3, 4, 5,
+-- 	["5xxx"] = 4
+-- }
 
-}
-
-PrintTable(x)
+-- for i = 1, #x do
+-- 	print(tostring(i) .. ": " .. tostring(x[i]))
+-- end

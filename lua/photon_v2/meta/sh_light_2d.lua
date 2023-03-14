@@ -1,8 +1,10 @@
 if (exmeta.ReloadFile("photon_v2/meta/sh_light_2d.lua")) then return end
 
-NAME = "photon_light_2d"
-BASE = "photon_base_light"
+NAME = "PhotonLight2D"
+BASE = "PhotonLight"
 
+---@class PhotonLight2D : PhotonLight
+---@field PixVisHandle PixVisHandle
 local Light = META
 
 Light.LocalPosition = Vector(0, 0, 0)
@@ -16,3 +18,12 @@ Light.Ratio = 1
 
 Light.DrawSource = true
 Light.DrawGlow = true
+
+function Light:Render()
+end
+
+function Light:Initialize()
+	self = PhotonLight.Initialize(self)
+
+	return self
+end

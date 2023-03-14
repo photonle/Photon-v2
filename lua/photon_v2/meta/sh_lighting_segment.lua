@@ -3,84 +3,122 @@ if (exmeta.ReloadFile("photon_v2/meta/sh_lighting_segment.lua")) then return end
 NAME = "PhotonLightingSegment"
 
 ---@class PhotonLightingSegment
+---@field ActivePattern string Name of the current active pattern.
+---@field IsActive boolean Whether the segment is active.
+---@field CurrentPriorityScore integer
+---@field LastFrameTime integer
+---@field InputPriorities table<string, integer>
+---@field Sequences table<string, PhotonSequence>
+-- [string] = Pattern Name
+---@field Patterns table<string, PhotonSequenceCollection> Key = Input Channel-Mode, Value = Associated sequence
+---@field Frames table<integer, table> 
+-- Lights table is currently just a pointer to Component.Lights.
+-- This was done in S because the segment is unaware of its parent component,
+-- which I believe was just an arbitrary design choice
+---@field Lights table Mirrors Component.Lights (?)
 local Segment = META
 
-Segment.FrameDuration = 0.64
--- -@field Frames table
-Segment.Frames = {}
-Segment.Lights = {}
-Segment.Sequences = {}
-Segment.PatternMap = {}
+Segment.Patterns = {}
 Segment.InputPriorities = {}
-Segment.LastFrameTime = 0
-Segment.IsActive = false
-Segment.CurrentPriorityScore = 0
-Segment.ActivePattern = nil
 Segment.Count = 0
+Segment.FrameDuration = 0.64
+Segment.LastFrameTime = 0
 
 
+---@return PhotonLightingSegment
 function Segment.New()
+	---@type PhotonLightingSegment
 	local segment = {
 		Lights = {},
-		Frames = {},
 		Sequences = {},
-		PatternMap = {},
-		InputPriorities = {},
-		LastFrameTime = 0,
-		IsActive = true,
-		CurrentPriorityScore = 0,
+		Frames = {},
 	}
-	debug.setmetatable(segment, PhotonLightingSegment)
+	debug.setmetatable(segment, { __index = PhotonLightingSegment })
 	return segment
 end
 
----@param frame number Frame index
+
+function Segment:Initialize()
+	---@type PhotonLightingSegment
+	local segment = {
+		LastFrameTime = 0,
+		IsActive = false,
+		CurrentPriorityScore = 0,
+		InputPriorities = {},
+		Patterns = {},
+	}
+	return setmetatable( segment, { __index = self } )
+end
+
+---@param name string Unique sequence name.
+---@param sequence table<integer> Frame sequence.
+function Segment:AddSequence( name, sequence )
+	self.Sequences[name] = sequence
+end
+
+
+---@param index number Frame index
 ---@param lightStates table Table of light states (e.g. { { 1, "RED" }, { 2, "BLUE" } })
-function Segment:AddFrame( frame, lightStates )
+function Segment:AddFrame( index, lightStates )
 	local result = {}
-	for light, state in pairs(lightStates) do
-		if string.StartsWith(light, "@") then
+	local lightId, stateId
+	for i=1, #lightStates do
+		lightId = lightStates[i][1]
+		stateId = lightStates[i][2]
+		if string.StartsWith( lightId, "@" ) then
 
 		else
-			result[light] = state
+			result[lightId] = stateId
 		end
 	end
-	self.Frames[frame] = result
-	self.Count = table.Count(self.Frames)
+	self.Frames[index] = result
 	return result
 end
+
 
 ---@param count number
 function Segment:IncrementFrame( count )
 	if not (self.IsActive) then return end
 	if not (self.ActivePattern) then return end
-	for _, sequence in pairs( self.PatternMap[self.ActivePattern] ) do
-		sequence:IncrementFrame( count )
-		-- if (sequence.IsRepeating) then
-		-- 	sequence.CurrentIndex = ( count % sequence.Count )
-		-- else
-		-- 	sequence.CurrentIndex = sequence.CurrentIndex + count
-		-- end
+
+	local sequences = self.Patterns[self.ActivePattern]
+	local sequence
+
+	for i = 1, #sequences do
+		---@type PhotonSequence
+		sequence = sequences[i]
+		if (sequence.IsRepeating) then
+			-- Ensures all sequences remain synchronized.
+			sequence.CurrentFrame = ( count % #sequence )
+		else
+			sequence:IncrementFrame()
+		end
+		
 	end
 end
 
 
+--- Updates all lights to match the current sequence frame.
 function Segment:Render()
 	if (not self.IsActive) then return end
 
-	local map = self.PatternMap
+	local map = self.Patterns
+	local sequence
 
 	for i = 1, #map[self.ActivePattern] do
+		---@type PhotonSequence
+		sequence = map[i]
+		local lights = self.Lights
 		-- map[i] is a PhotonSequence class
-		for light, state in pairs( map[i]:GetCurrentFrame() ) do
-			light:SetState( state, self.CurrentPriorityScore )
+		for lightId, state in pairs( sequence[sequence.CurrentFrame] ) do
+			lights[lightId]:SetState( state, self.CurrentPriorityScore )
 		end
 	end
 end
 
 
 function Segment:AcceptsPatternMode( inputTrigger )
-	return not ( self.PatternMap[inputTrigger] )
+	return not ( self.Patterns[inputTrigger] )
 end
 
 
@@ -99,10 +137,24 @@ function Segment:CalculatePriorityInput( inputState )
 	return result
 end
 
+
 function Segment:ApplyInputUpdate( inputState )
 	local newChannel = self:CalculatePriorityInput( inputState )
+	local newMode = newChannel .. "." .. inputState[newChannel]
 	self.CurrentPriorityScore = self.InputPriorities[newChannel]
+	-- Do nothing if priority state hasn't changed
+	if (self.ActivePattern == ( newMode )) then
+		return
+	end
+	self:DeactivateSequences()
+	-- Turn off all segment lights when the active pattern changes.
+	self:ResetSegment()
+	self.ActivePattern = newMode
+	self.IsActive = true
+	-- Turn lights back on
+	self:ActivateSequences()
 end
+
 
 function Segment:ResetSegment()
 	for i = 0, #self.Frames[0] do
@@ -110,22 +162,51 @@ function Segment:ResetSegment()
 	end
 end
 
-function Segment:ActivateSequences()
 
+function Segment:ActivateSequences()
+	---@type PhotonSequence[]
+	local sequences = self.Patterns[self.ActivePattern]
+	for i = 1, #sequences do
+		sequences[i]:Activate()
+	end
 end
 
 
 function Segment:DeactivateSequences()
-
+	---@type PhotonSequence[]
+	local sequences = self.Patterns[self.ActivePattern]
+	for i = 1, #sequences do
+		sequences[i]:Deactivate()
+	end
 end
 
 
-function Segment:OnInput( inputState, modes )
-
-end
-
-
+---@param sequenceName string Unique name of sequence.
+---@return PhotonSequence
 function Segment:CreateSequence( sequenceName )
+	self.Sequences[sequenceName] = PhotonSequence.New( self )
 
-	-- return PhotonComponentSegmentSequence
+	return self.Sequences[sequenceName]
+end
+
+
+---@param channel string Channel Name
+---@param ... string Channel Modes
+---@return PhotonLightingSegment
+function Segment:OnInput( channel, ... )
+	local modes = table.pack(...)
+	local pattern = PhotonSequenceCollection.New( self )
+
+	if self.InputPriorities[channel] then
+		pattern.Priority = self.InputPriorities[channel]
+	else
+		pattern.Priority = -1
+		Photon2.Debug.Print("No channel input priority defined for '" .. tostring(channel) .. "'")
+	end
+
+	for i = 1, #modes do
+		self.Patterns[channel .. "." .. mode] = pattern
+	end
+
+	return self
 end

@@ -14,11 +14,11 @@ Photon2.OnVehicleCreated = function( ent )
 
 		-- end
 	-- 
-	timer.Simple(.01, function()
+	timer.Simple(0.01, function()
 		Photon2.Debug.Print("Detected a spawned vehicle: " .. tostring(ent))	
 		Photon2.AddControllerToVehicle( ent, {} )
 	end)
-	//if not (ent:IsValidVehicle()) then return end
+	--if not (ent:IsValidVehicle()) then return end
 end
 hook.Add("OnEntityCreated", "Photon2:OnVehicleCreated", Photon2.OnVehicleCreated)
 

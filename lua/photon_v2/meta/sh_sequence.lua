@@ -1,38 +1,53 @@
 if (exmeta.ReloadFile("photon_v2/meta/sh_sequence.lua")) then return end
 
 NAME = "PhotonSequence"
-
+--- Frames are stored in the numerical indexes of the table.
+---@class PhotonSequence
+---@field Segment PhotonLightingSegment
+---@field CurrentFrame integer Currently active frame of the sequence.
+---@field IsRepeating boolean
+---@field RestartFrame integer
 local Sequence = META
 
 
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
 
-
-function Sequence.New()
-	local sequence = {}
+---@param segment PhotonLightingSegment
+---@return PhotonSequence
+function Sequence.New( segment )
+	---@type PhotonSequence
+	local sequence = {
+		Segment = segment
+	}
 	debug.setmetatable( sequence, PhotonSequence )
 	return sequence
 end
 
 
-function Seqeuence:SetSegment( segment )
-	self.Segment = segment
+function Sequence:IncrementFrame()
+	self.CurrentFrame = self.CurrentFrame + 1
+	if (self.CurrentFrame > #self) then
+		if (self.IsRepeating) then
+			self.CurrentFrame = self.RestartFrame
+		else
+			self.CurrentFrame = #self
+		end
+	end
 end
+
+
+--TODO
+function Sequence:Activate() end
+
+
+function Sequence:Deactivate() end
 
 
 function Sequence:Clear()
-
-end
-
-
-function Sequence:GetCurrentIndex()
-
-end
-
-
-function Sequence:GetCurrentFrame()
-
+	for i = 1, #self do
+		self[i] = nil
+	end
 end
 
 

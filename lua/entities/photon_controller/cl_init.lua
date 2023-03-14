@@ -1,7 +1,7 @@
 include("shared.lua")
 
 local function addTestEquipment(self)
-	local ent = ents.CreateClientside("photon_component")
+	local ent = ents.CreateClientside("photon_entity")
 	ent:Activate()
 	ent:SetParent( self )
 	ent:SetModel("models/schmal/fedsig_valor/valor_lightbar.mdl")

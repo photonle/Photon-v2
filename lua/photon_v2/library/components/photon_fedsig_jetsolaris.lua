@@ -1,6 +1,9 @@
 -- This line is required here for save-reloading to work.
 if (Photon2.ReloadComponent("photon_fedsig_jetsolaris")) then return end
 
+---@type PhotonLibraryComponent
+COMPONENT = COMPONENT
+
 COMPONENT.Author = "Photon"
 
 -- Printed name of component ONLY. Reference component
@@ -80,9 +83,11 @@ COMPONENT.Segments = {
 		Frames = {
 			-- Frame[0] defines the segment's default state (usually all lights off)
 			-- it's only here for reference, as this will ultimately be handled automatically behind-the-scenes
-			[0] = { {1, "OFF"}, {2, "OFF"}, {3, "OFF"}, {4, "OFF"}, {5, "OFF"}, {6, "OFF"}, {7, "OFF"}, {8, "OFF"}, {9, "OFF"}, {10, "OFF"}, {11, "OFF"}, },
+			[0] = { {1, "OFF"}, {2, "OFF"}, {3, "OFF"}, {4, "OFF"}, {5, "OFF"}, {6, "OFF"}, {7, "OFF"}, {8, "OFF"}, {9, "OFF"}, {10, "OFF"}, {11, "OFF"}, {12, "OFF"} },
 			[1] = { { 4, "R" }, { 6, "R" }, { 8, "R" } },
+			-- [1] = { ["R"] = { 4, 5, 6 } },
 			[2] = { { 5, "B" }, { 7, "B" }, { 9, "B" } },
+			-- [1] = { ["B"] = { 5, 7, 9 } },
 			[3] = {  },
 			[4] = {  }, 
 		},

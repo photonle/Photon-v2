@@ -42,12 +42,21 @@ function  exmeta.SetSubTable(obj, key, prototype, ref)
 	end
 end
 
-function exmeta.RegisterMetaTable(name, tbl, base)
+---@param name string MetaTable Name
+---@param tbl table Table
+---@param base string|table Base Class
+---@param global boolean Whether to expose as a global variable.
+function exmeta.RegisterMetaTable(name, tbl, base, global)
+	if (global == nil) then global = true end
 	if isstring(base) then base = exmeta.FindMetaTable(base) end
 	if base then
+		tbl.Base = base
 		debug.getregistry()[name] = exmeta.SetMetaTable(tbl, base)
 	else
 		debug.getregistry()[name] = tbl
+	end
+	if (global) then
+		_G[name] = debug.getregistry()[name]
 	end
 	-- debug.getregistry()[name] = setmetatable(tbl, {__index = base})
 	return FindMetaTable(name)
@@ -139,9 +148,9 @@ end
 ---@param metaTable table|nil
 ---@return table
 function exmeta.SetMetaTable(obj, metaTable)
-	if isstring(metaTable) then metaTable = exmeta.FindMetaTable(metaTable) end
-	if (metaTable == nil) then metaTable = obj; obj = {} end
-	if not debug.setmetatable(obj, {__index = metaTable}) then
+	if isstring( metaTable ) then metaTable = exmeta.FindMetaTable(metaTable) end
+	if ( metaTable == nil ) then metaTable = obj; obj = {} end
+	if not debug.setmetatable( obj, { __index = metaTable } ) then
 		error("[EXMeta] Failed to set metatable of object [" .. tostring(obj) .. "]")
 	end
 	return obj

@@ -1,13 +1,14 @@
-Photon2.Index = Photon2.Index or {}
-local Index = Photon2.Index
+Photon2.Index = Photon2.Index or {
+	---@type PhotonLightingComponent[]
+	Components = {},
+	Vehicles = {}
+}
+local index = Photon2.Index
 
 local Library = Photon2.Library
 local Debug = Photon2.Debug
 
-Index.Components = {}
-Index.Vehicles = {}
-
-function Index.ProcessComponentLibrary()	
+function Photon2.Index.ProcessComponentLibrary()	
 	local dependencyList = {}
 	-- High-level dependency check
 	for name, component in pairs(Library.Components) do
@@ -42,52 +43,32 @@ function Index.ProcessComponentLibrary()
 		debug.setmetatable(targ, { __index = meta })
 	end
 
-	for i, name in ipairs(loadOrder) do
+	for i = 1, #loadOrder do
+		local name = loadOrder[i]
 		local component = Library.Components[name]
 		if (not component.Base) then
-			exmeta.SetMetaTable(component, "photon_lighting_component")
+			debug.setmetatable( component, { __index = PhotonLightingComponent } )
+			index.Components[name] = Photon2.CompileComponent( component )
+
+			-- exmeta.SetMetaTable(component, PhotonLightingComponent)
 		else
-			setMetaTable(component, Index.Components[component.Base])
+			--setMetaTable(component, index.Components[component.Base])
 			-- exmeta.SetMetaTable(component, Index.Components[component.Base])
 		end
-		Index.Components[name] = component
 
-		Photon2.CompileComponent( component )
 	end
 
 	
 end
 
+---@param inputComponent PhotonLibraryComponent
+---@return PhotonLightingComponent
 function Photon2.CompileComponent( inputComponent )
-	local component = {}
-
-	-- Handle light objects
-	local templateLights = {}
-	for name, data in pairs(inputComponent.Lighting["2D"]) do
-		templateLights[name] = exmeta.Inherit( data, "photon_light_2d" )
-	end
-
-	local lights = {}
-	for i, data in pairs( inputComponent.Lights ) do
-		
-		lights[i] = exmeta.SetMetaTable({
-			LocalPosition = data[2],
-			LocalAngles = data[3],
-		}, templateLights[data[1]])
-
-
-		-- prints all values including metatables....
-		PrintTable(lights[i])
-		local s1 = debug.getmetatable(lights[i]).__index
-		local s2 = debug.getmetatable(s1).__index
-		PrintTable(s1)
-		PrintTable(s2)
-	end
-
+	return PhotonLightingComponent.New( inputComponent )
 end
 
 Photon2.LoadComponentLibrary()
-Index.ProcessComponentLibrary()
+index.ProcessComponentLibrary()
 
 -- Debug.Print("jetsolaris_2 ===============")
 -- PrintTable(Index.Components["photon_fedsig_jetsolaris_2"])
