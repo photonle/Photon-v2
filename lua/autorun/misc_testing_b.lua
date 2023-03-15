@@ -29,7 +29,7 @@ tableC.Vector1 = Vector(1, 0, 0)
 
 -- tableB.Vector1 = nil
 
--- local rootPath = "photon_v2/library/components/"
+-- local rootPath = "photon-v2/library/components/"
 -- local path = "schmal/component.lua"
 -- local ext = "." .. string.GetExtensionFromFilename(path)
 -- if (string.StartsWith(path, rootPath)) then
@@ -43,7 +43,7 @@ tableC.Vector1 = Vector(1, 0, 0)
 
 -- local name = string.sub(string.GetPathFromFilename(fileName))
 
--- local files, folders = file.Find("photon_v2/library/components/*.lua", "LUA")
+-- local files, folders = file.Find("photon-v2/library/components/*.lua", "LUA")
 -- PrintTable(files)
 
 local dependencyTest = {

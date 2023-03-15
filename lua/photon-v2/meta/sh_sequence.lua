@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon_v2/meta/sh_sequence.lua")) then return end
+if (exmeta.ReloadFile("photon-v2/meta/sh_sequence.lua")) then return end
 
 NAME = "PhotonSequence"
 --- Frames are stored in the numerical indexes of the table.

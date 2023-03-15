@@ -33,8 +33,6 @@ PhotonBaseEntity = PhotonBaseEntity
 ---@field LightGroups table
 ---@field Segments table
 
----@class Entity
----@field Activate function
----@field AddCallback function
-
 ---@class PixVisHandle
+
+---@class PhotonController

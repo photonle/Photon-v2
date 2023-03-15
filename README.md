@@ -33,8 +33,8 @@ Sub-tables of the `Photon2` table should be made for major code sub-components w
 * Prefix all _string_ identifiers with `Photon2:` (hooks, timers, network strings, etc.)
 
 ## Files
-The only Lua file in `lua/autorun` is the shared initialization file called `photon_v2_init.lua`. This file will automatically do `AddCSLuaFile()` on all client and shared files in `lua/photon_v2`. Moving code files out of `autorun` is important to control load order (more below) and enables the creation and execution of any new Lua files without restarting the game.
+The only Lua file in `lua/autorun` is the shared initialization file called `photon-v2_init.lua`. This file will automatically do `AddCSLuaFile()` on all client and shared files in `lua/photon-v2`. Moving code files out of `autorun` is important to control load order (more below) and enables the creation and execution of any new Lua files without restarting the game.
 
 To ensure code initializes in the correct order (and avoid an aborted setup), a corresponding `include()` call should be inserted manually so you can confirm it's below any dependencies.
 
-The integrity of this should also be maintained by _never_ redundantly declaring a major table more than once (e.g. doing `Photon2 = Photon2 or {}` anywhere except in `autorun/photon_v2_init.lua`).
+The integrity of this should also be maintained by _never_ redundantly declaring a major table more than once (e.g. doing `Photon2 = Photon2 or {}` anywhere except in `autorun/photon-v2_init.lua`).

@@ -4,8 +4,8 @@ local Library = Photon2.Library
 Library.Components = Library.Components or {}
 Library.Vehicles = Library.Vehicles or {}
 
-local componentsRoot = "photon_v2/library/components/"
-local vehiclesRoot = "photon_v2/library/vehicles/"
+local componentsRoot = "photon-v2/library/components/"
+local vehiclesRoot = "photon-v2/library/vehicles/"
 
 function Photon2.LoadComponentFile( filePath )
 	Photon2.Debug.Print("Loading component file: " .. filePath)

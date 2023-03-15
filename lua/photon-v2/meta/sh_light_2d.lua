@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon_v2/meta/sh_light_2d.lua")) then return end
+if (exmeta.ReloadFile("photon-v2/meta/sh_light_2d.lua")) then return end
 
 NAME = "PhotonLight2D"
 BASE = "PhotonLight"

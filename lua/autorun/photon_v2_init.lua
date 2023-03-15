@@ -6,7 +6,7 @@ end
 
 local fol, files, folders = ""
 
-include("photon_v2/sh_debug.lua")
+include("photon-v2/sh_debug.lua")
 
 local libraries = {
 	"components",
@@ -16,14 +16,14 @@ local libraries = {
 if SERVER then
 
 	-- send meta files to client (required here for file reloading to work)
-	fol = "photon_v2/meta/"
+	fol = "photon-v2/meta/"
 	files, folders = file.Find( fol .. "sh_*.lua", "LUA" )
 	for _, fil in pairs( files ) do
 		AddCSLuaFile( fol .. fil )
 	end
 
 	-- load exlib utilities library
-	fol = "photon_v2/exlib/"
+	fol = "photon-v2/exlib/"
 
     files, folders = file.Find( fol .. "sv_*.lua", "LUA" )
 	for _, fil in pairs( files ) do
@@ -42,7 +42,7 @@ if SERVER then
 	end
 
 	-- load Photon 2
-	fol = "photon_v2/"
+	fol = "photon-v2/"
     
     files, folders = file.Find( fol .. "sh_*.lua", "LUA" )
     for _, fil in pairs( files ) do
@@ -55,7 +55,7 @@ if SERVER then
     end
 
 	for _, lib in pairs( libraries ) do
-		fol = "photon_v2/library/" .. lib .. "/"
+		fol = "photon-v2/library/" .. lib .. "/"
 		files, folders = file.Find( fol .. "*.lua", "LUA" )
 		for __, fil in pairs( files ) do
 			AddCSLuaFile( fol .. fil )
@@ -64,14 +64,14 @@ if SERVER then
 
 	-- load 
 
-	include("photon_v2/sv_init.lua")
-    include("photon_v2/sv_net.lua")
+	include("photon-v2/sv_init.lua")
+    include("photon-v2/sv_net.lua")
 
 end
 
 if CLIENT then
 
-	fol = "photon_v2/exlib/"
+	fol = "photon-v2/exlib/"
 
 	files, folders = file.Find( fol .. "sh_*.lua", "LUA" )
 	for _, fil in pairs( files ) do
@@ -83,6 +83,6 @@ if CLIENT then
 		include( fol .. fil )
 	end
 
-	include("photon_v2/cl_init.lua")
+	include("photon-v2/cl_init.lua")
 
 end

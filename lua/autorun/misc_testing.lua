@@ -49,14 +49,18 @@ local function componentTestA()
 	-- PrintTable(Photon2.Index["photon_fedsig_jetsolaris"])
 	-- 03-13 passes
 	PrintTable(Photon2.Index.Components)
-	local instance = Photon2.Index.Components["photon_fedsig_jetsolaris"]
+	Photon2.Debug.Print( "Creating instance...")
+	local component = Photon2.Index.Components["photon_fedsig_jetsolaris"]
+	Photon2.Debug.Print( "\tLoading component...")
+	
+	-- local instance = Photon2.Index.Components["photon_fedsig_jetsolaris"]:Initialize()
 end
 
-componentTestA()
+-- componentTestA()
 
 -- tableB.Vector1 = nil
 
--- local rootPath = "photon_v2/library/components/"
+-- local rootPath = "photon-v2/library/components/"
 -- local path = "schmal/component.lua"
 -- local ext = "." .. string.GetExtensionFromFilename(path)
 -- if (string.StartsWith(path, rootPath)) then
@@ -70,7 +74,7 @@ componentTestA()
 
 -- local name = string.sub(string.GetPathFromFilename(fileName))
 
--- local files, folders = file.Find("photon_v2/library/components/*.lua", "LUA")
+-- local files, folders = file.Find("photon-v2/library/components/*.lua", "LUA")
 -- PrintTable(files)
 
 -- local dependencyTest = {

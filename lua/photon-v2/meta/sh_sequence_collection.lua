@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon_v2/meta/sh_sequence_collection.lua")) then return end
+if (exmeta.ReloadFile("photon-v2/meta/sh_sequence_collection.lua")) then return end
 
 NAME = "PhotonSequenceCollection"
 ---@class PhotonSequenceCollection Stores numerical array of sequence string names.

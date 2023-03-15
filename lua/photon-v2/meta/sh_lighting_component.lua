@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon_v2/meta/sh_lighting_component.lua")) then return end
+if (exmeta.ReloadFile("photon-v2/meta/sh_lighting_component.lua")) then return end
 
 NAME = "PhotonLightingComponent"
 BASE = "PhotonBaseEntity"
@@ -77,7 +77,6 @@ function Component:Initialize()
 		Lights = {},
 		Segments = {}
 	}
-
 	-- Process light table
 	for key, light in pairs(self.Lights) do
 		component.Lights[key] = light:Initialize()
