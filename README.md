@@ -16,13 +16,21 @@ It's simple:
 
 # Major Changes
 
+## Object Orientation
+Photon 2 makes heavy use of metatables and custom inheritance to mimic traditional OOP designs. This makes it far more flexible for Photon asset creators and substantially streamlines operations overall.
+
+## Annotations
+Photon 2 is now documented using EmmyLua annotations. This provides intellisense, code validation (i.e. Lint), and static typing. 
+
+When using VSCode, use Sumneko's Lua package to enable the annotation functionality. While it unfortunately cannot be used with any GLua plugins, I have generated annotation files scraped from the Garry's Mod Wiki (https://github.com/NullEnt1ty/gmod-wiki-scraper) as a stop-gap measure.
+
 ## Component Input Channels
 Photon 2 adopts the new system of Component behavior used in Photon S (the S&box version). This dramatically streamlines advanced component behavior, like lightbars that have a special braking pattern, or flash patterns that change based on the current siren tone. 
 
 ## Compatibility
 
-# Development
-Use EmmyLua. It exists in VS Code as both a stand-alone plugin, and is incorpoated with the sumneko Lua package. It simulates Lua as if it were strongly-typed language, and makes coding orders of magnitude easier (like with C#).
+## Annotations
+Annotations offer intellisense
 
 ## Structure
 All core addon functions and properties should be made under the global `Photon2` table.
