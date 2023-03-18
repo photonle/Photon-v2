@@ -4,7 +4,7 @@ if CLIENT then
     MsgC( Color(255, 94, 82), "\nP H O ", Color(97, 160, 255), "T O N ", Color(255, 255, 255, 255), " v2\n\n")
 end
 
-local fol, files, folders = ""
+local fol, files, folders = "", "", ""
 
 include("photon-v2/sh_debug.lua")
 

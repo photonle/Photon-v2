@@ -8,5 +8,5 @@ local Frame = META
 
 ---@return PhotonSequenceFrame
 function Frame.New()
-
+	return setmetatable( {}, { __index = PhotonSequenceFrame } )
 end

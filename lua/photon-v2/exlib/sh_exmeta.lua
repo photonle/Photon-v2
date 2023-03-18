@@ -44,8 +44,8 @@ end
 
 ---@param name string MetaTable Name
 ---@param tbl table Table
----@param base string|table Base Class
----@param global boolean Whether to expose as a global variable.
+---@param base? string|table Base Class
+---@param global? boolean Whether to expose as a global variable.
 function exmeta.RegisterMetaTable(name, tbl, base, global)
 	if (global == nil) then global = true end
 	if isstring(base) then base = exmeta.FindMetaTable(base) end
@@ -71,7 +71,7 @@ function exmeta.LoadFile(filename, tableName, erase)
 	tableName = tableName or "META"
 	print("[EXMeta] Loading file: " .. tostring(filename))
 	_NAME, _BASE, _META = NAME, BASE, _G[tableName]
-	NAME, BASE = nil
+	NAME, BASE = nil, nil
 	_G[tableName] = {}
 	exmeta._shouldReload = false
 	include(filename)
@@ -82,7 +82,7 @@ function exmeta.LoadFile(filename, tableName, erase)
 end
 
 ---@param name string
----@param base string | table
+---@param base? string | table
 ---@param tbl table
 ---@param erase boolean
 function exmeta.LoadTable(name, base, tbl, erase)
@@ -96,7 +96,7 @@ function exmeta.LoadTable(name, base, tbl, erase)
 	table.Merge(debug.getregistry()[name], copy)
 	if isstring(base) or istable(base) then
 		print("INHERITING FROM: '" .. tostring(base) .. "'")
-		meta = exmeta.Inherit(meta, base)
+		meta = exmeta.Inherit(meta, base --[[@as string | table]])
 	end
 	meta.ClassName = name
 	hook.Run("EXMeta.TableLoaded", name, meta, base)
@@ -145,7 +145,7 @@ end
 
 ---Applies default/fallback values to a table.
 ---@param obj any
----@param metaTable table|nil
+---@param metaTable? table|string
 ---@return table
 function exmeta.SetMetaTable(obj, metaTable)
 	if isstring( metaTable ) then metaTable = exmeta.FindMetaTable(metaTable) end
