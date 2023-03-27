@@ -1,31 +1,20 @@
-if (Photon2.ReloadVehicle("photon_sgm_fpiu20")) then return end
+if (Photon2.ReloadVehicleFile()) then return end
+local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Model = "models/sentry/20fpiu_new.mdl"
+--[[------------------------------
+	Vehicle file for Photon 2
+--------------------------------]]
 
-VEHICLE.Entity = "prop_vehicle_jeep"
-VEHICLE.Target = "20fpiu_new_sgm"
+VEHICLE.Title 		= "Ford Police Interceptor (2020) Demonstrators"
+VEHICLE.Vehicle		= "20fpiu_new_sgm"
+VEHICLE.Category 	= "Photon 2"
+VEHICLE.Author		= "Schmal"
 
--- Slot-based concept
--- VEHICLE.Equipment = {
--- 	["Lightbar"] = {
--- 		["Federal Signal JetSolaris"] = {
--- 			["fedsig_solaris"] = {
--- 				Type = "Component",
--- 				Component = "photon_fedsig_jetsolaris",
--- 				Position = Vector(0, 0, 100),
--- 				Angles = Angle(0, 0, 0)
--- 			}
--- 		}
--- 	}
--- }
-
--- Static-based concept with decreased verbosity
 VEHICLE.Equipment = {
-	["fedsig_solaris"] = {
-		Component = "photon_fedsig_jetsolaris",
-		Position = Vector(0, 0, 100),
-		Angles = Angle(0, 0, 0)
+	{
+		ID			= "lightbar",
+		Component	= "photon_fedsig_jetsolaris",
+		Position	= Vector(0, 0, 95),
+		Angles		= Angle(0, 0, 0)
 	}
 }
--- assess possibility of combining static equipment
--- with slotted options (?)

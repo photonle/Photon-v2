@@ -1,11 +1,4 @@
 include("sh_schema.lua")
-Photon2.Debug.Print("-----------------------")
-Photon2.Debug.Print("-----------------------")
-Photon2.Debug.Print("-----------------------")
-Photon2.Debug.Print("sh_init.lua")
-Photon2.Debug.Print("-----------------------")
-Photon2.Debug.Print("-----------------------")
-Photon2.Debug.Print("-----------------------")
 
 function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/sh_light.lua")
@@ -18,7 +11,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/sh_sequence.lua")
 	exmeta.LoadFile("photon-v2/meta/sh_sequence_collection.lua")
 
-	exmeta.LoadFile("photon-v2/meta/sh_base_vehicle.lua")
+	exmeta.LoadFile("photon-v2/meta/sh_vehicle.lua")
 end
 
 LoadPhoton2MetaFiles()

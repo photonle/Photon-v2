@@ -1,6 +1,15 @@
 -- if SERVER then return end
 if not exmeta then return end
 
+function GetCurrentLuaFile()
+    local source = debug.getinfo(2, "S").source
+    if source:sub(1,1) == "@" then
+        return source:sub(2)
+    else
+        error("Caller was not defined in a file", 2)
+    end
+end
+
 print("misc_testing.lua")
 local function metaTableTests()
 	exmeta.LoadTable("TableA", nil, {

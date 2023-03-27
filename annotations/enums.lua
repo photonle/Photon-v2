@@ -2684,7 +2684,7 @@
 ---| `PATTACH_WORLDORIGIN` # Particle spawns in the beginning of coordinates ( Vector( 0, 0, 0 ) ), used for control points that don't attach to an entity
 
 
----@alias PLAYER
+---@alias PLAYER_ACTION
 ---| `PLAYER_IDLE` # 
 ---| `PLAYER_WALK` # 
 ---| `PLAYER_JUMP` # 

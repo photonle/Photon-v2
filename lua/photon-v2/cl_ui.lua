@@ -15,31 +15,47 @@ function Photon2.UI.ReloadMenubar()
 end
 
 function Photon2.UI.PopulateMenuBar()
-	local menu = Photon2.UI.MenuBar
-	menu:AddOption( "Refresh Menu", function()
-		Photon2.UI.ReloadMenubar()
-	end)
-	local debugOption = menu:AddOption( "Debug" )
-	local debugMenu = debugOption:AddSubMenu()
-	debugMenu:SetDeleteSelf( false )
-	debugMenu:AddOption( "Reload Library", function()
-		Photon2.LoadComponentLibrary()
-	end)
-	debugMenu:AddOption( "Reload Index", function()
-		Photon2.Index.ProcessComponentLibrary()
-	end)
-	local printOption = debugMenu:AddOption( "Print to Console" )
-	local printMenu = printOption:AddSubMenu()
-	printMenu:SetDeleteSelf( false )
-	for id, entry in pairs( Photon2.Index.Components ) do
-		printMenu:AddOption( id, function()
-			PrintTable( entry )
+	-- Necesssary due to debugMenu:SetDeleteSelf( false )
+	-- TODO: populate on each open to resolve
+	timer.Simple(0.01, function ()
+		local menu = Photon2.UI.MenuBar
+		menu:AddOption( "Refresh Menu", function()
+			Photon2.UI.ReloadMenubar()
 		end)
-	end
+		local debugOption = menu:AddOption( "Debug" )
+		local debugMenu = debugOption:AddSubMenu()
+		debugMenu:SetDeleteSelf( false )
+		debugMenu:AddOption( "Print Profiles to Console", function()
+			PrintTable( Photon2.Index.Profiles )
+		end)
+		debugMenu:AddOption( "Print Vehicle Index to Console", function()
+			PrintTable( Photon2.Index.Vehicles )
+		end)
+		debugMenu:AddOption( "Reload Components", function()
+			Photon2.LoadComponentLibrary()
+			Photon2.Index.ProcessComponentLibrary()
+		end)
+		debugMenu:AddOption( "Reload Vehicles", function()
+			Photon2.LoadVehicleLibrary()
+		end)
+		-- debugMenu:AddOption( "Reload Library", function()
+		-- 	Photon2.LoadComponentLibrary()
+		-- end)
+		-- debugMenu:AddOption( "Reload Index", function()
+		-- 	Photon2.Index.ProcessComponentLibrary()
+		-- end)
+		local printOption = debugMenu:AddOption( "Print to Console" )
+		local printMenu = printOption:AddSubMenu()
+		printMenu:SetDeleteSelf( false )
+		for id, entry in pairs( Photon2.Index.Components ) do
+			printMenu:AddOption( id, function()
+				PrintTable( entry )
+			end)
+		end
 
-
+		Photon2.Debug.Print("MenuBar populated.")
+	end)
 	
-	Photon2.Debug.Print("MenuBar populated.")
 end
 
 function Photon2.UI.OnPopulateMenuBar( menubar )

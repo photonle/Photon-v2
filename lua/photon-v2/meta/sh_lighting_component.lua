@@ -15,7 +15,9 @@ Component.IsPhotonLightingComponent = true
 ---@return PhotonLightingComponent
 function Component.New( data )
 
+	---@type PhotonLightingComponent
 	local component = {
+		Model = data.Model,
 		Lights = {},
 		Segments = {}
 	}
@@ -64,19 +66,24 @@ function Component.New( data )
 		component.Segments[segmentName] = segment
 	end
 
-	-- debug.setmetatable( component, { __index = PhotonLightingComponent } )
+	setmetatable( component, { __index = PhotonLightingComponent } )
 	
 	return component
 end
 
 -- Return new INSTANCE of this component that connects
 -- to a Photon Controller and component entity.
+---@param ent photon_entity
+---@param controller PhotonController
 ---@return PhotonLightingComponent
-function Component:Initialize()
-	local component = {
-		Lights = {},
-		Segments = {}
-	}
+function Component:Initialize( ent, controller )
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
+
+	local entTable = component:GetTable()
+
+	component.Lights = {}
+	component.Segments = {}
+
 	-- Process light table
 	for key, light in pairs(self.Lights) do
 		component.Lights[key] = light:Initialize()
@@ -87,6 +94,6 @@ function Component:Initialize()
 		component.Segments[name] = segment:Initialize()
 	end
 
-	debug.setmetatable( component, { __index = self } )
+
 	return component
 end

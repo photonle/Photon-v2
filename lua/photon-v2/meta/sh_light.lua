@@ -18,6 +18,7 @@ function Light:OnStateChange() end
 
 
 function Light:SetState( state, priority )
+	local x = Color(255, 255, 255)
 
 end
 

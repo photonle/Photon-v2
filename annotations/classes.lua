@@ -1,6 +1,7 @@
 ---@meta
 
 ---@class Angle
+---@field Add fun(self: Angle, angle: Angle)
 Angle = Angle
 
 -- Adds the values of the argument angle to the orignal angle.  This functions the same as angle1 + angle2 without creating a new angle object, skipping object construction and garbage collection.
