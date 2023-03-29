@@ -41,7 +41,7 @@ Photon2.OnPostVehicleCreated = function ( ent )
 	end
 	local profile = profiles.Vehicles[ent.VehicleName]
 	if (profiles.Vehicles[ent.VehicleName]) then
-		Photon2.Debug.Print( string.format("Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile ) )
+		Photon2.Debug.PrintF( "Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile ) 
 		Photon2.AddControllerToVehicle( ent, profile )
 	end
 end

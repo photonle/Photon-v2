@@ -79,7 +79,7 @@ end
 function Component:Initialize( ent, controller )
 	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 
-	local entTable = component:GetTable()
+	-- local entTable = component:GetTable() -- set via BaseEntity init?
 
 	component.Lights = {}
 	component.Segments = {}

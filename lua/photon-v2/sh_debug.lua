@@ -12,3 +12,10 @@ function Photon2.Debug.Print( text )
 	if CLIENT then col = cl end
 	MsgC( col, "[", red, "PHO", blu, "TON", whi, "2", col, "] ", col, text .. "\n")
 end
+
+
+-- Prints the string with the [PHOTON2] identifier while also calling
+-- string.format( x ) on the supplied text.
+function Photon2.Debug.PrintF( text, ... )
+	Photon2.Debug.Print(string.format(text, ...))
+end

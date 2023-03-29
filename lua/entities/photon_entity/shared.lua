@@ -26,3 +26,4 @@ ENT.DefaultInputPriorities = {
 	["Vehicle.HighBeams"]			= 20,
 	["Vehicle.Lights"]	 			= 10
 }
+

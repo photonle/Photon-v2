@@ -25,7 +25,7 @@ Photon2.Index = Photon2.Index or {
 	}
 ]]
 
-local print = Photon2.Debug.Print
+local print = Photon2.Debug.PrintF
 
 local index = Photon2.Index
 local library = Photon2.Library
@@ -134,12 +134,55 @@ function Photon2.Index.ProcessVehicleLibrary()
 end
 
 
-function Photon2.Index.CompileVehicle( name, inputVehicle )
+---@param name string The name of the vehicle profile.
+---@param inputVehicle PhotonLibraryVehicle The library vehicle instance to compile.
+---@param isReload? boolean If the component is being reloaded (i.e. the file was just saved).
+function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
+	local currentEquipmentCount, newEquipmentCount
+	local currentEquipmentSignature, newEquipmentSignature
+	local hardSet = true
+
+	if (isReload) then
+		-- Build equipment signature of current table to compare new one to
+		currentEquipmentSignature = {}
+		currentEquipmentCount = #Photon2.Index.Vehicles[name].Equipment
+		for key, params in pairs(Photon2.Index.Vehicles[name].Equipment) do
+			currentEquipmentSignature[key] = (params.Component or params.Prop)
+		end
+	end
+
 	Photon2.Index.Vehicles[name] = PhotonVehicle.New( inputVehicle )
-	hook.Run("Photon2.VehicleCompiled", name, Photon2.Index.Vehicles[name])
+
+	if (isReload) then
+		-- Build new equipment signature
+		local newEquipment = Photon2.Index.Vehicles[name].Equipment
+		newEquipmentCount = #newEquipment
+		if (currentEquipmentCount == newEquipmentCount) then
+			print("Equipment count unchanged. Checking signatures...")
+			for key, params in pairs(newEquipment) do
+				print("\tChecking key [%s]", key)
+				print("\tKey: ", tostring(currentEquipmentSignature[key]))
+				if (
+						(currentEquipmentSignature[key]) and 
+						((currentEquipmentSignature[key] == params.Prop) or
+						(currentEquipmentSignature[key] == params.Component))
+				) then
+					print("Detected as a soft reload...")
+					hardSet = false
+				else
+					print("Hard reload necessary.")
+					break
+				end
+			end
+		else
+			print("Equipment was added or removed.")		
+		end
+	end
+
+	hook.Run("Photon2.VehicleCompiled", name, Photon2.Index.Vehicles[name], hardSet)
 	return Photon2.Index.Vehicles[name]
 end
 
 hook.Add("Photon2.VehicleCompiled", "Photon2:OnVehicleCompiled", function(name, vehicle)
-	print(string.format("Vehicle compiled (%s)", name))
+	print("Vehicle compiled (%s)", name)
 end)

@@ -6,7 +6,7 @@ AddCSLuaFile("cl_init.lua")
 ---@class sv_PhotonController : PhotonController
 ENT = ENT
 
-function ENT:SetChannelState( channel, state )
+function ENT:SetChannelMode( channel, state )
 	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
 end
 
@@ -24,9 +24,19 @@ function ENT:Initialize()
 	if ( IsValid( phys ) ) then
 		phys:Wake()
 	end
+
+	timer.Simple(5, function()
+		self:SetChannelMode( "Emergency.Warning", "STAGE_1")
+		self:SetChannelMode( "Emergency.Auxiliary", "LEFT")
+	end)
 end
 
 function ENT:SetProfileName( name )
 	Photon2.Debug.Print( "Setting controller profile name to " .. name )
 	self:SetNW2String( "Photon2:ProfileName", name )
+end
+
+
+function ENT:ResetChannels()
+
 end

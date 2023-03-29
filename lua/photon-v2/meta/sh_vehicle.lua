@@ -1,5 +1,7 @@
 if (exmeta.ReloadFile("photon-v2/meta/sh_vehicle.lua")) then return end
 
+local print = Photon2.Debug.Print
+
 NAME = "PhotonVehicle"
 ---@alias EquipmentMode
 ---| "Configurable" # Has multiple equipment options.
@@ -33,6 +35,7 @@ function Vehicle.New( data )
 		error("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
 	end
 
+	-- Handle vehicle itself
 	---@type PhotonVehicle
 	local vehicle = {
 		ID 			= data.ID,
@@ -43,17 +46,23 @@ function Vehicle.New( data )
 		Equipment 	= {},
 	}
 
-	-- Handle equipment
+	-- Handle each entry in equipment
 	if (data.IsEquipmentConfigurable) then
-	
+		-- Configurable equipment setup...
+		for category, option in pairs(data.Equipment) do
+			for index, entry in pairs( option ) do
+				local new = table.Copy( entry )
+				new.ID = index -- SETUP CONFIG ID
+				-- new.ID = index
+				vehicle.Equipment[index] = new
+			end
+		end
 	else
 		for index, entry in pairs(data.Equipment) do
-			vehicle.Equipment[index] = {
-				ID 			= index,
-				Component 	= entry.Component,
-				Position 	= entry.Position,
-				Angles 		= entry.Angles
-			}
+			-- TODO: property schema? issues with deep copying?
+			local new = table.Copy( entry )
+			new.ID = index
+			vehicle.Equipment[index] = new
 		end
 	end
 

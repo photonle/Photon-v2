@@ -56,9 +56,12 @@ PhotonVehicle = PhotonVehicle
 
 ---@class PhotonVehicleEquipment
 ---@field ID string (Internal) Unique per-vehicle identifier.
----@field Component string
+---@field Component string Component identifier. Cannot be used with `Prop` defined.
+---@field Prop string Model path. If set, the model is treated as a static prop. Cannot be used if `Component` is also defined.
 ---@field Position Vector
 ---@field Angles Angle
+---@field Scale number
+---@field MoveType MOVETYPE
 ---@field OnServer boolean -- (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
 
 ---@class PixVisHandle

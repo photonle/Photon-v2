@@ -1,4 +1,4 @@
-Photon2.InputChannelSchema = {
+Photon2.DefaultChannelTree = {
     ["Emergency"] = { 
         "Cut", 
         "Illuminate",
@@ -23,3 +23,7 @@ Photon2.InputChannelSchema = {
         "HighBeam"
     }
 }
+
+if not (Photon2.DefaultChannels) then
+	
+end

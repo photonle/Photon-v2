@@ -9,6 +9,8 @@ local _g = _G
 local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
 
+local print = Photon2.Debug.PrintF
+
 function Photon2.LoadComponentFile( filePath )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
 	local nameStart = string.len(componentsRoot) + 1
@@ -49,7 +51,8 @@ function Photon2.ReloadComponent( id )
 end
 
 ---@param filePath string
-function Photon2.LoadVehicleFile( filePath )
+---@param isReload? boolean
+function Photon2.LoadVehicleFile( filePath, isReload )
 	Photon2.Debug.Print("Loading vehicle file: " .. filePath)
 	local nameStart = string.len(vehiclesRoot) + 1
 	local nameEnd = string.len(vehiclesRoot) - nameStart - 4
@@ -66,7 +69,9 @@ function Photon2.LoadVehicleFile( filePath )
 	PHOTON2_LIBRARY_VEHICLE.ID = name
 	library.Vehicles[name] = PHOTON2_LIBRARY_VEHICLE
 	PHOTON2_LIBRARY_VEHICLE = nil
-	Photon2.Index.CompileVehicle( name, library.Vehicles[name] )
+	print("END of LoadVehicleFile() filepath: %s", filePath)
+	print("\tname: %s", name)
+	Photon2.Index.CompileVehicle( name, library.Vehicles[name], isReload )
 end
 
 -- Returns the active library vehicle global when loading a vehicle file.
@@ -114,7 +119,7 @@ function Photon2.ReloadVehicleFile()
 		if (startPos) then
 			local path = source:sub(startPos)
 			Photon2.Debug.Print("Reloading vehicle: " .. tostring(path))
-			Photon2.LoadVehicleFile(path)
+			Photon2.LoadVehicleFile( path, true )
 		else
 			Photon2.Debug.Print("Attempted to call ReloadVehicleFile() from an invalid file location [" .. tostring(source) .."]")
 			return false
