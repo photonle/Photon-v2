@@ -26,6 +26,7 @@ Photon2.Index = Photon2.Index or {
 ]]
 
 local print = Photon2.Debug.PrintF
+local printf = Photon2.Debug.PrintF
 
 local index = Photon2.Index
 local library = Photon2.Library
@@ -133,50 +134,109 @@ function Photon2.Index.ProcessVehicleLibrary()
 
 end
 
+local equipmentTypeMap = {
+	["Components"] = "Component",
+	["Props"] = "Prop"
+}
 
 ---@param name string The name of the vehicle profile.
 ---@param inputVehicle PhotonLibraryVehicle The library vehicle instance to compile.
 ---@param isReload? boolean If the component is being reloaded (i.e. the file was just saved).
 function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
+	local current = Photon2.Index.Vehicles[name]
+
+	if (not current) then
+		isReload = false
+	end
+
 	local currentEquipmentCount, newEquipmentCount
 	local currentEquipmentSignature, newEquipmentSignature
+
+	local currentSelectionsSignature, newSelectionsSignature
+
 	local hardSet = true
 
-	if (isReload) then
-		-- Build equipment signature of current table to compare new one to
-		currentEquipmentSignature = {}
-		currentEquipmentCount = #Photon2.Index.Vehicles[name].Equipment
-		for key, params in pairs(Photon2.Index.Vehicles[name].Equipment) do
-			currentEquipmentSignature[key] = (params.Component or params.Prop)
+	local function buildEquipmentSignature( tbl )
+		local sig = ""
+		for equipmentType, entries in pairs( tbl ) do
+			if (equipmentTypeMap[equipmentType]) then
+				sig = sig .. string.format("[%s]=>{", equipmentType)
+				for index, entry in ipairs( entries ) do
+					local baseClassName = ""
+					if (istable(entry.BaseClass)) then
+						baseClassName = entry.BaseClass.Name
+					end
+					sig = sig .. string.format("<%s:%s(%s/%s)>", index, entry[equipmentTypeMap[equipmentType]], baseClassName, entry.Name)
+				end
+				sig = sig .. "}"
+			end
 		end
+		return sig
+	end
+
+	local function buildSelectionSignature( tbl )
+		local sig = ""
+		for key, category in ipairs(tbl) do
+			sig = sig .. string.format("[%s]", key)
+			for mapKey, option in pairs(category.Map) do
+				sig = sig .. tostring(mapKey) .. "("
+					if (option.Option) then
+						sig = sig .. string.format("<%s>*%s,", mapKey, option.Option)
+
+					elseif (option.Variant) then
+						sig = sig .. string.format("<%s>^%s,", mapKey, option.Variant)
+					end
+				sig = sig .. ")"
+			end
+		end
+		return sig
+	end
+
+	if (isReload) then
+		currentEquipmentSignature = buildEquipmentSignature( current.Equipment )
+		-- Build Selections signature of current table
+		if (current.Selections) then
+			currentSelectionsSignature = buildSelectionSignature( current.Selections )
+			print("currentSelectionSignature: " .. tostring(currentSelectionsSignature))
+		end
+		
 	end
 
 	Photon2.Index.Vehicles[name] = PhotonVehicle.New( inputVehicle )
 
+	local newVehicle = Photon2.Index.Vehicles[name]
+
+
 	if (isReload) then
-		-- Build new equipment signature
-		local newEquipment = Photon2.Index.Vehicles[name].Equipment
-		newEquipmentCount = #newEquipment
-		if (currentEquipmentCount == newEquipmentCount) then
-			print("Equipment count unchanged. Checking signatures...")
-			for key, params in pairs(newEquipment) do
-				print("\tChecking key [%s]", key)
-				print("\tKey: ", tostring(currentEquipmentSignature[key]))
-				if (
-						(currentEquipmentSignature[key]) and 
-						((currentEquipmentSignature[key] == params.Prop) or
-						(currentEquipmentSignature[key] == params.Component))
-				) then
-					print("Detected as a soft reload...")
-					hardSet = false
-				else
-					print("Hard reload necessary.")
-					break
-				end
-			end
-		else
-			print("Equipment was added or removed.")		
+		-- Build new Equipment signature
+		newEquipmentSignature = buildEquipmentSignature( newVehicle.Equipment )
+		
+		printf("EQUIPMENT SIGNATURE\nOld: %s\nNew:%s", currentEquipmentSignature, newEquipmentSignature)
+		if (currentEquipmentSignature == newEquipmentSignature) then
+			hardSet = false
 		end
+
+		-- Build new Selections signature
+		-- (any modifications of the Selections tree needs to require a hard reload)
+		if (currentSelectionsSignature) then
+			if ( newVehicle.Selections ) then
+				newSelectionsSignature = buildSelectionSignature( newVehicle.Selections )
+				print("newSelectionSignature: " .. tostring(currentSelectionsSignature))
+				
+				if (newSelectionsSignature ~= currentSelectionsSignature) then
+					hardSet = true
+				end
+			else
+				hardSet = true
+			end
+		elseif ((newVehicle.Selections) and (not currentSelectionsSignature)) then
+			hardSet = true
+		end
+	end
+
+	if (PHOTON2_DEBUG_VEHICLE_HARDRELOAD) then
+		print("Debug global PHOTON2_DEBUG_VEHICLE_HARDRELOAD is currently true.")
+		hardSet = true
 	end
 
 	hook.Run("Photon2.VehicleCompiled", name, Photon2.Index.Vehicles[name], hardSet)

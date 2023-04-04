@@ -11,6 +11,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/sh_sequence.lua")
 	exmeta.LoadFile("photon-v2/meta/sh_sequence_collection.lua")
 
+	exmeta.LoadFile("photon-v2/meta/sh_vehicle_equipment.lua")
 	exmeta.LoadFile("photon-v2/meta/sh_vehicle.lua")
 end
 

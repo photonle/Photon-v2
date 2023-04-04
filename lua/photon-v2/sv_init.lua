@@ -4,6 +4,7 @@ include("sv_net.lua")
 include("sh_library.lua")
 include("sh_index.lua")
 
+include("sh_ent_meta.lua")
 include("sv_functions.lua")
 
 print("sv_init.lua")
@@ -59,6 +60,8 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	controller:SetLocalAngles(Angle(0, -90, 0))
 
 	controller:SetProfileName( profile )
+
+	vehicle:SetNW2Entity( "Photon2:Controller", controller )
 
 	return controller
 end

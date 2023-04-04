@@ -27,6 +27,9 @@ PhotonBaseEntity = PhotonBaseEntity
 ---@type PhotonVehicle
 PhotonVehicle = PhotonVehicle
 
+---@type PhotonVehicleEquipmentManager
+PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
@@ -53,11 +56,32 @@ PhotonVehicle = PhotonVehicle
 ---@field Author string The author of this _Photon_ vehicle profile.
 ---@field IsEquipmentConfigurable boolean (Internal) Whether the equipment is user-configurable or static. This is determined automatically by the `.Equipment {}` table structure.
 ---@field Equipment PhotonVehicleEquipment[]
+---@field Selections PhotonVehicleSelectionCategory[]
+
+---@class PhotonEquipmentTable
+---@field Components table
+---@field Props table
+---@field BodyGroups table
+---@field SubMaterials table
+
+---@class PhotonVehicleSelectionCategory
+---@field Category string Category name.
+---@field Options PhotonVehicleSelectionOption[]
+
+---@class PhotonVehicleSelectionOption
+---@field Option string Selection name.
+---@field Variants PhotonVehicleSelectionVariant[]
+
+
+---@class PhotonVehicleSelectionVariant
+---@field Variant string
+---@field Variants PhotonVehicleEquipment[]
 
 ---@class PhotonVehicleEquipment
 ---@field ID string (Internal) Unique per-vehicle identifier.
 ---@field Component string Component identifier. Cannot be used with `Prop` defined.
 ---@field Prop string Model path. If set, the model is treated as a static prop. Cannot be used if `Component` is also defined.
+---@field BodyGroups table
 ---@field Position Vector
 ---@field Angles Angle
 ---@field Scale number

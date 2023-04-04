@@ -6,6 +6,7 @@
 ENT = ENT
 
 local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
 
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
@@ -42,8 +43,16 @@ ENT.ChannelTree = {
 
 function ENT:InitializeShared()
 	self.Components = {}
-	self.Equipment = {}
-	self.CurrentConfiguration = {}
+	self.Props = {}
+
+	self.Equipment = {
+		Components = {},
+		Props = {},
+		BodyGroups = {},
+		SubMaterials = {}
+	}
+
+	--self.CurrentConfiguration = {}
 	-- self.EquipmentConfiguration = {}
 	self:SetupChannels()
 	timer.Simple(0, function()
@@ -51,6 +60,8 @@ function ENT:InitializeShared()
 		hook.Add("Photon2.VehicleCompiled", self, self.OnVehicleCompiled)
 	end)
 end
+
+
 
 function ENT:SetupChannels()
 	local channelList = {}
@@ -86,18 +97,16 @@ end
 
 
 function ENT:HardReload()
-	print("Executing HARD reload...")
+	print("Controller is executing HARD reload...")
 	self:SetupProfile()
 end
 
 
 function ENT:SoftEquipmentReload()
-	print("Executing SOFT reload...")
-
+	print("Controller is executing SOFT reload...")
 	local profile = self:GetProfile()
-	local equipmentData
 	for id, component in pairs(self.Components) do
-		component:SetPropertiesFromEquipment( profile.Equipment[id], true )
+		component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
 	end
 end
 
@@ -108,76 +117,139 @@ end
 function ENT:OnVehicleCompiled( name, vehicle, hardReload )
 	if (not self:GetProfileName() == name) then
 		print(string.format("Controller detected vehicle compilation but the profile did not match. (%s =/= %s [this])", name, self:GetProfileName()))
+		return
 	end
 	print(string.format("Controller's vehicle profile was just recompiled (%s). Updating.", name))
-	if (hardReload) then
+	
+	local currentSelections
+	
+	if (SERVER) then
+		if ( self.CurrentSelections ) then
+			currentSelections = table.Copy( self.CurrentSelections )
+		end
+	end
+
+	if ( hardReload ) then
 		self:HardReload()
 	else 
 		self:SoftEquipmentReload()
+	end
+	
+	if (SERVER) then
+		-- Reapplies previous selections, which is merged with any new ones
+		if ( currentSelections and self.CurrentSelections ) then
+			table.Merge( self.CurrentSelections, currentSelections )
+			self:SyncSelections()
+		end
 	end
 end
 
 -- Returns the component IDs that should be active based 
 -- on the current equipment conifguration.
 function ENT:GetCurrentEquipment()
-
+	local result
+	local optionEquipment
+	local selections = self.CurrentProfile.Selections
+	if (istable(selections) and (#selections > 0)) then
+		result = {}
+		for i = 1, #selections do
+			optionEquipment = selections[i].Map[self.CurrentSelections[i]].Equipment
+			for j = 1, #optionEquipment do
+				result[optionEquipment[j]] = self.Equipment[optionEquipment[j]]
+			end
+		end
+	end
+	return result or self.Equipment
 end
 
 
 ---@param id string
 function ENT:SetupComponent( id )
-	local data = self.Equipment[id] --[[@as PhotonVehicleEquipment]]
+	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
 	if (not data) then
 		print(string.format("Unable to locate equipment ID [%s]", id))
 		return
 	end
 	print(string.format("Setting up component [%s]", id))
 
-	-- If equipment is a standard component
-	if (data.Component) then
-		---@type PhotonLightingComponent
-		local component = Photon2.Index.Components[data.Component]
+	---@type PhotonLightingComponent
+	local component = Photon2.Index.Components[data.Component]
 
-		---@type PhotonBaseEntity
-		local ent
+	---@type PhotonBaseEntity
+	local ent
 
-		if (SERVER and data.OnServer) then
-			-- TODO: serverside spawn code
-		elseif (CLIENT and (not data.OnServer)) then
-			ent = component:CreateClientside( self )
-		else
-			return
-		end
-
-		-- Set default/essential properties
-		ent:SetMoveType( MOVETYPE_NONE )
-		ent:SetParent( self:GetComponentParent() )
-
-		-- Set the other basic properties
-		ent:SetPropertiesFromEquipment( data )
-
-		if (IsValid(self.Components[id])) then
-			self.Components[id]:Remove()
-		end
-		self.Components[id] = ent
+	if (SERVER and data.OnServer) then
+		-- TODO: serverside spawn code
+	elseif (CLIENT and (not data.OnServer)) then
+		ent = component:CreateClientside( self )
+	else
+		return
 	end
+
+	-- Set default/essential properties
+	ent:SetMoveType( MOVETYPE_NONE )
+	ent:SetParent( self:GetComponentParent() )
+
+	-- Set the other basic properties
+	ent:SetPropertiesFromEquipment( data )
+
+	if (IsValid(self.Components[id])) then
+		self.Components[id]:Remove()
+	end
+	self.Components[id] = ent
 end
 
 function ENT:RemoveAllComponents()
 	for id, ent in pairs(self.Components) do
-		if (IsValid(ent)) then
-			ent:Remove()
-		end
-		self.Components[id] = nil
+		-- if (IsValid(ent)) then
+		-- 	ent:Remove()
+		-- end
+		-- self.Components[id] = nil
+		self:RemoveEquipmentComponentByIndex( id )
 	end
 end
 
+function ENT:RemoveEquipmentComponentByIndex( index )
+	printf("Controller is removing equipment ID [%s]", index)
+	if (IsValid(self.Components[index])) then
+		self.Components[index]:Remove()
+	end
+	self.Components[index] = nil
+end
+
+
+---@param equipmentTable PhotonEquipmentTable
+function ENT:AddEquipment( equipmentTable )
+	local components = equipmentTable.Components
+	for i=1, #components do
+		self:SetupComponent( components[i] )
+	end
+end
+
+function ENT:RemoveEquipment( equipmentTable )
+	print("Controller is removing an equipment table...")
+	local equipmentComponents = equipmentTable.Components
+	-- local ent
+	-- local components = self.Components
+	for i=1, #equipmentComponents do
+		-- ent = components[equipmentTable[i]]
+		-- if (IsValid(ent)) then
+		-- 	ent:Remove()
+		-- end
+		-- components[i] = nil
+		self:RemoveEquipmentComponentByIndex(equipmentComponents[i])
+	end
+end
 
 ---@param name? string Name of profile to load.
-function ENT:SetupProfile( name )
+---@param isReload? boolean
+function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
 	local profile = Photon2.Index.Vehicles[name]
+
 	self:RemoveAllComponents()
+
+	self.CurrentSelections = nil
 	self.CurrentProfile = profile
 	if not (profile) then
 		error("Unable to locate vehicle profile [" .. tostring(name) .."].")
@@ -186,14 +258,39 @@ function ENT:SetupProfile( name )
 	print( string.format( "Setting up %s (%s)...", profile.Title, profile.ID ) )
 	self.Equipment = profile.Equipment
 
-	if (not profile.Configuration) then
-		for id, equipment in pairs(self.Equipment) do
+	if ( not profile.Selections ) then
+		for id, equipment in pairs( self.Equipment.Components ) do
 			self:SetupComponent( id )
 		end
+	else
+		self:SetupSelections()
 	end
 
 end
 
+
+function ENT:SetupSelections()
+	local profile = self.CurrentProfile
+	if (profile.Selections) then
+		self.CurrentSelections = {}
+		for categoryIndex, category in pairs(profile.Selections) do
+			self.CurrentSelections[categoryIndex] = 1
+			self:OnSelectionChanged( categoryIndex, 1 )
+		end
+	end
+	if (SERVER) then 
+		self:SyncSelections()
+	end
+end
+
+
+-- function ENT:SetupEquipment()
+-- 	self:RemoveAllComponents()
+-- 	local equipment = self:GetCurrentEquipment()
+-- 	for id, entry in pairs(self.Equipment) do
+-- 		self:SetupComponent( id )
+-- 	end
+-- end
 
 function ENT:OnRemove()
 	local components = {}
@@ -224,3 +321,34 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 		component:SetChannelMode( channel, state )
 	end
 end
+
+
+---@param categoryIndex integer
+---@param optionIndex integer
+function ENT:OnSelectionChanged( categoryIndex, optionIndex )
+	print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
+	print("Controller:OnSelectionChanged() - Selections:")
+	PrintTable( self.CurrentProfile.Selections )
+	local category = self.CurrentProfile.Selections[categoryIndex].Map
+	
+	self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
+	self.CurrentSelections[categoryIndex] = optionIndex
+	self:AddEquipment(category[optionIndex])
+end
+
+
+---@param selections string
+function ENT:ProcessSelectionsString( selections )
+	print("Processing selections string '" .. tostring(selections) .. "'")
+	local newSelections = string.Explode( " ", selections, false )
+	local currentSelections = self.CurrentSelections
+	for categoryIndex, optionIndex in pairs( newSelections ) do
+		optionIndex = tonumber( optionIndex ) --[[@as integer]]
+		newSelections[categoryIndex] = optionIndex
+		if ( currentSelections[categoryIndex] ~= optionIndex ) then
+			self:OnSelectionChanged( categoryIndex, optionIndex )
+		end
+	end
+	--self:SetupEquipment()
+end
+

@@ -1,6 +1,7 @@
 if (exmeta.ReloadFile("photon-v2/meta/sh_vehicle.lua")) then return end
 
 local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
 
 NAME = "PhotonVehicle"
 ---@alias EquipmentMode
@@ -17,7 +18,7 @@ NAME = "PhotonVehicle"
 ---@field Model string
 ---@field New fun(data: PhotonLibraryVehicle): PhotonVehicle
 ---@field Equipment {}
----@field Configuration {}
+---@field Selections {}
 local Vehicle = META
 
 Vehicle.EntityClass = "prop_vehicle_jeep"
@@ -31,41 +32,122 @@ Vehicle.ControllerType = "photon_controller"
 function Vehicle.New( data )
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
-	if (not target) then
+	if ( not target ) then
 		error("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
 	end
 
 	-- Handle vehicle itself
 	---@type PhotonVehicle
 	local vehicle = {
-		ID 			= data.ID,
-		Title 		= data.Title,
-		Model 		= target.Model,
-		EntityClass = target.Class,
-		Target 		= data.Vehicle,
-		Equipment 	= {},
+		ID 					= data.ID,
+		Title 				= data.Title,
+		Model 				= target.Model,
+		EntityClass 		= target.Class,
+		Target 				= data.Vehicle,
+		Equipment 			= {
+			Components = {},
+			Props = {},
+			BodyGroups = {},
+			SubMaterials = {}
+		},
 	}
 
+	local Equipment = PhotonVehicleEquipmentManager
+
+	local nameTable = {
+		Components = {},
+		Props = {},
+		BodyGroups = {},
+		SubMaterials = {}
+	}
+
+	local pendingNamesQueue = {
+		Components = {},
+		Props = {},
+		BodyGroups = {},
+		SubMaterials = {}
+	}
+
+	local loadedParents = {
+		Components = {},
+		Props = {},
+		BodyGroups = {},
+		SubMaterials = {}
+	}
+
+	-- for key, entry in pairs(data.Equipment) do
+	-- 	-- TODO: property schema? issues with deep copying?
+	-- 	addEquipmentEntry( entry )
+	-- end
+
 	-- Handle each entry in equipment
-	if (data.IsEquipmentConfigurable) then
-		-- Configurable equipment setup...
-		for category, option in pairs(data.Equipment) do
-			for index, entry in pairs( option ) do
-				local new = table.Copy( entry )
-				new.ID = index -- SETUP CONFIG ID
-				-- new.ID = index
-				vehicle.Equipment[index] = new
+	if (data.Selections) then
+
+		vehicle.Selections = {}
+
+		-- Loop through each category
+		for categoryIndex, category in pairs(data.Selections) do
+			vehicle.Selections[categoryIndex] = 
+			{
+				Category = category.Category,
+				Index = categoryIndex, 
+				Options = {},
+				Map = {}
+			}
+			local currentCategory = vehicle.Selections[categoryIndex]
+			local map = currentCategory.Map
+			-- Loop through each option
+			for optionIndex, option in pairs(category.Options) do
+				local optionIndex = #currentCategory.Options + 1
+				currentCategory.Options[optionIndex] = 
+				{
+					Option = option.Option,
+					-- Index = optionIndex,
+				}
+				local currentOption = currentCategory.Options[optionIndex]
+				-- Loop through each variant (if defined)
+				if istable(option.Variants) then
+					currentOption.Variants = {}
+					for variantIndex, variant in pairs( option.Variants ) do
+						local selection = #map + 1
+						currentOption.Variants[variantIndex] =
+						{
+							Selection = selection,
+							Variant = variant.Variant,
+							Components 		= {},
+							Props 			= {},
+							BodyGroups 		= {},
+							SubMaterials 	= {},
+						}
+						local currentVariant = currentOption.Variants[variantIndex]
+						
+						-- processEquipmentTable( variant.Components, currentVariant.Equipment )
+						Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+						
+						map[selection] = currentVariant
+					end
+				else 
+					-- If no variants are defined, load equipment options
+					currentOption.Option = option.Option
+					currentOption.Components 	= {}
+					currentOption.Props 		= {}
+					currentOption.BodyGroups 	= {}
+					currentOption.SubMaterials 	= {}
+					currentOption.Selection = #map + 1
+
+					-- processEquipmentTable( option.Components, currentOption.Components )
+					Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+
+					map[currentOption.Selection] = currentOption
+				end
 			end
 		end
-	else
-		for index, entry in pairs(data.Equipment) do
-			-- TODO: property schema? issues with deep copying?
-			local new = table.Copy( entry )
-			new.ID = index
-			vehicle.Equipment[index] = new
-		end
+		
+		Equipment.ResolveNamesFromQueue( pendingNamesQueue.Components, nameTable.Components )
+
 	end
 
+	Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
 
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 
@@ -110,4 +192,10 @@ function Vehicle.CopyVehicle( name )
 		end
 	end
 	return copy
+end
+
+
+-- Development function for change detection
+function Vehicle.BuildEquipmentSignature()
+	
 end

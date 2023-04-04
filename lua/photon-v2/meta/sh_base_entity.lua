@@ -93,3 +93,4 @@ function ENT:SetChannelMode( channel, new, old )
 	print("Component received mode change notification for [%s]. ", channel)
 	PrintTable( self.CurrentModes )
 end
+

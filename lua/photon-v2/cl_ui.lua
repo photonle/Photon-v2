@@ -69,3 +69,57 @@ concommand.Add("ph2_debug_reloadmenubar", function()
 end)
 
 hook.Add( "PopulateMenuBar", "Photon2:PopulateMenuBar", Photon2.UI.OnPopulateMenuBar )
+
+
+
+--[[
+	Sandbox Properties Context Menu 
+--]]
+
+properties.Add("photon2_equipment", {
+	MenuLabel = "Equipment",
+	Order = 60,
+	Filter = function(self, ent, ply)
+		if (not IsValid( ent:GetPhotonController() )) then
+			return false
+		end
+		return true
+	end,
+	---@param ent PhotonController
+	MenuOpen = function(self, option, ent)
+		local controller = ent:GetPhotonController()
+		local currentSelections = controller.CurrentSelections
+		local selections = controller:GetProfile().Selections
+		-- Required so child elements can be applied
+		local subMenu = option:AddSubMenu()
+		for i, category in ipairs( selections ) do
+			-- Create category's sub-menu
+			local categoryMenu = subMenu:AddSubMenu( category.Category )
+			-- Process each option
+			for _i, opt in ipairs( category.Options ) do
+				-- Process variants if applicable
+				if (opt.Variants) then
+					local optMenu = categoryMenu:AddSubMenu( opt.Option )
+					for __i, variant in ipairs(opt.Variants) do
+						local this = optMenu:AddOption( variant.Variant, function()
+							Photon2.cl_Network.SetControllerSelection( controller, { { i, variant.Selection } } )
+						end)
+						if (currentSelections[i] == variant.Selection ) then
+							this:SetChecked( true )
+						end
+					end
+				else
+					-- Process option if applicable
+					local this = categoryMenu:AddOption( opt.Option, function() 
+						Photon2.cl_Network.SetControllerSelection( controller,  { { i, opt.Selection } }  )
+					end)
+
+					if (currentSelections[i] == opt.Selection) then
+						this:SetChecked( true )
+					end
+
+				end
+			end
+		end
+	end
+})

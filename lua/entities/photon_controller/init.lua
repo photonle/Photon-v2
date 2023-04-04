@@ -25,7 +25,7 @@ function ENT:Initialize()
 		phys:Wake()
 	end
 
-	timer.Simple(5, function()
+	timer.Simple(1, function()
 		self:SetChannelMode( "Emergency.Warning", "STAGE_1")
 		self:SetChannelMode( "Emergency.Auxiliary", "LEFT")
 	end)
@@ -34,9 +34,18 @@ end
 function ENT:SetProfileName( name )
 	Photon2.Debug.Print( "Setting controller profile name to " .. name )
 	self:SetNW2String( "Photon2:ProfileName", name )
+	self:SetupProfile( name )
 end
 
 
-function ENT:ResetChannels()
+function ENT:SetSelectionOption( categoryIndex, optionIndex )
+	self.CurrentSelections[categoryIndex] = optionIndex
+	self:SyncSelections()
+	self:OnSelectionChanged( categoryIndex, optionIndex )
+end
 
+
+-- 
+function ENT:SyncSelections()
+	self:SetNW2String( "Photon2:Selections", table.concat(self.CurrentSelections," "))
 end

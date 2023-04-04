@@ -27,3 +27,6 @@ ENT.DefaultInputPriorities = {
 	["Vehicle.Lights"]	 			= 10
 }
 
+function ENT:Think()
+	print("think hook")
+end
