@@ -315,10 +315,10 @@ end
 ---@param oldState string Old value.
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
-	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' => '" .. newState .. "'")
+	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
 	self.CurrentModes[channel] = newState
 	for id, component in pairs(self.Components) do
-		component:SetChannelMode( channel, state )
+		component:SetChannelMode( channel, newState, oldState )
 	end
 end
 

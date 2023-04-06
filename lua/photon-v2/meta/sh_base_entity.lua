@@ -9,6 +9,27 @@ local ENT = META
 
 local print = Photon2.Debug.PrintF
 
+ENT.DefaultInputPriorities = {
+	["Emergency.Cut"] 				= 140,
+	["Emergency.Illuminate"]		= 130,
+	["Emergency.SceneForward"] 		= 120,
+	["Emergency.SceneLeft"] 		= 120,
+	["Emergency.SceneRight"] 		= 120,
+	["Vehicle.Signal"] 				= 110,
+	["Vehicle.Brake"] 				= 100,
+	["Vehicle.Reverse"] 			= 90,
+	["Emergency.Directional"] 		= 80,
+	["Emergency.Auxiliary"] 		= 70,
+	["Emergency.Marker"] 			= 60,
+	["Emergency.Siren2Override"] 	= 51,
+	["Emergency.SirenOverride"]		= 50,
+	["Emergency.Siren2"] 			= 40,
+	["Emergency.Warning"] 			= 30,
+	["Vehicle.HighBeams"]			= 20,
+	["Vehicle.Lights"]	 			= 10
+}
+
+
 -- Connect component to corresponding entity and its controller.
 ---@param ent photon_entity
 ---@param controller PhotonController
@@ -88,9 +109,3 @@ function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 		end
 	end
 end
-
-function ENT:SetChannelMode( channel, new, old )
-	print("Component received mode change notification for [%s]. ", channel)
-	PrintTable( self.CurrentModes )
-end
-

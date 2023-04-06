@@ -2,15 +2,19 @@ if (exmeta.ReloadFile("photon-v2/meta/sh_lighting_segment.lua")) then return end
 
 NAME = "PhotonLightingSegment"
 
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
+
 ---@class PhotonLightingSegment
 ---@field ActivePattern string Name of the current active pattern.
 ---@field IsActive boolean Whether the segment is active.
 ---@field CurrentPriorityScore integer
 ---@field LastFrameTime integer
+---@field CurrentModes table<string, string> Key = Channel, Value = mode
 ---@field InputPriorities table<string, integer>
 ---@field Sequences table<string, PhotonSequence>
 -- [string] = Pattern Name
----@field Patterns table<string, PhotonSequenceCollection> Key = Input Channel-Mode, Value = Associated sequence
+---@field Patterns table<string, PhotonSequenceCollection> Key = Input Channel, Value = Associated sequence
 ---@field Frames table<integer, table> 
 -- Lights table is currently just a pointer to Component.Lights.
 -- This was done in S because the segment is unaware of its parent component,
@@ -32,6 +36,7 @@ function Segment.New()
 		Lights = {},
 		Sequences = {},
 		Frames = {},
+		InputPriorities = PhotonBaseEntity.DefaultInputPriorities,
 	}
 	debug.setmetatable(segment, { __index = PhotonLightingSegment })
 	return segment
@@ -44,7 +49,7 @@ function Segment:Initialize()
 		LastFrameTime = 0,
 		IsActive = false,
 		CurrentPriorityScore = 0,
-		InputPriorities = {},
+		-- InputPriorities = {},
 		Patterns = {},
 	}
 	return setmetatable( segment, { __index = self } )
@@ -118,15 +123,20 @@ end
 
 
 function Segment:AcceptsPatternMode( inputTrigger )
-	return not ( self.Patterns[inputTrigger] )
+	return true
+	-- return not ( self.Patterns[inputTrigger] )
 end
 
 
 function Segment:CalculatePriorityInput( inputState )
+	print("Calculating priority input...")
+	PrintTable( inputState )
 	local topScore = -1000
 	local result
-	for channel, state in pairs( inputState ) do
+	for channel, mode in pairs( inputState ) do
+		if (mode == "OFF") then continue end
 		if ( self.InputPriorities[channel] ) then
+			printf( "\tChecking channel [%s]", channel )
 			-- TODO: find alternative to string concatination
 			if ( ( self.InputPriorities[channel] > topScore ) and self:AcceptsPatternMode( channel .. "." .. inputState[channel] ) ) then
 				topScore = self.InputPriorities[channel]
@@ -138,10 +148,15 @@ function Segment:CalculatePriorityInput( inputState )
 end
 
 
-function Segment:ApplyInputUpdate( inputState )
+function Segment:ApplyModeUpdate( channel, mode )
+	printf("Segment received a mode update [%s] => %s", channel, mode)
+	local inputState = self.CurrentModes
 	local newChannel = self:CalculatePriorityInput( inputState )
+	printf( "New channel calculated to be: %s", newChannel )
 	local newMode = newChannel .. "." .. inputState[newChannel]
+	printf( "New mode calculated to be: %s", newMode )
 	self.CurrentPriorityScore = self.InputPriorities[newChannel]
+	printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
 	-- Do nothing if priority state hasn't changed
 	if (self.ActivePattern == ( newMode )) then
 		return

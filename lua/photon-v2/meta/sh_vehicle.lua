@@ -75,11 +75,6 @@ function Vehicle.New( data )
 		SubMaterials = {}
 	}
 
-	-- for key, entry in pairs(data.Equipment) do
-	-- 	-- TODO: property schema? issues with deep copying?
-	-- 	addEquipmentEntry( entry )
-	-- end
-
 	-- Handle each entry in equipment
 	if (data.Selections) then
 
