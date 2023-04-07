@@ -92,6 +92,7 @@ end
 ---@param inputComponent PhotonLibraryComponent
 ---@return PhotonLightingComponent
 function Photon2.CompileComponent( name, inputComponent )
+	print("Compiling component [" .. name .. "]")
 	Photon2.Index.Components[name] = PhotonLightingComponent.New( inputComponent )
 	return Photon2.Index.Components[name]
 end

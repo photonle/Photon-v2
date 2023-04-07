@@ -3,25 +3,41 @@ if (exmeta.ReloadFile("photon-v2/meta/sh_sequence.lua")) then return end
 NAME = "PhotonSequence"
 --- Frames are stored in the numerical indexes of the table.
 ---@class PhotonSequence
+---@field Name string
 ---@field Segment PhotonLightingSegment
 ---@field CurrentFrame integer Currently active frame of the sequence.
 ---@field IsRepeating boolean
 ---@field RestartFrame integer
+---@field FramesByIndex integer[]
 local Sequence = META
 
 
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
 
----@param segment PhotonLightingSegment
+-- Returns initialized Sequence for a spawned component.
 ---@return PhotonSequence
-function Sequence.New( segment )
+function Sequence:Initialize( segment )
+	---@type PhotonSequence
+	local instance = {
+		Segment = segment,
+		CurrentFrame = 1,
+	}
+	return setmetatable( instance, { __index = self } )
+end
+
+
+-- Returns new Sequence for compiled component.
+---@param name string
+---@param frameSequence integer[]
+---@return PhotonSequence
+function Sequence.New( name, frameSequence )
 	---@type PhotonSequence
 	local sequence = {
-		Segment = segment
+		Name = name,
+		FramesByIndex = frameSequence
 	}
-	debug.setmetatable( sequence, PhotonSequence )
-	return sequence
+	return setmetatable( sequence, { __index = PhotonSequence } )
 end
 
 
@@ -38,10 +54,14 @@ end
 
 
 --TODO
-function Sequence:Activate() end
+function Sequence:Activate() 
+	print("Activating sequence.")
+end
 
 
-function Sequence:Deactivate() end
+function Sequence:Deactivate() 
+	print("Deactviating sequence.")
+end
 
 
 function Sequence:Clear()

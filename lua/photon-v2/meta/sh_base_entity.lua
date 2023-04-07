@@ -43,7 +43,7 @@ function ENT:Initialize( ent, controller )
 	setmetatable( photonEnt, { __index = self } )
 	debug.setmetatable( ent:GetTable(), { __index = photonEnt } )
 
-	self.CurrentModes = controller.CurrentModes
+	ent.CurrentModes = controller.CurrentModes
 
 	return ent --[[@as PhotonBaseEntity]]
 end

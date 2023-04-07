@@ -47,6 +47,7 @@ PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
 ---@field Lights table
 ---@field LightGroups table
 ---@field Segments table
+---@field Patterns table
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.
@@ -87,6 +88,7 @@ PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
 ---@field Scale number
 ---@field MoveType MOVETYPE
 ---@field OnServer boolean -- (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
+
 
 ---@class PixVisHandle
 

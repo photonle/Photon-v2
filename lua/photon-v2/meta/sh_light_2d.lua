@@ -7,6 +7,8 @@ BASE = "PhotonLight"
 ---@field PixVisHandle PixVisHandle
 local Light = META
 
+Light.Class = "2D"
+
 Light.LocalPosition = Vector(0, 0, 0)
 Light.LocalAngles = Angle(0, 0, 0)
 

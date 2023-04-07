@@ -11,7 +11,7 @@ local vehiclesRoot = "photon-v2/library/vehicles/"
 
 local print = Photon2.Debug.PrintF
 
-function Photon2.LoadComponentFile( filePath )
+function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
 	local nameStart = string.len(componentsRoot) + 1
 	local nameEnd = string.len(componentsRoot) - nameStart - 4
@@ -28,6 +28,9 @@ function Photon2.LoadComponentFile( filePath )
 	COMPONENT.Name = name
 	library.Components[name] = COMPONENT
 	COMPONENT = _COMPONENT
+	if (isReload) then
+		Photon2.CompileComponent( name, library.Components[name] )
+	end
 end
 
 function Photon2.LoadComponentLibrary( folderPath )
@@ -43,8 +46,8 @@ end
 
 function Photon2.ReloadComponent( id )
 	if (Photon2._acceptFileReload) then
-		Photon2.Debug.Print("Reloading component: " .. tostring(id))
-		Photon2.LoadComponentFile(componentsRoot .. id .. ".lua")
+		Photon2.Debug.Print( "Reloading component: " .. tostring(id) )
+		Photon2.LoadComponentFile( componentsRoot .. id .. ".lua", true )
 		return true
 	end
 	return false

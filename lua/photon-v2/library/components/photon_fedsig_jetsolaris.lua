@@ -82,7 +82,7 @@ COMPONENT.Segments = {
 	Edge = {
 		Frames = {
 			-- Frame[0] defines the segment's default state (usually all lights off)
-			-- it's only here for reference, as this will ultimately be handled automatically behind-the-scenes
+			-- it's only here for reference, as this will ultimately be handled automatically
 			[0] = { {1, "OFF"}, {2, "OFF"}, {3, "OFF"}, {4, "OFF"}, {5, "OFF"}, {6, "OFF"}, {7, "OFF"}, {8, "OFF"}, {9, "OFF"}, {10, "OFF"}, {11, "OFF"}, {12, "OFF"} },
 			[1] = { { 4, "R" }, { 6, "R" }, { 8, "R" } },
 			-- [1] = { ["R"] = { 4, 5, 6 } },
@@ -94,18 +94,29 @@ COMPONENT.Segments = {
 		Sequences = {
 			["ALT"] = {1, 1, 1, 2, 2, 2}
 		},
+		--[[ 
+			PatternConditionals = {
+				?????
+			},
+			Patterns = {
+				["Emergency.Warning:STAGE_1"] = "ALT"
+			},
+		]]
 	}
 }
 
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
-		["Mode1"] = {
-			Edge = {
-				Sequence = "ALT",
-				If = {
-					["Vehicle.Brake"] = { "Off" }
-				}
-			}
+		["STAGE_1"] = {
+			Edge = "ALT"
+			-- Stored internally as Emergency.Warning:STAGE_1
+			-- TODO: conditional pattern implementation
+			-- Edge = {
+			-- 	Sequence = "ALT",
+			-- 	If = {
+			-- 		["Vehicle.Brake"] = { "Off" }
+			-- 	}
+			-- }
 		}
 	}
 }
