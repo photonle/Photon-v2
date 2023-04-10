@@ -118,5 +118,8 @@ COMPONENT.Patterns = {
 			-- 	}
 			-- }
 		}
+	},
+	["Emergency.Auxiliary"] = {
+		["LEFT"] = { Edge = "ALT" }
 	}
 }

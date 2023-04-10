@@ -1,6 +1,7 @@
 ---@class PhotonController : Entity
 ---@field ComponentParent Entity
----@field Components PhotonBaseEntity[]
+---@field Components table<string, PhotonBaseEntity>
+---@field ComponentArray PhotonBaseEntity[]
 ---@field CurrentProfile PhotonVehicle
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ENT = ENT
@@ -45,6 +46,8 @@ function ENT:InitializeShared()
 	self.Components = {}
 	self.Props = {}
 
+	self.ComponentArray = {}
+	
 	self.Equipment = {
 		Components = {},
 		Props = {},
@@ -266,6 +269,21 @@ function ENT:SetupProfile( name, isReload )
 		self:SetupSelections()
 	end
 
+	self:SetupComponentArray()
+
+end
+
+
+function ENT:SetupComponentArray()
+	local componentArray = self.ComponentArray
+
+	for i=1, #componentArray do
+		componentArray[i] = nil
+	end
+
+	for id, component in pairs( self.Components ) do
+		componentArray[#componentArray+1] = component
+	end
 end
 
 

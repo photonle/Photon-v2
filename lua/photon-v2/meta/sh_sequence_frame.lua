@@ -5,6 +5,7 @@ NAME = "PhotonSequenceFrame"
 ---@class PhotonSequenceFrame
 local Frame = META
 
+-- ******* currently unused ********
 
 ---@return PhotonSequenceFrame
 function Frame.New()

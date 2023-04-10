@@ -2,12 +2,23 @@ include("shared.lua")
 
 ---@class cl_PhotonController : PhotonController
 ---@field IsSuspended boolean
+---@field FrameDuration number 0.0334
+---@field Frame integer
+---@field FrameCountEnabled boolean
+---@field LastFrameTime number
 ENT = ENT
 
 local print = Photon2.Debug.Print
 
+ENT.FrameDuration = 0.0334
+ENT.Frame = 1
+ENT.FrameCountEnabled = true
+ENT.NextFrameTime = 0
+
 
 function ENT:Initialize()
+	self.Frame = 1
+	self.NextFrameTime = RealTime() + self.FrameDuration
 	self:InitializeShared()
 
 	-- addTestEquipment(self)
@@ -24,6 +35,7 @@ end
 -- Called when player is believed to have re-entered vehicle's PVS.
 function ENT:OnResumed()
 	self.IsSuspended = false
+	self.Frame = 1
 	self:SetupProfile(self:GetProfileName())
 end
 
@@ -49,6 +61,9 @@ end
 -- 	end	
 -- end
 
+local RealTime = RealTime
+local IsValid = IsValid
+
 function ENT:Think()
 	if (not self.IsSuspended) then
 		if (not IsValid(self:GetParent())) then
@@ -57,6 +72,17 @@ function ENT:Think()
 	else
 		if (IsValid(self:GetParent())) then
 			self:OnResumed()
+		end
+	end
+
+	if (not self.IsSuspended) then
+		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime()) then
+			self.Frame = self.Frame + 1
+			self.NextFrameTime = RealTime() + self.FrameDuration
+			local componentArray = self.ComponentArray
+			for i=1,#componentArray do
+				componentArray[i]:FrameTick()
+			end
 		end
 	end
 	-- for id, component in pairs(self.Components) do
@@ -74,7 +100,7 @@ end
 local function NetworkedVarChanged( ent, name, oldValue, newValue )
 	-- Must be delayed by a tick to ensure entity is properly
 	-- initialized first. Unpredictable results otherwise.
-	timer.Simple(0.01, function()
+	timer.Simple(0.001, function()
 		if (IsValid(ent) and (ent.IsPhotonController)) then
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )

@@ -5,14 +5,18 @@ NAME = "PhotonLight"
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLight
+---@field Parent Entity
+---@field Deactivate boolean When true, marks the light to be activated on the next frame.
 ---@field IsActivated boolean
 ---@field States table
 local Light = META
 
 ---@return PhotonLight
-function Light:Initialize( component, id )
+function Light:Initialize( parent )
+	---@type PhotonLight2D
 	local light = {
-		Class = self.Class
+		Class = self.Class,
+		Parent = parent
 	}
 	printf("SetState is [%s]", self.SetState)
 	return setmetatable( light, { __index = self } )
@@ -28,16 +32,14 @@ function Light:SetState( state, priority )
 end
 
 
--- Marks the light as "activated" to enable rendering optimizations. 
--- Triggered whenever there is a sequence that utilizes this light.
+-- Marks the light as "activated" to enable rendering optimizations
+-- and add to applicable rendering queues.
 function Light:Activate() end
 
 
--- Marks the light as "deactivated" to remove it from optimization tables
--- and rendering queues. Triggered when it's determined the light won't be used
--- by any active sequences.
-function Light:Deactivate() end
-
+-- Forces light deactivation. Should only be called once
+-- it's clear that no other segments are using the light.
+function Light:DeactivateNow() end
 
 function Light:PrintTable()
 	PrintTable(self)

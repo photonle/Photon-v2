@@ -11,9 +11,15 @@ local printf = Photon2.Debug.PrintF
 ---@field Segments table<string, PhotonLightingSegment>
 ---@field InputPriorities table<string, integer>
 ---@field CurrentModes table<string, string>
+---@field ActiveSequences table<PhotonSequence, boolean>
+---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 local Component = META
 
 Component.IsPhotonLightingComponent = true
+
+--[[
+		COMPILATION
+--]]
 
 -- [Internal] Compile a Library Component to store in the Index.
 ---@param data PhotonLibraryComponent
@@ -26,10 +32,6 @@ function Component.New( data )
 		Segments = {},
 		Patterns = {}
 	}
-
-	--[[
-			Setup Lights
-	--]]
 
 	-- Setup light templates
 	local lightTemplates = {}
@@ -74,13 +76,14 @@ function Component.New( data )
 		end
 	end
 
-	--[[
-			Final metatable setup
-	--]]
 	setmetatable( component, { __index = PhotonLightingComponent } )
 
 	return component
 end
+
+--[[
+		INITIALIZATION
+--]]
 
 -- Return new INSTANCE of this component that connects
 -- to a Photon Controller and component entity.
@@ -98,13 +101,14 @@ function Component:Initialize( ent, controller )
 
 	component.Lights = {}
 	component.Segments = {}
+	component.ActiveSequences = {}
 
 	-- Process light table
 	for key, light in pairs(self.Lights) do
 		printf("\tInitializing light[%s]", key)
-		component.Lights[key] = light:Initialize()
-		print("\tLight table:")
-		PrintTable(component.Lights[key])
+		component.Lights[key] = light:Initialize( component )
+		-- print("\tLight table:")
+		-- PrintTable(component.Lights[key])
 	end
 
 	-- Process segments
@@ -123,3 +127,31 @@ function Component:SetChannelMode( channel, new, old )
 	end
 end
 
+
+
+---@param segmentName string
+---@param sequence PhotonSequence
+function Component:RegisterActiveSequence( segmentName, sequence )
+	-- local sequence = self.Segments[segmentName].Sequences[sequence]
+	printf("Adding sequence [%s]", sequence)
+	self.ActiveSequences[sequence] = true
+end
+
+
+---@param segmentName string
+---@param sequence PhotonSequence
+function Component:RemoveActiveSequence( segmentName, sequence)
+	printf("Removing sequence [%s]", sequence)
+	self.ActiveSequences[sequence] = nil
+end
+
+function Component:FrameTick()
+	-- per-sequence concept
+	-- for sequence, v in pairs( self.ActiveSequences ) do
+	-- 	sequence:IncrementFrame()
+	-- end
+	for segmentName, segment in pairs( self.Segments ) do 
+		segment:IncrementFrame( self.PhotonController.Frame )
+	end
+
+end

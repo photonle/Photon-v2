@@ -13,6 +13,7 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentModes table<string, string> Key = Channel, Value = mode
 ---@field InputPriorities table<string, integer>
 ---@field Sequences table<string, PhotonSequence>
+---@field Component PhotonLightingComponent
 -- [string] = Pattern Name
 ---@field Patterns table<string, string> Key = Input Channel, Value = Associated sequence
 ---@field Frames table<integer, table> 
@@ -63,18 +64,26 @@ function Segment:Initialize( componentInstance )
 		LastFrameTime = 0,
 		IsActive = false,
 		CurrentPriorityScore = 0,
+		Component = componentInstance,
 		CurrentModes = componentInstance.CurrentModes,
 		Lights = componentInstance.Lights,
-		Patterns = {},
+		Sequences = {}
 	}
-	return setmetatable( segment, { __index = self } )
+	
+	setmetatable( segment, { __index = self } )
+
+	for sequenceName, sequence in pairs( self.Sequences ) do
+		segment.Sequences[sequenceName] = sequence:Initialize( segment )
+	end
+
+	return segment
 end
 
 
 ---@param name string Unique sequence name.
 ---@param frameSequence integer[]
 function Segment:AddNewSequence( name, frameSequence )
-	self.Sequences[name] = PhotonSequence.New( name, frameSequence )
+	self.Sequences[name] = PhotonSequence.New( name, frameSequence, self )
 end
 
 
@@ -102,24 +111,32 @@ function Segment:IncrementFrame( count )
 	if not (self.IsActive) then return end
 	if not (self.ActivePattern) then return end
 
-	local sequences = self.Patterns[self.ActivePattern]
-	local sequence
+	local sequence = self:GetCurrentSequence()
 
-	for i = 1, #sequences do
-		---@type PhotonSequence
-		sequence = sequences[i]
-		if (sequence.IsRepeating) then
-			-- Ensures all sequences remain synchronized.
-			sequence.CurrentFrame = ( count % #sequence )
-		else
-			sequence:IncrementFrame()
-		end
+	if ( not sequence ) then return end
+
+	printf("Segment is incrementing frame (%s)", count)
+
+	sequence:IncrementFrame( count )
+
+	-- local sequences = self.Patterns[self.ActivePattern]
+	-- local sequence
+
+	-- for i = 1, #sequences do
+	-- 	---@type PhotonSequence
+	-- 	sequence = sequences[i]
+	-- 	if (sequence.IsRepeating) then
+	-- 		-- Ensures all sequences remain synchronized.
+	-- 		sequence.CurrentFrame = ( count % #sequence )
+	-- 	else
+	-- 		sequence:IncrementFrame()
+	-- 	end
 		
-	end
+	-- end
 end
 
 
---- Updates all lights to match the current sequence frame.
+-- Updates all lights to match the current sequence frame.
 function Segment:Render()
 	if (not self.IsActive) then return end
 
@@ -183,7 +200,7 @@ function Segment:ApplyModeUpdate( channel, mode )
 	local inputState = self.CurrentModes
 	local newChannel = self:CalculatePriorityInput( inputState )
 	printf( "New channel calculated to be: %s", newChannel )
-	local newMode = newChannel .. "." .. inputState[newChannel]
+	local newMode = newChannel .. ":" .. inputState[newChannel]
 	printf( "New mode calculated to be: %s", newMode )
 	self.CurrentPriorityScore = self.InputPriorities[newChannel]
 	printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
@@ -222,6 +239,7 @@ function Segment:ActivateCurrentSequence()
 	local sequence = self:GetCurrentSequence()
 	if (sequence) then
 		sequence:Activate()
+		self.Component:RegisterActiveSequence( "x", sequence )
 	end
 end
 
@@ -229,11 +247,15 @@ function Segment:DectivateCurrentSequence()
 	local sequence = self:GetCurrentSequence()
 	if (sequence) then
 		sequence:Deactivate()
+		self.Component:RemoveActiveSequence( "x", sequence )
 	end
 end
 
 function Segment:GetCurrentSequence()
-	return self.Sequences[self.ActivePattern]
+	-- printf("Attemping to get current sequence. The .ActivePattern is [%s]", self.ActivePattern)
+	-- printf("self.Patterns[self.ActivePattern] = [%s]", self.Patterns[self.ActivePattern])
+	-- PrintTable(self.Sequences)
+	return self.Sequences[self.Patterns[self.ActivePattern]]
 end
 
 
