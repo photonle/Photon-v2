@@ -20,3 +20,24 @@ function Photon2.Light2D.OnPreRender()
 	this.Active = nextTable
 end
 hook.Add( "PreRender", "Photon2.Light2D:OnPreRender", this.OnPreRender )
+
+-- local mats = {}
+local light
+function Photon2.Light2D.Render()
+	local activeLights = this.Active
+	cam.Start3D( EyePos(), EyeAngles() )
+		for i=1, #activeLights do
+			light = activeLights[i] --[[@as PhotonLight2D]]
+			cam.Start3D2D( light.Position, light.Angles, 1 )
+				-- if (not mats[light.Texture]) then
+				-- 	mats[light.Texture] = Material( light.Texture )
+				-- end
+				render.SetLightingMode( 2 )
+				render.SetMaterial( light.Material )
+				render.DrawQuad( light.Top, light.Right, light.Bottom, light.Left, Color( 0, 255, 255 ) )
+				render.SetLightingMode( 0 )
+			cam.End3D2D()
+		end
+	cam.End3D()
+end
+hook.Add( "PreDrawEffects", "Photon2.Light2D:Render", this.Render )

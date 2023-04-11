@@ -29,6 +29,7 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	library.Components[name] = COMPONENT
 	COMPONENT = _COMPONENT
 	if (isReload) then
+		print("/n/n/n/n/n/n IS RELOAD")
 		Photon2.CompileComponent( name, library.Components[name] )
 	end
 end

@@ -17,6 +17,7 @@ local printf = Photon2.Debug.PrintF
 -- [string] = Pattern Name
 ---@field Patterns table<string, string> Key = Input Channel, Value = Associated sequence
 ---@field Frames table<integer, table> 
+---@field InitializedFrames table<integer, table<PhotonLight, string>>
 ---@field Lights table Points to Component.Lights
 local Segment = META
 
@@ -67,10 +68,19 @@ function Segment:Initialize( componentInstance )
 		Component = componentInstance,
 		CurrentModes = componentInstance.CurrentModes,
 		Lights = componentInstance.Lights,
-		Sequences = {}
+		Sequences = {},
+		InitializedFrames = {}
 	}
 	
 	setmetatable( segment, { __index = self } )
+
+	for i=1, #self.Frames do
+		segment.InitializedFrames[i] = {}
+		local frame = segment.InitializedFrames[i]
+		for lightId, stateId in pairs(self.Frames[i]) do
+			frame[segment.Component.Lights[lightId]] = stateId
+		end
+	end
 
 	for sequenceName, sequence in pairs( self.Sequences ) do
 		segment.Sequences[sequenceName] = sequence:Initialize( segment )
@@ -115,9 +125,10 @@ function Segment:IncrementFrame( count )
 
 	if ( not sequence ) then return end
 
-	printf("Segment is incrementing frame (%s)", count)
+	-- printf("Segment is incrementing frame (%s)", count)
 
-	sequence:IncrementFrame( count )
+	sequence:SetFrame( (count % #sequence) + 1 )
+	-- sequence:SetFrame( sequence.CurrentFrame + 1 )
 
 	-- local sequences = self.Patterns[self.ActivePattern]
 	-- local sequence

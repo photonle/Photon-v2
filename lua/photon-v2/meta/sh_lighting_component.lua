@@ -37,18 +37,17 @@ function Component.New( data )
 	local lightTemplates = {}
 	--TODO: lighting providers system
 	for name, data in pairs( data.Lighting["2D"] ) do
-		lightTemplates[name] = exmeta.Inherit( data, PhotonLight2D )
+		lightTemplates[name] = PhotonLight2D.NewTemplate( data )
 	end
 
 	-- Initialize individual lights
 	for id, light in pairs( data.Lights ) do
-		component.Lights[id] = exmeta.SetMetaTable(
-			{
-				LocalPosition = light[2],
-				LocalAngles = light[3]
-			},
-			lightTemplates[light[1]]
-		)
+		component.Lights[id] = PhotonLight2D.New( {
+			
+			LocalPosition = light[2],
+			LocalAngles = light[3]
+
+		}, lightTemplates[light[1]] )
 	end
 
 	-- Process segments
@@ -118,6 +117,7 @@ function Component:Initialize( ent, controller )
 
 	return component
 end
+
 
 function Component:SetChannelMode( channel, new, old )
 	printf( "Component received mode change notification for [%s] => %s", channel, new )

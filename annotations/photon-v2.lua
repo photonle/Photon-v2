@@ -30,6 +30,9 @@ PhotonVehicle = PhotonVehicle
 ---@type PhotonVehicleEquipmentManager
 PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
 
+---@type PhotonLight2D
+PhotonLight2D = PhotonLight2D
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.

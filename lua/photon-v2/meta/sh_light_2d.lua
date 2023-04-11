@@ -41,12 +41,44 @@ Light.DrawGlow = true
 function Light:Render()
 end
 
+--[[
+		INITIALIZE
+--]]
+
 ---@param parent Entity
 ---@return PhotonLight2D
 function Light:Initialize( parent )
 	self = PhotonLight.Initialize( self, parent )
 	return self --[[@as PhotonLight2D]]
 end
+
+--[[
+		COMPILE
+--]]
+---@param data table Data input table.
+function Light.NewTemplate( data )
+	local light = {}
+
+	light.Top = Vector(  data.Width * 0.5,  data.Height * 0.5, 0 )
+	light.Right 	= Vector( -data.Width * 0.5,  data.Height * 0.5, 0 )
+	light.Bottom = Vector( -data.Width * 0.5, -data.Height * 0.5, 0 )
+	light.Left 	= Vector(  data.Width * 0.5, -data.Height * 0.5, 0 )
+	light.Material = Material( data.Material )
+
+	setmetatable( light, { __index = (base or PhotonLight2D) } )
+
+	return light
+end
+
+---@param data table Data input table.
+function Light.New( data, template )
+	local light = data
+
+	setmetatable( light, { __index = ( template or PhotonLight2D ) } )
+
+	return light
+end
+
 
 function Light:Activate()
 	self.Deactivate = false

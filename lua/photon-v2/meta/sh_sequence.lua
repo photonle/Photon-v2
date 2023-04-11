@@ -38,8 +38,13 @@ function Sequence:Initialize( segment )
 	-- Setup instance frame mapping.
 	-- Uses Sequence object to act as array of direct frame references 
 	-- instead of repated table look-ups.
+	-- local frameRef
 	for i=1, #self.FramesByIndex do
-		instance[i] = segment.Frames[self.FramesByIndex[i]]
+		-- local frame = {}
+		-- for _i=1, #segment.Frames[self.FramesByIndex[i]] do
+		-- 	local light = segment.Component.Lights[]
+		-- end
+		instance[i] = segment.InitializedFrames[self.FramesByIndex[i]]
 	end
 
 	return setmetatable( instance, { __index = self } )
@@ -79,9 +84,8 @@ function Sequence.New( name, frameSequence, segment )
 	return setmetatable( sequence, { __index = PhotonSequence } )
 end
 
-
-function Sequence:IncrementFrame()
-	self.CurrentFrame = self.CurrentFrame + 1
+function Sequence:SetFrame( frame )
+	self.CurrentFrame = frame
 	if (self.CurrentFrame > #self) then
 		if (self.IsRepeating) then
 			self.CurrentFrame = self.RestartFrame
@@ -89,9 +93,15 @@ function Sequence:IncrementFrame()
 			self.CurrentFrame = #self
 		end
 	end
-	print( "current frame: " .. tostring(self.CurrentFrame) )
+	self.PreviousFrame = self.ActiveFrame
+	self.ActiveFrame = self[self.CurrentFrame]
+	if not (self.PreviousFrame == self.ActiveFrame) then
+		-- print( "current frame: " .. tostring(self.CurrentFrame) )
+		for light, stateId in pairs( self.ActiveFrame ) do
+			light:SetState( stateId )
+		end
+	end
 end
-
 
 function Sequence:Activate() 
 	print("Activating sequence.")
@@ -103,7 +113,7 @@ end
 
 
 function Sequence:Deactivate() 
-	print("Deactviating sequence.")
+	print("Deactivating sequence.")
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		usedLights[i].Deactivate = true
