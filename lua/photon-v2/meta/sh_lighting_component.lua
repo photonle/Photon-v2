@@ -119,11 +119,18 @@ function Component:Initialize( ent, controller )
 end
 
 
+function Component:ApplyModeUpdate()
+	for name, segment in pairs( self.Segments ) do
+		segment:ApplyModeUpdate()
+	end
+end
+
+
 function Component:SetChannelMode( channel, new, old )
 	printf( "Component received mode change notification for [%s] => %s", channel, new )
 	-- Notify segments
 	for name, segment in pairs( self.Segments ) do
-		segment:ApplyModeUpdate( channel, new )
+		segment:OnModeChange( channel, new )
 	end
 end
 

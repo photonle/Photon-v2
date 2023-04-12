@@ -1,5 +1,57 @@
+if SERVER then return end
+
+local function metaTableBenchmark()
+	local mt = {
+		x = "from metatable"
+	}
+
+	local child = {}
+	setmetatable( child, { __index = mt } )
+
+	local start = SysTime()
+	for i=1, 10000 do
+		local val = "-" .. child.x
+	end
+	local mtTime = SysTime() - start
+	print("MetaTable Time: " .. tostring(mtTime))
+
+	start = SysTime()
+	for i=1, 10000 do
+		local val = "-" .. mt.x
+	end
+	local nrmTime = SysTime() - start
+	print("Normal Time: " .. tostring(nrmTime))
+
+	print("Normal time is: " .. tostring(1 - (nrmTime/mtTime)) .. "% faster.")
+end
+
+local function keyAccessBenchmark()
+	local tab = {
+		[1] = "N from metatable",
+		["1"] = "S from metatable"
+	}
+
+
+	local start = SysTime()
+	for i=1, 10000 do
+		local val = "-" .. tab[1]
+	end
+	local mtTime = SysTime() - start
+	print("Array Time: " .. tostring(mtTime))
+
+	start = SysTime()
+	for i=1, 10000 do
+		local val = "-" .. tab[1]
+	end
+	local nrmTime = SysTime() - start
+	print("String Time: " .. tostring(nrmTime))
+
+	-- print("Normal time is: " .. tostring(1 - (nrmTime/mtTime)) .. "% faster.")
+end
+
+-- keyAccessBenchmark()
+
 if true then return end
--- if SERVER then return end
 if not exmeta then return end
 
 print("misc_testing.lua")

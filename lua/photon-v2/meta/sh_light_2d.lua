@@ -19,6 +19,7 @@ local util_pixvis = util.PixelVisible
 ---@field Height number Height of the light source.
 ---@field Ratio number Horizontal size ratio of glow effect. Numbers > 1 will stretch, numbers < 1 will compact.
 ---@field Scale number Scale of glow effect and apparent brightness. Does not affect the light source.
+---@field PrimaryColor Color
 local Light = META
 
 Light.Class = "2D"
@@ -37,6 +38,16 @@ Light.VisibilityRadius = 1
 
 Light.DrawSource = true
 Light.DrawGlow = true
+
+Light.PrimaryColor = Color( 0, 0, 0 )
+
+Light.States = {
+	["OFF"] = { Primary = Color( 0, 0, 0 ) },
+	["R"] = { Primary = Color( 255, 64, 0 ) },
+	["B"] = { Primary = Color( 0, 96, 255 ) },
+	["W"] = { Primary = Color( 255, 255, 255 ) },
+	["A"] = { Primary = Color( 255, 200, 0 ) },
+}
 
 function Light:Render()
 end
@@ -110,4 +121,14 @@ function Light:DoPreRender()
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
 	return self
+end
+
+function Light:SetState( stateId )
+	if ( stateId == self.CurrentStateId ) then return end
+	local state = self.States[ stateId ]
+	if ( not state ) then
+		error("Invalid light state [" .. tostring(stateId) .. "]")
+	end
+	self.CurrentStateId = stateId
+	self.PrimaryColor = state.Primary
 end

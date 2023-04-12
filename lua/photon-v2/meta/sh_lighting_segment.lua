@@ -43,10 +43,40 @@ function Segment.New( segmentData )
 
 	setmetatable(segment, { __index = PhotonLightingSegment })
 
-	segment:AddFrame( 0, segmentData.Frames[0] )
+	local function flattenFrame( frame )
+		local result = {}
+		for i=1, #frame do
+			result[frame[i][1]] = frame[i][2]
+		end
+		return result
+	end
+
+	local function rebuildFrame (flatFrame )
+		local result = {}
+		for k, v in pairs(flatFrame) do
+			result[#result+1] = { k, v }
+		end
+		return result
+	end
+
+	-- TODO: FS white override will conflict with
+	-- OFF taking priority - a "no off" option is needed
+
 	-- Add frames
-	for i, frame in ipairs( segmentData.Frames ) do
-		segment:AddFrame( i, frame )
+	segment:AddFrame( 0, segmentData.Frames[0] )
+	local zeroFrame = flattenFrame( segmentData.Frames[0] )
+	-- for i, frame in ipairs( segmentData.Frames ) do
+	-- 	local zeroCopy = table.Copy( segmentData.Frames[0] )
+	-- 	segment:AddFrame( i, table.Merge( zeroCopy, frame ) )
+	-- end
+	
+	-- Merges the OFF/default frame to ensure lights reset in the segment
+	for i=1, #segmentData.Frames do
+		local frame = segmentData.Frames[i]
+		local copyTo = table.Copy( zeroFrame )
+		local flatFrame = flattenFrame( frame )
+		table.Merge( copyTo, flatFrame )
+		segment:AddFrame( i, rebuildFrame( copyTo ) )
 	end
 
 	-- Add sequences
@@ -74,6 +104,7 @@ function Segment:Initialize( componentInstance )
 	
 	setmetatable( segment, { __index = self } )
 
+	-- Setup frames
 	for i=1, #self.Frames do
 		segment.InitializedFrames[i] = {}
 		local frame = segment.InitializedFrames[i]
@@ -82,9 +113,12 @@ function Segment:Initialize( componentInstance )
 		end
 	end
 
+	-- Setup sequences
 	for sequenceName, sequence in pairs( self.Sequences ) do
 		segment.Sequences[sequenceName] = sequence:Initialize( segment )
 	end
+
+	segment:ApplyModeUpdate()
 
 	return segment
 end
@@ -122,28 +156,9 @@ function Segment:IncrementFrame( count )
 	if not (self.ActivePattern) then return end
 
 	local sequence = self:GetCurrentSequence()
-
 	if ( not sequence ) then return end
 
-	-- printf("Segment is incrementing frame (%s)", count)
-
 	sequence:SetFrame( (count % #sequence) + 1 )
-	-- sequence:SetFrame( sequence.CurrentFrame + 1 )
-
-	-- local sequences = self.Patterns[self.ActivePattern]
-	-- local sequence
-
-	-- for i = 1, #sequences do
-	-- 	---@type PhotonSequence
-	-- 	sequence = sequences[i]
-	-- 	if (sequence.IsRepeating) then
-	-- 		-- Ensures all sequences remain synchronized.
-	-- 		sequence.CurrentFrame = ( count % #sequence )
-	-- 	else
-	-- 		sequence:IncrementFrame()
-	-- 	end
-		
-	-- end
 end
 
 
@@ -206,10 +221,15 @@ function Segment:CalculatePriorityInput( inputState )
 end
 
 
-function Segment:ApplyModeUpdate( channel, mode )
+function Segment:OnModeChange( channel, mode )
 	printf("Segment received a mode update [%s] => %s", channel, mode)
+	self:ApplyModeUpdate()
+end
+
+function Segment:ApplyModeUpdate()
 	local inputState = self.CurrentModes
 	local newChannel = self:CalculatePriorityInput( inputState )
+	if (not newChannel) then return end
 	printf( "New channel calculated to be: %s", newChannel )
 	local newMode = newChannel .. ":" .. inputState[newChannel]
 	printf( "New mode calculated to be: %s", newMode )

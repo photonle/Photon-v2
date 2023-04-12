@@ -17,20 +17,21 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	local nameEnd = string.len(componentsRoot) - nameStart - 4
 	local name = string.sub(filePath, nameStart, nameEnd)
 	Photon2.Debug.Print("Component name: " .. name)
-	_COMPONENT = COMPONENT
-	COMPONENT = {}
+	-- _COMPONENT = COMPONENT
+	PHOTON_LIBRARY_COMPONENT = {}
 	Photon2._acceptFileReload = false
 	include( filePath )
 	Photon2._acceptFileReload = true
 	if (istable(library.Components[name])) then
 		Photon2.Debug.Print("Component '" .. name .. "' already exists. Overwriting.")
 	end
-	COMPONENT.Name = name
-	library.Components[name] = COMPONENT
-	COMPONENT = _COMPONENT
+	PHOTON_LIBRARY_COMPONENT.Name = name
+	library.Components[name] = PHOTON_LIBRARY_COMPONENT
+	-- COMPONENT = _COMPONENT
+	PHOTON_LIBRARY_COMPONENT = nil
 	if (isReload) then
-		print("/n/n/n/n/n/n IS RELOAD")
 		Photon2.CompileComponent( name, library.Components[name] )
+		hook.Run( "Photon2:ReloadComponent", name, library.Components[name] )
 	end
 end
 
@@ -85,6 +86,11 @@ function Photon2.LibraryVehicle()
 	return _g["PHOTON2_LIBRARY_VEHICLE"]
 end
 
+---@return PhotonLibraryComponent
+function Photon2.LibraryComponent()
+	return _g["PHOTON_LIBRARY_COMPONENT"]
+end
+
 function Photon2.LoadVehicleLibrary( folderPath )
 	Photon2.Debug.Print("LoadVehicleLibrary() called")
 	folderPath = folderPath or ""
@@ -98,6 +104,31 @@ function Photon2.LoadVehicleLibrary( folderPath )
 	hook.Call("Photon2.LoadVehicleLibrary")
 	Photon2.Debug.Print("ProcessVehicleLibrary hook called()")
 	Photon2.Index.ProcessVehicleLibrary()
+end
+
+function Photon2.ReloadComponentFile()
+	if (Photon2._acceptFileReload) then
+		local source = debug.getinfo(2, "S").source
+		if source:sub(1, 1) == "@" then
+			source = source:sub(2)
+		else
+			return false
+		end
+		
+		local startPos, endPos = source:find(componentsRoot, 1, true)
+
+		if (startPos) then
+			local path = source:sub(startPos)
+			Photon2.Debug.Print("Reloading vehicle: " .. tostring(path))
+			Photon2.LoadComponentFile( path, true )
+		else
+			Photon2.Debug.Print("Attempted to call ReloadComponentFile() from an invalid file location [" .. tostring(source) .."]")
+			return false
+		end
+
+		return true
+	end
+	return false
 end
 
 function Photon2.ReloadVehicle( id )
@@ -135,7 +166,6 @@ function Photon2.ReloadVehicleFile()
 end
 
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
-	print("\n\n\n\n INTIALIZE CALLED \n\n\n\n")
 	Photon2.LoadComponentLibrary()
 	Photon2.Debug.Print("about to execute LoadVehicleLibrary()")
 	Photon2.LoadVehicleLibrary()

@@ -1,6 +1,6 @@
 ---@class PhotonController : Entity
 ---@field ComponentParent Entity
----@field Components table<string, PhotonBaseEntity>
+---@field Components table<string, PhotonLightingComponent>
 ---@field ComponentArray PhotonBaseEntity[]
 ---@field CurrentProfile PhotonVehicle
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
@@ -178,13 +178,13 @@ function ENT:SetupComponent( id )
 	---@type PhotonLightingComponent
 	local component = Photon2.Index.Components[data.Component]
 
-	---@type PhotonBaseEntity
 	local ent
 
 	if (SERVER and data.OnServer) then
 		-- TODO: serverside spawn code
 	elseif (CLIENT and (not data.OnServer)) then
-		ent = component:CreateClientside( self )
+		---@type PhotonLightingComponent
+		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
 	else
 		return
 	end
@@ -199,7 +199,10 @@ function ENT:SetupComponent( id )
 	if (IsValid(self.Components[id])) then
 		self.Components[id]:Remove()
 	end
+
 	self.Components[id] = ent
+	ent:ApplyModeUpdate()
+
 end
 
 function ENT:RemoveAllComponents()
@@ -299,6 +302,7 @@ function ENT:SetupSelections()
 	if (SERVER) then 
 		self:SyncSelections()
 	end
+
 end
 
 
@@ -352,6 +356,8 @@ function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
 	self.CurrentSelections[categoryIndex] = optionIndex
 	self:AddEquipment(category[optionIndex])
+	self:SetupComponentArray()
+	
 end
 
 

@@ -33,6 +33,12 @@ local library = Photon2.Library
 local debug = Photon2.Debug
 
 --[[---------------------
+		Config
+--]]---------------------
+local mergeComponentReloads = true
+
+
+--[[---------------------
 	Component Index
 -----------------------]]
 
@@ -93,7 +99,12 @@ end
 ---@return PhotonLightingComponent
 function Photon2.CompileComponent( name, inputComponent )
 	print("Compiling component [" .. name .. "]")
-	Photon2.Index.Components[name] = PhotonLightingComponent.New( inputComponent )
+	local component = PhotonLightingComponent.New( inputComponent )
+	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
+		table.Merge(Photon2.Index.Components[name], component)
+	else
+		Photon2.Index.Components[name] = component
+	end
 	return Photon2.Index.Components[name]
 end
 
@@ -103,7 +114,6 @@ end
 -----------------------]]
 
 function Photon2.Index.ProcessVehicleLibrary()
-	debug.Print("processing vehicle library")
 	local dependencyList = {}
 	for name, vehicle in pairs(library.Vehicles) do
 		dependencyList[#dependencyList+1] = { name, vehicle.Base }
