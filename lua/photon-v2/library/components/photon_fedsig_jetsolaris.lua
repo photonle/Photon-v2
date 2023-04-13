@@ -89,7 +89,7 @@ COMPONENT.Segments = {
 			[4] = {  }, 
 		},
 		Sequences = {
-			["ALT"] = {1, 1, 1, 2, 2, 2}
+			["ALT"] = { 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0 }
 		},
 		--[[ 
 			PatternConditionals = {
@@ -107,12 +107,20 @@ COMPONENT.Segments = {
 			[2] = { { 1, "W" }, { 12, "A" } }
 		},
 		Sequences = {
-			["WARN1"] = { 1, 1, 1, 2, 2, 2 }
+			["WARN1"] = { 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0 }
 		}
 	}
 }
 
 COMPONENT.Patterns = {
+	["Emergency.Auxiliary"] = {
+		["LEFT"] = { 
+			Edge = "ALT", 
+			Inner = "WARN1" 
+		}
+	},
+
+
 	["Emergency.Warning"] = {
 		["STAGE_1"] = {
 			Edge = "ALT",
@@ -126,8 +134,5 @@ COMPONENT.Patterns = {
 			-- 	}
 			-- }
 		}
-	},
-	["Emergency.Auxiliary"] = {
-		["LEFT"] = { Edge = "ALT", Inner = "WARN1" }
 	}
 }

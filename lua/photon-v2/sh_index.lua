@@ -35,7 +35,7 @@ local debug = Photon2.Debug
 --[[---------------------
 		Config
 --]]---------------------
-local mergeComponentReloads = true
+local mergeComponentReloads = false
 
 
 --[[---------------------
@@ -99,7 +99,7 @@ end
 ---@return PhotonLightingComponent
 function Photon2.CompileComponent( name, inputComponent )
 	print("Compiling component [" .. name .. "]")
-	local component = PhotonLightingComponent.New( inputComponent )
+	local component = PhotonLightingComponent.New( name, inputComponent )
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)
 	else

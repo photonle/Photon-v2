@@ -31,7 +31,7 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	PHOTON_LIBRARY_COMPONENT = nil
 	if (isReload) then
 		Photon2.CompileComponent( name, library.Components[name] )
-		hook.Run( "Photon2:ReloadComponent", name, library.Components[name] )
+		hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )
 	end
 end
 

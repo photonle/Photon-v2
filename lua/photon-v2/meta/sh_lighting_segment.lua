@@ -105,7 +105,7 @@ function Segment:Initialize( componentInstance )
 	setmetatable( segment, { __index = self } )
 
 	-- Setup frames
-	for i=1, #self.Frames do
+	for i=0, #self.Frames do
 		segment.InitializedFrames[i] = {}
 		local frame = segment.InitializedFrames[i]
 		for lightId, stateId in pairs(self.Frames[i]) do

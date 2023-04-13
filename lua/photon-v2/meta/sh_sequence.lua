@@ -97,6 +97,9 @@ function Sequence:SetFrame( frame )
 	self.ActiveFrame = self[self.CurrentFrame]
 	if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
+		if ( not self.ActiveFrame ) then
+			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
+		end
 		for light, stateId in pairs( self.ActiveFrame ) do
 			light:SetState( stateId )
 		end

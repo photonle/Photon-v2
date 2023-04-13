@@ -7,6 +7,7 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLightingComponent : PhotonBaseEntity
+---@field Name string
 ---@field Lights table<integer, PhotonLight>
 ---@field Segments table<string, PhotonLightingSegment>
 ---@field InputPriorities table<string, integer>
@@ -22,11 +23,13 @@ Component.IsPhotonLightingComponent = true
 --]]
 
 -- [Internal] Compile a Library Component to store in the Index.
+---@param name string
 ---@param data PhotonLibraryComponent
 ---@return PhotonLightingComponent
-function Component.New( data )
+function Component.New( name, data )
 	---@type PhotonLightingComponent
 	local component = {
+		Name = name,
 		Model = data.Model,
 		Lights = {},
 		Segments = {},

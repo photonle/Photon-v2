@@ -61,6 +61,7 @@ function ENT:InitializeShared()
 	timer.Simple(0, function()
 		-- Used so the controller will update on a hot-reload.
 		hook.Add("Photon2.VehicleCompiled", self, self.OnVehicleCompiled)
+		hook.Add("Photon2:ComponentReloaded", self, self.OnComponentReloaded)
 	end)
 end
 
@@ -232,6 +233,7 @@ function ENT:AddEquipment( equipmentTable )
 	end
 end
 
+---@param equipmentTable PhotonEquipmentTable
 function ENT:RemoveEquipment( equipmentTable )
 	print("Controller is removing an equipment table...")
 	local equipmentComponents = equipmentTable.Components
@@ -376,3 +378,20 @@ function ENT:ProcessSelectionsString( selections )
 	--self:SetupEquipment()
 end
 
+
+-- Called when a component file is saved and reloaded
+---@param componentId string
+function ENT:OnComponentReloaded( componentId )
+	local matched = false
+	printf( "Controller notified of a component reload [%s]", componentId )
+	for equipmentId, component in pairs( self.Components ) do
+		if ( component.Name == componentId ) then
+			self:RemoveEquipmentComponentByIndex( equipmentId )
+			self:SetupComponent( equipmentId )
+			matched = true
+		end
+	end
+	if ( matched ) then
+		self:SetupComponentArray()
+	end
+end
