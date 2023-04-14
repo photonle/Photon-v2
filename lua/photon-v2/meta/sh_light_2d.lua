@@ -5,6 +5,8 @@ BASE = "PhotonLight"
 
 local manager = Photon2.Light2D
 local util_pixvis = util.PixelVisible
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLight2D : PhotonLight
 ---@field PixVisHandle pixelvis_handle_t
@@ -12,6 +14,8 @@ local util_pixvis = util.PixelVisible
 ---@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
 ---@field LocalPosition Vector
 ---@field LocalAngles Angle
+---@field Intensity number Light's current (actual) intensity.
+---@field TargetIntensity number Light's target intensity.
 ---@field Position Vector World position of the light. Set and updated automatically.
 ---@field Angles Angle World angles of the light. Set and updated automatically.
 ---@field Texture string The texture to use for the light source.
@@ -40,6 +44,11 @@ Light.DrawSource = true
 Light.DrawGlow = true
 
 Light.PrimaryColor = Color( 0, 0, 0 )
+
+Light.Intensity = 1
+Light.IntensityPowerUp = 4
+Light.IntensityPowerDown = 5
+Light.TargetIntensity = 1
 
 Light.States = {
 	["OFF"] = { Primary = Color( 0, 0, 0 ) },
@@ -113,6 +122,61 @@ end
 local IsValid = IsValid
 
 function Light:DoPreRender()
+	-- animation testing
+	return self:DoAnimatedPreRender()
+	-- if true then return end
+	-- -- resume normal
+	-- if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
+	-- if (not self.IsActivated) then return nil end
+	-- -- Update position and angles
+	-- self.Position = self.Parent:LocalToWorld( self.LocalPosition )
+	-- self.Angles = self.Parent:LocalToWorldAngles( self.LocalAngles )
+	-- -- Update visibility calculation
+	-- self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
+	-- return self
+end
+
+function Light:SetState( stateId )
+	-- animation testing
+	if (stateId == "OFF") then
+		self:SetAnimatedState( self.CurrentStateId or "OFF", 0 )
+	else
+		self:SetAnimatedState( stateId, 1 )
+	end
+	-- resume normal
+	-- if ( stateId == self.CurrentStateId ) then return end
+	-- local state = self.States[ stateId ]
+	-- if ( not state ) then
+	-- 	error("Invalid light state [" .. tostring(stateId) .. "]")
+	-- end
+	-- self.CurrentStateId = stateId
+	-- self.PrimaryColor = state.Primary
+end
+
+--[[
+		Light animation testing
+*******************************************
+*******************************************
+*******************************************
+component reload not working with animated lights
+
+
+
+		--]]
+
+function Light:SetAnimatedState( stateId, intensity )
+	if ( (stateId == self.CurrentStateId) and (intensity == self.TargetIntensity) ) then return end
+	local state = self.States[ stateId ]
+	if ( not state ) then
+		error("Invalid light state [" .. tostring(stateId) .. "]")
+	end
+	self.CurrentStateId = stateId
+	self.TargetPrimaryColor= state.Primary
+	self.TargetIntensity = intensity
+	-- printf("setting animated state")
+end
+
+function Light:DoAnimatedPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if (not self.IsActivated) then return nil end
 	-- Update position and angles
@@ -120,15 +184,26 @@ function Light:DoPreRender()
 	self.Angles = self.Parent:LocalToWorldAngles( self.LocalAngles )
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
-	return self
-end
 
-function Light:SetState( stateId )
-	if ( stateId == self.CurrentStateId ) then return end
-	local state = self.States[ stateId ]
-	if ( not state ) then
-		error("Invalid light state [" .. tostring(stateId) .. "]")
+	if ( self.Intensity > self.TargetIntensity ) then
+		self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityPowerDown)
+		if (self.Intensity < self.TargetIntensity) then
+			self.Intensity = self.TargetIntensity
+		end
+	else
+		self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityPowerUp)
+		if (self.Intensity > self.TargetIntensity) then
+			self.Intensity = self.TargetIntensity
+		end
 	end
-	self.CurrentStateId = stateId
-	self.PrimaryColor = state.Primary
+	local targetColor = self.TargetPrimaryColor
+	local intensity = self.Intensity
+	self.PrimaryColor = {
+		r = targetColor.r * intensity,
+		g = targetColor.g * intensity,
+		b = targetColor.b * intensity,
+	}
+	-- self.PrimaryColor
+
+	return self
 end

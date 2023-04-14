@@ -1,11 +1,13 @@
 include("sh_init.lua")
 include("sv_net.lua")
 
+include("sh_component_builder.lua")
 include("sh_library.lua")
 include("sh_index.lua")
 
 include("sh_ent_meta.lua")
 include("sv_functions.lua")
+
 
 print("sv_init.lua")
 

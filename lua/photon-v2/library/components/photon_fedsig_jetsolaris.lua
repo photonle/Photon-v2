@@ -50,45 +50,7 @@ COMPONENT.Lights = {
 	--[13] = MacroFunc({ "param", Vector(), Angle()})
 }
 
-local rbColorMap = {
-	[ 1] = { "R" },
-	[ 2] = { "W" },
-	[ 3] = { "B" },
-
-	[ 4] = { "R" },
-	[ 5] = { "B" },
-
-	[ 6] = { "R" },
-	[ 7] = { "B" },
-
-	[ 8] = { "R" },
-	[ 9] = { "B" },
-
-	[10] = { "R" },
-	[11] = { "A" },
-	[12] = { "B" },
-}
-
-local aColorMap = {
-	[ 1] = { "A" },
-	[ 2] = { "A" },
-	[ 3] = { "A" },
-
-	[ 4] = { "A" },
-	[ 5] = { "A" },
-
-	[ 6] = { "A" },
-	[ 7] = { "A" },
-
-	[ 8] = { "A" },
-	[ 9] = { "A" },
-
-	[10] = { "A" },
-	[11] = { "A" },
-	[12] = { "A" },
-}
-
-COMPONENT.ColorMap = rbColorMap
+COMPONENT.ColorMap = "[A] 2 4 6 8 10 [A] 3 5 7 9 11 [A] 12 [R] 1"
 
 -- Allows for multiple lights to be treated as one when desired
 COMPONENT.LightGroups = {
@@ -96,29 +58,18 @@ COMPONENT.LightGroups = {
 	["RightEdge"] = { 4, 6, 8 },
 }
 
-local function alternate()
-	return  { 1, 1, 1, 2, 2, 2 }
-end
-
 COMPONENT.Segments = {
 	-- All = {
 
 	-- },
 	Edge = {
 		Frames = {
-			-- Frame[0] defines the segment's default state (usually all lights off)
-			-- it's only here for reference, as this will ultimately be handled automatically
-			-- [0] = { {4, "OFF"}, {5, "OFF"}, {6, "OFF"}, {7, "OFF"}, {8, "OFF"}, {9, "OFF"}, },
-			-- [1] = { ["R"] = { 4, 5, 6 } },
-
-			-- [1] = { { 4, "R" }, { 6, "R" }, { 8, "R" } },
-			[1] = "LeftEdge:A",
-			-- [2] = { { 5, "B" }, { 7, "B" }, { 9, "B" } },
-			[2] = "RightEdge:W",
+			[1] = "LeftEdge",
+			[2] = "RightEdge",
 
 		},
 		Sequences = {
-			["ALT"] = { 1, 1, 1, 1, 1, 2, 2, 2, 2, 2 }
+			["ALT"] = { 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2 }
 		},
 		--[[ 
 			PatternConditionals = {
@@ -131,13 +82,11 @@ COMPONENT.Segments = {
 	},
 	Inner = {
 		Frames = {
-			-- [1] = { { 2, "R" }, { 3, "B" }, { 10, "A" }, { 11, "A" } },
-			[1] = "2:W 3:W 10:W 11:W",
-			-- [2] = { { 1, "W" }, { 12, "A" } },
-			[2] = "1:W 12:W",
+			[1] = "2 3 10 11",
+			[2] = "1 12",
 		},
 		Sequences = {
-			["WARN1"] = { 1, 1, 1, 1, 1, 2, 2, 2, 2, 2 }
+			["WARN1"] = { 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2 }
 		}
 	}
 }

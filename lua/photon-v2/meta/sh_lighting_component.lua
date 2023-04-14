@@ -16,6 +16,7 @@ local printf = Photon2.Debug.PrintF
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 ---@field ColorMap table<integer, string[]>
 
+local Builder = Photon2.ComponentBuilder
 local Component = META
 
 Component.IsPhotonLightingComponent = true
@@ -36,14 +37,21 @@ function Component.New( name, data )
 		Lights = {},
 		Segments = {},
 		Patterns = {},
-		ColorMap = data.ColorMap
+		LightGroups = data.LightGroups
 	}
+
+	if ( isstring( data.ColorMap ) ) then
+		-- component.ColorMap = Builder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
+		component.ColorMap = Photon2.ComponentBuilder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
+	elseif ( istable( data.ColorMap ) ) then
+		component.ColorMap = data.ColorMap --[[@as table<integer, string[]>]]
+	end
 
 	-- Setup light templates
 	local lightTemplates = {}
 	--TODO: lighting providers system
-	for name, data in pairs( data.Lighting["2D"] ) do
-		lightTemplates[name] = PhotonLight2D.NewTemplate( data )
+	for lightName, lightData in pairs( data.Lighting["2D"] ) do
+		lightTemplates[lightName] = PhotonLight2D.NewTemplate( lightData )
 	end
 
 	-- Initialize individual lights
@@ -85,6 +93,7 @@ function Component.New( name, data )
 
 	return component
 end
+
 
 --[[
 		INITIALIZATION

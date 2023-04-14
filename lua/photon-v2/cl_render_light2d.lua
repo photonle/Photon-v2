@@ -29,13 +29,10 @@ function Photon2.Light2D.Render()
 		for i=1, #activeLights do
 			light = activeLights[i] --[[@as PhotonLight2D]]
 			cam.Start3D2D( light.Position, light.Angles, 1 )
-				-- if (not mats[light.Texture]) then
-				-- 	mats[light.Texture] = Material( light.Texture )
-				-- end
-				render.SetLightingMode( 1 )
+				-- render.SetLightingMode( 1 ) ??? 
 				render.SetMaterial( light.Material )
 				render.DrawQuad( light.Top, light.Right, light.Bottom, light.Left, light.PrimaryColor )
-				render.SetLightingMode( 0 )
+				-- render.SetLightingMode( 0 ) ???
 			cam.End3D2D()
 		end
 	cam.End3D()

@@ -1,5 +1,13 @@
 if SERVER then return end
 
+local function colorMapParseTesting()
+	local block = "[R/W]"
+	block = string.sub( block, 2, string.len(block) - 1 )
+	print( block )
+end
+
+-- colorMapParseTesting()
+
 local function metaTableBenchmark()
 	local mt = {
 		x = "from metatable"

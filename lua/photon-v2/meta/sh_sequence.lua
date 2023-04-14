@@ -106,7 +106,7 @@ function Sequence:SetFrame( frame )
 	end
 end
 
-function Sequence:Activate() 
+function Sequence:Activate()
 	print("Activating sequence.")
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
