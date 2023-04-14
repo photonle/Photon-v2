@@ -30,8 +30,9 @@ Segment.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 -- On compile
 ---@param segmentData any
+---@param lightGroups table<string, integer[]>
 ---@return PhotonLightingSegment
-function Segment.New( segmentData )
+function Segment.New( segmentData, lightGroups )
 
 	---@type PhotonLightingSegment
 	local segment = {
@@ -46,8 +47,22 @@ function Segment.New( segmentData )
 	local function flattenFrame( frame )
 		local result = {}
 		for i=1, #frame do
-			result[frame[i][1]] = frame[i][2]
+			local key = frame[i][1]
+			local value = frame[i][2]
+			if isstring(key) then
+				printf("Light key is a string [%s]", key)
+				local group = lightGroups[key]
+				if ( not group ) then
+					error( string.format( "Undefined LightGroup [%s] in segment.", key ) )
+				end
+				for _i=1, #group do
+					result[group[_i]] = value
+				end
+			else
+				result[key] = value
+			end
 		end
+		PrintTable(result)
 		return result
 	end
 
@@ -59,26 +74,104 @@ function Segment.New( segmentData )
 		return result
 	end
 
+	local function processFrameString( frame )
+		local result = {}
+		local lights = string.Split( frame, " " )
+		for i=1, #lights do
+			local lightData = string.Split(lights[i], ":")
+			
+			local insert
+			
+			if (#lightData == 1) then
+				insert = (tonumber(lightData[1]) or lightData[1])
+			else
+				insert = { (tonumber(lightData[1]) or lightData[1]), (tonumber(lightData[2]) or lightData[2]) }
+			end
+
+			if (insert) then
+				result[#result+1] = insert
+			else
+				error("Frame string [" .. tostring(frame) .."] could not be parsed.")
+			end
+		end
+		return result
+	end
+
+	local function buildZeroFrame( frames )
+		local usedLights = {}
+		local returnFrame = {}
+		-- Get all used lights
+		for frameIndex = 1, #frames do
+			local frame = frames[frameIndex]
+			for stateIndex = 1, #frame do
+				if ( isstring(frame[stateIndex][1]) ) then
+					local group = lightGroups[frame[stateIndex][1]]
+					if ( not group ) then 
+						error( string.format( "Light group name is not valid %s", frame[stateIndex][1] ) )
+					end
+					for i=1, #group do
+						usedLights[group[i]] = true
+					end
+				else
+					usedLights[frame[stateIndex][1]] = true
+				end
+			end
+		end
+		-- Build 0 frame
+		for light, _ in pairs( usedLights ) do
+			returnFrame[#returnFrame+1] = { light, "OFF" }
+		end
+		return returnFrame
+	end
+
 	-- TODO: FS white override will conflict with
 	-- OFF taking priority - a "no off" option is needed
 
-	-- Add frames
+	local processedFrames = {}
+
+	for i=1, #segmentData.Frames do
+		local inputFrame = segmentData.Frames[i]
+		
+		if (isstring(inputFrame)) then
+			inputFrame = processFrameString( inputFrame )
+		end
+		
+		local resultFrame = {}
+		
+		-- Iterate over each light-state in frame
+		for k, v in pairs( inputFrame ) do
+			if ( isnumber(v) ) then
+				resultFrame[#resultFrame+1] = { v, 1 }
+			elseif ( istable(v) ) then
+				resultFrame[#resultFrame+1] = v
+			elseif ( isstring(v) ) then
+				resultFrame[#resultFrame+1] = { v, 1 }
+			else
+				error("Invalid light-state in frame #" .. tostring(i))
+			end
+		end
+		
+		processedFrames[i] = resultFrame
+
+		
+	end
+
+	-- Add zero frame (i.e. segment default state)
+	if ( not segmentData.Frames[0] ) then
+		segmentData.Frames[0] = buildZeroFrame( processedFrames )
+	end
+
 	segment:AddFrame( 0, segmentData.Frames[0] )
 	local zeroFrame = flattenFrame( segmentData.Frames[0] )
-	-- for i, frame in ipairs( segmentData.Frames ) do
-	-- 	local zeroCopy = table.Copy( segmentData.Frames[0] )
-	-- 	segment:AddFrame( i, table.Merge( zeroCopy, frame ) )
-	-- end
-	
+
 	-- Merges the OFF/default frame to ensure lights reset in the segment
-	for i=1, #segmentData.Frames do
-		local frame = segmentData.Frames[i]
+	for i=1, #processedFrames do
 		local copyTo = table.Copy( zeroFrame )
-		local flatFrame = flattenFrame( frame )
+		local flatFrame = flattenFrame( processedFrames[i] )
 		table.Merge( copyTo, flatFrame )
 		segment:AddFrame( i, rebuildFrame( copyTo ) )
 	end
-
+	
 	-- Add sequences
 	for sequenceName, frameSequence in pairs( segmentData.Sequences ) do
 		segment:AddNewSequence( sequenceName, frameSequence )
@@ -89,6 +182,7 @@ end
 
 -- On instance creation
 ---@param componentInstance PhotonLightingComponent
+---@return PhotonLightingSegment
 function Segment:Initialize( componentInstance )
 	---@type PhotonLightingSegment
 	local segment = {
@@ -98,6 +192,7 @@ function Segment:Initialize( componentInstance )
 		Component = componentInstance,
 		CurrentModes = componentInstance.CurrentModes,
 		Lights = componentInstance.Lights,
+		ColorMap = componentInstance.ColorMap,
 		Sequences = {},
 		InitializedFrames = {}
 	}
@@ -109,6 +204,12 @@ function Segment:Initialize( componentInstance )
 		segment.InitializedFrames[i] = {}
 		local frame = segment.InitializedFrames[i]
 		for lightId, stateId in pairs(self.Frames[i]) do
+			if ( isnumber( stateId ) ) then
+				stateId = segment.ColorMap[lightId][stateId]
+				if ( not stateId ) then
+					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
+				end
+			end
 			frame[segment.Component.Lights[lightId]] = stateId
 		end
 	end

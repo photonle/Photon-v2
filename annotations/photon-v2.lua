@@ -51,6 +51,7 @@ PhotonLight2D = PhotonLight2D
 ---@field LightGroups table
 ---@field Segments table
 ---@field Patterns table
+---@field ColorMap table<integer, string[]>
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.

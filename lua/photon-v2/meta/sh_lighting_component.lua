@@ -14,6 +14,8 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentModes table<string, string>
 ---@field ActiveSequences table<PhotonSequence, boolean>
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
+---@field ColorMap table<integer, string[]>
+
 local Component = META
 
 Component.IsPhotonLightingComponent = true
@@ -33,7 +35,8 @@ function Component.New( name, data )
 		Model = data.Model,
 		Lights = {},
 		Segments = {},
-		Patterns = {}
+		Patterns = {},
+		ColorMap = data.ColorMap
 	}
 
 	-- Setup light templates
@@ -55,7 +58,7 @@ function Component.New( name, data )
 
 	-- Process segments
 	for segmentName, segmentData in pairs( data.Segments ) do
-		component.Segments[segmentName] = PhotonLightingSegment.New( segmentData )
+		component.Segments[segmentName] = PhotonLightingSegment.New( segmentData, data.LightGroups )
 	end
 
 	-- Process patterns
@@ -98,19 +101,13 @@ function Component:Initialize( ent, controller )
 	-- Set CurrentState to directly reference controller's table
 	component.CurrentModes = controller.CurrentModes
 
-
-	-- local entTable = component:GetTable() -- set via BaseEntity init?
-
 	component.Lights = {}
 	component.Segments = {}
 	component.ActiveSequences = {}
 
 	-- Process light table
 	for key, light in pairs(self.Lights) do
-		printf("\tInitializing light[%s]", key)
 		component.Lights[key] = light:Initialize( component )
-		-- print("\tLight table:")
-		-- PrintTable(component.Lights[key])
 	end
 
 	-- Process segments

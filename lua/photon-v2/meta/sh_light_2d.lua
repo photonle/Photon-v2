@@ -43,8 +43,8 @@ Light.PrimaryColor = Color( 0, 0, 0 )
 
 Light.States = {
 	["OFF"] = { Primary = Color( 0, 0, 0 ) },
-	["R"] = { Primary = Color( 255, 64, 0 ) },
-	["B"] = { Primary = Color( 0, 96, 255 ) },
+	["R"] = { Primary = Color( 255, 96, 0 ) },
+	["B"] = { Primary = Color( 0, 164, 255 ) },
 	["W"] = { Primary = Color( 255, 255, 255 ) },
 	["A"] = { Primary = Color( 255, 200, 0 ) },
 }
