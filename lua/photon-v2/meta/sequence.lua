@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_sequence.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonSequence"
 --- Frames are stored in the numerical indexes of the table.
@@ -11,7 +11,7 @@ NAME = "PhotonSequence"
 ---@field FramesByIndex integer[]
 ---@field UsedLightsByIndex table<integer, boolean>
 ---@field UsedLights PhotonLight[]
-local Sequence = META
+local Sequence = exmeta.New()
 
 
 Sequence.IsRepeating = true
@@ -58,6 +58,9 @@ end
 ---@return PhotonSequence
 function Sequence.New( name, frameSequence, segment )
 	---@type PhotonSequence
+	
+	frameSequence._previous = nil
+
 	local sequence = {
 		Name = name,
 		FramesByIndex = frameSequence

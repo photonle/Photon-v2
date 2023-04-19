@@ -1,4 +1,51 @@
+--[[
+	Performance notes:
+
+	- Using integer keys when declaring a table does NOT make it an array
+	- Table integer keys are slower to retrieve than strings
+	- Actual array lookups are only as fast as table string lookups
+
+	- Function overhead made test ~25% slower (needs more evaluation)
+
+	- Table key string length has no performance impact
+	- Local table look-up is just ~2% slower than a local variable
+
+	- Metatable lookups seem to be ~20-30% slower than direct access
+		- Consolidating the metatable properties seems effective
+]]
+
+
 if SERVER then return end
+
+local SysTime = SysTime
+
+local function tableVsLocal()
+	local start = SysTime()
+	
+	local x = {
+		["abc"] = "abc"
+	}
+	local abc = "abc"
+
+	local tblStart = SysTime()
+	for i=1, 1000000 do 
+		local val = "-" .. x.abc
+	end
+	local tblTime = SysTime() - tblStart
+
+	local locStart = SysTime()
+	for i=1, 1000000 do 
+		local val = "-" .. abc
+	end
+	local locTime = SysTime() - locStart
+
+	print("Table: " .. tostring(tblTime))
+	print("Local: " .. tostring(locTime))
+	print("Local is: " .. tostring((1 - (locTime/tblTime))*100) .. "% faster.")
+
+end
+
+-- tableVsLocal()
 
 local function colorMapParseTesting()
 	local block = "[R/W]"
@@ -6,9 +53,11 @@ local function colorMapParseTesting()
 	print( block )
 end
 
+
 -- colorMapParseTesting()
 
 local function metaTableBenchmark()
+	local start = SysTime()
 	local mt = {
 		x = "from metatable"
 	}
@@ -16,46 +65,94 @@ local function metaTableBenchmark()
 	local child = {}
 	setmetatable( child, { __index = mt } )
 
-	local start = SysTime()
-	for i=1, 10000 do
-		local val = "-" .. child.x
+	local grandchild = {}
+	setmetatable( grandchild, { __index = child })
+	
+	-- grandchild.x = grandchild.x
+
+	print("grandchild.x: " .. tostring(grandchild.x))
+
+
+	
+	
+	start = SysTime()
+	for i=1, 100000 do
+		local val =  "x" .. mt.x
+		-- local val = grandchild.x
+		-- uselessFunction()
+		
+	end
+	local nmTime = SysTime() - start
+	
+	start = SysTime()
+	for i=1, 100000 do
+		-- local val = grandchild.x
+		-- local y = val
+		-- local z = y
+		local val = "x" .. grandchild.x
+		-- uselessFunction()
 	end
 	local mtTime = SysTime() - start
+
+	print("Normal Time: " .. tostring(nmTime))
 	print("MetaTable Time: " .. tostring(mtTime))
-
-	start = SysTime()
-	for i=1, 10000 do
-		local val = "-" .. mt.x
-	end
-	local nrmTime = SysTime() - start
-	print("Normal Time: " .. tostring(nrmTime))
-
-	print("Normal time is: " .. tostring(1 - (nrmTime/mtTime)) .. "% faster.")
+	print("Normal time is: " .. tostring((1 - (nmTime/mtTime))*100) .. "% faster.")
 end
+-- metaTableBenchmark()
+
 
 local function keyAccessBenchmark()
+	local arr = {
+		true, true
+		-- "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	}
+	arr[1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
 	local tab = {
-		[1] = "N from metatable",
-		["1"] = "S from metatable"
+		[1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+		["ABCDEFGHIJKLMNOPQRSTUVWXYZ"] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	}
 
+	local function access( key )
+		return tab[key]
+	end
+	
 
 	local start = SysTime()
 	for i=1, 10000 do
-		local val = "-" .. tab[1]
+		local val = "-" .. access( 1 )
+		-- local val = "-" .. arr[1]
+		-- local val = string.format("-%s", tab[1])
+
 	end
-	local mtTime = SysTime() - start
-	print("Array Time: " .. tostring(mtTime))
+	local arrTime = SysTime() - start
+	print("INT Time: " .. tostring(arrTime))
 
 	start = SysTime()
 	for i=1, 10000 do
-		local val = "-" .. tab[1]
+		-- local val = string.format("-%s", tab["1"])
+		-- local val = "-" .. tab.ABCDEFGHIJKLMNOPQRSTUVWXYZ
+		-- local val = "-" .. tab["ABCDEFGHIJKLMNOPQRSTUVWXYZ"]
+		local val = "-" .. access("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	end
 	local nrmTime = SysTime() - start
-	print("String Time: " .. tostring(nrmTime))
+	print("STR Time: " .. tostring(nrmTime))
 
 	-- print("Normal time is: " .. tostring(1 - (nrmTime/mtTime)) .. "% faster.")
 end
+
+
+
+--[[
+	Function overhead:
+	INT Time: 0.00027810000028694
+	STR Time: 0.00024860000121407
+	
+	Direct access:
+	INT Time: 0.00025180000375258
+	STR Time: 0.00020709999807877
+]]
+
 
 -- keyAccessBenchmark()
 

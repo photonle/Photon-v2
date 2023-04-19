@@ -10,7 +10,7 @@ ENT = ENT
 
 local print = Photon2.Debug.Print
 
-ENT.FrameDuration = 1/20
+ENT.FrameDuration = 1/10
 ENT.FrameCountEnabled = true
 ENT.NextFrameTime = 0
 

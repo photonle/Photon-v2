@@ -1,11 +1,11 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_sequence_collection.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonSequenceCollection"
 ---@class PhotonSequenceCollection Stores numerical array of sequence string names.
 ---@field parentSequence PhotonSequenceCollection 
 ---@field Segment PhotonLightingSegment
 ---@field Priority integer Current priority score.
-local SequenceCollection = META
+local SequenceCollection = exmeta.New()
 
 
 ---@param parentSegment PhotonLightingSegment

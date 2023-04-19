@@ -102,7 +102,20 @@ function exmeta.LoadTable(name, base, tbl, erase)
 	hook.Run("EXMeta.TableLoaded", name, meta, base)
 end
 
-function exmeta.ReloadFile(filename, tableName, erase)
+function exmeta.ReloadFile(tableName, erase)
+	local filename
+	local source = debug.getinfo(2, "S").source
+	if source:sub(1, 1) == "@" then
+		source = source:sub(2)
+		if ( string.StartWith(source, "lua/") ) then
+			filename = source:sub(5)
+		else
+			local _, splitPos = string.find(source, "/lua/", 1, true)
+			filename = source:sub(splitPos+1)
+		end
+	else
+		return false
+	end
 	if exmeta._shouldReload then
 		exmeta.LoadFile(filename, tableName, erase)
 		return true
@@ -181,6 +194,11 @@ function exmeta.CopyTable(t, lookup_table)
 		end
 	end
 	return copy
+end
+
+---@return table
+function exmeta.New()
+	return _G["META"]
 end
 
 -- PrintTable(FindMetaTable("EXCar"))

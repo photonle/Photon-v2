@@ -1,11 +1,11 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_base_entity.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonBaseEntity"
 ---@class PhotonBaseEntity : photon_entity
 ---@field Entity photon_entity
 ---@field Model string
 ---@field PhotonController PhotonController
-local ENT = META
+local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
 

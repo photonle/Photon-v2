@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_lighting_component.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLightingComponent"
 BASE = "PhotonBaseEntity"
@@ -17,7 +17,7 @@ local printf = Photon2.Debug.PrintF
 ---@field ColorMap table<integer, string[]>
 
 local Builder = Photon2.ComponentBuilder
-local Component = META
+local Component = exmeta.New()
 
 Component.IsPhotonLightingComponent = true
 
@@ -116,7 +116,7 @@ function Component:Initialize( ent, controller )
 
 	-- Process light table
 	for key, light in pairs(self.Lights) do
-		component.Lights[key] = light:Initialize( component )
+		component.Lights[key] = light:Initialize( key, component )
 	end
 
 	-- Process segments

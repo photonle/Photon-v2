@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_vehicle.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
@@ -19,7 +19,7 @@ NAME = "PhotonVehicle"
 ---@field New fun(data: PhotonLibraryVehicle): PhotonVehicle
 ---@field Equipment {}
 ---@field Selections {}
-local Vehicle = META
+local Vehicle = exmeta.New()
 
 Vehicle.EntityClass = "prop_vehicle_jeep"
 

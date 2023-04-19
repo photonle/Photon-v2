@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_lighting_segment.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLightingSegment"
 
@@ -19,7 +19,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonLight, string>>
 ---@field Lights table Points to Component.Lights
-local Segment = META
+local Segment = exmeta.New()
 
 Segment.Patterns = {}
 Segment.InputPriorities = {}
@@ -158,11 +158,15 @@ function Segment.New( segmentData, lightGroups )
 
 	-- Add zero frame (i.e. segment default state)
 	if ( not segmentData.Frames[0] ) then
-		segmentData.Frames[0] = buildZeroFrame( processedFrames )
+		processedFrames[0] = buildZeroFrame( processedFrames )
+	elseif ( isstring(segmentData.Frames[0] ) ) then
+		processedFrames[0] = processFrameString( segmentData.Frames[0] )
+	else
+		processedFrames[0] = segmentData.Frames[0]
 	end
 
-	segment:AddFrame( 0, segmentData.Frames[0] )
-	local zeroFrame = flattenFrame( segmentData.Frames[0] )
+	segment:AddFrame( 0, processedFrames[0] )
+	local zeroFrame = flattenFrame( processedFrames[0] )
 
 	-- Merges the OFF/default frame to ensure lights reset in the segment
 	for i=1, #processedFrames do
@@ -210,6 +214,8 @@ function Segment:Initialize( componentInstance )
 					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
 				end
 			end
+			-- TODO: error handling -- this breaks if the frame is 
+			-- references a non-existent light
 			frame[segment.Component.Lights[lightId]] = stateId
 		end
 	end

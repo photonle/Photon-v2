@@ -1,7 +1,6 @@
 Photon2.UI = Photon2.UI or {}
 
 function Photon2.UI.ReloadMenubar()
-	Photon2.Debug.Print("Reloading MenuBar...")
 	-- Photon2.Debug.Print("\t" .. tostring(Photon2.UI.MenuBar))
 	if (IsValid(Photon2.UI.MenuBar)) then
 		-- Photon2.Debug.Print("\tMenuBar is valid..")
@@ -19,9 +18,12 @@ function Photon2.UI.PopulateMenuBar()
 	-- TODO: populate on each open to resolve
 	timer.Simple(0.01, function ()
 		local menu = Photon2.UI.MenuBar
-		menu:AddOption( "Refresh Menu", function()
-			Photon2.UI.ReloadMenubar()
+		
+
+		local openStudioOption = menu:AddOption("Open Studio", function()
+			Photon2.Studio:Initialize()
 		end)
+
 		local debugOption = menu:AddOption( "Debug" )
 		local debugMenu = debugOption:AddSubMenu()
 		debugMenu:SetDeleteSelf( false )
@@ -46,7 +48,13 @@ function Photon2.UI.PopulateMenuBar()
 			end)
 		end
 
-		Photon2.Debug.Print("MenuBar populated.")
+		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
+		local drawLight2d = debugMenu:AddCVar( "Draw 2D Lighting", "ph2_draw_light2d", "1", "0" )		
+
+		menu:AddOption( "Refresh Menubar", function()
+			Photon2.UI.ReloadMenubar()
+		end)
+
 	end)
 	
 end
@@ -116,3 +124,66 @@ properties.Add("photon2_equipment", {
 		end
 	end
 })
+
+--[[
+		Photon Studio Window
+--]]
+
+Photon2.Studio = Photon2.Studio or {}
+
+local Studio = Photon2.Studio
+function Studio:Initialize()
+	if (IsValid(self.Window)) then
+		self.Window:Remove()
+	end
+	local frame = vgui.Create("DFrame")
+	frame:SetSize( 388, 512 )
+	frame:SetPos( ScrW() - 450, 100 )
+	frame:SetSkin("PhotonStudio")
+	frame:SetIcon("photon/ui/studio_icon_16.png")
+
+	-- frame:MakePopup()
+	frame:SetSizable(true)
+	frame:SetTitle("Photon 2 Studio")
+
+
+	local lp, tp, rp, bp = frame:GetDockPadding()
+	frame:DockPadding(1, tp - 5, 1, 1)
+	local menubar = vgui.Create( "EXDMenuBar", frame )
+	menubar:SetSkin(frame:GetSkin().ID)
+	menubar:Dock(TOP)
+	
+	local fileMenu = menubar:AddMenu("File")
+	fileMenu:AddOption("Close", function()
+		frame:Remove()
+	end)
+	fileMenu:AddOption("Reload Window", function()
+		timer.Simple(0.1, function()
+			if IsValid( Sudio.Window ) then
+				Studio.Window:Remove()
+			end
+			Studio:Initialize()
+		end)
+	end)
+
+	local viewMenu = menubar:AddMenu("View")
+	viewMenu:AddOption("Default", function()
+		frame:Remove()
+	end)
+
+	local studioMenu = menubar:AddMenu("Debug")
+	fileMenu:AddOption("Default", function()
+		frame:Remove()
+	end)
+
+	self.Window = frame
+end
+
+local reloadStudioOnSave = true
+
+if (reloadStudioOnSave) then
+	if (IsValid( Studio.Window )) then
+		Studio.Window:Remove()
+		Studio:Initialize()
+	end
+end

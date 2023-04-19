@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_sequence_frame.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonSequenceFrame"
 

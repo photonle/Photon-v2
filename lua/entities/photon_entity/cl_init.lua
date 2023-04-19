@@ -1,13 +1,9 @@
 include("shared.lua")
 
 ---@class photon_entity
-local ENT = ENT
+local ENT = _G["ENT"]
 
+---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Initialize()
-	-- self:Photon_OverrideMetaTable()
-	self.InputPriorities = {}
-	for channel, priority in pairs( self.DefaultInputPriorities ) do
-		-- self.InputPriorities
-	end
 
 end

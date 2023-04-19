@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_vehicle_equipment.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonVehicleEquipmentManager"
 
@@ -10,7 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
-local Equipment = META
+local Equipment = exmeta.New()
 
 function Equipment.New( name, option )
 	local newOption = {}

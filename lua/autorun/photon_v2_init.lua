@@ -47,7 +47,7 @@ if SERVER then
 
 	-- send meta files to client (required here for file reloading to work)
 	fol = "photon-v2/meta/"
-	files, folders = file.Find( fol .. "sh_*.lua", "LUA" )
+	files, folders = file.Find( fol .. "*.lua", "LUA" )
 	for _, fil in pairs( files ) do
 		AddCSLuaFile( fol .. fil )
 	end

@@ -1,4 +1,4 @@
-if (exmeta.ReloadFile("photon-v2/meta/sh_light.lua")) then return end
+if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLight"
 
@@ -9,12 +9,14 @@ local printf = Photon2.Debug.PrintF
 ---@field Deactivate boolean When true, marks the light to be activated on the next frame.
 ---@field IsActivated boolean
 ---@field States table
-local Light = META
+---@field Id integer
+local Light = exmeta.New()
 
 ---@return PhotonLight
-function Light:Initialize( parent )
+function Light:Initialize( id, parent )
 	---@type PhotonLight2D
 	local light = {
+		Id = id,
 		Class = self.Class,
 		Parent = parent
 	}
@@ -26,8 +28,7 @@ end
 function Light:OnStateChange() end
 
 
-function Light:SetState( state, priority )
-	local x = Color(255, 255, 255)
+function Light:SetState( state, intensity )
 end
 
 
