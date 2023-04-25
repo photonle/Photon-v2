@@ -119,10 +119,10 @@ end
 		INITIALIZE
 --]]
 
----@param parent Entity
+---@param parentEntity Entity
 ---@return PhotonLight2D
-function Light:Initialize( id, parent )
-	self = PhotonLight.Initialize( self, id, parent ) --[[@as PhotonLight2D]]
+function Light:Initialize( id, parentEntity )
+	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLight2D]]
 	self.Matrix = Matrix()
 	self.ViewNormal = Vector()
 	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )

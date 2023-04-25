@@ -47,16 +47,16 @@ function ENT:Initialize( ent, controller )
 		debug.setmetatable( ent:GetTable(), { __index = photonEnt } )
 	else
 		photonEnt.IsVirtual = true
-		local virtualEnt = setmetatable( {
-			IsVirtual = true
-		}, {
-			__index = ent:GetTable()
-			-- __index = function( tbl, key )
-			-- 	if (ent[key] ) then return ent[key] end
-			-- 	return photonEnt[key]
-			-- end,
-		})
-		ent = virtualEnt
+		-- local virtualEnt = setmetatable( {
+		-- 	IsVirtual = true
+		-- }, {
+		-- 	__index = ent:GetTable()
+		-- 	-- __index = function( tbl, key )
+		-- 	-- 	if (ent[key] ) then return ent[key] end
+		-- 	-- 	return photonEnt[key]
+		-- 	-- end,
+		-- })
+		ent = photonEnt
 	end
 	
 	photonEnt.CurrentModes = controller.CurrentModes
@@ -85,7 +85,6 @@ end
 ---@param controller PhotonController
 function ENT:CreateOn( ent, controller )
 	local ent = self:Initialize( ent, controller )
-	ent:Setup()
 	return ent
 end
 

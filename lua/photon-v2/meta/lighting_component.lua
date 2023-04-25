@@ -15,9 +15,9 @@ local printf = Photon2.Debug.PrintF
 ---@field ActiveSequences table<PhotonSequence, boolean>
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 ---@field ColorMap table<integer, string[]>
+local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
-local Component = exmeta.New()
 
 Component.IsPhotonLightingComponent = true
 
@@ -177,6 +177,9 @@ end
 ---@param controller PhotonController
 ---@return PhotonLightingComponent
 function Component:Initialize( ent, controller )
+	-- Calls the base constructor but passes LightingComponent as "self"
+	-- so LightingComponent is what's actually used for the metatable,
+	-- not PhotonBaseEntity.
 	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 
 	-- Set CurrentState to directly reference controller's table
@@ -188,7 +191,7 @@ function Component:Initialize( ent, controller )
 
 	-- Process light table
 	for key, light in pairs(self.Lights) do
-		component.Lights[key] = light:Initialize( key, component )
+		component.Lights[key] = light:Initialize( key, component.Entity )
 	end
 
 	-- Process segments
@@ -242,4 +245,13 @@ function Component:FrameTick()
 		segment:IncrementFrame( self.PhotonController.Frame )
 	end
 
+end
+
+function Component:RemoveVirtual()
+	if ( not self.IsVirtual ) then
+		error("Cannot call Component:VirtualRemove() on non-virtual components.")
+	end
+	for i=1, #self.Lights do
+		self.Lights[i]:DeactivateNow()
+	end
 end

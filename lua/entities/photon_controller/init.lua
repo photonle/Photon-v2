@@ -26,8 +26,10 @@ function ENT:Initialize()
 	end
 
 	timer.Simple(1, function()
-		self:SetChannelMode( "Emergency.Warning", "STAGE_1")
-		self:SetChannelMode( "Emergency.Auxiliary", "LEFT")
+		-- self:SetChannelMode( "Emergency.Warning", "STAGE_1" )
+		self:SetChannelMode( "Vehicle.Lights", "HEADLIGHTS" )
+		-- self:SetChannelMode( "Emergency.Warning", "STAGE_1")
+		-- self:SetChannelMode( "Emergency.Auxiliary", "LEFT")
 	end)
 end
 

@@ -93,17 +93,30 @@ function Vehicle.New( data )
 						Equipment.ApplyTemplate( currentOption.Variants[variantIndex] )
 						
 						local currentVariant = currentOption.Variants[variantIndex]
-						Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
 						
+						if ( variant.Components ) then
+							Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+						end
+						
+						if ( variant.VirtualComponents ) then
+							Equipment.ProcessTable( variant.VirtualComponents, currentVariant.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
+						end
+
 						map[selection] = currentVariant
 					end
-				else 
+				else
 					-- If no variants are defined, load equipment options
 					currentOption.Option = option.Option
 					Equipment.ApplyTemplate( currentOption )
 					currentOption.Selection = #map + 1
 
-					Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+					if ( option.Components ) then
+						Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+					end
+
+					if ( option.VirtualComponents ) then
+						Equipment.ProcessTable( option.VirtualComponents, currentOption.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
+					end
 
 					map[currentOption.Selection] = currentOption
 				end
@@ -111,10 +124,12 @@ function Vehicle.New( data )
 		end
 		
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.Components, nameTable.Components )
+		Equipment.ResolveNamesFromQueue( pendingNamesQueue.VirtualComponents, nameTable.VirtualComponents )
 
 	end
 
 	Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
+	Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
 
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 

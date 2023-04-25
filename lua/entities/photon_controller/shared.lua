@@ -173,10 +173,16 @@ end
 ---@param id string
 function ENT:SetupVirtualComponent( id )
 	local data = self.Equipment.VirtualComponents[id] --[[@as PhotonVehicleEquipment]]
+	printf("Setting up virtual component [%s]", id)
 	if (not data) then
 		print(string.format("Unable to locate equipment virtual component ID [%s]", id))
 		return
 	end
+
+	local component = Photon2.Index.Components[data.Component]
+	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
+	self.VirtualComponents[id] = virtualEnt
+	virtualEnt:ApplyModeUpdate()
 end
 
 ---@param id string
@@ -223,6 +229,9 @@ function ENT:RemoveAllComponents()
 	for id, ent in pairs(self.Components) do
 		self:RemoveEquipmentComponentByIndex( id )
 	end
+	for id, virtualComponent in pairs( self.VirtualComponents ) do
+		self:RemoveEquipmentVirtualComponentByIndex( id )
+	end
 end
 
 function ENT:RemoveEquipmentComponentByIndex( index )
@@ -234,7 +243,11 @@ function ENT:RemoveEquipmentComponentByIndex( index )
 end
 
 function ENT:RemoveEquipmentVirtualComponentByIndex( index )
-
+	printf("Controller is removing virtual component equipment ID [%s]", index)
+	if ( self.VirtualComponents[index] ) then
+		self.VirtualComponents[index]:RemoveVirtual()
+	end
+	self.VirtualComponents[index] = nil
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -242,6 +255,10 @@ function ENT:AddEquipment( equipmentTable )
 	local components = equipmentTable.Components
 	for i=1, #components do
 		self:SetupComponent( components[i] )
+	end
+	local virtualComponents = equipmentTable.VirtualComponents
+	for i=1, #virtualComponents do
+		self:SetupVirtualComponent( virtualComponents[i] )
 	end
 end
 
@@ -251,6 +268,9 @@ function ENT:RemoveEquipment( equipmentTable )
 	local equipmentComponents = equipmentTable.Components
 	for i=1, #equipmentComponents do
 		self:RemoveEquipmentComponentByIndex(equipmentComponents[i])
+	end
+	for i=1, #equipmentTable.VirtualComponents do
+		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
 	end
 end
 
@@ -355,6 +375,9 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	for id, component in pairs(self.Components) do
 		component:SetChannelMode( channel, newState, oldState )
 	end
+	for id, virtualComponent in pairs( self.VirtualComponents ) do
+		virtualComponent:SetChannelMode( channel, newState, oldState )
+	end
 end
 
 
@@ -405,7 +428,7 @@ function ENT:OnComponentReloaded( componentId )
 	-- Reload virtual components
 	for equipmentId, component in pairs( self.VirtualComponents ) do
 		if ( component.Name == componentId ) then
-			-- self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
+			self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
 			self:SetupVirtualComponent( equipmentId )
 			matched = true
 		end

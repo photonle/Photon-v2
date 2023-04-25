@@ -35,10 +35,10 @@ local spriteParams = {
 }
 
 local mat1 = Material("sprites/emv/flare_secondary")
-local matIntensitySquare512Png = Material("photon/sprites/glow_intense_sq_512.png")
-local matIntensitySquare512 = matIntensitySquare512
+-- local matIntensitySquare512 = matIntensitySquare512
 if (not matIntensitySquare512) then
-	timer.Simple(10, function()
+	local matIntensitySquare512Png = Material("photon/sprites/glow_intense_sq_512.png")
+	timer.Simple(0.1, function()
 		matIntensitySquare512 = CreateMaterial("photon2/sprite/glow_intense_sq_512", "UnLitGeneric", {
 			["$basetexture"] = matIntensitySquare512Png:GetTexture("$basetexture"):GetName(),
 			["$nocull"] = 1,
@@ -78,7 +78,7 @@ function Photon2.Light2D.DrawDebug()
 		render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))
 		render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
 		render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
-		debugoverlay.Text(position, light.Id .. "(" .. tostring(  math.Round(light.ViewDot * 100) )  .. "/" .. math.Round(light.ViewAngleDot * 100) .. ") VIS: " .. tostring(math.Round(light.Visibility * 100)) .. "%", 0, false)
+		debugoverlay.Text(position, light.Id .. "(" .. tostring(  math.Round(light.ViewDot * 100) ) .. ") VIS: " .. tostring(math.Round(light.Visibility * 100)) .. "%", 0, false)
 		end
 	end
 end

@@ -17,12 +17,15 @@ COMPONENT.Lighting = {
 			Width = 8,
 			Height = 8,
 			Material 			= "sprites/emv/legend_wide",
+			MaterialOverlay 			= "sprites/emv/legend_wide",
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0)
 		}
 	}
 }
+
+COMPONENT.LightStates = {}
 
 COMPONENT.Lights = {
 	[1] = { "TailLights", Vector( 0, 0, 100 ), Angle( 0, 0, 0 ) }
@@ -35,7 +38,7 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	TailLights = {
 		Frames = {
-			[1] = "1"
+			[1] = "1:R"
 		},
 		Sequences = {
 			["ON"] = sequence():Add( 1 )

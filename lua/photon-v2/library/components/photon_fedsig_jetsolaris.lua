@@ -208,18 +208,19 @@ COMPONENT.Segments = {
 -- Flash(1,2,3):Do(3)
 
 COMPONENT.Patterns = {
-	["Emergency.Auxiliary"] = {
-		["LEFT"] = { 
-			-- All = "STEADY",
-			-- All = "PATTERN_1",
+	-- ["Emergency.Auxiliary"] = {
+	-- 	["LEFT"] = { 
+	-- 		-- All = "STEADY",
+	-- 		-- All = "PATTERN_1",
 
-			Edge = "Rotate", 
-			Inner = "Rotate" 
-		}
-	},
-	["Emergency.Warning"] = {
-		["STAGE_1"] = {
-			All = "PATTERN_1",
+	-- 		Edge = "Rotate", 
+	-- 		Inner = "Rotate" 
+	-- 	}
+	-- },
+	["Vehicle.Lights"] = {
+		["HEADLIGHTS"] = {
+			All = "STEADY"
+			-- All = "PATTERN_1",
 			-- Edge = "Flash1",
 			-- Inner = "Flash1"
 			-- Stored internally as Emergency.Warning:STAGE_1

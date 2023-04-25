@@ -74,7 +74,7 @@ function Equipment.ResolveNamesFromQueue( pendingNamesTable, nameTable )
 			if ( isstring(equipmentIndex) ) then
 				-- Check if name is valid
 				if ( not nameTable[equipmentIndex] ) then
-					error(string.format("Equipment name '%s' is not defined."))
+					error(string.format("Equipment name '%s' is not defined.", nameTable[equipmentIndex]))
 				end
 				equipmentTable[i] = nameTable[equipmentIndex]
 			end

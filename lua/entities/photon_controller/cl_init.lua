@@ -82,6 +82,9 @@ function ENT:Think()
 			for i=1,#componentArray do
 				componentArray[i]:FrameTick() -- ***rebuild component array on equipment change ***
 			end
+			for i=1, #self.VirtualComponentArray do
+				self.VirtualComponentArray[i]:FrameTick()
+			end
 		end
 	end
 	-- for id, component in pairs(self.Components) do

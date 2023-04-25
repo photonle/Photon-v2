@@ -17,67 +17,70 @@ VEHICLE.Equipment = {}
 
 -- Category -> Option (-> Variant)
 VEHICLE.Selections = {
-	-- {
-	-- 	Category = "Standard",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "Standard Lighting",
-	-- 			VirtualComponents = {
-	-- 				VirtualComponent = "photon_standard_sgmfpiu20"
-	-- 			}
-	-- 		}
-	-- 	}
-	-- },
 	{
-		Category = "Forward Lightbar",
-		Options = {
-			{ Option = "JetSolaris", Variants = {
-					{ Variant = "Front",
-						Components = {
-							{
-								Name 		= "@jetsolaris_front",
-								Component	= "photon_fedsig_jetsolaris",
-								Position	= Vector(0, -15, 91),
-								Angles		= Angle(0, 0, 0),
-								Scale		= 1
-							},
-						}
-						
-					},
-					{ Variant = "Alternate",
-						Components = {
-							{
-								Inherit 	= "@jetsolaris_front",
-								Scale		= 0.5,
-								Position	= Vector(0, -15, 100 )
-							}
-						}
-					},
-				}
-			}
-		},
-	},
-	{
-		Category = "Rear Lightbar",
+		Category = "Standard",
 		Options = {
 			{
-				Option = "None",
-				Components = {}
-			},
-			{
-				Option = "JetSolaris",
-				Components = {
+				Option = "Standard Lighting",
+				VirtualComponents = {
 					{
-						Inherit 	= "@jetsolaris_front",
-						Position	= Vector(0, -65, 91),
+						Component = "photon_standard_sgmfpiu20"
 					}
 				}
-			},
-			
-			
-			
+			}
 		}
 	},
+	-- {
+	-- 	Category = "Forward Lightbar",
+	-- 	Options = {
+	-- 		{ Option = "JetSolaris", Variants = {
+	-- 				{ Variant = "Front",
+	-- 					Components = {
+	-- 						{
+	-- 							Name 		= "@jetsolaris_front",
+	-- 							Component	= "photon_fedsig_jetsolaris",
+	-- 							Position	= Vector(0, -15, 91),
+	-- 							Angles		= Angle(0, 0, 0),
+	-- 							Scale		= 1
+	-- 						},
+	-- 					}
+						
+	-- 				},
+	-- 				{ Variant = "Alternate",
+	-- 					Components = {
+	-- 						{
+	-- 							Inherit 	= "@jetsolaris_front",
+	-- 							Scale		= 0.5,
+	-- 							Position	= Vector(0, -15, 100 )
+	-- 						}
+	-- 					}
+	-- 				},
+	-- 			}
+	-- 		}
+	-- 	},
+	-- }
+	-- },
+	-- {
+	-- 	Category = "Rear Lightbar",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "None",
+	-- 			Components = {}
+	-- 		},
+	-- 		{
+	-- 			Option = "JetSolaris",
+	-- 			Components = {
+	-- 				{
+	-- 					Inherit 	= "@jetsolaris_front",
+	-- 					Position	= Vector(0, -65, 91),
+	-- 				}
+	-- 			}
+	-- 		},
+			
+			
+			
+	-- 	}
+	-- },
 }
 
 -- PHOTON2_DEBUG_VEHICLE_HARDRELOAD = false

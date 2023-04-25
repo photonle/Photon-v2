@@ -73,11 +73,13 @@ PhotonLight2DState = PhotonLight2DState
 ---@field Equipment PhotonVehicleEquipment[]
 ---@field Selections PhotonVehicleSelectionCategory[]
 
+
 ---@class PhotonEquipmentTable
 ---@field Components table
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field VirtualComponents table
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.
