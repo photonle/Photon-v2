@@ -30,6 +30,8 @@ Vehicle.ControllerType = "photon_controller"
 ---@param data PhotonLibraryVehicle
 ---@return PhotonVehicle
 function Vehicle.New( data )
+	local Equipment = PhotonVehicleEquipmentManager
+
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
@@ -44,36 +46,13 @@ function Vehicle.New( data )
 		Model 				= target.Model,
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
-		Equipment 			= {
-			Components = {},
-			Props = {},
-			BodyGroups = {},
-			SubMaterials = {}
-		},
+		Equipment 			= Equipment.GetTemplate()
 	}
 
-	local Equipment = PhotonVehicleEquipmentManager
 
-	local nameTable = {
-		Components = {},
-		Props = {},
-		BodyGroups = {},
-		SubMaterials = {}
-	}
-
-	local pendingNamesQueue = {
-		Components = {},
-		Props = {},
-		BodyGroups = {},
-		SubMaterials = {}
-	}
-
-	local loadedParents = {
-		Components = {},
-		Props = {},
-		BodyGroups = {},
-		SubMaterials = {}
-	}
+	local nameTable = Equipment.GetTemplate()
+	local pendingNamesQueue = Equipment.GetTemplate()
+	local loadedParents = Equipment.GetTemplate()
 
 	-- Handle each entry in equipment
 	if (data.Selections) then
@@ -109,14 +88,11 @@ function Vehicle.New( data )
 						{
 							Selection = selection,
 							Variant = variant.Variant,
-							Components 		= {},
-							Props 			= {},
-							BodyGroups 		= {},
-							SubMaterials 	= {},
 						}
-						local currentVariant = currentOption.Variants[variantIndex]
+
+						Equipment.ApplyTemplate( currentOption.Variants[variantIndex] )
 						
-						-- processEquipmentTable( variant.Components, currentVariant.Equipment )
+						local currentVariant = currentOption.Variants[variantIndex]
 						Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
 						
 						map[selection] = currentVariant
@@ -124,13 +100,9 @@ function Vehicle.New( data )
 				else 
 					-- If no variants are defined, load equipment options
 					currentOption.Option = option.Option
-					currentOption.Components 	= {}
-					currentOption.Props 		= {}
-					currentOption.BodyGroups 	= {}
-					currentOption.SubMaterials 	= {}
+					Equipment.ApplyTemplate( currentOption )
 					currentOption.Selection = #map + 1
 
-					-- processEquipmentTable( option.Components, currentOption.Components )
 					Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
 
 					map[currentOption.Selection] = currentOption

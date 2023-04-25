@@ -3,6 +3,11 @@ local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Author = "Photon"
 
+COMPONENT.Credits = {
+	Model = "Modified by Schmal",
+	Code = "Schmal"
+}
+
 -- Printed name of component ONLY. Reference component
 -- using its filename or directory/filename.
 COMPONENT.PrintName = "Federal Signal Jet Solaris"
@@ -16,16 +21,33 @@ COMPONENT.Lighting = {
 			Height		= 7.4,
 			MaterialOverlay 	= "photon/lights/legend_wide_leds",
 			Material 			= "sprites/emv/legend_wide",
-			Scale 		= 1.5,
-			Ratio 		= 1.5
+			Scale 		= 1.2,
+			Ratio 		= 2,
+			Inverse		= Angle(0, 180, 0)
 		},
 		Edge = {
 			Width 		= 7.2,
 			Height		= 7.2,
 			MaterialOverlay 	= "photon/lights/legend_narrow_leds",
 			Material 	= "sprites/emv/legend_narrow",
-			Scale 		= 1.5,
-			Ratio 		= 1
+			Scale 		= 1,
+			Ratio 		= 1,
+			Inverse		= Angle(0, 180, 0)
+		}
+	}
+}
+
+COMPONENT.LightStates = {
+	["2D"] = {
+		["R0.5"] = {
+			Inherit = "R",
+			Intensity = 1,
+			IntensityTransitions = true,
+		},
+		["W0"] = {
+			Inherit = "W",
+			Intensity = 1,
+			IntensityTransitions = false
 		}
 	}
 }
@@ -40,7 +62,7 @@ COMPONENT.Lights = {
 
 	-- [ 6] = { "Edge", Vector(-13.24, 0, 0.06), Angle(0, 90, -90) },
 	-- [ 7] = { "Edge", Vector(13.24, 0, 0.06), Angle(0, -90, -90) },
-	
+
 	-- [ 8] = { "Edge", Vector(-12.75, -3.71, 0.06), Angle(0, -74, -90) },
 	-- [ 9] = { "Edge", Vector(12.75, -3.71, 0.06), Angle(0, 74, -90) },
 
@@ -48,7 +70,53 @@ COMPONENT.Lights = {
 	-- [11] = { "Main", Vector(6.58, -6.11, 0), Angle(0, 0, -90) },
 	-- [12] = { "Main", Vector(0, -6.11, 0), Angle(0, 0, -90) },
 
+	--[[
+		
+		==== The "Build" Scripting Syntax Concept ====
+
+		Instead of the traditional format of { "Meta", Vector(), Angle() },
+		the Build feature internally parses a string to accomplish this,
+		making light creation less repetitive and potentially easier.
+
+		Furthermore, the Build syntax allows lights to reference specific
+		existing values of sibling lights, and even invert them
+		by use of the - sign. 
+
+		For example, a standard linear bar (that's correctly centered and oriented)
+		will typically have four congruent lights: forward-left, forward-right,
+		rear-left, rear-right. Apart from the positive or negative X/Y placement and 
+		Yaw rotation, these lights are otherwise identical (congruent). 
+
+		By simplying referencing the values of a "master" light (usually forward-left),
+		you can skip the steps of repetitively copying and pasting values when making
+		adjustments.
+
+	--]]
+
+	
+	-- [1] = { Build = "Main [0 6.11 0] {0 0 0}" },
+
+
+	-- [2] = { Build = "@ [-6.58 Y Z] {P Y R}" },
+	-- [3] = { Mirror = { 2, 2 } },
+	-- -- [3] = { Build = "@ [-X Y Z] {P Y R}" },
+
+	-- [4] = { Build = "Edge [-12.75 3.71 .06] {0 74 0}" },
+	-- [5] = { Build = "[-X Y Z] {P -Y R}"},
+
+	-- [6] = { Build = "[-13.24 0 R] {0 90 0}" },
+	-- [7] = { Build = "[-X Y Z] {P -Y R}" },
+
+	-- [8] = { Build = "^4 -@ [X -Y Z] {P -Y R}" },
+	-- [9] = { Build = "@ [X -Y Z] {P -Y R}" },
+
+	-- [10] = { Build = "^2 -@ [X -Y Z] {P Y R}" },
+	-- [11] = { Build = "^3 -@ [X -Y Z] {P Y R}" },
+
+	-- [12] = { Build = "^1 -@ [X -Y Z] {P Y R}" },
+
 	[ 1] = { "Main", Vector(0, 6.11, 0), Angle(0, 0, 0) },
+
 	[ 2] = { "Main", Vector(-6.58, 6.11, 0), Angle(0, 0, 0) },
 	[ 3] = { "Main", Vector(6.58, 6.11, 0), Angle(0, 0, 0) },
 
@@ -63,16 +131,12 @@ COMPONENT.Lights = {
 
 	[10] = { "Main", Vector(-6.58, -6.11, 0), Angle(0, 180+0, 0) },
 	[11] = { "Main", Vector(6.58, -6.11, 0), Angle(0, 180+0, 0) },
-	[12] = { "Main", Vector(0, -6.11, 0), Angle(0, 180+0, 0) },
 
+	[12] = { "Main", Vector(0, -6.11, 0), Angle(0, 180+0, 0) },
 	
-	-- Macro function concept
-	--[13] = MacroFunc({ "param", Vector(), Angle()})
 }
 
--- COMPONENT.ColorMap = "[R] 2 4 6 8 10 [B] 3 5 7 9 11 [A] 12 [W] 1"
 COMPONENT.ColorMap = "[R] 2 5 6 9 10 [B] 3 4 7 8 11 [A] 12 [W] 1"
--- COMPONENT.ColorMap = "[R] 2 5 6 9 10 [B] 3 4 7 8 11 [A] 12 [W] 1"
 
 -- Allows for multiple lights to be treated as one when desired
 COMPONENT.LightGroups = {
@@ -107,10 +171,13 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "LeftEdge",
 			[2] = "RightEdge",
-
+			[3] = "9 4",
+			[4] = "7 6",
+			[5] = "5 8",
 		},
 		Sequences = {
-			["Flash1"] = sequence():Alternate(1,2,4):Do(4):Add(0):Flash(1,2,3):Do(3)
+			["Flash1"] = sequence():Alternate(1,2,4):Do(4):Add(0):Flash(1,2,3):Do(3),
+			["Rotate"] = { 3, 4, 5, }
 		},
 		Attributes = {
 			Intensity = true
@@ -123,9 +190,13 @@ COMPONENT.Segments = {
 			-- [1] = { { 1, "R", {0.5,10,10} } },
 			[1] = "2 3 10 11",
 			[2] = "1 12",
+			[3] = "3 10",
+			[4] = "12 1",
+			[5] = "11 2",
 		},
 		Sequences = {
-			["Flash1"] = sequence():Alternate(1,2,4):Do(4):Add(0):Flash(1,2,3):Do(3)
+			["Flash1"] = sequence():Alternate(1,2,4):Do(4):Add(0):Flash(1,2,3):Do(3),
+			["Rotate"] = { 3, 4, 5 }
 		}
 	}
 }
@@ -140,10 +211,10 @@ COMPONENT.Patterns = {
 	["Emergency.Auxiliary"] = {
 		["LEFT"] = { 
 			-- All = "STEADY",
-			All = "STEADY",
+			-- All = "PATTERN_1",
 
-			-- Edge = "Flash1", 
-			-- Inner = "Flash1" 
+			Edge = "Rotate", 
+			Inner = "Rotate" 
 		}
 	},
 	["Emergency.Warning"] = {

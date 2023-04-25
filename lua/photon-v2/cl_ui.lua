@@ -126,6 +126,25 @@ properties.Add("photon2_equipment", {
 })
 
 --[[
+		Desktop Windows
+--]]
+list.Set("DesktopWindows", "Photon2", {
+	title = "Photon 2",
+	icon = "photon/ui/photon_2_icon_64.png",
+	init = function( icon, window )
+		Photon2.Studio:Setup( window )
+	end
+})
+
+list.Set("DesktopWindows", "PhotonStudio", {
+	title = "Photon Studio",
+	icon = "photon/ui/photon_studio_icon_64.png",
+	init = function( icon, window )
+		Photon2.Studio:Setup( window )
+	end
+})
+
+--[[
 		Photon Studio Window
 --]]
 
@@ -137,6 +156,10 @@ function Studio:Initialize()
 		self.Window:Remove()
 	end
 	local frame = vgui.Create("DFrame")
+	Studio:Setup( frame )
+end
+
+function Studio:Setup( frame )
 	frame:SetSize( 388, 512 )
 	frame:SetPos( ScrW() - 450, 100 )
 	frame:SetSkin("PhotonStudio")

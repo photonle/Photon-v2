@@ -27,14 +27,15 @@ local printf = Photon2.Debug.PrintF
 ---@field Height number Height of the light source.
 ---@field Ratio number Horizontal size ratio of glow effect. Numbers > 1 will stretch, numbers < 1 will compact.
 ---@field Scale number Scale of glow effect and apparent brightness. Does not affect the light source.
----@field TargetSourceFillColor Color
----@field TargetSourceDetailColor Color
----@field SourceFillColor Color
----@field SourceDetailColor Color
----@field GlowColor Color
+---@field SourceFillColor PhotonLightColor
+---@field SourceDetailColor PhotonLightColor
+---@field GlowColor PhotonLightColor
+---@field ShapeGlowColor PhotonLightColor
 ---@field ShouldDraw boolean
 ---@field Matrix VMatrix
 ---@field ViewNormal Vector
+---@field ViewDotRight number
+---@field ViewDotUp number
 local Light = exmeta.New()
 
 Light.Class = "2D"
@@ -54,9 +55,6 @@ Light.VisibilityRadius = 1
 Light.DrawSource = true
 Light.DrawGlow = true
 
-Light.SourceFillColor = Color( 0, 0, 0 )
-Light.SourceDetailColor = Color( 0, 0, 0 )
-
 Light.Rotation = Angle( 0, 90, 0 )
 Light.QuadRotation = Angle( 0, 90, 90 )
 Light.TranslatedLocalAngles = Angle( 0, 0, 0 )
@@ -74,39 +72,44 @@ Light.TargetIntensity = 1
 -- 	["A"] = { Primary = Color( 255, 96, 0 ), Overlay = Color(255, 255, 0) },
 -- }
 
----@type table <string, PhotonLight2DState>
 Light.States = {
 	["~OFF"] = {
 		Intensity 				= 0,
 		IntensityTransitions 	= true,
 	},
 	["OFF"] = {
-		SourceDetailColor = Color(0,0,0), SourceFillColor = Color(0,0,0), GlowColor = Color(0, 0, 0)
+		SourceDetailColor = Color(0,0,0), SourceFillColor = Color(0,0,0), GlowColor = Color(0, 0, 0), ShapeGlowColor = Color( 0, 0, 0 )
 	},
 	["R"] = {
 		SourceDetailColor = Color(255,255,0), 
 		SourceFillColor = Color(255,0,0),
-		GlowColor = Color(255, 0, 0)
+		GlowColor = Color(255, 0, 0),
+		ShapeGlowColor = Color(255, 0, 0)
 	},
 	["B"] = {
 		SourceDetailColor = Color(0,255,255), 
-		SourceFillColor = Color(0,96,255),
-		GlowColor = Color(0, 0, 255)
+		SourceFillColor = Color(0,0,255),
+		GlowColor = Color(0, 0, 255),
+		ShapeGlowColor = Color(0, 0, 255),
 	},
 	["A"] = {
 		SourceDetailColor = Color(255,255,0), 
 		SourceFillColor = Color(200,128,0),
-		GlowColor = Color( 255, 128, 0 )
+		GlowColor = Color( 255, 128, 0 ),
+		ShapeGlowColor = Color( 255, 128, 0 ),
 	},
 	["W"] = {
 		SourceDetailColor = Color(255,255,255), 
 		SourceFillColor = Color(128,128,128),
-		GlowColor = Color(225, 225, 255)
+		GlowColor = Color(225, 225, 255),
+		ShapeGlowColor = Color(225, 225, 255),
 	},
 }
 
-for k, v in pairs( Light.States ) do
-	Light.States[k] = PhotonLight2DState.New( k, v )
+function Light.OnLoad()
+	for k, v in pairs( Light.States ) do
+		Light.States[k] = PhotonLight2DState:New( k, v, Light.States )
+	end
 end
 
 function Light:Render()
@@ -119,10 +122,14 @@ end
 ---@param parent Entity
 ---@return PhotonLight2D
 function Light:Initialize( id, parent )
-	self = PhotonLight.Initialize( self, id, parent )
+	self = PhotonLight.Initialize( self, id, parent ) --[[@as PhotonLight2D]]
 	self.Matrix = Matrix()
 	self.ViewNormal = Vector()
-	return self --[[@as PhotonLight2D]]
+	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )
+	self.SourceFillColor = PhotonLightColor()
+	self.GlowColor = PhotonLightColor()
+	self.ShapeGlowColor = PhotonLightColor()
+	return self
 end
 
 --[[
@@ -139,7 +146,9 @@ function Light.NewTemplate( data )
 	light.Left 		= Vector(  data.Width * 0.5, -data.Height * 0.5, 0 )
 	
 	light.Material = Material( data.Material )
-	light.MaterialOverlay = Material( data.MaterialOverlay )
+	if (light.MaterialOverlay) then
+		light.MaterialOverlay = Material( data.MaterialOverlay )
+	end
 
 	setmetatable( light, { __index = (base or PhotonLight2D) } )
 
@@ -153,6 +162,7 @@ function Light.NewTemplate( data )
 end
 
 ---@param data table Data input table.
+---@param template? PhotonLight2D Light template.
 function Light.New( data, template )
 	---@type PhotonLight2D
 	local light = data
@@ -182,35 +192,40 @@ function Light:DeactivateNow()
 	self.Deactivate = false
 end
 
-function Light:CalculateVisibility()
-	if (not self.IsActivated) then return 0 end
-	return util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
-end
-
 local IsValid = IsValid
 
 function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
-	if (not self.IsActivated
-) then return nil end
+	if ( not self.IsActivated ) then return nil end
+	
 	self.ShouldDraw = true
 
 	self.Position = self.Parent:LocalToWorld( self.LocalPosition )
 	self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
 
-	self.ViewNormal:Set( self.Position )
-	self.ViewNormal:Sub( EyePos() )
-	self.ViewNormal:Normalize()
-
-	self.ViewDot = - self.ViewNormal:Dot( self.Angles:Forward() )
-
-	if (self.ViewDot < 0) then self.ViewDot = 0 end
-
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
+
+	-- if ( self.Visibility == 0 ) then self.ShouldDraw = false end
 	
-	if ( self.Visibility == 0 ) then self.ShouldDraw = false end
-	if ( self.ViewDot <= 0 ) then self.ShouldDraw = false end
+	-- if ( self.ShouldDraw ) then
+
+		self.ViewNormal:Set( self.Position )
+		self.ViewNormal:Sub( EyePos() )
+		self.ViewNormal:Normalize()
+		self.ViewDot = (- self.ViewNormal:Dot( self.Angles:Forward() )) * self.Visibility
+		
+		-- local viewNorm = EyeAngles():Forward()
+		
+		-- self.ViewDotRight = - self.ViewNormal:Dot( self.Angles:Right() )
+		-- self.ViewDotUp = - self.ViewNormal:Dot( self.Angles:Up() )
+		-- self.ViewAngleDot = - LocalPlayer():GetAimVector():Dot( self.Angles:Forward() )
+		
+		if (self.ViewDot < 0) then self.ViewDot = 0 end
+		if ( self.ViewDot <= 0 ) then self.ShouldDraw = false end
+
+	-- end
+		
 
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
@@ -225,21 +240,11 @@ function Light:DoPreRender()
 				self.Intensity = self.TargetIntensity
 			end
 		end
-	
-		local sourceFillColor = self.TargetSourceFillColor
-		local sourceDetailColor = self.TargetSourceDetailColor
-		local intensity = self.Intensity
 
-		self.SourceFillColor.r = sourceFillColor.r * intensity
-		self.SourceFillColor.g = sourceFillColor.g * intensity
-		self.SourceFillColor.b = sourceFillColor.b * intensity
-		
-		self.SourceDetailColor.r = sourceDetailColor.r * intensity
-		self.SourceDetailColor.g = sourceDetailColor.g * intensity
-		self.SourceDetailColor.b = sourceDetailColor.b * intensity
+		self.SourceFillColor:SetIntensity( self.Intensity )
+		self.SourceDetailColor:SetIntensity( self.Intensity )
 
 	end
-	
 
 	return self
 end
@@ -254,22 +259,29 @@ function Light:SetState( stateId )
 	end
 
 	self.CurrentStateId = stateId
-	self.TargetSourceFillColor = state.SourceFillColor or self.TargetSourceFillColor
-	self.TargetSourceDetailColor = state.SourceDetailColor or self.TargetSourceDetailColor
 
-	self.GlowColor = state.GlowColor or self.GlowColor
+	self.SourceFillColor:SetTarget( state.SourceFillColor )
+	self.SourceDetailColor:SetTarget( state.SourceDetailColor )
+	self.GlowColor:Set( state.GlowColor, 1 )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
 
 	if ( state.IntensityTransitions ) then
-		if (state.Intensity > 0) then
-			self.SourceFillColor = self.TargetSourceFillColor:ToTable()
-			self.SourceDetailColor = self.TargetSourceDetailColor:ToTable()
-		end
-	else
-		self.SourceFillColor = self.TargetSourceFillColor
-		self.SourceDetailColor = self.TargetSourceDetailColor
+
+	elseif ( self.TargetIntensity ~= 1 or (self.TargetIntensity ~= self.Intensity) ) then		
+
 		self.Intensity = self.TargetIntensity
+
+		self.SourceFillColor:SetIntensity( self.Intensity )
+		self.SourceDetailColor:SetIntensity( self.Intensity )
+
+	else
+		self.Intensity = self.TargetIntensity
+
+		self.SourceFillColor:SetIntensity( self.Intensity )
+		self.SourceDetailColor:SetIntensity( self.Intensity )
 	end
 end
+
+Light.OnLoad()

@@ -30,6 +30,7 @@ Component.IsPhotonLightingComponent = true
 ---@param data PhotonLibraryComponent
 ---@return PhotonLightingComponent
 function Component.New( name, data )
+
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
@@ -40,6 +41,28 @@ function Component.New( name, data )
 		LightGroups = data.LightGroups
 	}
 
+
+	--[[
+			Compile Light States
+	--]]
+
+	local lightStates = {}
+	for lightClassName, states in pairs( data.LightStates or {} ) do
+		local lightClass = PhotonLight.FindClass( lightClassName )
+		local lightStateClass = PhotonLightState.FindClass( lightClassName )
+		-- Use actual COMPONENT.LightStates table to get around load/dependency order issues.
+		-- Set __index to the base class's Light.States table.
+		lightStates[lightClassName] = setmetatable( states, { __index = lightClass.States })
+		for stateId, state in pairs( states ) do
+			states[stateId] = lightStateClass:New( stateId, state, states )
+		end
+	end
+
+
+	--[[
+			Compile Color Map
+	--]]
+
 	if ( isstring( data.ColorMap ) ) then
 		-- component.ColorMap = Builder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
 		component.ColorMap = Photon2.ComponentBuilder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
@@ -47,30 +70,79 @@ function Component.New( name, data )
 		component.ColorMap = data.ColorMap --[[@as table<integer, string[]>]]
 	end
 
-	-- Setup light templates
+	
+	--[[
+			Compile Light Templates
+	--]]
+
 	local lightTemplates = {}
-	--TODO: lighting providers system
-	for lightName, lightData in pairs( data.Lighting["2D"] ) do
-		lightTemplates[lightName] = PhotonLight2D.NewTemplate( lightData )
-	end
+	for lightClassName, templates in pairs( data.Lighting ) do
+		
+		local lightClass = _G["PhotonLight" .. lightClassName]
+		
+		-- Verify light class exists/is supported
+		if ( not lightClass ) then
+			error(string.format("Unrecognized light class [%s]. Global table [PhotonLight%s] is nil.", lightClassName, lightClassName))
+		end
+		
+		-- Iterate through each template in the light class
+		for lightName, lightData in pairs( templates ) do
+			-- Throw error on duplicate light template name
+			if ( lightTemplates[lightName] ) then
+				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", lightName ) )
+			end
+			lightTemplates[lightName] = lightClass.NewTemplate( lightData )
+		end
 
-	-- Initialize individual lights
+	end
+	
+
+	--[[
+			Compile Lights
+	--]]
+
 	for id, light in pairs( data.Lights ) do
-		component.Lights[id] = PhotonLight2D.New( {
-			
-			LocalPosition = light[2],
-			LocalAngles = light[3]
 
-		}, lightTemplates[light[1]] )
+		-- TODO: Process { Set = "x" } scripting
+
+		local inverse = false
+
+		if ( string.StartsWith(light[1], "-") ) then 
+			inverse = true
+			light[1] = string.sub( light[1], 2 )
+		end
+
+		-- Verify template
+		local template = lightTemplates[light[1]]
+		if ( not template ) then 
+			error( string.format( "Light template [%s] is not defined.", light[1] ) )
+		end
+
+		local lightClass = PhotonLight.FindClass( template.Class )
+
+		component.Lights[id] = lightClass.New( {
+			LocalPosition = light[2],
+			LocalAngles = light[3],
+			States = lightStates[template.Class],
+			Inverse = inverse
+		}, template ) --[[@as PhotonLight]]
 	end
 
-	-- Process segments
+
+	--[[
+
+			Compile Segments
+	--]]
+
 	for segmentName, segmentData in pairs( data.Segments ) do
 		component.Segments[segmentName] = PhotonLightingSegment.New( segmentData, data.LightGroups )
 	end
 
-	-- Process patterns
-	print("Processing patterns...")
+
+	--[[
+			Compile Patterns
+	--]]
+
 	for channelName, channel in pairs( data.Patterns ) do
 		for modeName, mode in pairs( channel ) do
 			local patternName = channelName .. ":" .. modeName

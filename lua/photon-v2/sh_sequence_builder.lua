@@ -94,6 +94,6 @@ end
 
 setmetatable( Photon2.SequenceBuilder, Photon2.SequenceBuilder )
 
-local s = Photon2.SequenceBuilder.New()
+-- local s = Photon2.SequenceBuilder.New()
 
-print(s:Alternate(1,2,4):Do(3):Add(0):Flash(1,2,3):Do(3):ToLua())
+-- print(s:Alternate(1,2,4):Do(3):Add(0):Flash(1,2,3):Do(3):ToLua())

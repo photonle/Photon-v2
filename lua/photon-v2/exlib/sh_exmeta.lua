@@ -86,7 +86,8 @@ end
 ---@param tbl table
 ---@param erase boolean
 function exmeta.LoadTable(name, base, tbl, erase)
-	local copy = table.Copy(tbl)
+	-- local copy = table.Copy(tbl)
+	local copy = tbl
 	local meta = FindMetaTable(name)
 	print("Name:", name)
 	print("Base:", base)
@@ -97,6 +98,11 @@ function exmeta.LoadTable(name, base, tbl, erase)
 	if isstring(base) or istable(base) then
 		print("INHERITING FROM: '" .. tostring(base) .. "'")
 		meta = exmeta.Inherit(meta, base --[[@as string | table]])
+	else
+		local metaTable = getmetatable( tbl )
+		if metaTable then 
+			setmetatable( debug.getregistry()[name], metaTable )
+		end
 	end
 	meta.ClassName = name
 	hook.Run("EXMeta.TableLoaded", name, meta, base)

@@ -17,6 +17,17 @@ VEHICLE.Equipment = {}
 
 -- Category -> Option (-> Variant)
 VEHICLE.Selections = {
+	-- {
+	-- 	Category = "Standard",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Standard Lighting",
+	-- 			VirtualComponents = {
+	-- 				VirtualComponent = "photon_standard_sgmfpiu20"
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
 	{
 		Category = "Forward Lightbar",
 		Options = {

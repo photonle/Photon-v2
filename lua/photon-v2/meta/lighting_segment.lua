@@ -50,7 +50,6 @@ function Segment.New( segmentData, lightGroups )
 			local key = frame[i][1]
 			local value = frame[i][2]
 			if isstring(key) then
-				printf("Light key is a string [%s]", key)
 				local group = lightGroups[key]
 				if ( not group ) then
 					error( string.format( "Undefined LightGroup [%s] in segment.", key ) )
@@ -62,7 +61,6 @@ function Segment.New( segmentData, lightGroups )
 				result[key] = value
 			end
 		end
-		PrintTable(result)
 		return result
 	end
 
@@ -309,14 +307,14 @@ end
 
 
 function Segment:CalculatePriorityInput( inputState )
-	print("Calculating priority input...")
-	PrintTable( inputState )
+	-- print("Calculating priority input...")
+	-- PrintTable( inputState )
 	local topScore = -1000
 	local result
 	for channel, mode in pairs( inputState ) do
 		if (mode == "OFF") then continue end
 		if ( self.InputPriorities[channel] ) then
-			printf( "\tChecking channel [%s]", channel )
+			-- printf( "\tChecking channel [%s]", channel )
 			-- TODO: find alternative to string concatination
 			if ( ( self.InputPriorities[channel] > topScore ) and self:AcceptsChannelMode( channel .. "." .. inputState[channel] ) ) then
 				topScore = self.InputPriorities[channel]

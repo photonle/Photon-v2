@@ -44,15 +44,18 @@ ENT.ChannelTree = {
 
 function ENT:InitializeShared()
 	self.Components = {}
+	self.VirtualComponents = {}
 	self.Props = {}
 
 	self.ComponentArray = {}
-	
+	self.VirtualComponentArray = {}
+
 	self.Equipment = {
 		Components = {},
 		Props = {},
 		BodyGroups = {},
-		SubMaterials = {}
+		SubMaterials = {},
+		VirtualComponents ={}
 	}
 
 	--self.CurrentConfiguration = {}
@@ -168,10 +171,19 @@ end
 
 
 ---@param id string
+function ENT:SetupVirtualComponent( id )
+	local data = self.Equipment.VirtualComponents[id] --[[@as PhotonVehicleEquipment]]
+	if (not data) then
+		print(string.format("Unable to locate equipment virtual component ID [%s]", id))
+		return
+	end
+end
+
+---@param id string
 function ENT:SetupComponent( id )
 	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
 	if (not data) then
-		print(string.format("Unable to locate equipment ID [%s]", id))
+		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
 	end
 	print(string.format("Setting up component [%s]", id))
@@ -190,9 +202,11 @@ function ENT:SetupComponent( id )
 		return
 	end
 
-	-- Set default/essential properties
-	ent:SetMoveType( MOVETYPE_NONE )
-	ent:SetParent( self:GetComponentParent() )
+	if ( not ent.IsVirtual ) then
+		-- Set default/essential properties
+		ent.Entity:SetMoveType( MOVETYPE_NONE )
+		ent.Entity:SetParent( self:GetComponentParent() )
+	end
 
 	-- Set the other basic properties
 	ent:SetPropertiesFromEquipment( data )
@@ -203,15 +217,10 @@ function ENT:SetupComponent( id )
 
 	self.Components[id] = ent
 	ent:ApplyModeUpdate()
-
 end
 
 function ENT:RemoveAllComponents()
 	for id, ent in pairs(self.Components) do
-		-- if (IsValid(ent)) then
-		-- 	ent:Remove()
-		-- end
-		-- self.Components[id] = nil
 		self:RemoveEquipmentComponentByIndex( id )
 	end
 end
@@ -224,6 +233,9 @@ function ENT:RemoveEquipmentComponentByIndex( index )
 	self.Components[index] = nil
 end
 
+function ENT:RemoveEquipmentVirtualComponentByIndex( index )
+
+end
 
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:AddEquipment( equipmentTable )
@@ -237,14 +249,7 @@ end
 function ENT:RemoveEquipment( equipmentTable )
 	print("Controller is removing an equipment table...")
 	local equipmentComponents = equipmentTable.Components
-	-- local ent
-	-- local components = self.Components
 	for i=1, #equipmentComponents do
-		-- ent = components[equipmentTable[i]]
-		-- if (IsValid(ent)) then
-		-- 	ent:Remove()
-		-- end
-		-- components[i] = nil
 		self:RemoveEquipmentComponentByIndex(equipmentComponents[i])
 	end
 end
@@ -263,31 +268,47 @@ function ENT:SetupProfile( name, isReload )
 		error("Unable to locate vehicle profile [" .. tostring(name) .."].")
 		return
 	end
+	
 	print( string.format( "Setting up %s (%s)...", profile.Title, profile.ID ) )
+	
 	self.Equipment = profile.Equipment
 
 	if ( not profile.Selections ) then
+		-- Setup normal components
 		for id, equipment in pairs( self.Equipment.Components ) do
 			self:SetupComponent( id )
+		end
+		-- Setup virtual components
+		for id, equipment in pairs( self.Equipment.VirtualComponents ) do
+			self:SetupVirtualComponent( id )
 		end
 	else
 		self:SetupSelections()
 	end
 
-	self:SetupComponentArray()
+	self:SetupComponentArrays()
 
 end
 
-
-function ENT:SetupComponentArray()
+-- Stores components and virtual components in a numeric table
+-- for faster iteration operations.
+function ENT:SetupComponentArrays()
+	-- Setup normal components array
 	local componentArray = self.ComponentArray
-
 	for i=1, #componentArray do
 		componentArray[i] = nil
 	end
-
 	for id, component in pairs( self.Components ) do
 		componentArray[#componentArray+1] = component
+	end
+
+	-- Setup virtual components array
+	local virtualComponentArray = self.VirtualComponentArray
+	for i=1, #virtualComponentArray do
+		virtualComponentArray[i] = nil
+	end
+	for id, component in pairs( self.VirtualComponents ) do
+		virtualComponentArray[#virtualComponentArray+1] = component
 	end
 end
 
@@ -304,17 +325,7 @@ function ENT:SetupSelections()
 	if (SERVER) then 
 		self:SyncSelections()
 	end
-
 end
-
-
--- function ENT:SetupEquipment()
--- 	self:RemoveAllComponents()
--- 	local equipment = self:GetCurrentEquipment()
--- 	for id, entry in pairs(self.Equipment) do
--- 		self:SetupComponent( id )
--- 	end
--- end
 
 function ENT:OnRemove()
 	local components = {}
@@ -350,22 +361,21 @@ end
 ---@param categoryIndex integer
 ---@param optionIndex integer
 function ENT:OnSelectionChanged( categoryIndex, optionIndex )
-	print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
-	print("Controller:OnSelectionChanged() - Selections:")
-	PrintTable( self.CurrentProfile.Selections )
+	-- print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
+	-- print("Controller:OnSelectionChanged() - Selections:")
+	-- PrintTable( self.CurrentProfile.Selections )
 	local category = self.CurrentProfile.Selections[categoryIndex].Map
 	
 	self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
 	self.CurrentSelections[categoryIndex] = optionIndex
 	self:AddEquipment(category[optionIndex])
-	self:SetupComponentArray()
-	
+	self:SetupComponentArrays()
 end
 
 
 ---@param selections string
 function ENT:ProcessSelectionsString( selections )
-	print("Processing selections string '" .. tostring(selections) .. "'")
+	-- print("Processing selections string '" .. tostring(selections) .. "'")
 	local newSelections = string.Explode( " ", selections, false )
 	local currentSelections = self.CurrentSelections
 	for categoryIndex, optionIndex in pairs( newSelections ) do
@@ -384,6 +394,7 @@ end
 function ENT:OnComponentReloaded( componentId )
 	local matched = false
 	printf( "Controller notified of a component reload [%s]", componentId )
+	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Name == componentId ) then
 			self:RemoveEquipmentComponentByIndex( equipmentId )
@@ -391,7 +402,16 @@ function ENT:OnComponentReloaded( componentId )
 			matched = true
 		end
 	end
+	-- Reload virtual components
+	for equipmentId, component in pairs( self.VirtualComponents ) do
+		if ( component.Name == componentId ) then
+			-- self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
+			self:SetupVirtualComponent( equipmentId )
+			matched = true
+		end
+	end
+
 	if ( matched ) then
-		self:SetupComponentArray()
+		self:SetupComponentArrays()
 	end
 end

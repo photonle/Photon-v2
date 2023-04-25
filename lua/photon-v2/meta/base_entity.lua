@@ -2,7 +2,8 @@ if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonBaseEntity"
 ---@class PhotonBaseEntity : photon_entity
----@field Entity photon_entity
+---@field Entity Entity
+---@field IsVirtual boolean
 ---@field Model string
 ---@field PhotonController PhotonController
 local ENT = exmeta.New()
@@ -31,7 +32,7 @@ ENT.DefaultInputPriorities = {
 
 
 -- Connect component to corresponding entity and its controller.
----@param ent photon_entity
+---@param ent Entity
 ---@param controller PhotonController
 ---@return PhotonBaseEntity
 function ENT:Initialize( ent, controller )
@@ -41,15 +42,32 @@ function ENT:Initialize( ent, controller )
 		PhotonController = controller
 	}
 	setmetatable( photonEnt, { __index = self } )
-	debug.setmetatable( ent:GetTable(), { __index = photonEnt } )
-
-	ent.CurrentModes = controller.CurrentModes
+	
+	if ( ent:GetClass() == "photon_entity" ) then
+		debug.setmetatable( ent:GetTable(), { __index = photonEnt } )
+	else
+		photonEnt.IsVirtual = true
+		local virtualEnt = setmetatable( {
+			IsVirtual = true
+		}, {
+			__index = ent:GetTable()
+			-- __index = function( tbl, key )
+			-- 	if (ent[key] ) then return ent[key] end
+			-- 	return photonEnt[key]
+			-- end,
+		})
+		ent = virtualEnt
+	end
+	
+	photonEnt.CurrentModes = controller.CurrentModes
 
 	return ent --[[@as PhotonBaseEntity]]
 end
 
 function ENT:Setup()
-	self:SetModel( self.Model )
+	if ( not self.IsVirtual ) then
+		self.Entity:SetModel( self.Model )
+	end
 	return self
 end
 
@@ -62,15 +80,24 @@ function ENT:CreateClientside( controller )
 	return ent
 end
 
+-- Creates a component on an existing entity (clientside).
+---@param ent Entity
+---@param controller PhotonController
+function ENT:CreateOn( ent, controller )
+	local ent = self:Initialize( ent, controller )
+	ent:Setup()
+	return ent
+end
+
 function ENT:SetScale( scale )
 	if ( isnumber( scale ) ) then
-		self:SetModelScale( scale, 0 )
-		self:DisableMatrix( "RenderMultiply" )
+		self.Entity:SetModelScale( scale, 0 )
+		self.Entity:DisableMatrix( "RenderMultiply" )
 	elseif ( isvector( scale ) ) then
-		self:SetModelScale( 1 )
+		self.Entity:SetModelScale( 1 )
 		local matrix = Matrix()
 		matrix:Scale( scale )
-		ent:EnableMatrix( "RenderMultiply", matrix )
+		self.Entity:EnableMatrix( "RenderMultiply", matrix )
 	end
 end
 
@@ -101,11 +128,18 @@ end
 ---@param equipment PhotonVehicleEquipment
 ---@param isSoftUpdate? boolean (Default = `false`)
 function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
+	if ( self.IsVirtual ) then return end
 	local map = self.PropertyFunctionMap
 	-- Auto-apply supported properties
 	for property, value in pairs( equipment ) do
 		if ((map[property] ~= nil) and ((not isSoftUpdate) or (self.PropertiesUpdatedOnSoftUpdate[property]))) then
 			self:SetProperty( property, value )
 		end
+	end
+end
+
+function ENT:Remove()
+	if ( not self.IsVirtual ) then
+		self.Entity:Remove()
 	end
 end

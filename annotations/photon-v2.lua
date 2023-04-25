@@ -6,6 +6,9 @@ if (true) then return end
 ---@type PhotonLight
 PhotonLight = PhotonLight
 
+---@type PhotonLightState
+PhotonLightState = PhotonLightState
+
 ---@type PhotonSequence
 PhotonSequence = PhotonSequence
 
@@ -29,6 +32,9 @@ PhotonVehicle = PhotonVehicle
 
 ---@type PhotonVehicleEquipmentManager
 PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
+
+---@type PhotonLightColor
+PhotonLightColor = PhotonLightColor
 
 ---@type PhotonLight2D
 PhotonLight2D = PhotonLight2D

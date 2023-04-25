@@ -20,7 +20,7 @@ Photon2.OnEntityCreated = function( ent )
 	--local targ = ent:GetInternalVariable("LightingOriginHack") or "<error>"
 	--Photon2.Debug.Print("KEY VALUE: " .. tostring(targ))
 	--ent.SetKeyValue = ent._oldSetKeyValue
-	timer.Simple(0.01, function()
+	timer.Simple(0.1, function()
 		if not IsValid( ent ) then return end
 		if (ent:IsVehicle()) then
 			-- Photon2.Debug.Print("@vehiclename: " .. tostring(ent["@vehiclename"]))

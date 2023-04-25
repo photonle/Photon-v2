@@ -17,6 +17,21 @@ function Equipment.New( name, option )
 
 end
 
+function Equipment.GetTemplate()
+	return {
+		Components = {},
+		Props = {},
+		BodyGroups = {},
+		SubMaterials = {},
+		VirtualComponents = {}
+	}
+end
+
+function Equipment.ApplyTemplate( tbl )
+	for k, v in pairs( Equipment.GetTemplate() ) do
+		tbl[k] = rawget( tbl, k ) or v
+	end
+end
 
 ---@param entry table
 ---@param master table

@@ -20,7 +20,6 @@ function Light:Initialize( id, parent )
 		Class = self.Class,
 		Parent = parent
 	}
-	printf("SetState is [%s]", self.SetState)
 	return setmetatable( light, { __index = self } )
 end
 
@@ -43,4 +42,18 @@ function Light:DeactivateNow() end
 
 function Light:PrintTable()
 	PrintTable(self)
+end
+
+-- Finds and returns the corresponding PhotonLight class
+-- or throws a traceable error.
+---@param className string
+---@return PhotonLight
+function Light.FindClass( className )
+	local lightClass = _G["PhotonLight" .. tostring( className )]
+	
+	if ( not lightClass ) then
+		error(string.format( "Light class [%s] could not be found.", className ) )
+	end
+
+	return lightClass
 end

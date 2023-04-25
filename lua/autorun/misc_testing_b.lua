@@ -14,7 +14,6 @@
 		- Consolidating the metatable properties seems effective
 ]]
 
-
 if SERVER then return end
 
 local SysTime = SysTime

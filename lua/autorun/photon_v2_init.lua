@@ -1,5 +1,16 @@
+--[[
+	Photon v2 Initialization
+--]]
+
 ---@type table
 Photon2 = Photon2 or {}
+
+
+--[[
+	Compatability
+--]]
+
+string.StartsWith = string.StartsWith or string.StartWith
 
 if CLIENT then
     MsgC( Color(255, 94, 82), "\nP H O ", Color(97, 160, 255), "T O N ", Color(255, 255, 255, 255), " v2\n\n")
