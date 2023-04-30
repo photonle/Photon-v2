@@ -1,16 +1,16 @@
-Photon2.Light2D = Photon2.Light2D or {
+Photon2.RenderLight2D = Photon2.RenderLight2D or {
 	---@type PhotonLight2D[]
 	Active = {},
 }
 
 local alternateActive = {}
 
-local this = Photon2.Light2D
+local this = Photon2.RenderLight2D
 
 local overlayConVar = GetConVar("ph2_debug_light_overlay")
 local drawLights = GetConVar("ph2_draw_light2d")
 
-function Photon2.Light2D.OnPreRender()
+function Photon2.RenderLight2D.OnPreRender()
 	local activeLights = this.Active
 	local nextTable = alternateActive
 
@@ -58,7 +58,7 @@ local spriteHint = Material("photon/debug/sprite_hint")
 
 local light
 
-function Photon2.Light2D.DrawDebug()
+function Photon2.RenderLight2D.DrawDebug()
 	local activeLights = this.Active
 	-- line/dev testing
 	for i=1, #activeLights do
@@ -83,7 +83,7 @@ function Photon2.Light2D.DrawDebug()
 	end
 end
 
-function Photon2.Light2D.Render()
+function Photon2.RenderLight2D.Render()
 	local activeLights = this.Active
 
 	if ( drawLights:GetBool() ) then

@@ -1,3 +1,88 @@
+
+local function meshtest()
+	if SERVER then return end
+	local targ = ents.FindByClass("prop_vehicle_jeep")[1]
+	targ:SetSubMaterial( 17, "photon/common/blank" )
+	targ:SetSubMaterial( 19, "photon/common/blank" )
+	-- PrintTable( util.GetModelMeshes( targ:GetModel() ) )
+	-- local meshes = {}
+	-- for i=1, 10 do
+	-- 	meshes[i] = Photon2.Util.GetModelMesh( targ:GetModel(), "sentry/20fpiu_new/tail_r", i )
+	-- end
+	local meshL = Photon2.Util.GetModelMesh( targ:GetModel(), "sentry/20fpiu_new/tail_l", 8 )
+	local meshR = Photon2.Util.GetModelMesh( targ:GetModel(), "sentry/20fpiu_new/tail_r", 8 )
+	-- local mesh = Photon2.Util.GetModelMesh( targ:GetModel(), "sentry/20fpiu_new/tail_r", 1 )
+	local matrix = Matrix()
+	-- mesh:BuildFromTriangles( mesh.triangles )
+	local mat = Material("photon/common/glow")
+	mat:SetInt("$additive", 1)
+	mat:SetVector("$color", Vector(255, 0.2, 0))
+	-- mat:SetVector("$color", Vector(1, 0.0013, 0))
+	-- mat:SetVector("$color2", Vector(255, 255, 255))
+	mat:SetFloat("$alpha", 0.6)
+	mat:Recompute()
+	hook.Add("PostDrawTranslucentRenderables", "Photon2:Test", function(a, b, c)
+		if (a or b or c) then return end
+		if ( not targ ) then return end
+		-- if ( not  ) then return end
+		matrix:SetTranslation( targ:GetPos() )
+		matrix:SetAngles( targ:GetAngles() )
+		matrix:Rotate(Angle(0,90,0))
+		-- matrix:SetScale(Vector(4,4,4))
+		cam.Start3D()
+			cam.PushModelMatrix( matrix, false )
+			-- mesh:Draw()
+				render.SetMaterial( mat )
+				-- for i=1, 10 do
+				-- 	meshes[i]:Draw()
+				-- end
+				meshL:Draw()
+				meshR:Draw()
+				-- meshes[8]:Draw()
+			cam.PopModelMatrix()
+		cam.End3D()
+	end)
+	-- hook.Remove("PreDrawTranslucentRenderables", "Photon2:Test")
+end
+
+meshtest()
+-- hook.Remove("PostDrawEffects", "Photon2:Test")
+
+
+local function buildMaterial( name )
+	return CreateMaterial( name, "VertexLitGeneric", {
+		["$basetexture"] = Material("photon/whi_16px.png"):GetTexture("$basetexture"):GetName(),
+	})
+end
+
+local function subMaterialTest()
+	if CLIENT then
+		local matName = "testOverrideMat3"
+		local mat = Material("!" .. tostring(matName))
+		if ( mat:IsError() ) then 
+			print("building material")
+			mat = buildMaterial( matName ) 
+		end
+	
+		mat:SetInt( "$additive", 0 )
+		mat:SetInt( "$vertexalpha", 0 )
+		mat:SetInt( "$vertexcolor", 0 )
+		mat:SetInt( "$nocull", 1 )
+		mat:SetInt( "$translucent", 1 )
+		mat:SetVector( "$color2", Vector(255, 255, 255))
+		mat:Recompute()
+	
+		local targ = ents.FindByClass("prop_vehicle_jeep")[1]
+		targ:SetSubMaterial( 17, "!" .. tostring(matName))
+		-- LocalPlayer():GetEyeTrace().Entity
+		-- print(tostring(targ))
+	end
+end
+
+-- subMaterialTest()
+
+
+
 --[[
 	Performance notes:
 

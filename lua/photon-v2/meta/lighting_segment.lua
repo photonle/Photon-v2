@@ -412,23 +412,23 @@ end
 -- 	end
 -- end
 
----@param channel string Channel Name
----@param ... string Channel Modes
----@return PhotonLightingSegment
-function Segment:OnInput( channel, ... )
-	local modes = table.pack(...)
-	local pattern = PhotonSequenceCollection.New( self )
+-- ---@param channel string Channel Name
+-- ---@param ... string Channel Modes
+-- ---@return PhotonLightingSegment
+-- function Segment:OnInput( channel, ... )
+-- 	local modes = table.pack(...)
+-- 	local pattern = PhotonSequenceCollection.New( self )
 
-	if self.InputPriorities[channel] then
-		pattern.Priority = self.InputPriorities[channel]
-	else
-		pattern.Priority = -1
-		Photon2.Debug.Print("No channel input priority defined for '" .. tostring(channel) .. "'")
-	end
+-- 	if self.InputPriorities[channel] then
+-- 		pattern.Priority = self.InputPriorities[channel]
+-- 	else
+-- 		pattern.Priority = -1
+-- 		Photon2.Debug.Print("No channel input priority defined for '" .. tostring(channel) .. "'")
+-- 	end
 
-	for i = 1, #modes do
-		self.Patterns[channel .. "." .. mode] = pattern
-	end
+-- 	for i = 1, #modes do
+-- 		self.Patterns[channel .. "." .. mode] = pattern
+-- 	end
 
-	return self
-end
+-- 	return self
+-- end

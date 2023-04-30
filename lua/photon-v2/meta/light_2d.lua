@@ -3,7 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonLight2D"
 BASE = "PhotonLight"
 
-local manager = Photon2.Light2D
+local manager = Photon2.RenderLight2D
 local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
@@ -150,7 +150,7 @@ function Light.NewTemplate( data )
 		light.MaterialOverlay = Material( data.MaterialOverlay )
 	end
 
-	setmetatable( light, { __index = (base or PhotonLight2D) } )
+	setmetatable( light, { __index = PhotonLight2D } )
 
 	local rotate = light.QuadRotation
 	light.Top:Rotate(rotate)
@@ -161,11 +161,23 @@ function Light.NewTemplate( data )
 	return light
 end
 
----@param data table Data input table.
+---@param light PhotonLight2D Data input table.
 ---@param template? PhotonLight2D Light template.
-function Light.New( data, template )
-	---@type PhotonLight2D
-	local light = data
+function Light.New( light, template )
+	if ( not light.LocalPosition and isvector( light[2] ) ) then
+		light.LocalPosition = light[2]
+	else
+		light.LocalPosition = Vector()
+	end
+
+	if ( not light.LocalAngles and isangle( light[3] ) ) then
+		light.LocalAngles = light[3]
+	else
+		light.LocalAngles = Angle()
+	end
+
+	print("==== light =====")
+	PrintTable(light)
 
 	setmetatable( light, { __index = ( template or PhotonLight2D ) } )
 
@@ -205,10 +217,10 @@ function Light:DoPreRender()
 
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
-
-	-- if ( self.Visibility == 0 ) then self.ShouldDraw = false end
+	-- self.Visibility = 1
+	if ( self.Visibility == 0 ) then self.ShouldDraw = false end
 	
-	-- if ( self.ShouldDraw ) then
+	if ( self.ShouldDraw ) then
 
 		self.ViewNormal:Set( self.Position )
 		self.ViewNormal:Sub( EyePos() )
@@ -224,7 +236,7 @@ function Light:DoPreRender()
 		if (self.ViewDot < 0) then self.ViewDot = 0 end
 		if ( self.ViewDot <= 0 ) then self.ShouldDraw = false end
 
-	-- end
+	end
 		
 
 	if ( self.IntensityTransitions ) then

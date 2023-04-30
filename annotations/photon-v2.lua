@@ -42,6 +42,23 @@ PhotonLight2D = PhotonLight2D
 ---@type PhotonLight2DState
 PhotonLight2DState = PhotonLight2DState
 
+---@type PhotonLightSub
+PhotonLightSub = PhotonLightSub
+
+---@type PhotonLightSubState
+PhotonLightSubState = PhotonLightSubState
+
+---@type PhotonLightMesh
+PhotonLightMesh = PhotonLightMesh
+
+---@type PhotonLightMeshState
+PhotonLightMeshState = PhotonLightMeshState
+
+---@type PhotonDynamicMaterial
+PhotonDynamicMaterial = PhotonDynamicMaterial
+
+---@class PhotonDynamicMaterial
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
@@ -62,6 +79,7 @@ PhotonLight2DState = PhotonLight2DState
 ---@field Segments table
 ---@field Patterns table
 ---@field ColorMap table<integer, string[]> | string
+---@field LightStates { SubMat: table, Mesh: table } Light states.
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.

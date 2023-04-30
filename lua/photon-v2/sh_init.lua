@@ -1,3 +1,4 @@
+include("sh_util.lua")
 include("sh_functions.lua")
 include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
@@ -10,6 +11,12 @@ function LoadPhoton2MetaFiles()
 
 	exmeta.LoadFile("photon-v2/meta/light.lua")
 	exmeta.LoadFile("photon-v2/meta/light_2d.lua")
+
+	exmeta.LoadFile("photon-v2/meta/light_sub.lua")
+	exmeta.LoadFile("photon-v2/meta/light_sub_state.lua")
+
+	exmeta.LoadFile("photon-v2/meta/light_mesh.lua")
+	exmeta.LoadFile("photon-v2/meta/light_mesh_state.lua")
 
 	exmeta.LoadFile("photon-v2/meta/base_entity.lua")
 

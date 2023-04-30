@@ -30,35 +30,35 @@ VEHICLE.Selections = {
 			}
 		}
 	},
-	-- {
-	-- 	Category = "Forward Lightbar",
-	-- 	Options = {
-	-- 		{ Option = "JetSolaris", Variants = {
-	-- 				{ Variant = "Front",
-	-- 					Components = {
-	-- 						{
-	-- 							Name 		= "@jetsolaris_front",
-	-- 							Component	= "photon_fedsig_jetsolaris",
-	-- 							Position	= Vector(0, -15, 91),
-	-- 							Angles		= Angle(0, 0, 0),
-	-- 							Scale		= 1
-	-- 						},
-	-- 					}
+	{
+		Category = "Forward Lightbar",
+		Options = {
+			{ Option = "JetSolaris", Variants = {
+					{ Variant = "Front",
+						Components = {
+							{
+								Name 		= "@jetsolaris_front",
+								Component	= "photon_fedsig_jetsolaris",
+								Position	= Vector(0, -15, 91),
+								Angles		= Angle(0, 0, 0),
+								Scale		= 1
+							},
+						}
 						
-	-- 				},
-	-- 				{ Variant = "Alternate",
-	-- 					Components = {
-	-- 						{
-	-- 							Inherit 	= "@jetsolaris_front",
-	-- 							Scale		= 0.5,
-	-- 							Position	= Vector(0, -15, 100 )
-	-- 						}
-	-- 					}
-	-- 				},
-	-- 			}
-	-- 		}
-	-- 	},
-	-- }
+					},
+					{ Variant = "Alternate",
+						Components = {
+							{
+								Inherit 	= "@jetsolaris_front",
+								Scale		= 0.5,
+								Position	= Vector(0, -15, 100 )
+							}
+						}
+					},
+				}
+			}
+		},
+	}
 	-- },
 	-- {
 	-- 	Category = "Rear Lightbar",

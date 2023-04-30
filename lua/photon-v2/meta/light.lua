@@ -6,12 +6,16 @@ local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLight
 ---@field Parent Entity
+---@field Class string
 ---@field Deactivate boolean When true, marks the light to be activated on the next frame.
 ---@field IsActivated boolean
 ---@field States table
 ---@field Id integer
+---@field CurrentStateId string
 local Light = exmeta.New()
 
+---@param id integer
+---@param parent Entity
 ---@return PhotonLight
 function Light:Initialize( id, parent )
 	---@type PhotonLight2D

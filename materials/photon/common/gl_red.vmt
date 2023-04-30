@@ -1,0 +1,35 @@
+"VertexLitGeneric"
+{
+	"$basetexture"		"photon/common/gl_white"
+	"$bumpmap"		"schmal/shared/flat"
+	"$translucent" 0
+	"$halflambert" 1
+	"$phong" "1" 
+	"$phongboost" "100" 
+	"$phongfresnelranges" "[0.1 0.1 0.1]"
+	"$surfaceprop" "Glass"
+	"$nocull" 1
+   	 "$rimlight" "1"
+	"$rimlightexponent" "10"
+	"$rimlightboost" "20"
+	"$rimmask" "0"
+
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.25 0.05 0.03]"	
+	
+	"$normalmapalphaenvmapmask" 0
+	"$envmapFresnel" "0"
+
+	
+	hdr?$envmaptint "[ 2 0 0 ]"
+	hdr?$envmaptint "[ 1 0 0 ]"
+	"$colorfix" "{110 5 0}"
+	Proxies
+	{
+		Equals
+		{
+			srcVar1	$colorfix
+			resultVar	$color
+		}
+	}
+}

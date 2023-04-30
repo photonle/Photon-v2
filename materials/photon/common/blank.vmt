@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture"		"photon/common/blank"
+	"$additive" "1"
+	"$translucent" "1"
+	"$alpha" "0"
+}

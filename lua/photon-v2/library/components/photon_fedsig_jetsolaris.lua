@@ -136,13 +136,14 @@ COMPONENT.Lights = {
 	
 }
 
-COMPONENT.ColorMap = "[R] 2 5 6 9 10 [B] 3 4 7 8 11 [A] 12 [W] 1"
+COMPONENT.ColorMap = "[R] 2 5 9 10 7 [B] 3 4 8 11 6 [A] 12 [W] 1"
 
 -- Allows for multiple lights to be treated as one when desired
 COMPONENT.LightGroups = {
 	["LeftEdge"] = { 5, 7, 9 },
 	["RightEdge"] = { 4, 6, 8 },
 	["Left"] = { 4, 6, 8, 10, 11 },
+	["Right"] = { 4, 6, 8, 10, 11 },
 	["All"] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
 }
 
@@ -163,7 +164,8 @@ COMPONENT.Segments = {
 				:Flash(1,2,3):Do(3):Add(0)
 				:Alternate(3,0,4):Do(4):Add(0)
 				:Flash(3,0,3):Do(3):Add(0),
-			["STEADY"] = { 4 }
+			["STEADY"] = { 4 },
+			["SLOW"] = sequence():Alternate( 1, 2, 5 )
 		},
 	
 	},
@@ -177,7 +179,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["Flash1"] = sequence():Alternate(1,2,4):Do(4):Add(0):Flash(1,2,3):Do(3),
-			["Rotate"] = { 3, 4, 5, }
+			["Rotate"] = { 3, 4, 5, },
+			["Slow"] = sequence():Alternate( 2, 1, 5 )
 		},
 		Attributes = {
 			Intensity = true
@@ -219,9 +222,12 @@ COMPONENT.Patterns = {
 	-- },
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
-			All = "STEADY"
+			All = "SLOW"
 			-- All = "PATTERN_1",
-			-- Edge = "Flash1",
+			
+			-- TODO: MAKE THIS ERROR
+			-- Edge = "Slow",
+			
 			-- Inner = "Flash1"
 			-- Stored internally as Emergency.Warning:STAGE_1
 			-- TODO: conditional pattern implementation

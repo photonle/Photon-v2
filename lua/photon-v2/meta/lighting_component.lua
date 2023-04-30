@@ -70,14 +70,15 @@ function Component.New( name, data )
 		component.ColorMap = data.ColorMap --[[@as table<integer, string[]>]]
 	end
 
-	
+
 	--[[
 			Compile Light Templates
 	--]]
 
 	local lightTemplates = {}
 	for lightClassName, templates in pairs( data.Lighting ) do
-		
+		printf( "\t\tLight class %s templates...", lightClassName )
+
 		local lightClass = _G["PhotonLight" .. lightClassName]
 		
 		-- Verify light class exists/is supported
@@ -86,12 +87,19 @@ function Component.New( name, data )
 		end
 		
 		-- Iterate through each template in the light class
-		for lightName, lightData in pairs( templates ) do
+		for templateName, templateData in pairs( templates ) do
+			templateData.Class = lightClassName
+			printf("\t\t\tTemplate name: %s", templateName)
 			-- Throw error on duplicate light template name
-			if ( lightTemplates[lightName] ) then
-				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", lightName ) )
+			if ( lightTemplates[templateName] ) then
+				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", templateName ) )
 			end
-			lightTemplates[lightName] = lightClass.NewTemplate( lightData )
+			
+			lightTemplates[templateName] = lightClass.NewTemplate( templateData )
+
+			if ( not lightTemplates[templateName] ) then
+				error( "Light template [" .. tostring(templateName) .. "] was not added. NewTemplate likely returned nil." )
+			end
 		end
 
 	end
@@ -101,13 +109,15 @@ function Component.New( name, data )
 			Compile Lights
 	--]]
 
+	print("Compiling lights...")
 	for id, light in pairs( data.Lights ) do
-
+		printf( "\t\tLight ID: %s", id )
 		-- TODO: Process { Set = "x" } scripting
 
-		local inverse = false
+		local inverse = nil
 
-		if ( string.StartsWith(light[1], "-") ) then 
+		-- Add light.Inverse value if the template starts with the - sign
+		if ( string.StartsWith(light[1], "-") ) then
 			inverse = true
 			light[1] = string.sub( light[1], 2 )
 		end
@@ -119,13 +129,14 @@ function Component.New( name, data )
 		end
 
 		local lightClass = PhotonLight.FindClass( template.Class )
+		print("\t\t\tClass: " .. tostring( template.Class ))
+		-- Set value of light.States and light.Inverse automatically
+		light.States = light.States or lightStates[template.Class]
+		if ( light.Inverse == nil ) then light.Inverse = inverse end
 
-		component.Lights[id] = lightClass.New( {
-			LocalPosition = light[2],
-			LocalAngles = light[3],
-			States = lightStates[template.Class],
-			Inverse = inverse
-		}, template ) --[[@as PhotonLight]]
+		-- Additional data passed to light constructor for the light
+		-- class to process.
+		component.Lights[id] = lightClass.New( light, template ) --[[@as PhotonLight]]
 	end
 
 
@@ -217,7 +228,6 @@ function Component:SetChannelMode( channel, new, old )
 		segment:OnModeChange( channel, new )
 	end
 end
-
 
 
 ---@param segmentName string
