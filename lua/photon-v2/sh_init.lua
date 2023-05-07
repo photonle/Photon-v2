@@ -5,6 +5,8 @@ include("sh_sequence_builder.lua")
 include("sh_schema.lua")
 
 function LoadPhoton2MetaFiles()
+	exmeta.LoadFile("photon-v2/meta/dynamic_material.lua")
+
 	exmeta.LoadFile("photon-v2/meta/light_color.lua")
 	exmeta.LoadFile("photon-v2/meta/light_state.lua")
 	exmeta.LoadFile("photon-v2/meta/light_2d_state.lua")

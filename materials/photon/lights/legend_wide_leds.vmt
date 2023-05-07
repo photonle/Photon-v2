@@ -3,7 +3,6 @@
 	"$basetexture"		"photon/lights/legend_wide_leds"
 	"$nocull" 1
 	"$additive" 1
-	"$subtractive" 1
 	"$vertexalpha" 1
 	"$vertexcolor" 1
 }

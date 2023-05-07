@@ -33,6 +33,17 @@ VEHICLE.Selections = {
 	{
 		Category = "Forward Lightbar",
 		Options = {
+			{ Option = "SoundOff Signal nForce",
+				Components = {
+					{
+						Name = "@nforce54",
+						Component = "photon_sos_nforce_54",
+						Position = Vector( 0, -16, 87.9 ),
+						Angles = Angle( 0, 0, 0 )
+					}
+				}
+
+			},
 			{ Option = "JetSolaris", Variants = {
 					{ Variant = "Front",
 						Components = {

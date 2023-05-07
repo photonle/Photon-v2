@@ -38,7 +38,8 @@ function Component.New( name, data )
 		Lights = {},
 		Segments = {},
 		Patterns = {},
-		LightGroups = data.LightGroups
+		LightGroups = data.LightGroups,
+		DefaultSubMaterials = data.DefaultSubMaterials
 	}
 
 
@@ -80,12 +81,12 @@ function Component.New( name, data )
 		printf( "\t\tLight class %s templates...", lightClassName )
 
 		local lightClass = _G["PhotonLight" .. lightClassName]
-		
+
 		-- Verify light class exists/is supported
 		if ( not lightClass ) then
 			error(string.format("Unrecognized light class [%s]. Global table [PhotonLight%s] is nil.", lightClassName, lightClassName))
 		end
-		
+
 		-- Iterate through each template in the light class
 		for templateName, templateData in pairs( templates ) do
 			templateData.Class = lightClassName
@@ -94,7 +95,7 @@ function Component.New( name, data )
 			if ( lightTemplates[templateName] ) then
 				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", templateName ) )
 			end
-			
+
 			lightTemplates[templateName] = lightClass.NewTemplate( templateData )
 
 			if ( not lightTemplates[templateName] ) then

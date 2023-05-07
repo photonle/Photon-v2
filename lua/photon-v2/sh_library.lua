@@ -119,7 +119,7 @@ function Photon2.ReloadComponentFile()
 
 		if (startPos) then
 			local path = source:sub(startPos)
-			Photon2.Debug.Print("Reloading vehicle: " .. tostring(path))
+			Photon2.Debug.Print("Reloading component: " .. tostring(path))
 			Photon2.LoadComponentFile( path, true )
 		else
 			Photon2.Debug.Print("Attempted to call ReloadComponentFile() from an invalid file location [" .. tostring(source) .."]")

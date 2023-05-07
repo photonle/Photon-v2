@@ -204,6 +204,7 @@ function ENT:SetupComponent( id )
 	elseif (CLIENT and (not data.OnServer)) then
 		---@type PhotonLightingComponent
 		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
+		-- component.Setup( component )
 	else
 		return
 	end

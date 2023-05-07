@@ -43,12 +43,19 @@ Light.Class = "2D"
 Light.LocalPosition = Vector(0, 0, 0)
 Light.LocalAngles = Angle(0, 0, 0)
 
-Light.Texture = "sprites/emv/circular_src"
+Light.Material = "photon/common/blank"
+Light.MaterialOverlay = "photon/common/blank"
 Light.Width = 1
 Light.Height = 1
 Light.Scale = 1
 Light.Ratio = 1
 Light.UseBasicPlacement = true
+
+Light.SpreadWidth = 1
+Light.SpreadHeight = 1
+
+Light.ForwardVisibilityOffset = 0
+Light.ForwardBloomOffset = 0
 
 Light.VisibilityRadius = 1
 
@@ -78,30 +85,35 @@ Light.States = {
 		IntensityTransitions 	= true,
 	},
 	["OFF"] = {
-		SourceDetailColor = Color(0,0,0), SourceFillColor = Color(0,0,0), GlowColor = Color(0, 0, 0), ShapeGlowColor = Color( 0, 0, 0 )
+		SourceDetailColor = Color(0,0,0), SourceFillColor = Color(0,0,0), GlowColor = Color(0, 0, 0), ShapeGlowColor = Color( 0, 0, 0 ), InnerGlowColor = Color( 0, 0, 0 )
 	},
 	["R"] = {
 		SourceDetailColor = Color(255,255,0), 
 		SourceFillColor = Color(255,0,0),
-		GlowColor = Color(255, 0, 0),
+		GlowColor = Color(255, 0, 24),
+		InnerGlowColor = Color(255, 0, 0),
 		ShapeGlowColor = Color(255, 0, 0)
 	},
 	["B"] = {
 		SourceDetailColor = Color(0,255,255), 
 		SourceFillColor = Color(0,0,255),
-		GlowColor = Color(0, 0, 255),
+		-- SourceFillColor = Color(0,0,255),
+		GlowColor = Color(40, 0, 255),
+		InnerGlowColor = Color(0, 0, 512),
 		ShapeGlowColor = Color(0, 0, 255),
 	},
 	["A"] = {
 		SourceDetailColor = Color(255,255,0), 
 		SourceFillColor = Color(200,128,0),
 		GlowColor = Color( 255, 128, 0 ),
+		InnerGlowColor = Color( 255, 255, 0 ),
 		ShapeGlowColor = Color( 255, 128, 0 ),
 	},
 	["W"] = {
 		SourceDetailColor = Color(255,255,255), 
 		SourceFillColor = Color(128,128,128),
 		GlowColor = Color(225, 225, 255),
+		InnerGlowColor = Color(225, 225, 255),
 		ShapeGlowColor = Color(225, 225, 255),
 	},
 }
@@ -128,6 +140,7 @@ function Light:Initialize( id, parentEntity )
 	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )
 	self.SourceFillColor = PhotonLightColor()
 	self.GlowColor = PhotonLightColor()
+	self.InnerGlowColor = PhotonLightColor()
 	self.ShapeGlowColor = PhotonLightColor()
 	return self
 end
@@ -138,19 +151,25 @@ end
 ---@param data table Data input table.
 function Light.NewTemplate( data )
 	---@type PhotonLight2D
-	local light = data
+	local light = setmetatable( data, { __index = PhotonLight2D } )
+	
 
 	light.Top 		= Vector(  data.Width * 0.5,  data.Height * 0.5, 0 )
 	light.Right 	= Vector( -data.Width * 0.5,  data.Height * 0.5, 0 )
 	light.Bottom 	= Vector( -data.Width * 0.5, -data.Height * 0.5, 0 )
 	light.Left 		= Vector(  data.Width * 0.5, -data.Height * 0.5, 0 )
 	
-	light.Material = Material( data.Material )
-	if (light.MaterialOverlay) then
+	if ( isstring( light.Material ) ) then
+		light.Material = Material( data.Material )
+	end
+
+	if ( isstring(light.MaterialOverlay) ) then
 		light.MaterialOverlay = Material( data.MaterialOverlay )
 	end
 
-	setmetatable( light, { __index = PhotonLight2D } )
+	if ( isstring( light.MaterialBloom ) ) then
+		light.MaterialBloom = Material( data.MaterialBloom )
+	end
 
 	local rotate = light.QuadRotation
 	light.Top:Rotate(rotate)
@@ -176,8 +195,8 @@ function Light.New( light, template )
 		light.LocalAngles = Angle()
 	end
 
-	print("==== light =====")
-	PrintTable(light)
+	-- print("==== light =====")
+	-- PrintTable(light)
 
 	setmetatable( light, { __index = ( template or PhotonLight2D ) } )
 
@@ -213,10 +232,15 @@ function Light:DoPreRender()
 	self.ShouldDraw = true
 
 	self.Position = self.Parent:LocalToWorld( self.LocalPosition )
+	
 	self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
 
+	-- self.NormUp = self.Angles:Up()
+	-- self.NormForward = self.Angles:Forward()
+	self.RightNormal = self.Angles:Right()
+
 	-- Update visibility calculation
-	self.Visibility = util_pixvis( self.Position, self.VisibilityRadius, self.PixVisHandle )
+	self.Visibility = util_pixvis( self.Position + (self.Angles:Forward() * self.ForwardVisibilityOffset), self.VisibilityRadius, self.PixVisHandle )
 	-- self.Visibility = 1
 	if ( self.Visibility == 0 ) then self.ShouldDraw = false end
 	
@@ -275,6 +299,7 @@ function Light:SetState( stateId )
 	self.SourceFillColor:SetTarget( state.SourceFillColor )
 	self.SourceDetailColor:SetTarget( state.SourceDetailColor )
 	self.GlowColor:Set( state.GlowColor, 1 )
+	self.InnerGlowColor:Set( state.InnerGlowColor, 1 )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity

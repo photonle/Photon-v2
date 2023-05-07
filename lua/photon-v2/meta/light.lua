@@ -54,7 +54,7 @@ end
 ---@return PhotonLight
 function Light.FindClass( className )
 	local lightClass = _G["PhotonLight" .. tostring( className )]
-	
+
 	if ( not lightClass ) then
 		error(string.format( "Light class [%s] could not be found.", className ) )
 	end
