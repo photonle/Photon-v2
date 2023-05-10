@@ -9,7 +9,7 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLight2D : PhotonLight
----@field PixVisHandle pixelvis_handle_t
+---@field PixVisHandle pixelvis_handle_t Internal property.
 ---@field VisibilityRadius number (Default = `1`) The radius number used for the PixelVisible calculation.
 ---@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
 ---@field LocalPosition Vector
@@ -21,6 +21,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Intensity number Light's current (actual) intensity.
 ---@field TargetIntensity number Light's target intensity.
 ---@field Position Vector World position of the light. Set and updated automatically.
+---@field EffectPosition Vector World position to render the light effects at. Except in special cirumstances, this is equal to Light.Position.
 ---@field Angles Angle World angles of the light. Set and updated automatically.
 ---@field Texture string The texture to use for the light source.
 ---@field Width number Width of the light source.
@@ -36,6 +37,12 @@ local printf = Photon2.Debug.PrintF
 ---@field ViewNormal Vector
 ---@field ViewDotRight number
 ---@field ViewDotUp number
+---@field LightMatrixEnabled boolean Internal property. Will set to true if a LightMatrix is defined.
+---@field LightMatrix Vector[] Relative position vectors where additional effect sprites for this light should be drawn. Consider using just a BloomMaterial texture before setting up a LightMatrix, as the BloomMaterial can provide similar results with less performance overhead. Do note, however, that a LightMatrix generally still has better performance than using another dedicated Light.
+---@field LightMatrixScaleMultiplier number Sets the light scale (perceived brightness) for all the LightMatrix sprites.
+---@field WorldLightMatrix Vector[] Internal property. Stores the matrix points' world positions.
+---@field MaterialsLoaded boolean If true, material string names should be materials.
+--@field ComponentScale boolean
 local Light = exmeta.New()
 
 Light.Class = "2D"
@@ -50,6 +57,8 @@ Light.Height = 1
 Light.Scale = 1
 Light.Ratio = 1
 Light.UseBasicPlacement = true
+
+-- Light.ComponentScale = 1
 
 Light.SpreadWidth = 1
 Light.SpreadHeight = 1
@@ -71,6 +80,10 @@ Light.IntensityGainFactor = 20
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1
 
+Light.LightMatrixEnabled = false
+Light.LightMatrixScaleMultiplier = 1
+
+Light.DrawLightPoints = true
 -- Light.States = {
 -- 	["OFF"] = { Primary = Color( 0, 0, 0 ), Overlay = Color( 0, 0, 0 ) },
 -- 	["R"] = { Primary = Color( 255, 64, 0 ), Overlay = Color(255, 255, 0) },
@@ -85,23 +98,49 @@ Light.States = {
 		IntensityTransitions 	= true,
 	},
 	["OFF"] = {
-		SourceDetailColor = Color(0,0,0), SourceFillColor = Color(0,0,0), GlowColor = Color(0, 0, 0), ShapeGlowColor = Color( 0, 0, 0 ), InnerGlowColor = Color( 0, 0, 0 )
+		SourceDetailColor = Color(0,0,0), 
+		SourceFillColor = Color(0,0,0), 
+		GlowColor = Color(0, 0, 0), 
+		ShapeGlowColor = Color( 0, 0, 0 ), 
+		InnerGlowColor = Color( 0, 0, 0 ),
+		BloomColor = Color( 0, 0, 0 )
 	},
+	-- EXPERIMENTAL VIOLET-SHIFTED COLORTS
 	["R"] = {
+		-- VIOLET-SHIFTED COLORS:
+		SourceFillColor = Color(255,0,32),
+		GlowColor = Color(255, 0, 48),
+		-- ORIGINAL GREEN-SHIFTED:
 		SourceDetailColor = Color(255,255,0), 
-		SourceFillColor = Color(255,0,0),
-		GlowColor = Color(255, 0, 24),
-		InnerGlowColor = Color(255, 0, 0),
+		InnerGlowColor = Color(255, 24, 0),
 		ShapeGlowColor = Color(255, 0, 0)
 	},
 	["B"] = {
+		-- VIOLET-SHIFTED COLORS:
+		SourceFillColor = Color(64,0,255),
+		GlowColor = Color(64, 0, 255),
+		-- ORIGINAL GREEN-SHIFTED:
+		InnerGlowColor = Color(0, 32, 512),
 		SourceDetailColor = Color(0,255,255), 
-		SourceFillColor = Color(0,0,255),
-		-- SourceFillColor = Color(0,0,255),
-		GlowColor = Color(40, 0, 255),
-		InnerGlowColor = Color(0, 0, 512),
 		ShapeGlowColor = Color(0, 0, 255),
 	},
+	-- ORIGINAL GREEN-SHIFTED COLORS
+	-- ["R"] = {
+	-- 	SourceDetailColor = Color(255,255,0), 
+	-- 	SourceFillColor = Color(255,0,0),
+	-- 	GlowColor = Color(255, 0, 24),
+	-- 	InnerGlowColor = Color(255, 32, 0),
+	-- 	ShapeGlowColor = Color(255, 0, 0)
+	-- },
+	-- ["B"] = {
+	-- 	SourceDetailColor = Color(0,255,255), 
+	-- 	SourceFillColor = Color(0,0,255),
+	-- 	-- SourceFillColor = Color(0,0,255),
+	-- 	GlowColor = Color(40, 0, 255),
+	-- 	InnerGlowColor = Color(0, 32, 512),
+	-- 	ShapeGlowColor = Color(0, 0, 255),
+	-- },
+
 	["A"] = {
 		SourceDetailColor = Color(255,255,0), 
 		SourceFillColor = Color(200,128,0),
@@ -127,6 +166,24 @@ end
 function Light:Render()
 end
 
+
+-- List of properties that need to be scaled to the parent entity scale
+Light.ScalableProperties = {
+	"LocalPosition", 
+	"Top", 
+	"Right", 
+	"Bottom", 
+	"Left", 
+	"Width", 
+	"Height", 
+	"Scale",
+	"ForwardVisibilityOffset",
+	"ForwardBloomOffset",
+	"LightMatrixScaleMultiplier",
+	"SpreadWidth",
+	"SpreadHeight"
+}
+
 --[[
 		INITIALIZE
 --]]
@@ -137,12 +194,61 @@ function Light:Initialize( id, parentEntity )
 	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLight2D]]
 	self.Matrix = Matrix()
 	self.ViewNormal = Vector()
+	self.EffectPosition = Vector()
 	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )
 	self.SourceFillColor = PhotonLightColor()
 	self.GlowColor = PhotonLightColor()
 	self.InnerGlowColor = PhotonLightColor()
 	self.ShapeGlowColor = PhotonLightColor()
+
+	-- Adjust to component's scale
+	local scale = parentEntity:GetModelScale()
+	if (scale ~= 1) then
+		self:SetLightScale( scale )
+	end
+
+	if ( self.LightMatrix ) then
+		self.LightMatrixEnabled = true
+		self.WorldLightMatrix = {}
+		for i=1, #self.LightMatrix do
+			self.WorldLightMatrix[i] = Vector()
+		end
+	end
+
+	-- Lazy loading of materials.
+
+	local baseClass = getmetatable( self ).__index
+
+	if ( isstring( baseClass.Material ) ) then
+		baseClass.Material = Material( baseClass.Material )
+	end
+
+	if ( isstring(baseClass.MaterialOverlay) ) then
+		baseClass.MaterialOverlay = Material( baseClass.MaterialOverlay )
+	end
+
+	if ( isstring( baseClass.MaterialBloom ) ) then
+		baseClass.MaterialBloom = Material( baseClass.MaterialBloom )
+	end
+
 	return self
+end
+
+function Light:SetLightScale( scale )
+	local properties = self.ScalableProperties
+	for i=1, #self.ScalableProperties do
+		-- remove current values to so the metatable values are restored
+		self[properties[i]] = nil
+		-- scale is set using metatable values
+		self[properties[i]] = self[properties[i]] * scale
+	end
+end
+
+-- Internal function. Converts string material names to Material objects.
+function Light:LoadMaterials()
+
+
+	self.MaterialsLoaded = true
 end
 
 --[[
@@ -152,25 +258,12 @@ end
 function Light.NewTemplate( data )
 	---@type PhotonLight2D
 	local light = setmetatable( data, { __index = PhotonLight2D } )
-	
 
 	light.Top 		= Vector(  data.Width * 0.5,  data.Height * 0.5, 0 )
 	light.Right 	= Vector( -data.Width * 0.5,  data.Height * 0.5, 0 )
 	light.Bottom 	= Vector( -data.Width * 0.5, -data.Height * 0.5, 0 )
 	light.Left 		= Vector(  data.Width * 0.5, -data.Height * 0.5, 0 )
 	
-	if ( isstring( light.Material ) ) then
-		light.Material = Material( data.Material )
-	end
-
-	if ( isstring(light.MaterialOverlay) ) then
-		light.MaterialOverlay = Material( data.MaterialOverlay )
-	end
-
-	if ( isstring( light.MaterialBloom ) ) then
-		light.MaterialBloom = Material( data.MaterialBloom )
-	end
-
 	local rotate = light.QuadRotation
 	light.Top:Rotate(rotate)
 	light.Right:Rotate(rotate)
@@ -225,6 +318,9 @@ end
 
 local IsValid = IsValid
 
+-- Micro-optimization to reuse Vector
+local normalRef = Vector()
+
 function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return nil end
@@ -235,9 +331,13 @@ function Light:DoPreRender()
 	
 	self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
 
+	
+
 	-- self.NormUp = self.Angles:Up()
 	-- self.NormForward = self.Angles:Forward()
 	self.RightNormal = self.Angles:Right()
+	self.UpNormal = self.Angles:Up()
+	self.ForwardNormal = self.Angles:Forward()
 
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position + (self.Angles:Forward() * self.ForwardVisibilityOffset), self.VisibilityRadius, self.PixVisHandle )
@@ -245,6 +345,40 @@ function Light:DoPreRender()
 	if ( self.Visibility == 0 ) then self.ShouldDraw = false end
 	
 	if ( self.ShouldDraw ) then
+
+		-- Setup effect positioning
+		normalRef:Set( self.Angles:Forward() )
+		normalRef:Mul( self.ForwardBloomOffset )
+		self.EffectPosition:Set( self.Position )
+		self.EffectPosition:Add( normalRef )
+
+		-- Setup light matrix
+		if ( self.LightMatrixEnabled ) then
+			local localPoint, worldPoint
+			for i = 1, #self.LightMatrix do
+
+				localPoint = self.LightMatrix[i]
+
+				worldPoint = self.WorldLightMatrix[i]
+				worldPoint:Set( self.EffectPosition )
+
+				normalRef:Set( self.RightNormal )
+				normalRef:Mul( localPoint.x )
+				worldPoint:Add( normalRef )
+
+				normalRef:Set( self.ForwardNormal )
+				normalRef:Mul( localPoint.y )
+				worldPoint:Add( normalRef )
+
+				normalRef:Set( self.UpNormal )
+				normalRef:Mul( localPoint.z )
+				worldPoint:Add( normalRef )
+
+				-- self.WorldLightMatrix[i] = worldPoint
+
+			end
+		end
+
 
 		self.ViewNormal:Set( self.Position )
 		self.ViewNormal:Sub( EyePos() )
@@ -279,6 +413,9 @@ function Light:DoPreRender()
 
 		self.SourceFillColor:SetIntensity( self.Intensity )
 		self.SourceDetailColor:SetIntensity( self.Intensity )
+		self.GlowColor:SetIntensity( self.Intensity )
+		self.ShapeGlowColor:SetIntensity( self.Intensity )
+		self.InnerGlowColor:SetIntensity( self.Intensity )
 
 	end
 
@@ -298,8 +435,9 @@ function Light:SetState( stateId )
 
 	self.SourceFillColor:SetTarget( state.SourceFillColor )
 	self.SourceDetailColor:SetTarget( state.SourceDetailColor )
-	self.GlowColor:Set( state.GlowColor, 1 )
-	self.InnerGlowColor:Set( state.InnerGlowColor, 1 )
+	self.GlowColor:SetTarget( state.GlowColor )
+	self.InnerGlowColor:SetTarget( state.InnerGlowColor )
+	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
@@ -312,12 +450,18 @@ function Light:SetState( stateId )
 
 		self.SourceFillColor:SetIntensity( self.Intensity )
 		self.SourceDetailColor:SetIntensity( self.Intensity )
+		self.GlowColor:SetIntensity( self.Intensity )
+		self.InnerGlowColor:SetIntensity( self.Intensity )
+		self.ShapeGlowColor:SetIntensity( self.Intensity )
 
 	else
 		self.Intensity = self.TargetIntensity
 
 		self.SourceFillColor:SetIntensity( self.Intensity )
 		self.SourceDetailColor:SetIntensity( self.Intensity )
+		self.GlowColor:SetIntensity( self.Intensity )
+		self.InnerGlowColor:SetIntensity( self.Intensity )
+		self.ShapeGlowColor:SetIntensity( self.Intensity )
 	end
 end
 

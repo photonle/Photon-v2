@@ -96,7 +96,9 @@ function ENT:CreateOn( ent, controller )
 end
 
 function ENT:SetScale( scale )
+	local oldScale
 	if ( isnumber( scale ) ) then
+		oldScale = self.Entity:GetModelScale()
 		self.Entity:SetModelScale( scale, 0 )
 		self.Entity:DisableMatrix( "RenderMultiply" )
 	elseif ( isvector( scale ) ) then
@@ -104,6 +106,9 @@ function ENT:SetScale( scale )
 		local matrix = Matrix()
 		matrix:Scale( scale )
 		self.Entity:EnableMatrix( "RenderMultiply", matrix )
+	end
+	if ( self.OnScaleChange ) then
+		self:OnScaleChange( scale, oldScale )
 	end
 end
 

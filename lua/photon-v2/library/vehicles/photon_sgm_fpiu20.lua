@@ -38,8 +38,9 @@ VEHICLE.Selections = {
 					{
 						Name = "@nforce54",
 						Component = "photon_sos_nforce_54",
-						Position = Vector( 0, -16, 87.9 ),
-						Angles = Angle( 0, 0, 0 )
+						Position = Vector( 0, -15, 87.55 ),
+						Angles = Angle( 0, 0, -1 ),
+						Scale = 1.029
 					}
 				}
 

@@ -1,0 +1,19 @@
+"unlitGeneric"
+{
+	"$basetexture" "sentry/20fpiu_new/tail_on"
+	"$bumpmap" "sentry/shared/skin_nm"
+	"$translucent" "1"
+	"$carpenisenabled" "[5 1.25 0]"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a penis
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
+
+
+

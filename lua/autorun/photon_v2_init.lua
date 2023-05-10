@@ -1,6 +1,7 @@
 --[[
 	Photon v2 Initialization
 --]]
+print( "Initializing Photon 2..." )
 
 ---@type table
 Photon2 = Photon2 or {}

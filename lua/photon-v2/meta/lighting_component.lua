@@ -78,7 +78,7 @@ function Component.New( name, data )
 
 	local lightTemplates = {}
 	for lightClassName, templates in pairs( data.Lighting ) do
-		printf( "\t\tLight class %s templates...", lightClassName )
+		-- printf( "\t\tLight class %s templates...", lightClassName )
 
 		local lightClass = _G["PhotonLight" .. lightClassName]
 
@@ -110,9 +110,9 @@ function Component.New( name, data )
 			Compile Lights
 	--]]
 
-	print("Compiling lights...")
+	-- print("Compiling lights...")
 	for id, light in pairs( data.Lights ) do
-		printf( "\t\tLight ID: %s", id )
+		-- printf( "\t\tLight ID: %s", id )
 		-- TODO: Process { Set = "x" } scripting
 
 		local inverse = nil
@@ -130,7 +130,7 @@ function Component.New( name, data )
 		end
 
 		local lightClass = PhotonLight.FindClass( template.Class )
-		print("\t\t\tClass: " .. tostring( template.Class ))
+		-- print("\t\t\tClass: " .. tostring( template.Class ))
 		-- Set value of light.States and light.Inverse automatically
 		light.States = light.States or lightStates[template.Class]
 		if ( light.Inverse == nil ) then light.Inverse = inverse end
@@ -215,6 +215,15 @@ function Component:Initialize( ent, controller )
 end
 
 
+function Component:OnScaleChange( newScale, oldScale )
+	for key, light in pairs(self.Lights) do
+		if (light.SetLightScale) then
+			light:SetLightScale( newScale )
+		end
+	end
+end
+
+
 function Component:ApplyModeUpdate()
 	for name, segment in pairs( self.Segments ) do
 		segment:ApplyModeUpdate()
@@ -235,7 +244,7 @@ end
 ---@param sequence PhotonSequence
 function Component:RegisterActiveSequence( segmentName, sequence )
 	-- local sequence = self.Segments[segmentName].Sequences[sequence]
-	printf("Adding sequence [%s]", sequence)
+	-- printf("Adding sequence [%s]", sequence)
 	self.ActiveSequences[sequence] = true
 end
 

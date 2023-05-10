@@ -52,7 +52,7 @@ function Mat.GenerateBloomQuad( png, onCreate )
 	return Mat.Create( png, {
 		"UnLitGeneric",
 		["$basetexture"] = png,
-		["$nocull"] = 1,
+		["$nocull"] = 0,
 		["$vertexalpha"] = 1,
 		["$vertexcolor"] = 1,
 		-- ["$translucent"] = 1,
@@ -92,17 +92,23 @@ function Mat.CreateNow( id, material, onCreate )
 	local mat = Material( material.MaterialName )
 	material.Parameters = Mat.ProcessMaterialData( material.Data )
 
+	local existed = true
+
 	if ( ( not Mat.Get( id ) ) or ( mat:IsError() ) ) then
+		existed = false
 		printf( "Creating new material [%s].", id )
-		local shader = material[1]
+		local shader = material[1] or material["Shader"]
 		if ( not isstring(shader) ) then shader = "UnLitGeneric" end
-		mat = CreateMaterial( materialName, shader, material.Parameters )
+		-- 
+		mat = CreateMaterial( materialName, shader, Mat.BuildCreationParameters( material.Data ) )
 	end
 
 	material.Material = mat
 	setmetatable( material, { __index = PhotonDynamicMaterial } )
 
-	material:ApplyMaterialParameters( material.ShouldRecompute )
+	if (existed) then
+		material:ApplyMaterialParameters( material.ShouldRecompute )
+	end
 
 	if ( mat:IsError() ) then
 		error("Material creation [" .. tostring( id ) .. "] failed for an unknown reason.")
@@ -115,13 +121,40 @@ function Mat.CreateNow( id, material, onCreate )
 	return material
 end
 
+---@param material IMaterial
+---@param parameters table
+---@param recompute boolean
+function Mat:SetMaterialParameters( material, parameters, recompute )
+	for key, value in pairs( parameters ) do
+		printf("Setting [%s] to [%s]. The value type is [%s]", key, value, type(value))
+		if ( isnumber( value ) and (value % 1) == 0 ) then material:SetInt( key, value )
+		elseif ( isnumber( value ) ) then material:SetFloat( key, value )
+		elseif ( isvector( value ) ) then material:SetVector( key, value )
+		elseif ( IsColor( value ) ) then material:SetVector( key, value )
+		elseif ( isstring( value ) ) then material:SetString( key, value )
+		elseif ( ismatrix( value ) ) then material:SetMatrix( key, value )
+		elseif ( type(value) == "IMaterial" ) then material:SetTexture( key, value:GetTexture( key ) )
+		elseif ( type(value) == "ITexture" ) then material:SetTexture( key, value )
+		else
+			print("[WARNING] Unrecognized material parameter type [" .. tostring(type( value ) .. "]"))
+		end
+	end
+	if ( recompute ) then
+		material:Recompute()
+	end
+end
 
 function Mat:ApplyMaterialParameters( recompute )
+	print("Applying material parameters...")
 	local material = self.Material
 	for key, value in pairs( self.Parameters ) do
+		printf("Setting [%s] to [%s]. The value type is [%s]", key, value, type(value))
 		if ( isnumber( value ) ) then material:SetInt( key, value )
 		elseif ( isnumber( value ) and (value % 1) == 0 ) then material:SetFloat( key, value )
-		elseif ( isvector( value ) ) then material:SetVector( key, value )
+		elseif ( isvector( value ) ) then 
+			printf("\t*** Setting vector: %s", value)
+			material:SetVector( key, value )
+			printf("\t*** Material's value: %s", material:GetVector(key))
 		elseif ( IsColor( value ) ) then material:SetVector( key, value )
 		elseif ( isstring( value ) ) then material:SetString( key, value )
 		elseif ( ismatrix( value ) ) then material:SetMatrix( key, value )
@@ -136,6 +169,26 @@ function Mat:ApplyMaterialParameters( recompute )
 	end
 end
 
+function Mat.BuildCreationParameters( parameters )
+	-- When initially creating a material, the parameters 
+	-- must be only string and table values. When updating the material, 
+	-- the parameters need to be set as their type and cannot be just strings.
+	local result = {}
+	for key, value in pairs( parameters ) do
+		if ( isvector(value) ) then
+			result[key] = "[" .. tostring(value) .. "]"
+		elseif ( istable(value) ) then
+			result[key] = Mat.BuildCreationParameters( value )
+		elseif ( type(value) == "IMaterial" ) then
+			result[key] = value:GetTexture(key):GetName()
+		elseif ( type(value) == "ITexture" ) then
+			result[key] = value:GetName()
+		else
+			result[key] = tostring( value )
+		end
+	end
+	return result
+end
 
 function Mat.ProcessMaterialData( data )
 	for key, value in pairs( data ) do

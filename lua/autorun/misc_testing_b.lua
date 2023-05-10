@@ -1,53 +1,63 @@
+print(5.123%1)
+
+
+if true then return end
 if not CLIENT then return end
 
-local hint = Material( "photon/debug/sprite_hint" )
+local mat = Material("sentry/props/nforce/top_c")
+if (mat:IsError()) then error("bad material") end
 
+local vec = mat:GetVector("$carfixenabled")
+print(tostring(vec))
+mat:SetVector("$carfixenabled", Vector(0.13,0.13,0.13))
 -- hint:SetTexture("$basetexture", blurTexture)
 
-Photon2.Render.RenderToMaterial("sprite_hint_test", hint, "$basetexture", GetRenderTarget("sprite_test", 256, 256 ), 
-function() 
-	surface.SetDrawColor(255, 255, 255)
-	surface.DrawRect(0, 0, 256, 256)
-	surface.SetDrawColor(0, 0, 512)
-	surface.DrawRect( 64, 64, 128, 128 )
-end, {}, function()
-	local tex = Material( "photon/debug/sprite_hint" ):GetTexture( "$basetexture" )
-	-- local texId = surface.GetTextureID( tex:GetName() )
-	local blurTexture = Photon2.Render.GenerateBlurredTexture( tex, 8, 32 )
-	hint:SetTexture("$basetexture", blurTexture)
-end)
+function dynamicMaterialTest()
+	local hint = Material( "photon/debug/sprite_hint" )
+	Photon2.Render.RenderToMaterial("sprite_hint_test", hint, "$basetexture", GetRenderTarget("sprite_test", 256, 256 ), 
+	function() 
+		surface.SetDrawColor(255, 255, 255)
+		surface.DrawRect(0, 0, 256, 256)
+		surface.SetDrawColor(0, 0, 512)
+		surface.DrawRect( 64, 64, 128, 128 )
+	end, {}, function()
+		local tex = Material( "photon/debug/sprite_hint" ):GetTexture( "$basetexture" )
+		-- local texId = surface.GetTextureID( tex:GetName() )
+		local blurTexture = Photon2.Render.GenerateBlurredTexture( tex, 8, 32 )
+		hint:SetTexture("$basetexture", blurTexture)
+	end)
 
-local BLENDFUNC_ADD 				= 0
-local BLENDFUNC_SUBTRACT 			= 1
-local BLENDFUNC_REVERSE_SUBTRACT 	= 2
-local BLENDFUNC_MIN 				= 3
-local BLENDFUNC_MAX 				= 4
+	local BLENDFUNC_ADD 				= 0
+	local BLENDFUNC_SUBTRACT 			= 1
+	local BLENDFUNC_REVERSE_SUBTRACT 	= 2
+	local BLENDFUNC_MIN 				= 3
+	local BLENDFUNC_MAX 				= 4
 
-local BLEND_ZERO 					= 0
-local BLEND_ONE 					= 1
-local BLEND_DST_COLOR				= 2
-local BLEND_ONE_MINUS_DST_COLOR		= 3
-local BLEND_SRC_ALPHA				= 4
-local BLEND_ONE_MINUS_SRC_ALPHA		= 5
-local BLEND_DST_ALPHA				= 6
-local BLEND_ONE_MINUS_DST_ALPHA		= 7
-local BLEND_SRC_ALPHA_SATURATE		= 8
-local BLEND_SRC_COLOR				= 9
-local BLEND_ONE_MINUS_SRC_COLOR		= 10
+	local BLEND_ZERO 					= 0
+	local BLEND_ONE 					= 1
+	local BLEND_DST_COLOR				= 2
+	local BLEND_ONE_MINUS_DST_COLOR		= 3
+	local BLEND_SRC_ALPHA				= 4
+	local BLEND_ONE_MINUS_SRC_ALPHA		= 5
+	local BLEND_DST_ALPHA				= 6
+	local BLEND_ONE_MINUS_DST_ALPHA		= 7
+	local BLEND_SRC_ALPHA_SATURATE		= 8
+	local BLEND_SRC_COLOR				= 9
+	local BLEND_ONE_MINUS_SRC_COLOR		= 10
 
-hook.Add( "HUDPaint", "PhotonTextureTest", function()
-	surface.SetMaterial(hint)
-	render.OverrideAlphaWriteEnable( false, true )
-	render.OverrideBlend( true, BLEND_ONE, BLEND_ONE, BLENDFUNC_MIN )
-	-- render.OverrideBlend( true, BLEND_SRC_COLOR, BLEND_DST_COLOR, BLENDFUNC_MIN )
-	surface.SetDrawColor( 255, 255, 255, 255 )
-	surface.DrawTexturedRect( 128, 128, 256, 256 )
-	render.OverrideBlend( false )
-	render.OverrideAlphaWriteEnable( false, false )
-end)
+	hook.Add( "HUDPaint", "PhotonTextureTest", function()
+		surface.SetMaterial(hint)
+		render.OverrideAlphaWriteEnable( false, true )
+		render.OverrideBlend( true, BLEND_ONE, BLEND_ONE, BLENDFUNC_MIN )
+		-- render.OverrideBlend( true, BLEND_SRC_COLOR, BLEND_DST_COLOR, BLENDFUNC_MIN )
+		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.DrawTexturedRect( 128, 128, 256, 256 )
+		render.OverrideBlend( false )
+		render.OverrideAlphaWriteEnable( false, false )
+	end)
 
--- hook.Remove( "HUDPaint", "PhotonTextureTest")
-
+	hook.Remove( "HUDPaint", "PhotonTextureTest")
+end
 
 local function meshtest()
 	if SERVER then return end
