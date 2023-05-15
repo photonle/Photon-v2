@@ -1,0 +1,45 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0.01"
+	"$refracttint" "{255 255 255}"
+	"$dudvmap" "sentry/props/soundofffascia/lens_nm"
+	"$normalmap" "sentry/props/soundofffascia/lens_nm"
+	"$nowritez" "1"
+	"$distance" "0"
+	"$maxrefract" "0.01"
+	"$carfixenabled" "1"
+	"Proxies"
+	{
+		"PlayerProximity"
+		{
+			scale 0.0002
+			resultVar	$distance
+		}
+		"Subtract"
+		{
+			srcVar1 $maxrefract
+			srcVar2 $distance
+			resultVar $refractamount
+		}
+		"Clamp"
+		{
+			min 0
+			max $maxrefract
+			srcVar1 $refractamount
+			resultVar $refractamount
+		}
+		"Equals"
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color
+		}
+	}
+}
+
+
+
+
+
+
+

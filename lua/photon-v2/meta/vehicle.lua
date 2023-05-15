@@ -19,7 +19,10 @@ NAME = "PhotonVehicle"
 ---@field New fun(data: PhotonLibraryVehicle): PhotonVehicle
 ---@field Equipment {}
 ---@field Selections {}
+---@field DefaultSubMaterials table<integer, string>
 local Vehicle = exmeta.New()
+
+Vehicle.DefaultSubMaterials = {}
 
 Vehicle.EntityClass = "prop_vehicle_jeep"
 
@@ -46,7 +49,8 @@ function Vehicle.New( data )
 		Model 				= target.Model,
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
-		Equipment 			= Equipment.GetTemplate()
+		Equipment 			= Equipment.GetTemplate(),
+		DefaultSubMaterials = data.DefaultSubMaterials
 	}
 
 
@@ -102,6 +106,10 @@ function Vehicle.New( data )
 							Equipment.ProcessTable( variant.VirtualComponents, currentVariant.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
 						end
 
+						if ( variant.Props ) then
+							Equipment.ProcessTable( variant.Props, currentVariant.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
+						end
+
 						map[selection] = currentVariant
 					end
 				else
@@ -118,6 +126,10 @@ function Vehicle.New( data )
 						Equipment.ProcessTable( option.VirtualComponents, currentOption.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
 					end
 
+					if ( option.Props ) then
+						Equipment.ProcessTable( option.Props, currentOption.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
+					end
+
 					map[currentOption.Selection] = currentOption
 				end
 			end
@@ -130,6 +142,7 @@ function Vehicle.New( data )
 
 	Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
 	Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
+	Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
 
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 

@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "photon/wheels/tire"
+	"$bumpmap" "photon/wheels/tire_nm"
+	"$nodecal" "1"
+	"$allowalphatocoverage" "1"
+	"$halflambert" 1
+	"$phong" "1" 
+	"$phongboost" "0.2" 
+	"$phongfresnelranges" "[1 1 1]" 
+	"$phongexponent" 50
+	"$colorfix" "{255 255 255}"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $colorfix
+			resultVar	$color
+		}
+	}
+}

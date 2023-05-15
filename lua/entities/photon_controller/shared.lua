@@ -49,6 +49,7 @@ function ENT:InitializeShared()
 
 	self.ComponentArray = {}
 	self.VirtualComponentArray = {}
+	self.PropArray = {}
 
 	self.Equipment = {
 		Components = {},
@@ -115,6 +116,9 @@ function ENT:SoftEquipmentReload()
 	for id, component in pairs(self.Components) do
 		component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
 	end
+	for id, prop in pairs(self.Props) do
+		prop:SetPropertiesFromEquipment( profile.Equipment.Props[id], true )
+	end
 end
 
 
@@ -175,7 +179,7 @@ function ENT:SetupVirtualComponent( id )
 	local data = self.Equipment.VirtualComponents[id] --[[@as PhotonVehicleEquipment]]
 	printf("Setting up virtual component [%s]", id)
 	if (not data) then
-		print(string.format("Unable to locate equipment virtual component ID [%s]", id))
+		error(string.format("Unable to locate equipment virtual component ID [%s]", id))
 		return
 	end
 
@@ -183,6 +187,37 @@ function ENT:SetupVirtualComponent( id )
 	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
 	self.VirtualComponents[id] = virtualEnt
 	virtualEnt:ApplyModeUpdate()
+end
+
+function ENT:SetupProp( id )
+	local data = self.Equipment.Props[id]
+	printf( "Setting up Prop [%s]", id )
+	if ( not data ) then
+		error(string.format("Unable to locate prop ID [%s]", id))
+	end
+
+	local ent
+	local prop = setmetatable( data, { __index = PhotonBaseEntity } )
+	
+	setmetatable( data, { __index = PhotonBaseEntity } )
+
+	if ( SERVER and data.OnServer ) then
+		-- TODO: serverside spawn code
+	elseif (CLIENT and ( not data.OnServer ) ) then
+		ent = prop:CreateClientside( self )
+	else
+		return
+	end
+
+	ent:SetMoveType( MOVETYPE_NONE )
+	ent:SetParent( self:GetComponentParent() )
+	ent:SetPropertiesFromEquipment( data )
+
+	if (IsValid(self.Props[id])) then
+		self.Props[id]:Remove()
+	end
+
+	self.Props[id] = ent
 end
 
 ---@param id string
@@ -251,6 +286,14 @@ function ENT:RemoveEquipmentVirtualComponentByIndex( index )
 	self.VirtualComponents[index] = nil
 end
 
+function ENT:RemoveEquipmentPropByIndex( index )
+	printf("Controller is removing virtual component equipment ID [%s]", index)
+	if ( self.Props[index] ) then
+		self.Props[index]:Remove()
+	end
+	self.Props[index] = nil
+end
+
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:AddEquipment( equipmentTable )
 	local components = equipmentTable.Components
@@ -260,6 +303,10 @@ function ENT:AddEquipment( equipmentTable )
 	local virtualComponents = equipmentTable.VirtualComponents
 	for i=1, #virtualComponents do
 		self:SetupVirtualComponent( virtualComponents[i] )
+	end
+	local props = equipmentTable.Props
+	for i=1, #props do
+		self:SetupProp( props[i] )
 	end
 end
 
@@ -272,6 +319,9 @@ function ENT:RemoveEquipment( equipmentTable )
 	end
 	for i=1, #equipmentTable.VirtualComponents do
 		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
+	end
+	for i=1, #equipmentTable.Props do
+		self:RemoveEquipmentPropByIndex(equipmentTable.Props[i])
 	end
 end
 
@@ -303,12 +353,25 @@ function ENT:SetupProfile( name, isReload )
 		for id, equipment in pairs( self.Equipment.VirtualComponents ) do
 			self:SetupVirtualComponent( id )
 		end
+		-- Setup props
+		for id, prop in pairs( self.Equipment.Props ) do
+			self:SetupProp( id )
+		end
 	else
 		self:SetupSelections()
 	end
 
 	self:SetupComponentArrays()
 
+	self:ApplySubMaterials( profile.DefaultSubMaterials )
+
+end
+
+function ENT:ApplySubMaterials( subMaterials )
+	for index, materialName in pairs( subMaterials ) do
+
+		self:GetParent():SetSubMaterial( index, materialName )
+	end
 end
 
 -- Stores components and virtual components in a numeric table
@@ -331,6 +394,15 @@ function ENT:SetupComponentArrays()
 	for id, component in pairs( self.VirtualComponents ) do
 		virtualComponentArray[#virtualComponentArray+1] = component
 	end
+
+	-- Setup props
+	local propsArray = self.PropArray
+	for i=1, #propsArray do
+		propsArray[i] = nil
+	end
+	for id, prop in pairs( self.Props ) do
+		propsArray[#propsArray+1] = prop
+	end
 end
 
 
@@ -350,14 +422,23 @@ end
 
 function ENT:OnRemove()
 	local components = {}
+	local props = {}
 	for k, v in pairs(self.Components) do
 		components[#components+1] = v
+	end
+	for k, v in pairs(self.Props) do
+		props[#props+1] = v
 	end
 	timer.Simple(0, function()
 		if not IsValid( self ) then
 			for i = 1, #components do
 				if (IsValid(components[i])) then
 					components[i]:Remove()
+				end
+			end
+			for i = 1, #props do
+				if (IsValid(props[i])) then
+					props[i]:Remove()
 				end
 			end
 		else
@@ -434,7 +515,6 @@ function ENT:OnComponentReloaded( componentId )
 			matched = true
 		end
 	end
-
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end

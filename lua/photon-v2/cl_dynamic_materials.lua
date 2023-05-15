@@ -13,14 +13,12 @@ function Materials.ProcessQueue()
 	hook.Remove( "HUDPaint", "Photon2:DynamnicMaterialsInit" )
 	-- Game seems to crash upon starting a new session (retry)
 	-- and the dumbass delay seems to resolve it
-	timer.Simple(5, function()
-		for id, material in pairs( Materials.Queue ) do
-			printf( "Processing material [%s] from queue.", id )
-			Materials.Index[id] = PhotonDynamicMaterial.CreateNow( id, material )
-			Materials.Queue[id] = nil
-		end
-		Photon2.DynamicMaterials.Ready = true
-	end)
+	for id, material in pairs( Materials.Queue ) do
+		printf( "Processing material [%s] from queue.", id )
+		Materials.Index[id] = PhotonDynamicMaterial.CreateNow( id, material )
+		Materials.Queue[id] = nil
+	end
+	Photon2.DynamicMaterials.Ready = true
 end
 
 function Materials.LoadNextInQueue()
@@ -34,8 +32,12 @@ function Materials.LoadNextInQueue()
 		count = count + 1
 		break
 	end
-	if (count > 0) then timer.Simple( 0.1, Materials.LoadNextInQueue) end
+	if (count > 0) then 
+		timer.Simple( 0.1, Materials.LoadNextInQueue)
+	else
+		Photon2.DynamicMaterials.Ready = true
+	end
 end
 
-hook.Add( "HUDPaint", "Photon2:DynamnicMaterialsInit", Photon2.DynamicMaterials.LoadNextInQueue )
+hook.Add( "HUDPaint", "Photon2:DynamnicMaterialsInit", Photon2.DynamicMaterials.ProcessQueue )
 hook.Run( "Photon2:ClientMaterialsLoaded" )

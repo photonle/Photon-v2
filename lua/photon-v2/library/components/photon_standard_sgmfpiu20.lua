@@ -135,7 +135,7 @@ COMPONENT.LightStates = {
 			Inherit = "R",
 			Intensity = 0.5
 		},
-		["TB"] = { Inherit = "W" }
+		["TB"] = { Inherit = "R" }
 	},
 	["Sub"] = {
 		["OFF"] = {

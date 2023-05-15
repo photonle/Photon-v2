@@ -1,5 +1,12 @@
-print(5.123%1)
+if SERVER then
 
+end
+
+concommand.Add("setsize", function(ply, cmd, args)
+	local targ = ply:GetEyeTrace().Entity
+	targ:SetModelScale(0.9)
+	targ:Activate()
+end)
 
 if true then return end
 if not CLIENT then return end

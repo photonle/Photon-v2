@@ -15,8 +15,48 @@ VEHICLE.Author		= "Schmal"
 
 VEHICLE.Equipment = {}
 
+
+local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexLitGeneric",
+	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
+	["$bumpmap"] = "photon/common/flat",
+	["$phong"] = 1,
+	["$envmap"] = "env_cubemap",
+	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
+	["$phongboost"] = 1.25,
+	["$phongexponent"] = 23,
+	["$nodecal"] = 1
+})
+
+if CLIENT then
+	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))
+end
+
+VEHICLE.DefaultSubMaterials = {
+	[20] = mpdcSkin.Name,
+	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
+}
+
 -- Category -> Option (-> Variant)
 VEHICLE.Selections = {
+	{
+		Category = "License Plate",
+		Options = {
+			{
+				Option = "Rear",
+				Props = {
+					{
+						Model = "models/license/na_license_plate.mdl",
+						Position = Vector( 0, -126.7, 49 ),
+						Angles = Angle( 0, 0, 80 ),
+						Scale = 1.2,
+						DefaultSubMaterials = {
+							[1] = "photon/common/matte_dark"
+						}
+					}
+				}
+			}
+		}
+	},
 	{
 		Category = "Standard",
 		Options = {

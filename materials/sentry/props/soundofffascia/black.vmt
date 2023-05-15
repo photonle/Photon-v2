@@ -1,0 +1,25 @@
+"VertexlitGeneric"
+{
+	"$basetexturetransform" "center .5 .5 scale 6 6 rotate 0 translate 0 0"
+	"$basetexture" "sentry/shared/skin"
+	"$bumpmap" "sentry/props/soundofffascia/black_nm"
+    $phong "1"
+
+    $phongexponent "5"
+    $phongboost "1"
+    $phongfresnelranges "[.05 .8 1]"
+	"$rimlight"               "1"
+	"$rimlightexponent"       "17"
+	"$rimlightboost"          "0.2"
+	"$carpenisenabled" "[0.125 0.125 0.125]"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a penis
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
+
