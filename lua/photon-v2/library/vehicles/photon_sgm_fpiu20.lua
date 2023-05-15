@@ -31,7 +31,7 @@ if CLIENT then
 	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))
 end
 
-VEHICLE.DefaultSubMaterials = {
+VEHICLE.SubMaterials = {
 	[20] = mpdcSkin.Name,
 	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
 }
@@ -49,7 +49,7 @@ VEHICLE.Selections = {
 						Position = Vector( 0, -126.7, 49 ),
 						Angles = Angle( 0, 0, 80 ),
 						Scale = 1.2,
-						DefaultSubMaterials = {
+						SubMaterials = {
 							[1] = "photon/common/matte_dark"
 						}
 					}

@@ -30,7 +30,7 @@ ENT.DefaultInputPriorities = {
 	["Vehicle.Lights"]	 			= 10
 }
 
-ENT.DefaultSubMaterials = {}
+ENT.SubMaterials = {}
 
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
@@ -68,13 +68,13 @@ end
 function ENT:Setup()
 	if ( not self.IsVirtual ) then
 		self.Entity:SetModel( self.Model )
-		self:SetupDefaultSubMaterials()
+		self:SetupSubMaterials()
 	end
 	return self
 end
 
-function ENT:SetupDefaultSubMaterials()
-	for index, subMaterial in pairs( self.DefaultSubMaterials ) do
+function ENT:SetupSubMaterials()
+	for index, subMaterial in pairs( self.SubMaterials ) do
 		self.Entity:SetSubMaterial( index, subMaterial )
 	end
 end

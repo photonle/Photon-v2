@@ -39,7 +39,7 @@ function Component.New( name, data )
 		Segments = {},
 		Patterns = {},
 		LightGroups = data.LightGroups,
-		DefaultSubMaterials = data.DefaultSubMaterials
+		SubMaterials = data.SubMaterials
 	}
 
 

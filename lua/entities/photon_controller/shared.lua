@@ -363,7 +363,7 @@ function ENT:SetupProfile( name, isReload )
 
 	self:SetupComponentArrays()
 
-	self:ApplySubMaterials( profile.DefaultSubMaterials )
+	self:ApplySubMaterials( profile.SubMaterials )
 
 end
 

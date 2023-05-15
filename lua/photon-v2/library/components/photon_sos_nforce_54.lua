@@ -34,7 +34,7 @@ local Domes = {
 	White = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_whi", domeParameters, { ["$color2"] = Vector( 0.74, 0.74, 0.74 )} ).Name
 }
 
-COMPONENT.DefaultSubMaterials = {
+COMPONENT.SubMaterials = {
 	-- [1] = "photon/common/blank",
 	-- [2] = "photon/common/blank",
 	-- [6] = "photon/common/blank",

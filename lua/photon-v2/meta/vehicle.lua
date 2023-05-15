@@ -19,10 +19,10 @@ NAME = "PhotonVehicle"
 ---@field New fun(data: PhotonLibraryVehicle): PhotonVehicle
 ---@field Equipment {}
 ---@field Selections {}
----@field DefaultSubMaterials table<integer, string>
+---@field SubMaterials table<integer, string>
 local Vehicle = exmeta.New()
 
-Vehicle.DefaultSubMaterials = {}
+Vehicle.SubMaterials = {}
 
 Vehicle.EntityClass = "prop_vehicle_jeep"
 
@@ -50,7 +50,7 @@ function Vehicle.New( data )
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
-		DefaultSubMaterials = data.DefaultSubMaterials
+		SubMaterials = data.SubMaterials
 	}
 
 
