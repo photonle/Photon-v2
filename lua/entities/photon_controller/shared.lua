@@ -118,6 +118,8 @@ function ENT:SoftEquipmentReload()
 	end
 	for id, prop in pairs(self.Props) do
 		prop:SetPropertiesFromEquipment( profile.Equipment.Props[id], true )
+		prop:SetupSubMaterials()
+		prop:SetupBodyGroups()
 	end
 end
 

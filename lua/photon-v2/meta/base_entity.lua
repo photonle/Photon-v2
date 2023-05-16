@@ -6,6 +6,8 @@ NAME = "PhotonBaseEntity"
 ---@field IsVirtual boolean
 ---@field Model string
 ---@field PhotonController PhotonController
+---@field BodyGroups table
+---@field SubMaterials table
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
@@ -31,6 +33,7 @@ ENT.DefaultInputPriorities = {
 }
 
 ENT.SubMaterials = {}
+ENT.BodyGroups = {}
 
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
@@ -69,13 +72,45 @@ function ENT:Setup()
 	if ( not self.IsVirtual ) then
 		self.Entity:SetModel( self.Model )
 		self:SetupSubMaterials()
+		self:SetupBodyGroups()
 	end
 	return self
+end
+
+function ENT:UpdateAndApplySubMaterials( subMaterials )
+	self.SubMaterials = subMaterials
+	self:SetupSubMaterials()
+end
+
+function ENT:UpdateAndApplyBodyGroups( bodyGroups )
+	self.BodyGroups = bodyGroups
+	self:SetupBodyGroups()
 end
 
 function ENT:SetupSubMaterials()
 	for index, subMaterial in pairs( self.SubMaterials ) do
 		self.Entity:SetSubMaterial( index, subMaterial )
+	end
+end
+
+function ENT:FindBodyGroupOptionByName( bodyGroup, name )
+	if ( string.len(name) > 0 ) then name = name .. ".smd" end
+	for index, subModel in pairs( self:GetBodyGroups()[bodyGroup+1].submodels ) do
+		print("COMPARING [" .. tostring(name) .. "] to [" .. tostring(subModel) .. "]" )
+		if ( name == subModel ) then return index end
+	end
+	ErrorNoHaltWithStack(string.format("Could not find body group option [%s] in body group index [%s] in model [%s]", name, bodyGroup, self:GetModel() ))
+	PrintTable( self:GetBodyGroups() )
+	return 0
+end
+
+function ENT:SetupBodyGroups()
+	for bodyGroup, option in pairs( self.BodyGroups ) do
+		if (isstring(bodyGroup)) then bodyGroup = self:FindBodygroupByName( bodyGroup ) end
+		if (isstring(option)) then
+			option = self:FindBodyGroupOptionByName( bodyGroup, option )
+		end
+		self:SetBodygroup( bodyGroup, option )
 	end
 end
 
@@ -116,15 +151,18 @@ ENT.PropertyFunctionMap = {
 	["Position"] = "SetLocalPos",
 	["Angles"] = "SetLocalAngles",
 	["Scale"] = "SetScale",
-	["MoveType"] = "SetMoveType"
+	["MoveType"] = "SetMoveType",
+	["SubMaterials"] = "UpdateAndApplySubMaterials",
+	["BodyGroups"] = "UpdateAndApplyBodyGroups"
 }
 
 ENT.PropertiesUpdatedOnSoftUpdate = {
 	["Position"] = true,
 	["Angles"] = true,
 	["Scale"] = true,
+	["SubMaterials"] = true,
+	["BodyGroups"] = true
 }
-
 
 ---@param property string
 ---@param value any

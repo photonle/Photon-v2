@@ -2,7 +2,7 @@
 {
 	"$model" 1
 	"$refractamount" "0.01"
-	"$refracttint" "{255 255 255}"
+	"$refracttint" "{215 215 215}"
 	"$dudvmap" "sentry/props/soundofffascia/lens_nm"
 	"$normalmap" "sentry/props/soundofffascia/lens_nm"
 	"$nowritez" "1"

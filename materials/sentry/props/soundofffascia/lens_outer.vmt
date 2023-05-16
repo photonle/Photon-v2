@@ -6,12 +6,12 @@
 	"$translucent" 1
 	"$halflambert" 1
 	"$phong" "1" 
-	"$phongboost" "10.5" 
-	"$phongexponent" "10"
-	"$phongfresnelranges" "[8 4 2]"
+	"$phongboost" "1" 
+	"$phongexponent" "512"
+	"$phongfresnelranges" "[8 6 4]"
 	"$surfaceprop" "Glass"
 	"$envmapFresnel" "1"
-	"$envmaptint" "[.1 .1 .1]"
+	"$envmaptint" "[.05 .05 .05]"
 	"$carfixenabled" "1"
 	Proxies // proxies are listed inside this block
 	{

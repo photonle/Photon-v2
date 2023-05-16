@@ -58,7 +58,7 @@ end
 ---@return PhotonSequence
 function Sequence.New( name, frameSequence, segment )
 	---@type PhotonSequence
-	
+
 	frameSequence._previous = nil
 
 	local sequence = {

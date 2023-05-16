@@ -242,6 +242,11 @@ function Light:SetLightScale( scale )
 		-- scale is set using metatable values
 		self[properties[i]] = self[properties[i]] * scale
 	end
+	if (self.LightMatrixEnabled) then
+		for i=1, #self.LightMatrix do
+			self.LightMatrix[i] = self.LightMatrix[i] * scale
+		end
+	end
 end
 
 -- Internal function. Converts string material names to Material objects.

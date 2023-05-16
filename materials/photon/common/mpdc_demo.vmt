@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"photon/license/plates/dc_gov_photon2"
+	"$bumpmap"	"photon/common/flat"
+	"$detail"		"photon/license/reflective_paint"
+	"$detailscale"	"6"
+	"$envmap"	"[.02 .02 .02"
+	"$phong"		"1"
+	"$phongexponent"	"7"
+	"$phongboost"	"1"
+	"$rimlight"	"1"
+	"$rimlightexponent"	"17"
+	"$rimlightboost"	"1.2"
+	"$phongfix"	"[1 1 1]"
+	"$nocull"		"1"	
+}

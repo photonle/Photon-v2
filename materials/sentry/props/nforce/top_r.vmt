@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "sentry/props/nforce/top"
+	"$bumpmap" "sentry/props/nforce/top_nm"
+    $phong "1"
+    $phongexponent "7"
+    $phongboost "1"
+    $phongfresnelranges "[.05 .3 1]"
+	"$rimlight"               "1"
+	"$rimlightexponent"       "17"
+	"$rimlightboost"          "1.2"	
+	"$blendtintbybasealpha" "1"
+	"$color2" "[0.15 0.15 0.15]"
+}

@@ -1,7 +1,7 @@
 "vertexlitgeneric"
 {
-	"$basetexture" "photon/license/plates/ol_exempt"
-	"$bumpmap" "photon/license/plates/ol_exempt_nm"
+	"$basetexture" "photon/license/plates/dc_gov_photon2"
+	"$bumpmap" "photon/common/flat"
 	"$detail" "photon/license/reflective_paint"
 	"$detailscale" "6"
 	"$detailblendfactor" 1

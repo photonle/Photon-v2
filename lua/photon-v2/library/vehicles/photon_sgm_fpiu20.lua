@@ -42,16 +42,43 @@ VEHICLE.Selections = {
 		Category = "License Plate",
 		Options = {
 			{
-				Option = "Rear",
+				Option = "Visible",
 				Props = {
 					{
+						Name = "@rear_plate",
 						Model = "models/license/na_license_plate.mdl",
 						Position = Vector( 0, -126.7, 49 ),
 						Angles = Angle( 0, 0, 80 ),
 						Scale = 1.2,
 						SubMaterials = {
-							[1] = "photon/common/matte_dark"
+							[1] = "",
+							-- [1] = "photon/license/plates/mpdc_demo"
+							-- [1] = "!ph2_mpdc_demo"
+						},
+						BodyGroups = {
+							["screws_top"] = 1,
+							["screws_bottom"] = 1,
+							["face"] = "face_circular"
 						}
+					},
+					{
+						Inherit = "@rear_plate",
+						Angles = Angle( 0, 180, 90 ),
+						Position = Vector( 0, 120.5, 26 ),
+						BodyGroups = {
+							["screws_top"] = 1,
+							["screws_bottom"] = 1,
+							["face"] = "face_circular",
+							["mount"] = "mount"
+						}
+					},
+				},
+				Components = {
+					{
+						Component = "photon_sos_mpf4_lic_h",
+						Angles = Angle( 0, -90, 0 ),
+						Position = Vector( 0, -125, 49 ),
+						Scale = 0.96
 					}
 				}
 			}
@@ -65,6 +92,22 @@ VEHICLE.Selections = {
 				VirtualComponents = {
 					{
 						Component = "photon_standard_sgmfpiu20"
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Build",
+		Options = {
+			{
+				Option = "mpower Fascia 4\"",
+				Components = {
+					{
+						Component = "photon_sos_mpf4",
+						Position = Vector( 0, 0, 120 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1
 					}
 				}
 			}

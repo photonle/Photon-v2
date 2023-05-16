@@ -1,4 +1,17 @@
--- if SERVER then return end
+if SERVER then return end
+
+---@type Entity
+-- local target = ents.FindByModel("models/sentry/props/soundofffascia_plate_horizontal.mdl")[1]
+-- -- print(IsValid(target))
+-- target:SetupBones()
+-- target:ManipulateBonePosition( 1, Vector(0,-1,0), false )
+-- target:ManipulateBoneAngles(1, Angle(0, -250, 0), false)
+-- target:ManipulateBoneScale(1, Vector(10,3,3))
+-- target:ManipulateBoneJiggle(1, 1)
+-- PrintTable(target:GetAttachments())
+-- print(target:GetBoneCount())
+
+
 if not exmeta then return end
 
 function GetCurrentLuaFile()
