@@ -18,6 +18,7 @@ local printf = Photon2.Debug.PrintF
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
+local Util = Photon2.Util
 
 Component.IsPhotonLightingComponent = true
 
@@ -25,11 +26,25 @@ Component.IsPhotonLightingComponent = true
 		COMPILATION
 --]]
 
+local dumpLibraryData = false
+
 -- [Internal] Compile a Library Component to store in the Index.
 ---@param name string
 ---@param data PhotonLibraryComponent
 ---@return PhotonLightingComponent
-function Component.New( name, data )
+function Component.New( name, data, base )
+
+	data = table.Copy( data )
+
+	if ( base ) then
+		Util.Inherit( data, table.Copy( base ) )
+	end
+
+	if (dumpLibraryData) then
+		print("_______________________________________")
+		PrintTable(data)
+		print("_______________________________________")
+	end
 
 	---@type PhotonLightingComponent
 	local component = {
@@ -77,7 +92,7 @@ function Component.New( name, data )
 	--]]
 
 	local lightTemplates = {}
-	for lightClassName, templates in pairs( data.Lighting ) do
+	for lightClassName, templates in pairs( data.Lighting or {} ) do
 		-- printf( "\t\tLight class %s templates...", lightClassName )
 
 		local lightClass = _G["PhotonLight" .. lightClassName]
@@ -111,7 +126,7 @@ function Component.New( name, data )
 	--]]
 
 	-- print("Compiling lights...")
-	for id, light in pairs( data.Lights ) do
+	for id, light in pairs( data.Lights or {} ) do
 		-- printf( "\t\tLight ID: %s", id )
 		-- TODO: Process { Set = "x" } scripting
 
@@ -146,7 +161,7 @@ function Component.New( name, data )
 			Compile Segments
 	--]]
 
-	for segmentName, segmentData in pairs( data.Segments ) do
+	for segmentName, segmentData in pairs( data.Segments or {} ) do
 		component.Segments[segmentName] = PhotonLightingSegment.New( segmentData, data.LightGroups )
 	end
 
@@ -155,7 +170,7 @@ function Component.New( name, data )
 			Compile Patterns
 	--]]
 
-	for channelName, channel in pairs( data.Patterns ) do
+	for channelName, channel in pairs( data.Patterns or {} ) do
 		for modeName, mode in pairs( channel ) do
 			local patternName = channelName .. ":" .. modeName
 			for segmentName, sequence in pairs ( mode ) do
@@ -173,6 +188,9 @@ function Component.New( name, data )
 		end
 	end
 
+	--[[
+			Finalize and set MetaTable
+	--]]
 	setmetatable( component, { __index = PhotonLightingComponent } )
 
 	return component

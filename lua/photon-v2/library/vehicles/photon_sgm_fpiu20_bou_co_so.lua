@@ -8,7 +8,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Ford Police Interceptor (2020) Demonstrator"
+VEHICLE.Title 		= "Boulder County Sheriff's Office - Ford Police Interceptor (2020)"
 VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
@@ -16,8 +16,8 @@ VEHICLE.Author		= "Schmal"
 VEHICLE.Equipment = {}
 
 
-local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
+local bcso = PhotonDynamicMaterial.Generate("schmal_fpiu20_bcso", { "VertexLitGeneric",
+	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/bou_co_cso.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
 	["$bumpmap"] = "photon/common/flat",
 	["$phong"] = 1,
 	["$envmap"] = "env_cubemap",
@@ -27,13 +27,8 @@ local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexL
 	["$nodecal"] = 1
 })
 
-if CLIENT then
-	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))
-end
-
 VEHICLE.SubMaterials = {
-	[20] = mpdcSkin.Name,
-	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
+	[20] = bcso.Name,
 }
 
 -- Category -> Option (-> Variant)
@@ -141,30 +136,6 @@ VEHICLE.Selections = {
 				}
 				},
 			},
-			{ Option = "JetSolaris", Variants = {
-					{ Variant = "Front",
-						Components = {
-							{
-								Name 		= "@jetsolaris_front",
-								Component	= "photon_fedsig_jetsolaris",
-								Position	= Vector(0, -15, 91),
-								Angles		= Angle(0, 0, 0),
-								Scale		= 1
-							},
-						}
-						
-					},
-					{ Variant = "Alternate",
-						Components = {
-							{
-								Inherit 	= "@jetsolaris_front",
-								Scale		= 0.5,
-								Position	= Vector(0, -15, 100 )
-							}
-						}
-					},
-				}
-			}
 		},
 	}
 	-- },

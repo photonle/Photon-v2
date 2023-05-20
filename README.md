@@ -3,15 +3,18 @@
 
 # Major Changes
 
+# Simulate Modern Controller Features
+Photon 2 supports the advanced and customizable features provided by real-world emergency lighting and siren controllers, such as SoundOff Signal's BluePrint, Whelen's CORE, Federal Signal's Pathfinder, and Code 3's Matrix.
+
+## Component Input Channels
+Photon 2 uses a new, flexible channel-input model that can map a wide variety of events to activate specific lights, patterns, siren tones, and more. This means special flash patterns for vehicle events like braking and turning are now possible. It also allows for flash patterns to change with siren tones and more.
+
 ## New Light Appearance, Types and Rendering Engine
 While most lighting is similar in nature to Photon LE's rendering procedure, Photon 2 adds support for new types of lights, such as sub-materials and 3D meshes.
 
 The classic light approach is now referred to as "2D lighting," which has been completely rewritten. The results provide lights with better color saturation, higher detail and better overall fidelity. 
 
 Photon 2 also adds a new glow-effect technique, which allows for complex light shapes to have a more accurate blooming appearance by supplying a "shape" texture. While not as accurate as HDR blooming (used in Photon EX), it provides better performance and appearance when compared to using long chains of circular sprites.
-
-## Component Input Channels
-Photon 2 adopts the new system of Component behavior used in Photon S (the S&box version). This dramatically streamlines advanced component behavior, like lightbars that have a special braking pattern, or flash patterns that change based on the current siren tone. 
 
 ## Vehicles
 ### Equipment and Selection Options

@@ -10,13 +10,39 @@ local Util = Photon2.Util
 function Photon2.Util.ReferentialCopy( target, meta )
 	for k, v in pairs(meta) do
 		if istable(v) then
-			if (target[k] == nil) then
+			if (rawget( target, k ) == nil) then
 				target[k] = meta[k]
+			else
+				Util.ReferentialCopy(target[k], meta[k])
 			end
-			Util.ReferentialCopy(target[k], meta[k])
 		end
 	end
-	debug.setmetatable( target, { __index = meta } )
+	setmetatable( target, { __index = meta } )
+end
+
+function Photon2.Util.Inherit( target, base )
+	local metaTable = getmetatable( target )
+	if ( not metaTable ) then
+		setmetatable( target, {} )
+		metaTable = getmetatable( target )
+	end
+
+	if ( metaTable.Inherits ) then
+		error("Attempt to setup inheritance on a table that has already been inherited. To preserve parent data integrity, this action is not allowed.")
+	end
+
+	for key, value in pairs( base ) do
+		local raw = rawget( target, key )
+		if ( raw == nil ) then
+			target[key] = value
+		elseif ( raw == PHOTON2_UNSET ) then
+			target[key] = nil
+		elseif ( istable( raw ) and istable( value ) ) then
+			Photon2.Util.Inherit( raw, value )
+		end
+	end
+	
+	metaTable.Inherits = base
 end
 
 function Photon2.Util.CacheModelMesh( model, meshes )

@@ -18,6 +18,8 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	local name = string.sub(filePath, nameStart, nameEnd)
 	Photon2.Debug.Print("Component name: " .. name)
 	-- _COMPONENT = COMPONENT
+	_UNSET = UNSET
+	UNSET = PHOTON2_UNSET
 	PHOTON_LIBRARY_COMPONENT = {}
 	Photon2._acceptFileReload = false
 	include( filePath )
@@ -29,6 +31,7 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	library.Components[name] = PHOTON_LIBRARY_COMPONENT
 	-- COMPONENT = _COMPONENT
 	PHOTON_LIBRARY_COMPONENT = nil
+	UNSET = _UNSET
 	if (isReload) then
 		Photon2.CompileComponent( name, library.Components[name] )
 		hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )

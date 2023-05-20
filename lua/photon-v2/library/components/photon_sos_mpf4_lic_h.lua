@@ -13,7 +13,7 @@ COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4" - Horizontal License Mo
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_horizontal.mdl"
 
-local s = 1.6
+local s = 2
 
 COMPONENT.Lighting = {
 	["2D"] = {
@@ -36,8 +36,8 @@ COMPONENT.Lighting = {
 COMPONENT.ColorMap = "[R] 1 [B] 2"
 
 COMPONENT.Lights = {
-	[1] = { "Full", Vector(2.4, 9.94,3), Angle(0, -90, 0) },
-	[2] = { "Full", Vector(2.4, -9.94,3), Angle(0, -90, 0) }
+	[1] = { "Full", Vector(0.5,0,0), Angle(0, -90, 0), BoneParent = 0 },
+	[2] = { "Full", Vector(0.5, 0,0), Angle(0, -90, 0), BoneParent = 1 }
 }
 
 local sequence = Photon2.SequenceBuilder.New

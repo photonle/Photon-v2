@@ -77,6 +77,7 @@ PhotonDynamicMaterial = PhotonDynamicMaterial
 ---@field Segments table
 ---@field Patterns table
 ---@field ColorMap table<integer, string[]> | string
+---@field SubMaterials table<integer, string>
 ---@field LightStates { SubMat: table, Mesh: table } Light states.
 
 ---@class PhotonLibraryVehicle

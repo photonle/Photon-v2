@@ -42,6 +42,7 @@ local printf = Photon2.Debug.PrintF
 ---@field LightMatrixScaleMultiplier number Sets the light scale (perceived brightness) for all the LightMatrix sprites.
 ---@field WorldLightMatrix Vector[] Internal property. Stores the matrix points' world positions.
 ---@field MaterialsLoaded boolean If true, material string names should be materials.
+---@field BoneParent integer If set, parents the light to the specified bone on the parent entity.
 --@field ComponentScale boolean
 local Light = exmeta.New()
 
@@ -84,6 +85,8 @@ Light.LightMatrixEnabled = false
 Light.LightMatrixScaleMultiplier = 1
 
 Light.DrawLightPoints = true
+
+Light.BoneParent = -1
 -- Light.States = {
 -- 	["OFF"] = { Primary = Color( 0, 0, 0 ), Overlay = Color( 0, 0, 0 ) },
 -- 	["R"] = { Primary = Color( 255, 64, 0 ), Overlay = Color(255, 255, 0) },
@@ -120,7 +123,7 @@ Light.States = {
 		SourceFillColor = Color(64,0,255),
 		GlowColor = Color(64, 0, 255),
 		-- ORIGINAL GREEN-SHIFTED:
-		InnerGlowColor = Color(0, 32, 512),
+		InnerGlowColor = Color(0, 64, 512),
 		SourceDetailColor = Color(0,255,255), 
 		ShapeGlowColor = Color(0, 0, 255),
 	},
@@ -243,8 +246,10 @@ function Light:SetLightScale( scale )
 		self[properties[i]] = self[properties[i]] * scale
 	end
 	if (self.LightMatrixEnabled) then
-		for i=1, #self.LightMatrix do
-			self.LightMatrix[i] = self.LightMatrix[i] * scale
+		local lightMatrix = self.LightMatrix
+		self.LightMatrix = {}
+		for i=1, #lightMatrix do
+			self.LightMatrix[i] = lightMatrix[i] * scale
 		end
 	end
 end
@@ -322,6 +327,7 @@ function Light:DeactivateNow()
 end
 
 local IsValid = IsValid
+local LocalTowWorld = LocalToWorld
 
 -- Micro-optimization to reuse Vector
 local normalRef = Vector()
@@ -332,9 +338,27 @@ function Light:DoPreRender()
 	
 	self.ShouldDraw = true
 
-	self.Position = self.Parent:LocalToWorld( self.LocalPosition )
 	
-	self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
+	if ( self.BoneParent < 0 ) then
+		self.Position = self.Parent:LocalToWorld( self.LocalPosition )
+		self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
+	else
+		-- print("BONE PARENT: " .. tostring(self.BoneParent))
+		-- -- TODO: optimization
+		-- self.Parent:SetupBones()
+		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
+		-- local bonePosition = matrix:GetTranslation()
+		-- local boneAngles = matrix:GetAngles()
+
+		-- self.NextPositio
+
+		-- if ( self.Parent:GetPos() == self.Parent:GetBonePosition( self.BoneParent ) ) then
+		-- 	print("BONE AND ENTITY POSITIONS ARE THE SAME")
+		-- end
+
+		self.Position, self.Angles = LocalTowWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
+	end
+
 
 	
 

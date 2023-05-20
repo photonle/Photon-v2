@@ -1,16 +1,26 @@
 if SERVER then return end
-
 ---@type Entity
--- local target = ents.FindByModel("models/sentry/props/soundofffascia_plate_horizontal.mdl")[1]
--- -- print(IsValid(target))
--- target:SetupBones()
--- target:ManipulateBonePosition( 1, Vector(0,-1,0), false )
+local function boneTesting()
+local target = ents.FindByModel("models/sentry/props/soundofffascia_plate_horizontal.mdl")[1]
+print(IsValid(target))
+target:SetupBones()
+-- target:ManipulateBonePosition( 0, Vector(0,0,0), false )
+-- for i=0, target:GetBoneCount() - 1 do
+-- 	print("Bone name: " .. tostring(target:GetBoneName( i )))
+-- end
 -- target:ManipulateBoneAngles(1, Angle(0, -250, 0), false)
 -- target:ManipulateBoneScale(1, Vector(10,3,3))
 -- target:ManipulateBoneJiggle(1, 1)
 -- PrintTable(target:GetAttachments())
--- print(target:GetBoneCount())
+print(target:GetBoneCount())
+print(target:GetBonePosition(0))
 
+
+hook.Add("PostRender", "Photon2:BoneTesting", function() 
+	target:ManipulateBonePosition( 0, Vector(0, math.sin(CurTime() * 5) * 5, 0 ), false)
+end)
+-- hook.Remove("PostDrawEffects", "Photon2:BoneTesting")
+end
 
 if not exmeta then return end
 

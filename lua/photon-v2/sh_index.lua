@@ -85,6 +85,10 @@ function Photon2.Index.ProcessComponentLibrary()
 
 			-- exmeta.SetMetaTable(component, PhotonLightingComponent)
 		else
+			if ( not library.Components[component.Base] ) then
+				error("Attempted to inherit from [" .. tostring( component.Base ) .."], which could not found.")
+			end
+			Photon2.CompileComponent( name, component )
 			-- TODO: Component inheritance
 			--setMetaTable(component, index.Components[component.Base])
 			-- exmeta.SetMetaTable(component, Index.Components[component.Base])
@@ -99,7 +103,14 @@ end
 ---@return PhotonLightingComponent
 function Photon2.CompileComponent( name, inputComponent )
 	print("Compiling component [" .. name .. "]")
-	local component = PhotonLightingComponent.New( name, inputComponent )
+	
+	local base
+
+	if ( isstring( inputComponent.Base ) ) then
+		base = library.Components[inputComponent.Base]
+	end
+
+	local component = PhotonLightingComponent.New( name, inputComponent, base )
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)
 	else

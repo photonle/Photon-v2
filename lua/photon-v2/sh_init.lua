@@ -1,3 +1,5 @@
+PHOTON2_UNSET = "<UNSET>"
+
 include("sh_util.lua")
 include("sh_functions.lua")
 include("sh_component_builder.lua")

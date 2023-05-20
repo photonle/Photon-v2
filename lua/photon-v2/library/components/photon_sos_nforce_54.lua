@@ -38,14 +38,10 @@ COMPONENT.SubMaterials = {
 	-- [1] = "photon/common/blank",
 	-- [2] = "photon/common/blank",
 	-- [6] = "photon/common/blank",
-	[3] = Domes.Red,
-	[4] = Domes.Blue,
-	-- [8] = baseCreateName,
+	[3] = Domes.Black,
+	[4] = Domes.Black,
 	[8] = Domes.Black,
 	[10] = "photon/common/matte_dark",
-	-- [20] = "sentry/20fpiu_new/skin_ao"
-	-- [8] = testMat.MaterialName,
-	-- [8] = "sentry/props/nforce/top_c",
 }
 
 COMPONENT.LightStates = {
@@ -57,7 +53,7 @@ COMPONENT.LightStates = {
 	}
 }
 
-local s = 2
+local s = 1.2
 
 COMPONENT.Lighting = {
 	["2D"] = {
@@ -72,7 +68,7 @@ COMPONENT.Lighting = {
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.5,
 			LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			LightMatrixScaleMultiplier = 0.6
+			LightMatrixScaleMultiplier = 1
 		},
 		Corner3 = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_corner3_shape.png").MaterialName,
@@ -88,6 +84,8 @@ COMPONENT.Lighting = {
 		}
 	}
 }
+
+-- COMPONENT.ColorMap = "[B] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26"
 
 COMPONENT.ColorMap = "[R] 1 [R] 2 4 6 8 10 12 14 16 18 20 22 24 [B] 3 5 7 9 11 13 15 17 19 21 23 25 [R] 26"
 
@@ -153,22 +151,13 @@ COMPONENT.Segments = {
 			["FLASH_3"] = sequence():Flash( 4, 5, 3 ):Flash( 6, 7, 3 ),
 			["PHOTO"] = { 3 }
 		}
-	},
-	MPDC = {
-		Frames = {
-			[1] = "5:B0.5 4:B0.5 22:B0.5 23:B0.5"
-		},
-		Sequences = {
-			CRUISE = { 1 }
-		}
 	}
 }
 
 COMPONENT.Patterns = {
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
-			MPDC = "CRUISE"
-			-- All = "STEADY"
+			All = "STEADY"
 		}
 	}
 }

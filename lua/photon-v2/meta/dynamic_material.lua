@@ -65,7 +65,7 @@ end
 
 ---@return PhotonDynamicMaterial
 function Mat.Create( id, data, onCreate )
-	printf("Creating PhotonDynamicMaterial [%s]", id)
+	-- printf("Creating PhotonDynamicMaterial [%s]", id)
 	id = string.StripExtension( id )
 	local material = { 
 		Id = id,
@@ -114,7 +114,7 @@ end
 ---@param onCreate? function
 ---@return PhotonDynamicMaterial
 function Mat.CreateNow( id, material, onCreate )
-	printf("Creating NOW a PhotonDynamicMaterial [%s]", id)
+	-- printf("Creating NOW a PhotonDynamicMaterial [%s]", id)
 	local materialName = materialPrefix .. "/" .. id
 	local mat
 	-- local mat = Material( material.MaterialName )
@@ -125,17 +125,17 @@ function Mat.CreateNow( id, material, onCreate )
 	if ( ( not Mat.Get( id ) ) ) then
 	-- if ( ( not Mat.Get( id ) ) or ( mat:IsError() ) ) then
 		existed = false
-		printf( "Creating new material [%s].", id )
+		-- printf( "Creating new material [%s].", id )
 		local shader = material[1] or material["Shader"]
 		if ( not isstring(shader) ) then shader = "UnLitGeneric" end
-		printf( "Calling CreateMaterial. Shader [%s]. Name [%s].", shader, materialName )
-		print("======== PARAMETERS =========")
+		-- printf( "Calling CreateMaterial. Shader [%s]. Name [%s].", shader, materialName )
+		-- print("======== PARAMETERS =========")
 		local parameters = table.Copy( Mat.BuildCreationParameters( material.Data ) )
-		PrintTable( parameters )
-		print("==== END OF PARAMETERS ======")
+		-- PrintTable( parameters )
+		-- print("==== END OF PARAMETERS ======")
 		mat = CreateMaterial( materialName, shader, parameters )
 	else
-		printf("The material appears to already exist...")
+		-- printf("The material appears to already exist...")
 		mat = Material( material.MaterialName )
 	end
 
@@ -161,7 +161,7 @@ end
 function Mat.SetMaterialParameters( material, parameters, recompute )
 	for key, value in pairs( parameters ) do
 		if ( key == "Shader" or isnumber(key) ) then continue end
-		printf("Setting [%s] to [%s]. The value type is [%s]", key, value, type(value))
+		-- printf("Setting [%s] to [%s]. The value type is [%s]", key, value, type(value))
 		if ( isnumber( value ) and (value % 1) == 0 ) then material:SetFloat( key, value )
 		elseif ( isnumber( value ) ) then material:SetFloat( key, value )
 		elseif ( isvector( value ) ) then material:SetVector( key, value )

@@ -73,6 +73,7 @@ function ENT:Setup()
 		self.Entity:SetModel( self.Model )
 		self:SetupSubMaterials()
 		self:SetupBodyGroups()
+		self.Entity:SetupBones()
 	end
 	return self
 end

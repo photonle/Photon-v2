@@ -27,6 +27,11 @@ function Photon2.UI.PopulateMenuBar()
 		local debugOption = menu:AddOption( "Debug" )
 		local debugMenu = debugOption:AddSubMenu()
 		debugMenu:SetDeleteSelf( false )
+
+		debugMenu:AddOption( "Open Channel Controller", function() 
+			local form = vgui.Create( "Photon2ChannelController" )
+		end)
+
 		debugMenu:AddOption( "Print Profiles to Console", function()
 			PrintTable( Photon2.Index.Profiles )
 		end)
