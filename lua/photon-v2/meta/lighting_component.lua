@@ -15,6 +15,7 @@ local printf = Photon2.Debug.PrintF
 ---@field ActiveSequences table<PhotonSequence, boolean>
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 ---@field ColorMap table<integer, string[]>
+---@field Inputs table<string, string[]>
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -53,6 +54,7 @@ function Component.New( name, data, base )
 		Lights = {},
 		Segments = {},
 		Patterns = {},
+		Inputs = {},
 		LightGroups = data.LightGroups,
 		SubMaterials = data.SubMaterials
 	}
@@ -162,7 +164,7 @@ function Component.New( name, data, base )
 	--]]
 
 	for segmentName, segmentData in pairs( data.Segments or {} ) do
-		component.Segments[segmentName] = PhotonLightingSegment.New( segmentData, data.LightGroups )
+		component.Segments[segmentName] = PhotonLightingSegment.New( segmentName, segmentData, data.LightGroups )
 	end
 
 
@@ -171,9 +173,20 @@ function Component.New( name, data, base )
 	--]]
 
 	for channelName, channel in pairs( data.Patterns or {} ) do
-		for modeName, mode in pairs( channel ) do
+		-- Build input interface channels
+		component.Inputs[channelName] = {}
+		
+		for modeName, sequences in pairs( channel ) do
+			
+			-- Build input interface modes
+			if ( istable( sequences ) and ( next(sequences) ~= nil) ) then
+				component.Inputs[channelName][#component.Inputs[channelName] + 1] = modeName
+			end
+			-- print("----------------------------")
+			-- PrintTable( channel )
+			-- print("----------------------------")
 			local patternName = channelName .. ":" .. modeName
-			for segmentName, sequence in pairs ( mode ) do
+			for segmentName, sequence in pairs ( sequences ) do
 				local segment = component.Segments[segmentName]
 				if (not segment) then
 					error( string.format("Invalid segment: '%s'", segmentName) )
@@ -246,15 +259,57 @@ function Component:ApplyModeUpdate()
 	for name, segment in pairs( self.Segments ) do
 		segment:ApplyModeUpdate()
 	end
+	self:UpdateSegmentLightControl()
 end
 
+function Component:UpdateSegmentLightControl()
+	print("Updating segment light control...")
+	
+	local map = {}
+	
+	for segmentName, segment in pairs( self.Segments ) do
+		if (segment.IsActive) then
+			local sequence = segment:GetCurrentSequence()
+			for i=1, #sequence.UsedLights do
+				local light = sequence.UsedLights[i]
+				if ( not map[light] ) then
+					map[light] = { segmentName, -1000 }
+				end
+				if ( map[light][2] < segment.CurrentPriorityScore ) then
+					map[light][1] = segmentName
+					map[light][2] = segment.CurrentPriorityScore
+				end
+			end
+			sequence:Activate()
+		end
+	end
 
+	for i=1, #self.Lights do
+		local light = self.Lights[i]
+		if ( map[light] ) then
+			light.ControllingSegment = map[light][1]
+			light.CurrentPriorityScore = map[light][2]
+		else
+			light.ControllingSegment = nil
+			light.CurrentPriorityScore = 0
+		end
+	end
+
+	PrintTable( map )
+
+	print("#########################################")
+end
+
+-- Functionally identical to what :ApplyModeUpdate() does but logs it
+-- for debugging purposes.
 function Component:SetChannelMode( channel, new, old )
+	
 	printf( "Component received mode change notification for [%s] => %s", channel, new )
 	-- Notify segments
 	for name, segment in pairs( self.Segments ) do
 		segment:OnModeChange( channel, new )
 	end
+	self:UpdateSegmentLightControl()
 end
 
 

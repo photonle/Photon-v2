@@ -68,72 +68,27 @@ VEHICLE.Selections = {
 						}
 					},
 				},
-				Components = {
-					{
-						Component = "photon_sos_mpf4_lic_h",
-						Angles = Angle( 0, -90, 0 ),
-						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96
-					}
-				}
 			}
 		}
 	},
-	{
-		Category = "Standard",
-		Options = {
-			{
-				Option = "Standard Lighting",
-				VirtualComponents = {
-					{
-						Component = "photon_standard_sgmfpiu20"
-					}
-				}
-			}
-		}
-	},
-	-- {
-	-- 	Category = "Build",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "mpower Fascia 4\"",
-	-- 			Components = {
-	-- 				{
-	-- 					Component = "photon_sos_mpf4",
-	-- 					Position = Vector( 0, 0, 120 ),
-	-- 					Angles = Angle( 0, 90, 0 ),
-	-- 					Scale = 1
-	-- 				}
-	-- 			}
-	-- 		}
-	-- 	}
-	-- },
+
 	{
 		Category = "Forward Lightbar",
 		Options = {
 			{ Option = "SoundOff Signal nForce", 
 				Variants = {
-				{
-					Variant = "Default",
-					Components = {
-						{
-							Name = "@nforce54",
-							Component = "photon_sos_nforce_54",
-							Position = Vector( 0, -15, 87.55 ),
-							Angles = Angle( 0, 0, -1 ),
-							Scale = 1.029
+					{
+						Variant = "Default",
+						Components = {
+							{
+								Name = "@nforce54",
+								Component = "photon_sos_nforce_54",
+								Position = Vector( 0, -15, 87.55 ),
+								Angles = Angle( 0, 0, -1 ),
+								Scale = 1.029
+							}
 						}
-					}
-				},
-				{
-					Variant = "MPDC",
-					Components = {
-						{
-							Inherit = "@nforce54",
-							Component = "schmal_mpdc_sos_nforce_54",
-						},
-					}
-				}
+					},
 				},
 			},
 		},

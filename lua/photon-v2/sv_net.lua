@@ -6,9 +6,15 @@ util.AddNetworkString( "Photon2:SetControllerChannelState" )
 util.AddNetworkString( "Photon2:SetControllerSelection" )
 
 function Photon2.sv_Network.OnSetControllerChannelState(len, ply)
-    local controller = net.ReadEntity()
+	local controller = net.ReadEntity() --[[@as sv_PhotonController]]
     local channel = net.ReadString()
-    local state = net.ReadString()
+    local mode = net.ReadString()
+
+	-- TODO: implement permissions
+	if ( IsValid(ply) ) then
+		controller:SetChannelMode( channel, mode )
+	end
+
 end
 net.Receive( "Photon2:SetControllerChannelState", Photon2.sv_Network.OnSetControllerChannelState )
 

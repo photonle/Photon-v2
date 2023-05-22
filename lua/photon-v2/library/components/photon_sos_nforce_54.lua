@@ -155,8 +155,16 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
-		["HEADLIGHTS"] = {
+	["Emergency.Warning"] = {
+		["MODE1"] = {
+			All = "FLASH_2"
+		},
+		["MODE2"] = {
+			All = "FLASH_3"
+		}
+	},
+	["Emergency.Marker"] = {
+		["CRUISE"] = {
 			All = "STEADY"
 		}
 	}

@@ -6,6 +6,7 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLightingSegment
+---@field Name string
 ---@field ActivePattern string Name of the current active pattern.
 ---@field IsActive boolean Whether the segment is active.
 ---@field CurrentPriorityScore integer
@@ -32,10 +33,11 @@ Segment.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 ---@param segmentData any
 ---@param lightGroups table<string, integer[]>
 ---@return PhotonLightingSegment
-function Segment.New( segmentData, lightGroups )
+function Segment.New( name, segmentData, lightGroups )
 
 	---@type PhotonLightingSegment
 	local segment = {
+		Name = name,
 		Lights = {},
 		Sequences = {},
 		Frames = {},
@@ -267,23 +269,24 @@ function Segment:IncrementFrame( count )
 end
 
 
--- Updates all lights to match the current sequence frame.
-function Segment:Render()
-	if (not self.IsActive) then return end
+-- -- Updates all lights to match the current sequence frame.
+-- function Segment:Render()
+-- 	if true then return end
+-- 	if (not self.IsActive) then return end
 
-	local map = self.Patterns
-	local sequence
+-- 	local map = self.Patterns
+-- 	local sequence
 
-	for i = 1, #map[self.ActivePattern] do
-		---@type PhotonSequence
-		sequence = map[i]
-		local lights = self.Lights
-		-- map[i] is a PhotonSequence class
-		for lightId, state in pairs( sequence[sequence.CurrentFrame] ) do
-			lights[lightId]:SetState( state, self.CurrentPriorityScore )
-		end
-	end
-end
+-- 	for i = 1, #map[self.ActivePattern] do
+-- 		---@type PhotonSequence
+-- 		sequence = map[i]
+-- 		local lights = self.Lights
+-- 		-- map[i] is a PhotonSequence class
+-- 		for lightId, state in pairs( sequence[sequence.CurrentFrame] ) do
+-- 			lights[lightId]:SetState( state, self.CurrentPriorityScore )
+-- 		end
+-- 	end
+-- end
 
 
 ---@param channelMode string 
@@ -301,12 +304,15 @@ function Segment:AddPattern( channelMode, sequence, conditions )
 end
 
 function Segment:AcceptsChannelMode( channelMode )
+	local exists = self.Patterns[channelMode] ~= nil
+	print("Checking if segment[" .. self.Name .. "] accepts channel mode [" .. channelMode .. "]. Result: [" .. tostring( exists ) .."]" )
+	-- PrintTable( self.Patterns )
 	-- return true
-	return not ( self.Patterns[channelMode] )
+	return exists
 end
 
 
-function Segment:CalculatePriorityInput( inputState )
+function Segment:CalculatePriorityChannel( inputState )
 	-- print("Calculating priority input...")
 	-- PrintTable( inputState )
 	local topScore = -1000
@@ -316,7 +322,7 @@ function Segment:CalculatePriorityInput( inputState )
 		if ( self.InputPriorities[channel] ) then
 			-- printf( "\tChecking channel [%s]", channel )
 			-- TODO: find alternative to string concatination
-			if ( ( self.InputPriorities[channel] > topScore ) and self:AcceptsChannelMode( channel .. "." .. inputState[channel] ) ) then
+			if ( ( self.InputPriorities[channel] > topScore ) and self:AcceptsChannelMode( channel .. ":" .. inputState[channel] ) ) then
 				topScore = self.InputPriorities[channel]
 				result = channel
 			end
@@ -333,17 +339,26 @@ end
 
 function Segment:ApplyModeUpdate()
 	local inputState = self.CurrentModes
-	local newChannel = self:CalculatePriorityInput( inputState )
-	if (not newChannel) then return end
+	local newChannel = self:CalculatePriorityChannel( inputState )
+
+	if (not newChannel) then 
+		print("Segment:ApplyModeUpdate() -> newChannel is nil and the update is terminating.")
+		self:DectivateCurrentSequence()
+		self:ResetSegment()
+		self.ActivePattern = nil
+		self.IsActive = false
+		return 
+	end
+	
 	printf( "New channel calculated to be: %s", newChannel )
 	local newMode = newChannel .. ":" .. inputState[newChannel]
 	printf( "New mode calculated to be: %s", newMode )
 	self.CurrentPriorityScore = self.InputPriorities[newChannel]
 	printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
-	-- Do nothing if priority state hasn't changed
-	if (self.ActivePattern == ( newMode )) then
-		return
-	end
+	
+	-- Do nothing if active mode hasn't changed
+	if ( newMode == self.ActivePattern ) then return end
+	
 	-- self:DeactivateSequences()
 	-- Turn off all segment lights when the active pattern changes.
 	self:DectivateCurrentSequence()

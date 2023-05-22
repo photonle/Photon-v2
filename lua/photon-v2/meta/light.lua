@@ -12,6 +12,8 @@ local printf = Photon2.Debug.PrintF
 ---@field States table
 ---@field Id integer
 ---@field CurrentStateId string
+---@field ControllingSegment string
+---@field CurrentPriorityScore number
 local Light = exmeta.New()
 
 ---@param id integer
@@ -31,7 +33,7 @@ end
 function Light:OnStateChange() end
 
 
-function Light:SetState( state, intensity )
+function Light:SetState( state )
 end
 
 

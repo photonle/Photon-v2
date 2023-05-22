@@ -313,6 +313,7 @@ end
 
 
 function Light:Activate()
+	PhotonLight.Activate( self )
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true
@@ -451,8 +452,12 @@ function Light:DoPreRender()
 	return self
 end
 
-function Light:SetState( stateId )
+function Light:SetState( stateId, segmentName )
 	if ( stateId == self.CurrentStateId ) then return end
+	
+	if ( self.ControllingSegment ) then
+		if ( segmentName ~= self.ControllingSegment ) then return end
+	end
 
 	local state = self.States[ stateId ] --[[@as PhotonLight2DState]]
 

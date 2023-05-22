@@ -42,6 +42,43 @@ ENT.ChannelTree = {
     }
 }
 
+-- Returns table of all _utilized_ channels and modes.
+function ENT:GetChannelModeTree()
+	local cache = {}
+	local result = {}
+
+	local componentTables = { "Components", "VirtualComponents" }
+
+	for _, componentType in pairs( componentTables ) do
+		for k, v in pairs( self[componentType] ) do
+			for channel, modes in pairs( v.Inputs ) do
+				cache[channel] = cache[channel] or {
+					OFF = true
+				}
+				for i=1, #modes do
+					cache[channel][modes[i]] = true
+				end
+			end
+		end
+	end
+
+	
+
+	for channel, modes in pairs( cache ) do
+		result[channel] = {}
+		for mode, _ in pairs( modes ) do
+			result[channel][#result[channel]+1] = mode
+		end
+	end
+
+
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	print("\tGetChannelModeTree() -> Result")
+	PrintTable(result)
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	return result
+end
+
 function ENT:InitializeShared()
 	self.Components = {}
 	self.VirtualComponents = {}
@@ -457,9 +494,11 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
 	self.CurrentModes[channel] = newState
 	for id, component in pairs(self.Components) do
+		-- component:ApplyModeUpdate()
 		component:SetChannelMode( channel, newState, oldState )
 	end
 	for id, virtualComponent in pairs( self.VirtualComponents ) do
+		-- component:ApplyModeUpdate()
 		virtualComponent:SetChannelMode( channel, newState, oldState )
 	end
 end

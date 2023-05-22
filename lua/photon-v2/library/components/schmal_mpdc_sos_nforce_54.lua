@@ -24,19 +24,26 @@ COMPONENT.SubMaterials = {
 COMPONENT.Segments = {
 	MPDC = {
 		Frames = {
-			[1] = "5:B0.5 4:B0.5 22:B0.5 23:B0.5"
+			[1] = "5:B0.5 4:B0.5 22:B0.5 23:B0.5",
+			[2] = "5:R 4:R 22:R 23:R"
 		},
 		Sequences = {
-			CRUISE = { 1 }
+			CRUISE = { 1 },
+			MODE3 = { 2 }
 		}
 	}
 }
 
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
-		["HEADLIGHTS"] = {
-			MPDC = "CRUISE",
-			All = UNSET
+	["Emergency.Marker"] = {
+		["CRUISE"] = {
+			All = UNSET,
+			MPDC = "CRUISE"
+		}
+	},
+	["Emergency.Warning"] = {
+		["MODE3"] = {
+			MPDC = "MODE3"
 		}
 	}
 }

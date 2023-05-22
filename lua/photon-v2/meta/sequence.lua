@@ -13,6 +13,8 @@ NAME = "PhotonSequence"
 ---@field UsedLights PhotonLight[]
 local Sequence = exmeta.New()
 
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
 
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
@@ -34,16 +36,9 @@ function Sequence:Initialize( segment )
 		instance.UsedLights[#instance.UsedLights+1] = lights[self.UsedLightsByIndex[i]]
 	end
 
-
 	-- Setup instance frame mapping.
-	-- Uses Sequence object to act as array of direct frame references 
-	-- instead of repated table look-ups.
-	-- local frameRef
+	-- Uses Sequence object to act as array of direct frame references instead of repated table look-ups.
 	for i=1, #self.FramesByIndex do
-		-- local frame = {}
-		-- for _i=1, #segment.Frames[self.FramesByIndex[i]] do
-		-- 	local light = segment.Component.Lights[]
-		-- end
 		instance[i] = segment.InitializedFrames[self.FramesByIndex[i]]
 	end
 
@@ -96,7 +91,6 @@ function Sequence:SetFrame( frame )
 			self.CurrentFrame = #self
 		end
 	end
-	self.PreviousFrame = self.ActiveFrame
 	self.ActiveFrame = self[self.CurrentFrame]
 	if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
@@ -104,13 +98,13 @@ function Sequence:SetFrame( frame )
 			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
 		end
 		for light, stateId in pairs( self.ActiveFrame ) do
-			light:SetState( stateId )
+			light:SetState( stateId, self.Segment.Name )
 		end
 	end
+	self.PreviousFrame = self.ActiveFrame
 end
 
 function Sequence:Activate()
-	print("Activating sequence.")
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		usedLights[i]:Activate()
@@ -119,11 +113,11 @@ end
 
 
 function Sequence:Deactivate() 
-	print("Deactivating sequence.")
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		usedLights[i].Deactivate = true
 	end
+	self.PreviousFrame = nil
 end
 
 
@@ -131,21 +125,4 @@ function Sequence:Clear()
 	for i = 1, #self do
 		self[i] = nil
 	end
-end
-
-
-function Sequence:AddFrames( frames )
-
-end
-
-
--- PATTERN BUILDING FUNCTIONS --
-function Sequence:Slow( multiplier )
-	return self
-end
-
-
-function Sequence:Flash( frameA, frameB, flash, repeatFor )
-	flash = flash or 2
-	repeatFor = repeatFor or 1
 end

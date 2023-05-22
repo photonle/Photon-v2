@@ -368,8 +368,10 @@ function SKIN:PaintFrame( panel, w, h )
 
 		
 	else
+		
+		self.tex.Window.Normal( 0, 0, w, h )
 
-		self.tex.Window.Inactive( 0, 0, w, h )
+		-- self.tex.Window.Inactive( 0, 0, w, h )
 
 	end
 
