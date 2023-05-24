@@ -353,7 +353,6 @@ end
 -----------------------------------------------------------]]
 function SKIN:PaintFrame( panel, w, h )
 
-	
 
 	if ( panel:HasHierarchicalFocus() and (not panel.Paused)) then
 

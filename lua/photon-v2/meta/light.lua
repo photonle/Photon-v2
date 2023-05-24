@@ -7,13 +7,15 @@ local printf = Photon2.Debug.PrintF
 ---@class PhotonLight
 ---@field Parent Entity
 ---@field Class string
----@field Deactivate boolean When true, marks the light to be activated on the next frame.
+---@field Deactivate boolean When `true`, marks the light to be activated on the next frame.
 ---@field IsActivated boolean
 ---@field States table
 ---@field Id integer
 ---@field CurrentStateId string
 ---@field ControllingSegment string
 ---@field CurrentPriorityScore number
+---@field AdditiveOverrideEnabled boolean When `true`, the light state can be overridden by other segments when otherwise set to OFF by its primary controlling segment.
+---@field Inputs table
 local Light = exmeta.New()
 
 ---@param id integer
@@ -24,16 +26,36 @@ function Light:Initialize( id, parent )
 	local light = {
 		Id = id,
 		Class = self.Class,
-		Parent = parent
+		Parent = parent,
+		Inputs = {}
 	}
 	return setmetatable( light, { __index = self } )
 end
 
 
-function Light:OnStateChange() end
+---@param state PhotonLightState
+function Light:OnStateChange( state ) end
 
-
-function Light:SetState( state )
+---@return boolean stateChangeAccepted
+function Light:SetState( stateId, segmentName, priorityScore )
+	if ( stateId == self.CurrentStateId ) then return false end
+	if ( not self.States[stateId] ) then
+		error("Invalid light state [" .. tostring(stateId) .. "]")
+	end
+	-- if ( self.ControllingSegment ) then
+	-- 	if ( segmentName == self.ControllingSegment ) then 
+	-- 		self.CurrentPriorityScore = priorityScore
+	-- 	else
+	-- 		if ( (stateId ~= "OFF") and (self.AdditiveOverrideEnabled) and ( priorityScore > self.CurrentPriorityScore ) ) then
+	-- 			self.CurrentPriorityScore = priorityScore
+	-- 		else
+	-- 			return false
+	-- 		end
+	-- 	end
+	-- end
+	self.CurrentStateId = stateId
+	self:OnStateChange( self.States[stateId] )
+	return true
 end
 
 

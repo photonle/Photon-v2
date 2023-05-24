@@ -318,12 +318,12 @@ function Light:Activate()
 	if (self.IsActivated) then return end
 	self.IsActivated = true
 	manager.Active[#manager.Active+1] = self
-	self.PixVisHandle = util.GetPixelVisibleHandle()
+	self.PixVisHandle = self.PixVisHandle or util.GetPixelVisibleHandle()
 end
 
 function Light:DeactivateNow()
 	self.IsActivated = false
-	self.PixVisHandle = nil
+	-- self.PixVisHandle = nil
 	self.Deactivate = false
 end
 
@@ -452,20 +452,7 @@ function Light:DoPreRender()
 	return self
 end
 
-function Light:SetState( stateId, segmentName )
-	if ( stateId == self.CurrentStateId ) then return end
-	
-	if ( self.ControllingSegment ) then
-		if ( segmentName ~= self.ControllingSegment ) then return end
-	end
-
-	local state = self.States[ stateId ] --[[@as PhotonLight2DState]]
-
-	if ( not state ) then
-		error("Invalid light state [" .. tostring(stateId) .. "]")
-	end
-
-	self.CurrentStateId = stateId
+function Light:OnStateChange( state )
 
 	self.SourceFillColor:SetTarget( state.SourceFillColor )
 	self.SourceDetailColor:SetTarget( state.SourceDetailColor )

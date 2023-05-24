@@ -73,14 +73,14 @@ VEHICLE.Selections = {
 						}
 					},
 				},
-				Components = {
-					{
-						Component = "photon_sos_mpf4_lic_h",
-						Angles = Angle( 0, -90, 0 ),
-						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96
-					}
-				}
+				-- Components = {
+				-- 	{
+				-- 		Component = "photon_sos_mpf4_lic_h",
+				-- 		Angles = Angle( 0, -90, 0 ),
+				-- 		Position = Vector( 0, -125, 49 ),
+				-- 		Scale = 0.96
+				-- 	}
+				-- }
 			}
 		}
 	},
@@ -116,6 +116,9 @@ VEHICLE.Selections = {
 	{
 		Category = "Forward Lightbar",
 		Options = {
+			{ Option = "None",
+			
+			},
 			{ Option = "SoundOff Signal nForce", 
 				Variants = {
 				{

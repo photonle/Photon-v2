@@ -32,21 +32,10 @@ function Light:Initialize( id, parentEntity )
 end
 
 
-function Light:SetState( stateId )
-	if ( stateId == self.CurrentStateId ) then return end
-	
-	local state = self.States[ stateId ]
-	
-	if ( not state ) then
-		error("Invalid light state [" .. tostring(stateId) .. "]")
-	end
-	
-	self.CurrentStateId = stateId
-	
+function Light:OnStateChange( state )	
 	for _, light in pairs( self.Indexes ) do
 		self.Parent:SetSubMaterial( light, state.Material )
 	end
-
 end
 
 

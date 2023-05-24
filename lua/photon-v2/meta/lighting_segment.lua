@@ -259,6 +259,7 @@ end
 
 ---@param count number
 function Segment:IncrementFrame( count )
+	-- print("Incrementing frame... (" .. tostring(count) .. ")")
 	if not (self.IsActive) then return end
 	if not (self.ActivePattern) then return end
 
@@ -377,13 +378,6 @@ function Segment:ResetSegment()
 	for lightId, state in pairs(self.Frames[0]) do
 		lights[lightId]:SetState( state )
 	end
-	-- print("Frame[0]")
-	-- PrintTable(self.Frames[0])
-	-- for i = 1, #default do
-	-- 	printf("default[i] = %s", default[i])
-	-- 	-- TODO: switch to direct reference instead of long look-up
-	-- 	self.Lights[default[i][1]]:SetState( default[i][2] )
-	-- end
 end
 
 function Segment:ActivateCurrentSequence()
@@ -406,6 +400,7 @@ function Segment:GetCurrentSequence()
 	-- printf("Attemping to get current sequence. The .ActivePattern is [%s]", self.ActivePattern)
 	-- printf("self.Patterns[self.ActivePattern] = [%s]", self.Patterns[self.ActivePattern])
 	-- PrintTable(self.Sequences)
+	-- print("Sequence exists: " .. tostring(not (self.Sequences[self.Patterns[self.ActivePattern]] == nil)))
 	return self.Sequences[self.Patterns[self.ActivePattern]]
 end
 

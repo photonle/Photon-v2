@@ -260,6 +260,7 @@ function Component:ApplyModeUpdate()
 		segment:ApplyModeUpdate()
 	end
 	self:UpdateSegmentLightControl()
+	self:FrameTick()
 end
 
 function Component:UpdateSegmentLightControl()
@@ -270,6 +271,9 @@ function Component:UpdateSegmentLightControl()
 	for segmentName, segment in pairs( self.Segments ) do
 		if (segment.IsActive) then
 			local sequence = segment:GetCurrentSequence()
+			if ( not sequence ) then
+				error("Light segment [" .. tostring(sequenceName) .. "] did not return a valid sequence...")
+			end
 			for i=1, #sequence.UsedLights do
 				local light = sequence.UsedLights[i]
 				if ( not map[light] ) then
@@ -310,6 +314,7 @@ function Component:SetChannelMode( channel, new, old )
 		segment:OnModeChange( channel, new )
 	end
 	self:UpdateSegmentLightControl()
+	self:FrameTick()
 end
 
 

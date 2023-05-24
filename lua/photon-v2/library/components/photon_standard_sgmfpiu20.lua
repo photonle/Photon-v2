@@ -176,30 +176,51 @@ COMPONENT.ColorMap = "[R] 1"
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
-	TailLights = {
+	Tail = {
 		Frames = {
-			[1] = "2:TD",
-			[2] = "Tail_L:TD Tail_R:TD",
+			[1] = "Tail_L:TB",
+			[2] = "Tail_R:TB",
 			[3] = "Tail_L:TB Tail_R:TB",
-			[4] = "2:TD 3:TB 5:R 6:R 1:TD 4:TD",
-			[5] = "2:TB 3:TD 1:R 4:R 5:TD 6:TD",
-			-- [4] = "5:TAIL_DIM 6 "
-			-- [1] = "1:R"
+			[4] = "Tail_L:TD Tail_R:TD",
 		},
 		Sequences = {
-			["FLASH"] = sequence():Flash(2, 1, 3):Do(3):Alternate( 2, 1, 6 ):Do(3),
-			["ON"] = { 3 },
-			-- ["ON"] = sequence():Add(3):Do(12):Add(2):Do(6):Add(0):Do(6):Add(2):Do(6),
-			["FLASH_3"] = { 4, 3, 4, 3, 4, 3, 5, 3, 5, 3, 5, 3 }
-			-- ["FLASH_3"] = sequence():Flash( 4, 5, 3 )
+			["TAIL"] = { 4 },
+			["BRAKE"] = { 3 },
+			["BRAKE2"] = { 3 },
+			["LEFT"] = sequence():Alternate( 1, 0, 8 ),
+			["RIGHT"] = sequence():Alternate( 2, 0, 8 ),
+			["HAZARD"] = sequence():Alternate( 3, 0, 8 ),
 		}
 	}
 }
 
+--TODO: verify that sequences exist on compilation
 COMPONENT.Patterns = {
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
-			TailLights = "ON"
+			Tail = "TAIL",
+			-- { "Tail", "TAIL" },
+		}
+	},
+	["Vehicle.Brake"] = {
+		["BRAKE"] = {
+			Tail = "BRAKE"
+		},
+		["BRAKE2"] = {
+			Tail = "BRAKE2"
+		}
+	},
+	["Vehicle.Signal"] = {
+		["LEFT"] = {
+			Tail = "LEFT"
+		},
+		["RIGHT"] = {
+			Tail = "RIGHT"
+
+		},
+		["HAZARD"] = {
+			Tail = "HAZARD"
+
 		}
 	}
 }
