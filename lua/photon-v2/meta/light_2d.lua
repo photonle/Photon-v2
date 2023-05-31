@@ -346,7 +346,7 @@ function Light:DoPreRender()
 	else
 		-- print("BONE PARENT: " .. tostring(self.BoneParent))
 		-- -- TODO: optimization
-		-- self.Parent:SetupBones()
+		self.Parent:SetupBones()
 		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
 		-- local bonePosition = matrix:GetTranslation()
 		-- local boneAngles = matrix:GetAngles()

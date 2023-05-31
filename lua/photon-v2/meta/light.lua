@@ -14,9 +14,12 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentStateId string
 ---@field ControllingSegment string
 ---@field CurrentPriorityScore number
+---@field CurrentSequenceRank number
 ---@field AdditiveOverrideEnabled boolean When `true`, the light state can be overridden by other segments when otherwise set to OFF by its primary controlling segment.
+---@field SegmentLocked boolean Internal. When `true`, the light will not accept state changes until reset with the next frame change.
 ---@field Inputs table
 local Light = exmeta.New()
+Light.AdditiveOverrideEnabled = true
 
 ---@param id integer
 ---@param parent Entity
@@ -36,27 +39,60 @@ end
 ---@param state PhotonLightState
 function Light:OnStateChange( state ) end
 
+local debugPrint = false
+
 ---@return boolean stateChangeAccepted
-function Light:SetState( stateId, segmentName, priorityScore )
-	if ( stateId == self.CurrentStateId ) then return false end
+function Light:SetState( stateId, segmentName, priorityScore, rank )
+	-- if ( stateId == self.CurrentStateId ) then return false end
+	segmentName = segmentName or self.ControllingSegment
 	if ( not self.States[stateId] ) then
 		error("Invalid light state [" .. tostring(stateId) .. "]")
 	end
-	-- if ( self.ControllingSegment ) then
-	-- 	if ( segmentName == self.ControllingSegment ) then 
-	-- 		self.CurrentPriorityScore = priorityScore
-	-- 	else
-	-- 		if ( (stateId ~= "OFF") and (self.AdditiveOverrideEnabled) and ( priorityScore > self.CurrentPriorityScore ) ) then
-	-- 			self.CurrentPriorityScore = priorityScore
-	-- 		else
-	-- 			return false
-	-- 		end
-	-- 	end
-	-- end
+	if debugPrint then printf( "Setting light state to [%s]. Segment [%s]. Priority [%s]. Rank [%s]. Controlling segment [%s].", stateId, segmentName, priorityScore, rank, self.ControllingSegment) end
+	
+	priorityScore = priorityScore or 0
+	
+	if ( self.ControllingSegment and self.AdditiveOverrideEnabled and ( not self.SegmentLocked )) then
+		if ( stateId == "OFF" ) then
+			if (( segmentName == self.ControllingSegment )) then
+				priorityScore = 0
+				if debugPrint then print("Controlling segment setting to OFF, priorityScore=0") end
+				if (self.CurrentPriorityScore > priorityScore) then return false end
+			else
+				if debugPrint then print("Request to turn light OFF rejected.") end
+				return false
+			end
+		else
+			if (( segmentName == self.ControllingSegment )) then
+				self.CurrentPriorityScore = priorityScore
+				self.SegmentLocked = true
+				if debugPrint then print("Light state set by controlling segment.") end
+			elseif 
+			( priorityScore > self.CurrentPriorityScore ) or
+			(( priorityScore == self.CurrentPriorityScore ) and ( rank < self.CurrentSequenceRank )) then
+				self.CurrentPriorityScore = priorityScore
+				self.CurrentSequenceRank = rank
+				if debugPrint then print("Light state set by other segment.") end
+			else
+				if debugPrint then print("Light state change rejected.") end
+				return false
+			end
+		end
+	end
+
+	self.CurrentSequenceRank = rank
+	self.CurrentPriorityScore = priorityScore
+	local previousState = self.CurrentStateId
 	self.CurrentStateId = stateId
-	self:OnStateChange( self.States[stateId] )
+	if (stateId ~= previousState) then self:OnStateChange( self.States[stateId] ) end
+	if debugPrint then print("Light is changing state.") end
 	return true
 end
+
+-- For later reference
+-- function Light:FrameChange()
+-- 	self.CurrentPriorityScore = 0
+-- end
 
 
 -- Marks the light as "activated" to enable rendering optimizations

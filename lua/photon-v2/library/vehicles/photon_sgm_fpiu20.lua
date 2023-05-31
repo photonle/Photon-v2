@@ -33,6 +33,7 @@ end
 
 VEHICLE.SubMaterials = {
 	[20] = mpdcSkin.Name,
+	[3] = "photon/common/blank"
 	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
 }
 
@@ -72,6 +73,11 @@ VEHICLE.Selections = {
 							["mount"] = "mount"
 						}
 					},
+					{
+						Model = "models/schmal/sgm_fpiu20_win.mdl",
+						Position = Vector(),
+						Angles = Angle(0, -90, 0)
+					}
 				},
 				-- Components = {
 				-- 	{

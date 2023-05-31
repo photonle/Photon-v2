@@ -168,7 +168,6 @@ COMPONENT.Lights = {
 	[4] = { "TailLightsAlt", Vector( 38.3, -121.6, 50.8 ), Angle( 0, 180+27, 0 ) },
 	[5] = { "TailSubMat", Indexes = { 19 } },
 	[6] = { "TailLightEdge", Vector( 41.7, -119.5, 51.5 ), Angle( 0, 180+81, 0 ) },
-	-- [3] = { "TailMesh", Vector(0, 0, 0), Angle(0, 90, 0) }
 }
 
 COMPONENT.ColorMap = "[R] 1"
@@ -191,6 +190,32 @@ COMPONENT.Segments = {
 			["RIGHT"] = sequence():Alternate( 2, 0, 8 ),
 			["HAZARD"] = sequence():Alternate( 3, 0, 8 ),
 		}
+	},
+	Headlights = {
+		Frames = {
+			[1] = "Tail_L:TD Tail_R:TD"
+		},
+		Sequences = {
+			["HEADLIGHTS"] = { 1 }
+		}
+	},
+	Tail_L = {
+		Frames = {
+			[1] = "Tail_L:TB"
+		},
+		Sequences = {
+			["BRAKE"] = { 1 },
+			["SIGNAL"] = sequence():Alternate( 1, 0, 8 )
+		}
+	},
+	Tail_R = {
+		Frames = {
+			[1] = "Tail_R:TB"
+		},
+		Sequences = {
+			["BRAKE"] = { 1 },
+			["SIGNAL"] = sequence():Alternate( 1, 0, 8 )
+		}
 	}
 }
 
@@ -198,29 +223,26 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
-			Tail = "TAIL",
-			-- { "Tail", "TAIL" },
+			Headlights = "HEADLIGHTS"
 		}
 	},
 	["Vehicle.Brake"] = {
 		["BRAKE"] = {
-			Tail = "BRAKE"
-		},
-		["BRAKE2"] = {
-			Tail = "BRAKE2"
+			Tail_L = "BRAKE",
+			Tail_R = "BRAKE",
 		}
 	},
 	["Vehicle.Signal"] = {
 		["LEFT"] = {
-			Tail = "LEFT"
+			Tail_L = "SIGNAL"
 		},
 		["RIGHT"] = {
-			Tail = "RIGHT"
+			Tail_R = "SIGNAL"
 
 		},
 		["HAZARD"] = {
-			Tail = "HAZARD"
-
+			Tail_L = "SIGNAL",
+			Tail_R = "SIGNAL"
 		}
 	}
 }

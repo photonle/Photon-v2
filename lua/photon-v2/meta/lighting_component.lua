@@ -176,6 +176,8 @@ function Component.New( name, data, base )
 		-- Build input interface channels
 		component.Inputs[channelName] = {}
 		
+		local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
+
 		for modeName, sequences in pairs( channel ) do
 			
 			-- Build input interface modes
@@ -186,25 +188,50 @@ function Component.New( name, data, base )
 			-- PrintTable( channel )
 			-- print("----------------------------")
 			local patternName = channelName .. ":" .. modeName
+
+			-- sequence ranking...
+			--[[
+				for i=1, #sequences do
+					{ Tail, "RIGHT" }
+				end
+			]]--\
+			local rank = 1
 			for segmentName, sequence in pairs ( sequences ) do
+
+				local sequenceName = patternName .. "/" .. sequence
+				print("Sequence name: " .. sequenceName)
 				local segment = component.Segments[segmentName]
 				if (not segment) then
 					error( string.format("Invalid segment: '%s'", segmentName) )
 				end
+
 				if (isstring(sequence)) then
-					segment:AddPattern( patternName, sequence )
+					segment:AddPattern( patternName, sequence, priorityScore, rank )
 				else
 					-- TODO: advanced pattern assignment
 					error( "Invalid pattern assignment." )
 				end
+
+				rank = rank + 1
+				
+				print("Segment Inputs =======================")
+				PrintTable( segment.Inputs )
+				print("========================================")
 			end
+
+			
+
 		end
 	end
 
 	--[[
-			Finalize and set MetaTable
+			Finalize and set meta-table
 	--]]
 	setmetatable( component, { __index = PhotonLightingComponent } )
+
+	-- print("Component.Patterns ====================================")
+	-- 	PrintTable( component.Patterns )
+	-- print("=======================================================")
 
 	return component
 end
@@ -270,21 +297,26 @@ function Component:UpdateSegmentLightControl()
 	
 	for segmentName, segment in pairs( self.Segments ) do
 		if (segment.IsActive) then
+			print("\tChecking segment [" .. tostring(segmentName) .. "]")
 			local sequence = segment:GetCurrentSequence()
 			if ( not sequence ) then
 				error("Light segment [" .. tostring(sequenceName) .. "] did not return a valid sequence...")
 			end
 			for i=1, #sequence.UsedLights do
 				local light = sequence.UsedLights[i]
+				print("\tEvaluating light [" .. tostring(light) .. "]")
 				if ( not map[light] ) then
-					map[light] = { segmentName, -1000 }
+					map[light] = { segmentName, -1000, 8192 }
 				end
-				if ( map[light][2] < segment.CurrentPriorityScore ) then
+				if (( map[light][2] < segment.CurrentPriorityScore ) or ((map[light][2] == segment.CurrentPriorityScore) and ( map[light][3] > sequence.Rank ))) then
 					map[light][1] = segmentName
 					map[light][2] = segment.CurrentPriorityScore
+					map[light][3] = sequence.Rank
 				end
 			end
 			sequence:Activate()
+		else
+			print("\tNOT checking inactive segment [" .. tostring(segmentName) .. "]")
 		end
 	end
 
@@ -339,6 +371,19 @@ function Component:FrameTick()
 	-- for sequence, v in pairs( self.ActiveSequences ) do
 	-- 	sequence:IncrementFrame()
 	-- end
+	
+	-- Reset each light on frame tick for overriding
+	local light
+	for i=1, #self.Lights do
+		-- print("updating light [" .. tostring(i) .. "] on frame tick")
+		light = self.Lights[i]
+		light.CurrentPriorityScore = 0
+		light.CurrentSequenceRank = 0
+		light.SegmentLocked = false
+	end
+
+	-- Relays notification to each segment
+	-- TODO: consider sequence-based updates to reduce overhead
 	for segmentName, segment in pairs( self.Segments ) do 
 		segment:IncrementFrame( self.PhotonController.Frame )
 	end

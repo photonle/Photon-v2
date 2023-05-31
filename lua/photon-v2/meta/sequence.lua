@@ -11,6 +11,8 @@ NAME = "PhotonSequence"
 ---@field FramesByIndex integer[]
 ---@field UsedLightsByIndex table<integer, boolean>
 ---@field UsedLights PhotonLight[]
+---@field Rank number Sequence's rank in an input pattern.
+---@field PriorityScore number
 local Sequence = exmeta.New()
 
 local print = Photon2.Debug.Print
@@ -19,15 +21,37 @@ local printf = Photon2.Debug.PrintF
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
 
+--[[ *************************************************
+
+	New sequence object needs to be created for each 
+	reference in COMPONENT.Patterns and assigned 
+	a unique sequence identifier.
+
+	Required to:
+	1) Enable intra-pattern ranking
+	2) Allow off-state overriding
+
+	Unresolved problems:
+	1) How should off-state overriding be configured?
+	   Per sequence? Per segment?
+
+	 *************************************************
+--]]
+
+
+
+
 -- Returns initialized Sequence for a spawned component.
 ---@param segment PhotonLightingSegment
 ---@return PhotonSequence
-function Sequence:Initialize( segment )
+function Sequence:Initialize( segment, priorityScore, rank )
 	---@type PhotonSequence
 	local instance = {
 		Segment = segment,
 		CurrentFrame = 1,
-		UsedLights = {}
+		UsedLights = {},
+		PriorityScore = priorityScore or 0,
+		Rank = rank or 0
 	}
 
 	local lights = segment.Lights
@@ -37,7 +61,7 @@ function Sequence:Initialize( segment )
 	end
 
 	-- Setup instance frame mapping.
-	-- Uses Sequence object to act as array of direct frame references instead of repated table look-ups.
+	-- Uses Sequence object to act as array of direct frame references instead of repeated table look-ups.
 	for i=1, #self.FramesByIndex do
 		instance[i] = segment.InitializedFrames[self.FramesByIndex[i]]
 	end
@@ -50,10 +74,12 @@ end
 ---@param name string
 ---@param frameSequence integer[]
 ---@param segment PhotonLightingSegment
+---@param data? table
 ---@return PhotonSequence
-function Sequence.New( name, frameSequence, segment )
+function Sequence.New( name, frameSequence, segment, data )
 	---@type PhotonSequence
 
+	-- unclear why this is needed
 	frameSequence._previous = nil
 
 	local sequence = {
@@ -66,6 +92,9 @@ function Sequence.New( name, frameSequence, segment )
 
 	for key, frame in pairs( frameSequence ) do
 		if (checkedFrames[frame]) then continue end
+		if ( not segment.Frames[frame] ) then
+			error("Frame #" .. tostring(frame) .. " does not exist.")
+		end
 		for lightIndex, state in pairs( segment.Frames[frame] ) do
 			usedLightsByKey[lightIndex] = true
 		end
@@ -92,15 +121,15 @@ function Sequence:SetFrame( frame )
 		end
 	end
 	self.ActiveFrame = self[self.CurrentFrame]
-	if not (self.PreviousFrame == self.ActiveFrame) then
+	-- if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
 		if ( not self.ActiveFrame ) then
 			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
 		end
 		for light, stateId in pairs( self.ActiveFrame ) do
-			light:SetState( stateId, self.Segment.Name )
+			light:SetState( stateId, self.Segment.Name, self.PriorityScore, self.Rank )
 		end
-	end
+	-- end
 	self.PreviousFrame = self.ActiveFrame
 end
 

@@ -17,6 +17,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Component PhotonLightingComponent
 -- [string] = Pattern Name
 ---@field Patterns table<string, string> Key = Input Channel, Value = Associated sequence
+---@field Inputs table<string, { Sequence: string, Priority: number, Rank: number }>
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonLight, string>>
 ---@field Lights table Points to Component.Lights
@@ -41,7 +42,8 @@ function Segment.New( name, segmentData, lightGroups )
 		Lights = {},
 		Sequences = {},
 		Frames = {},
-		Patterns = {}
+		Patterns = {},
+		Inputs = {}
 	}
 
 	setmetatable(segment, { __index = PhotonLightingSegment })
@@ -181,6 +183,9 @@ function Segment.New( name, segmentData, lightGroups )
 		segment:AddNewSequence( sequenceName, frameSequence )
 	end
 
+	-- Add inputs (new sequence implementation)
+	-- for channelMode, sequenceData in pairs( segmentData.)
+
 	return segment
 end
 
@@ -198,7 +203,8 @@ function Segment:Initialize( componentInstance )
 		Lights = componentInstance.Lights,
 		ColorMap = componentInstance.ColorMap,
 		Sequences = {},
-		InitializedFrames = {}
+		InitializedFrames = {},
+		Inputs = {}
 	}
 	
 	setmetatable( segment, { __index = self } )
@@ -222,7 +228,15 @@ function Segment:Initialize( componentInstance )
 
 	-- Setup sequences
 	for sequenceName, sequence in pairs( self.Sequences ) do
-		segment.Sequences[sequenceName] = sequence:Initialize( segment )
+		printf( "Initializing sequence [%s]", sequenceName )
+		-- segment.Sequences[sequenceName] = sequence:Initialize( segment )
+	end
+
+	-- Setup inputs (new/revised sequences)
+	for channelMode, sequenceData in pairs( self.Inputs ) do
+		printf( "Initializing input sequence from channel mode [%s]", channelMode )
+		
+		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( segment, sequenceData.Priority, sequenceData.Rank )
 	end
 
 	segment:ApplyModeUpdate()
@@ -235,6 +249,10 @@ end
 ---@param frameSequence integer[]
 function Segment:AddNewSequence( name, frameSequence )
 	self.Sequences[name] = PhotonSequence.New( name, frameSequence, self )
+end
+
+function Segment:AddInput()
+
 end
 
 
@@ -293,15 +311,20 @@ end
 ---@param channelMode string 
 ---@param sequence string
 ---@param conditions? table
-function Segment:AddPattern( channelMode, sequence, conditions )
-	printf("Adding pattern. Mode: %s. Sequence: %s.", channelMode, sequence)
+function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
+	printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
 	if (istable(conditions)) then
 		-- TODO: conditional
 	end
+	
+	-- Create sequence variant with rank and score information
+	local sequenceName = channelMode .. "/" .. sequence
+	self.Sequences[sequenceName] = self.Sequences[sequence]
 	-- if (isstring(sequence)) then
 	-- 	sequence = self.Sequences[sequence]
 	-- end
-	self.Patterns[channelMode] = sequence --[[@as string]]
+	self.Inputs[channelMode] = { Sequence = sequenceName, Rank = rank, Priority = priorityScore }
+	self.Patterns[channelMode] = sequenceName --[[@as string]]
 end
 
 function Segment:AcceptsChannelMode( channelMode )
