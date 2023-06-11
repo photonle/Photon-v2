@@ -286,7 +286,7 @@ function Component:ApplyModeUpdate()
 	for name, segment in pairs( self.Segments ) do
 		segment:ApplyModeUpdate()
 	end
-	self:UpdateSegmentLightControl()
+	-- self:UpdateSegmentLightControl()
 	self:FrameTick()
 end
 
@@ -345,7 +345,7 @@ function Component:SetChannelMode( channel, new, old )
 	for name, segment in pairs( self.Segments ) do
 		segment:OnModeChange( channel, new )
 	end
-	self:UpdateSegmentLightControl()
+	-- self:UpdateSegmentLightControl()
 	self:FrameTick()
 end
 
@@ -374,13 +374,7 @@ function Component:FrameTick()
 	
 	-- Reset each light on frame tick for overriding
 	local light
-	for i=1, #self.Lights do
-		-- print("updating light [" .. tostring(i) .. "] on frame tick")
-		light = self.Lights[i]
-		light.CurrentPriorityScore = 0
-		light.CurrentSequenceRank = 0
-		light.SegmentLocked = false
-	end
+	
 
 	-- Relays notification to each segment
 	-- TODO: consider sequence-based updates to reduce overhead
@@ -388,6 +382,14 @@ function Component:FrameTick()
 		segment:IncrementFrame( self.PhotonController.Frame )
 	end
 
+	for i=1, #self.Lights do
+		-- print("updating light [" .. tostring(i) .. "] on frame tick")
+		-- light = self.Lights[i]
+		-- light.CurrentPriorityScore = 0
+		-- light.CurrentSequenceRank = 0
+		-- light.SegmentLocked = false
+		self.Lights[i]:UpdateState()
+	end
 end
 
 function Component:RemoveVirtual()

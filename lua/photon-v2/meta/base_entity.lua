@@ -34,6 +34,8 @@ ENT.DefaultInputPriorities = {
 
 ENT.SubMaterials = {}
 ENT.BodyGroups = {}
+ENT.PoseParameters = {}
+ENT.Bones = {}
 
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
@@ -74,6 +76,7 @@ function ENT:Setup()
 		self:SetupSubMaterials()
 		self:SetupBodyGroups()
 		self.Entity:SetupBones()
+		self:SetupStaticBones()
 	end
 	return self
 end
@@ -115,6 +118,51 @@ function ENT:SetupBodyGroups()
 	end
 end
 
+function ENT:SetupPoseParameters()
+	for param, value in pairs( self.PoseParameters ) do
+		self:SetPoseParameter( param, value )
+	end
+end
+
+function ENT:UpdateAndApplyPoseParameters( poseParameters )
+	self.PoseParameters = poseParameters
+	self:SetupPoseParameters()
+end
+
+function ENT:UpdateAndApplyStaticBoneData( boneData )
+	self.Bones = boneData
+	self:SetupStaticBones()
+end
+
+function ENT:SetupStaticBones()
+	for boneName, data in pairs(self.Bones) do
+		local boneId = boneName
+		if ( isstring( boneId ) ) then
+			boneId = self:LookupBone( boneName )
+			if ( not boneId ) then
+				ErrorNoHaltWithStack("Bone name [" .. tostring(boneName) .. "] does not exist in model [" .. tostring(self:GetModel() .. "]"))
+				return
+			end
+		end
+		if ( not istable( data ) ) then
+			data = { data }
+		end
+		for i=1, #data do
+			local var = data[i]
+			if ( isvector( var ) ) then
+				self:ManipulateBonePosition( boneId, var )
+			elseif ( isangle( var ) ) then
+				self:ManipulateBoneAngles( boneId, var )
+			elseif ( isnumber( var ) ) then
+				self:ManipulateBoneScale( boneId, Vector(var, var, var) )
+			else
+				error("Unable to manipulate bone [" .. boneName .. "] with parameter type [" .. type( var ) .. "] (" .. tostring( var ) .. "). Must be a Vector (position), Angle (angles), or number (scale)." )
+			end
+		end
+	end
+end
+
+
 ---@param controller PhotonController
 ---@return PhotonBaseEntity
 function ENT:CreateClientside( controller )
@@ -154,7 +202,9 @@ ENT.PropertyFunctionMap = {
 	["Scale"] = "SetScale",
 	["MoveType"] = "SetMoveType",
 	["SubMaterials"] = "UpdateAndApplySubMaterials",
-	["BodyGroups"] = "UpdateAndApplyBodyGroups"
+	["BodyGroups"] = "UpdateAndApplyBodyGroups",
+	["PoseParameters"] = "UpdateAndApplyPoseParameters",
+	["Bones"] = "UpdateAndApplyStaticBoneData"
 }
 
 ENT.PropertiesUpdatedOnSoftUpdate = {
@@ -162,7 +212,9 @@ ENT.PropertiesUpdatedOnSoftUpdate = {
 	["Angles"] = true,
 	["Scale"] = true,
 	["SubMaterials"] = true,
-	["BodyGroups"] = true
+	["BodyGroups"] = true,
+	["PoseParameters"] = true,
+	["Bones"] = true
 }
 
 ---@param property string

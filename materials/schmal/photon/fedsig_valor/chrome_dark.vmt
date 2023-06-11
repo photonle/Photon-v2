@@ -1,0 +1,15 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/shared/white"
+	"$bumpmap" "schmal/shared/flat"
+   	$surfaceprop "metal"
+   	 $phong "1"
+    	$phongexponent 1
+   	 $phongboost "1"
+   	 $phongfresnelranges "[ 1 1 1]"
+	$nocull "1"
+	"$rimlight" "1"
+	"$nodecal" "1"
+	"$color2" "{32 32 32}"
+
+}

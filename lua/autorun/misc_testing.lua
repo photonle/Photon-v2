@@ -1,26 +1,42 @@
 if SERVER then return end
 ---@type Entity
 local function boneTesting()
-local target = ents.FindByModel("models/sentry/props/soundofffascia_plate_horizontal.mdl")[1]
-print(IsValid(target))
-target:SetupBones()
--- target:ManipulateBonePosition( 0, Vector(0,0,0), false )
--- for i=0, target:GetBoneCount() - 1 do
--- 	print("Bone name: " .. tostring(target:GetBoneName( i )))
--- end
--- target:ManipulateBoneAngles(1, Angle(0, -250, 0), false)
--- target:ManipulateBoneScale(1, Vector(10,3,3))
--- target:ManipulateBoneJiggle(1, 1)
--- PrintTable(target:GetAttachments())
-print(target:GetBoneCount())
-print(target:GetBonePosition(0))
+	local target = ents.FindByModel("models/schmal/fedsig_valor_51in.mdl")[1]
+	if (not target) then return end
+	-- local target = ents.FindByModel("models/schmal/fedsig_valor_51in.mdl")[1]
+	-- local target = ents.FindByModel("models/sentry/props/soundofffascia_plate_horizontal.mdl")[1]
+	print(IsValid(target))
+	target:SetupBones()
+	print("pose params: " .. tostring(target:GetNumPoseParameters()))
+	local rightRod = target:LookupBone("right_bone_rod")
+	local leftRod = target:LookupBone("left_bone_rod")
+	-- target:ManipulateBonePosition( 0, Vector(0,0,0), false )
+	-- for i=0, target:GetBoneCount() - 1 do
+	-- 	print("Bone name: " .. tostring(target:GetBoneName( i )))
+	-- end
+	-- target:ManipulateBoneAngles(1, Angle(0, -250, 0), false)
+	-- target:ManipulateBoneScale(1, Vector(10,3,3))
+	-- target:ManipulateBoneJiggle(1, 1)
+	-- PrintTable(target:GetAttachments())
+	print(target:GetBoneCount())
+	print(target:GetBonePosition(rightRod))
 
+	target:SetPoseParameter("extend_feet", 10)
 
-hook.Add("PostRender", "Photon2:BoneTesting", function() 
-	target:ManipulateBonePosition( 0, Vector(0, math.sin(CurTime() * 5) * 5, 0 ), false)
-end)
--- hook.Remove("PostDrawEffects", "Photon2:BoneTesting")
+	hook.Add("PostRender", "Photon2:BoneTesting", function()
+		if (not IsValid(target) ) then
+			hook.Remove("PostRender", "Photon2:BoneTesting")
+			return
+		end
+		target:ManipulateBonePosition( rightRod, Vector(math.abs(math.sin(CurTime() * 2) * -5) * -1, 0, math.abs(math.sin(CurTime() * 2) * 3 )) * -1, false)
+		target:ManipulateBonePosition( leftRod, Vector(math.abs(math.sin(CurTime() * 2) * -5) * -1, 0, math.abs(math.sin(CurTime() * 2) * 3 )) * -1, false)
+		-- target:ManipulateBonePosition( 0, Vector(math.sin(CurTime() * 5) * -10, 0, math.sin(CurTime() * 5) * 10 ), false)
+		-- target:ManipulateBonePosition( 1, Vector(math.sin(0, CurTime() * 5) * -5, 0, 0), false)
+	end)
+-- 
 end
+
+boneTesting()
 
 if not exmeta then return end
 

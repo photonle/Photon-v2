@@ -236,7 +236,7 @@ function Segment:Initialize( componentInstance )
 	for channelMode, sequenceData in pairs( self.Inputs ) do
 		printf( "Initializing input sequence from channel mode [%s]", channelMode )
 		
-		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( segment, sequenceData.Priority, sequenceData.Rank )
+		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank )
 	end
 
 	segment:ApplyModeUpdate()
@@ -368,7 +368,7 @@ function Segment:ApplyModeUpdate()
 	if (not newChannel) then 
 		print("Segment:ApplyModeUpdate() -> newChannel is nil and the update is terminating.")
 		self:DectivateCurrentSequence()
-		self:ResetSegment()
+		-- self:ResetSegment()
 		self.ActivePattern = nil
 		self.IsActive = false
 		return 
@@ -384,9 +384,9 @@ function Segment:ApplyModeUpdate()
 	if ( newMode == self.ActivePattern ) then return end
 	
 	-- self:DeactivateSequences()
-	-- Turn off all segment lights when the active pattern changes.
 	self:DectivateCurrentSequence()
-	self:ResetSegment()
+	-- Turn off all segment lights when the active pattern changes.
+	-- self:ResetSegment()
 	self.ActivePattern = newMode
 	self.IsActive = true
 	self:ActivateCurrentSequence()

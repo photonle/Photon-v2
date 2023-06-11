@@ -44,9 +44,10 @@ Sequence.RestartFrame = 1
 -- Returns initialized Sequence for a spawned component.
 ---@param segment PhotonLightingSegment
 ---@return PhotonSequence
-function Sequence:Initialize( segment, priorityScore, rank )
+function Sequence:Initialize( name, segment, priorityScore, rank )
 	---@type PhotonSequence
 	local instance = {
+		Name = name,
 		Segment = segment,
 		CurrentFrame = 1,
 		UsedLights = {},
@@ -127,7 +128,8 @@ function Sequence:SetFrame( frame )
 			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
 		end
 		for light, stateId in pairs( self.ActiveFrame ) do
-			light:SetState( stateId, self.Segment.Name, self.PriorityScore, self.Rank )
+			light:SetInput( self.Name, stateId )
+			-- light:SetState( stateId, self.Segment.Name, self.PriorityScore, self.Rank )
 		end
 	-- end
 	self.PreviousFrame = self.ActiveFrame
@@ -136,7 +138,8 @@ end
 function Sequence:Activate()
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
-		usedLights[i]:Activate()
+		-- usedLights[i]:Activate()
+		usedLights[i]:AddInput( self.Name, (self.PriorityScore * 100 + self.Rank )  )
 	end
 end
 
@@ -144,7 +147,8 @@ end
 function Sequence:Deactivate() 
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
-		usedLights[i].Deactivate = true
+		-- usedLights[i].Deactivate = true
+		usedLights[i]:RemoveInput( self.Name )
 	end
 	self.PreviousFrame = nil
 end

@@ -18,6 +18,7 @@ local printf = Photon2.Debug.PrintF
 ---@field AdditiveOverrideEnabled boolean When `true`, the light state can be overridden by other segments when otherwise set to OFF by its primary controlling segment.
 ---@field SegmentLocked boolean Internal. When `true`, the light will not accept state changes until reset with the next frame change.
 ---@field Inputs table
+---@field SortedInputs table
 local Light = exmeta.New()
 Light.AdditiveOverrideEnabled = true
 
@@ -30,7 +31,8 @@ function Light:Initialize( id, parent )
 		Id = id,
 		Class = self.Class,
 		Parent = parent,
-		Inputs = {}
+		Inputs = {},
+		SortedInputs = {}
 	}
 	return setmetatable( light, { __index = self } )
 end
@@ -41,8 +43,95 @@ function Light:OnStateChange( state ) end
 
 local debugPrint = false
 
+function Light:SortInputs()
+	-- print("Sorting inputs. Current inputs: " .. tostring(#self.SortedInputs))
+
+	table.SortByMember( self.SortedInputs, "Priority", false )
+	-- print("====== self.SortedInputs ======")
+	-- PrintTable( self.SortedInputs )
+
+	-- local newSortedInputs = {}
+	-- for k, v in ipairs(self.SortedInputs) do
+	for k, v in ipairs(self.SortedInputs) do
+		v.Order = k
+		-- print("IPAIRS ITERATING: " .. tostring(k))
+		-- newSortedInputs[#newSortedInputs+1] = v
+		-- v.Order = #newSortedInputs
+	end
+	-- print("====== self.SortedInputs RESULT ======")
+	-- PrintTable( self.SortedInputs )
+	-- self.SortedInputs = newSortedInputs
+	-- print("====== SORTED INPUTS AFTER IPAIRS ======")
+	-- PrintTable( self.SortedInputs )
+	-- print("\tNew inputs: " .. tostring(#self.SortedInputs))
+	-- for i=1, #self.SortedInputs do
+	-- 	if ( not self.SortedInputs[i] ) then
+	-- 		print("====== SortedInput index NOT found ======")
+	-- 		print("#self.SortedInputs == " .. #self.SortedInputs)
+	-- 		print("i == " .. tostring(i))
+	-- 		PrintTable(self.SortedInputs)
+	-- 	end
+	-- 	self.SortedInputs[i].Order = i
+	-- end
+end
+
+function Light:AddInput( sequenceId, priority )
+	local isNew = true
+
+	if ( self.Inputs[sequenceId] ) then isNew = false end
+
+	self.Inputs[sequenceId] = self.Inputs[sequenceId] or {}
+
+	self.Inputs[sequenceId].Sequence = sequenceId
+	self.Inputs[sequenceId].Priority = priority
+	self.Inputs[sequenceId].State = "PASS"
+
+	if ( isNew ) then
+		self.SortedInputs[#self.SortedInputs+1] = self.Inputs[sequenceId]
+	end
+
+	self:SortInputs()
+end
+
+function Light:SetInput( sequenceId, stateId )
+	self.Inputs[sequenceId].State = stateId
+end
+
+function Light:RemoveInput( sequenceId )
+	-- print("Removing sequence: " .. tostring(sequenceId))
+	table.remove( self.SortedInputs, self.Inputs[sequenceId].Order )
+	-- self.SortedInputs[self.Inputs[sequenceId].Order] = nil
+	self.Inputs[sequenceId] = nil
+	self:SortInputs()
+end
+
+function Light:UpdateState()
+	local state = "PASS"
+	-- print("Current inputs: " .. tostring(#self.SortedInputs))
+	for i=1, #self.SortedInputs do
+		if (self.SortedInputs[i].State ~= "PASS") then
+			state = self.SortedInputs[i].State
+			break
+		end
+	end
+	if state == "PASS" then state = "OFF" end
+	if (state ~= self.CurrentStateId) then
+		self.CurrentStateId = state
+		self:OnStateChange( self.States[state] )
+	end
+
+	-- Set light to auto-deactivate when it has no more inputs
+	if (#self.SortedInputs < 1) then
+		self.Deactivate = true
+	else
+		self:Activate()
+	end
+end
+
 ---@return boolean stateChangeAccepted
 function Light:SetState( stateId, segmentName, priorityScore, rank )
+	error()
+	if true then return end
 	-- if ( stateId == self.CurrentStateId ) then return false end
 	segmentName = segmentName or self.ControllingSegment
 	if ( not self.States[stateId] ) then
