@@ -281,59 +281,12 @@ function Component:OnScaleChange( newScale, oldScale )
 	end
 end
 
-
 function Component:ApplyModeUpdate()
 	for name, segment in pairs( self.Segments ) do
 		segment:ApplyModeUpdate()
 	end
 	-- self:UpdateSegmentLightControl()
 	self:FrameTick()
-end
-
-function Component:UpdateSegmentLightControl()
-	print("Updating segment light control...")
-	
-	local map = {}
-	
-	for segmentName, segment in pairs( self.Segments ) do
-		if (segment.IsActive) then
-			print("\tChecking segment [" .. tostring(segmentName) .. "]")
-			local sequence = segment:GetCurrentSequence()
-			if ( not sequence ) then
-				error("Light segment [" .. tostring(sequenceName) .. "] did not return a valid sequence...")
-			end
-			for i=1, #sequence.UsedLights do
-				local light = sequence.UsedLights[i]
-				print("\tEvaluating light [" .. tostring(light) .. "]")
-				if ( not map[light] ) then
-					map[light] = { segmentName, -1000, 8192 }
-				end
-				if (( map[light][2] < segment.CurrentPriorityScore ) or ((map[light][2] == segment.CurrentPriorityScore) and ( map[light][3] > sequence.Rank ))) then
-					map[light][1] = segmentName
-					map[light][2] = segment.CurrentPriorityScore
-					map[light][3] = sequence.Rank
-				end
-			end
-			sequence:Activate()
-		else
-			print("\tNOT checking inactive segment [" .. tostring(segmentName) .. "]")
-		end
-	end
-
-	for i=1, #self.Lights do
-		local light = self.Lights[i]
-		if ( map[light] ) then
-			light.ControllingSegment = map[light][1]
-			light.CurrentPriorityScore = map[light][2]
-		else
-			light.ControllingSegment = nil
-			light.CurrentPriorityScore = 0
-		end
-	end
-
-	PrintTable( map )
-
-	print("#########################################")
 end
 
 -- Functionally identical to what :ApplyModeUpdate() does but logs it
@@ -345,7 +298,6 @@ function Component:SetChannelMode( channel, new, old )
 	for name, segment in pairs( self.Segments ) do
 		segment:OnModeChange( channel, new )
 	end
-	-- self:UpdateSegmentLightControl()
 	self:FrameTick()
 end
 
@@ -367,15 +319,6 @@ function Component:RemoveActiveSequence( segmentName, sequence)
 end
 
 function Component:FrameTick()
-	-- per-sequence concept
-	-- for sequence, v in pairs( self.ActiveSequences ) do
-	-- 	sequence:IncrementFrame()
-	-- end
-	
-	-- Reset each light on frame tick for overriding
-	local light
-	
-
 	-- Relays notification to each segment
 	-- TODO: consider sequence-based updates to reduce overhead
 	for segmentName, segment in pairs( self.Segments ) do 
@@ -383,11 +326,6 @@ function Component:FrameTick()
 	end
 
 	for i=1, #self.Lights do
-		-- print("updating light [" .. tostring(i) .. "] on frame tick")
-		-- light = self.Lights[i]
-		-- light.CurrentPriorityScore = 0
-		-- light.CurrentSequenceRank = 0
-		-- light.SegmentLocked = false
 		self.Lights[i]:UpdateState()
 	end
 end

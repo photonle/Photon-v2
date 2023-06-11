@@ -126,12 +126,15 @@ function Segment.New( name, segmentData, lightGroups )
 		return returnFrame
 	end
 
-	-- TODO: FS white override will conflict with
-	-- OFF taking priority - a "no off" option is needed
-
 	local processedFrames = {}
 
-	for i=1, #segmentData.Frames do
+	for i=0, #segmentData.Frames do
+		-- process 0 frame if it's been manually defined, otherwise ignore it
+		if ( i == 0) and ( not segmentData.Frames[0] ) then 
+			-- error("no segmentData.Frames[0]")
+			continue 
+		end
+		
 		local inputFrame = segmentData.Frames[i]
 		
 		if (isstring(inputFrame)) then
@@ -159,17 +162,29 @@ function Segment.New( name, segmentData, lightGroups )
 	end
 
 	-- Add zero frame (i.e. segment default state)
-	if ( not segmentData.Frames[0] ) then
+	if ( not processedFrames[0] ) then
+		-- error("no zero frame")
+	-- if ( not segmentData.Frames[0] ) then
 		processedFrames[0] = buildZeroFrame( processedFrames )
-	elseif ( isstring(segmentData.Frames[0] ) ) then
-		processedFrames[0] = processFrameString( segmentData.Frames[0] )
+	-- elseif ( isstring(segmentData.Frames[0] ) ) then
+	-- 	processedFrames[0] = processFrameString( segmentData.Frames[0] )
+	-- else
+		-- processedFrames[0] = segmentData.Frames[0]
 	else
-		processedFrames[0] = segmentData.Frames[0]
+		-- print("ZERO FRAME: ********************************************************")
+		-- PrintTable(processedFrames[0])
 	end
 
-	segment:AddFrame( 0, processedFrames[0] )
-	local zeroFrame = flattenFrame( processedFrames[0] )
-
+	-- SAVE THIS LINE
+	-- segment:AddFrame( 0, processedFrames[0] )
+	
+	
+	
+	-- local zeroFrame = flattenFrame( processedFrames[0] )
+	local zeroFrame = flattenFrame(processedFrames[0])
+	segment:AddFrame( 0, rebuildFrame(zeroFrame) )
+	-- local zeroFrame = segment:AddFrame( 0, ) 
+	
 	-- Merges the OFF/default frame to ensure lights reset in the segment
 	for i=1, #processedFrames do
 		local copyTo = table.Copy( zeroFrame )
@@ -220,7 +235,10 @@ function Segment:Initialize( componentInstance )
 					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
 				end
 			end
-			-- TODO: error handling -- this breaks if the frame is 
+			if (not segment.Component.Lights[lightId]) then
+				error("Light ID [" .. tostring(lightId) .. "] could not be found.")
+			end
+			-- TODO: error handling -- this breaks if the frame 
 			-- references a non-existent light
 			frame[segment.Component.Lights[lightId]] = stateId
 		end

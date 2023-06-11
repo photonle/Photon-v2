@@ -79,7 +79,7 @@ VEHICLE.Selections = {
 				Components = {
 					{
 						Component = "photon_fedsig_valor_suv",
-						Position = Vector(0, -15, 86),
+						Position = Vector(0, -15, 86.1),
 						Angles = Angle(1.5, 90, 0),
 						Scale = 1.14,
 						PoseParameters = {

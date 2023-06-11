@@ -175,24 +175,9 @@ COMPONENT.ColorMap = "[R] 1"
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
-	Tail = {
-		Frames = {
-			[1] = "Tail_L:TB",
-			[2] = "Tail_R:TB",
-			[3] = "Tail_L:TB Tail_R:TB",
-			[4] = "Tail_L:TD Tail_R:TD",
-		},
-		Sequences = {
-			["TAIL"] = { 4 },
-			["BRAKE"] = { 3 },
-			["BRAKE2"] = { 3 },
-			["LEFT"] = sequence():Alternate( 1, 0, 8 ),
-			["RIGHT"] = sequence():Alternate( 2, 0, 8 ),
-			["HAZARD"] = sequence():Alternate( 3, 0, 8 ),
-		}
-	},
 	Headlights = {
 		Frames = {
+			-- [0] = "Tail_L:OFF Tail_R:OFF",
 			[1] = "Tail_L:TD Tail_R:TD"
 		},
 		Sequences = {
@@ -201,6 +186,7 @@ COMPONENT.Segments = {
 	},
 	Tail_L = {
 		Frames = {
+			[0] = "Tail_L:PASS",
 			[1] = "Tail_L:TB"
 		},
 		Sequences = {
@@ -210,6 +196,7 @@ COMPONENT.Segments = {
 	},
 	Tail_R = {
 		Frames = {
+			[0] = "Tail_R:PASS",
 			[1] = "Tail_R:TB"
 		},
 		Sequences = {
