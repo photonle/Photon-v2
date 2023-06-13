@@ -12,6 +12,7 @@ local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
 
+-- TODO: input without an input priority score silently fails
 ENT.DefaultInputPriorities = {
 	["Emergency.Cut"] 				= 140,
 	["Emergency.Illuminate"]		= 130,
@@ -28,7 +29,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.SirenOverride"]		= 50,
 	["Emergency.Siren2"] 			= 40,
 	["Emergency.Warning"] 			= 30,
-	["Vehicle.HighBeams"]			= 20,
+	["Vehicle.HighBeam"]			= 20,
 	["Vehicle.Lights"]	 			= 10
 }
 

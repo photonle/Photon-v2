@@ -43,6 +43,9 @@ local printf = Photon2.Debug.PrintF
 ---@field WorldLightMatrix Vector[] Internal property. Stores the matrix points' world positions.
 ---@field MaterialsLoaded boolean If true, material string names should be materials.
 ---@field BoneParent integer If set, parents the light to the specified bone on the parent entity.
+---@field FlipHorizontal boolean When true, texture quads will flip and mirror along the horizontal axis.
+---@field FlipVertical boolean When true, texture quads will flip and mirror along the vertical axis.
+---@field Persist boolean
 --@field ComponentScale boolean
 local Light = exmeta.New()
 
@@ -110,19 +113,15 @@ Light.States = {
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORTS
 	["R"] = {
-		-- VIOLET-SHIFTED COLORS:
 		SourceFillColor = Color(255,0,32),
 		GlowColor = Color(255, 0, 48),
-		-- ORIGINAL GREEN-SHIFTED:
 		SourceDetailColor = Color(255,255,0), 
 		InnerGlowColor = Color(255, 24, 0),
 		ShapeGlowColor = Color(255, 0, 0)
 	},
 	["B"] = {
-		-- VIOLET-SHIFTED COLORS:
 		SourceFillColor = Color(64,0,255),
 		GlowColor = Color(64, 0, 255),
-		-- ORIGINAL GREEN-SHIFTED:
 		InnerGlowColor = Color(0, 64, 512),
 		SourceDetailColor = Color(0,255,255), 
 		ShapeGlowColor = Color(0, 0, 255),
@@ -146,17 +145,17 @@ Light.States = {
 
 	["A"] = {
 		SourceDetailColor = Color(255,255,0), 
-		SourceFillColor = Color(200,128,0),
-		GlowColor = Color( 255, 128, 0 ),
-		InnerGlowColor = Color( 255, 255, 0 ),
-		ShapeGlowColor = Color( 255, 128, 0 ),
+		SourceFillColor = Color(200,64,0),
+		GlowColor = Color( 255, 185, 0 ),
+		InnerGlowColor = Color( 255, 138, 0 ),
+		ShapeGlowColor = Color( 255, 205, 0 ),
 	},
 	["W"] = {
-		SourceDetailColor = Color(255,255,255), 
+		SourceDetailColor = Color(205,205,255), 
 		SourceFillColor = Color(128,128,128),
 		GlowColor = Color(225, 225, 255),
-		InnerGlowColor = Color(225, 225, 255),
-		ShapeGlowColor = Color(225, 225, 255),
+		InnerGlowColor = Color(205, 205, 255),
+		ShapeGlowColor = Color(205, 205, 255),
 	},
 }
 
@@ -308,6 +307,9 @@ function Light.New( light, template )
 	light.Matrix:Rotate( light.LocalAngles )
 	light.TranslatedLocalAngles = light.Matrix:GetAngles()
 
+	if ( light.FlipHorizontal ) then light.Width = light.Width * -1 end
+	if ( light.FlipVertical ) then light.Height = light.Height * -1 end
+
 	return light
 end
 
@@ -372,7 +374,7 @@ function Light:DoPreRender()
 	-- Update visibility calculation
 	self.Visibility = util_pixvis( self.Position + (self.Angles:Forward() * self.ForwardVisibilityOffset), self.VisibilityRadius, self.PixVisHandle )
 	-- self.Visibility = 1
-	if ( self.Visibility == 0 ) then self.ShouldDraw = false end
+	if ( self.Visibility == 0 and (not self.Persist) ) then self.ShouldDraw = false end
 	
 	if ( self.ShouldDraw ) then
 
@@ -422,7 +424,7 @@ function Light:DoPreRender()
 		-- self.ViewAngleDot = - LocalPlayer():GetAimVector():Dot( self.Angles:Forward() )
 		
 		if (self.ViewDot < 0) then self.ViewDot = 0 end
-		if ( self.ViewDot <= 0 ) then self.ShouldDraw = false end
+		if (( self.ViewDot <= 0 ) and (not self.Persist)) then self.ShouldDraw = false end
 
 	end
 		

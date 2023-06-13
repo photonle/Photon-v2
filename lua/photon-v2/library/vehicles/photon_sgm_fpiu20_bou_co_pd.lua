@@ -97,7 +97,20 @@ VEHICLE.Selections = {
 				}
 			}
 		}
-	}
+	},
+	{
+		Category = "Standard",
+		Options = {
+			{
+				Option = "Standard Lighting",
+				VirtualComponents = {
+					{
+						Component = "photon_standard_sgmfpiu20"
+					}
+				}
+			}
+		}
+	},
 	
 	-- {
 	-- 	Category = "Forward Lightbar",

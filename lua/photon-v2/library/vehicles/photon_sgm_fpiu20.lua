@@ -79,14 +79,14 @@ VEHICLE.Selections = {
 						Angles = Angle(0, -90, 0)
 					}
 				},
-				-- Components = {
-				-- 	{
-				-- 		Component = "photon_sos_mpf4_lic_h",
-				-- 		Angles = Angle( 0, -90, 0 ),
-				-- 		Position = Vector( 0, -125, 49 ),
-				-- 		Scale = 0.96
-				-- 	}
-				-- }
+				Components = {
+					{
+						Component = "photon_sos_mpf4_lic_h",
+						Angles = Angle( 0, -90, 0 ),
+						Position = Vector( 0, -125, 49 ),
+						Scale = 0.96
+					}
+				}
 			}
 		}
 	},
@@ -122,32 +122,31 @@ VEHICLE.Selections = {
 	{
 		Category = "Forward Lightbar",
 		Options = {
-			{ Option = "None",
 			
-			},
 			{ Option = "SoundOff Signal nForce", 
 				Variants = {
-				{
-					Variant = "Default",
-					Components = {
-						{
-							Name = "@nforce54",
-							Component = "photon_sos_nforce_54",
-							Position = Vector( 0, -15, 87.55 ),
-							Angles = Angle( 0, 0, -1 ),
-							Scale = 1.029
+					{
+						Variant = "MPDC",
+						Components = {
+							{
+								Inherit = "@nforce54",
+								Component = "schmal_mpdc_sos_nforce_54",
+							},
 						}
-					}
-				},
-				{
-					Variant = "MPDC",
-					Components = {
-						{
-							Inherit = "@nforce54",
-							Component = "schmal_mpdc_sos_nforce_54",
-						},
-					}
-				}
+					},
+					{
+						Variant = "Default",
+						Components = {
+							{
+								Name = "@nforce54",
+								Component = "photon_sos_nforce_54",
+								Position = Vector( 0, -15, 87.55 ),
+								Angles = Angle( 0, 0, -1 ),
+								Scale = 1.029
+							}
+						}
+					},
+					
 				},
 			},
 			{ Option = "JetSolaris", Variants = {
@@ -173,7 +172,10 @@ VEHICLE.Selections = {
 						}
 					},
 				}
-			}
+			},
+			{ Option = "None",
+			
+			},
 		},
 	}
 	-- },

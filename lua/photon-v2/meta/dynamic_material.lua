@@ -54,7 +54,7 @@ function Mat.GenerateBloomQuad( png, onCreate )
 	return Mat.Create( png, {
 		"UnLitGeneric",
 		["$basetexture"] = png,
-		["$nocull"] = 0,
+		["$nocull"] = 1,
 		["$vertexalpha"] = 1,
 		["$vertexcolor"] = 1,
 		-- ["$translucent"] = 1,
