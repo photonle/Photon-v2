@@ -32,7 +32,7 @@ if CLIENT then
 end
 
 VEHICLE.SubMaterials = {
-	[20] = mpdcSkin.Name,
+	-- [20] = mpdcSkin.Name,
 	[3] = "photon/common/blank"
 	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
 }
@@ -52,7 +52,8 @@ VEHICLE.Selections = {
 						Angles = Angle( 0, 0, 80 ),
 						Scale = 1.2,
 						SubMaterials = {
-							[1] = "",
+							-- [1] = "",
+							[1] = "photon/license/plates/ph2_co_gvt"
 							-- [1] = "photon/license/plates/mpdc_demo"
 							-- [1] = "!ph2_mpdc_demo"
 						},
@@ -169,109 +170,65 @@ VEHICLE.Selections = {
 	-- 		}
 	-- 	}
 	-- },
-	{
-		Category = "Forward Lightbar",
-		Options = {
+	-- {
+	-- 	Category = "Forward Lightbar",
+	-- 	Options = {
 			
-			{ Option = "SoundOff Signal nForce", 
-				Variants = {
-					{
-						Variant = "MPDC",
-						Components = {
-							{
-								Inherit = "@nforce54",
-								Component = "schmal_mpdc_sos_nforce_54",
-							},
-						}
-					},
-					{
-						Variant = "Default",
-						Components = {
-							{
-								Name = "@nforce54",
-								Component = "photon_sos_nforce_54",
-								Position = Vector( 0, -15, 87.55 ),
-								Angles = Angle( 0, 0, -1 ),
-								Scale = 1.029
-							}
-						}
-					},
+	-- 		{ Option = "SoundOff Signal nForce", 
+	-- 			Variants = {
+	-- 				{
+	-- 					Variant = "MPDC",
+	-- 					Components = {
+	-- 						{
+	-- 							Inherit = "@nforce54",
+	-- 							Component = "schmal_mpdc_sos_nforce_54",
+	-- 						},
+	-- 					}
+	-- 				},
+	-- 				{
+	-- 					Variant = "Default",
+	-- 					Components = {
+	-- 						{
+	-- 							Name = "@nforce54",
+	-- 							Component = "photon_sos_nforce_54",
+	-- 							Position = Vector( 0, -15, 87.55 ),
+	-- 							Angles = Angle( 0, 0, -1 ),
+	-- 							Scale = 1.029
+	-- 						}
+	-- 					}
+	-- 				},
 					
-				},
-			},
-			{ Option = "JetSolaris", Variants = {
-					{ Variant = "Front",
-						Components = {
-							{
-								Name 		= "@jetsolaris_front",
-								Component	= "photon_fedsig_jetsolaris",
-								Position	= Vector(0, -15, 91),
-								Angles		= Angle(0, 0, 0),
-								Scale		= 1
-							},
-						}
+	-- 			},
+	-- 		},
+	-- 		{ Option = "JetSolaris", Variants = {
+	-- 				{ Variant = "Front",
+	-- 					Components = {
+	-- 						{
+	-- 							Name 		= "@jetsolaris_front",
+	-- 							Component	= "photon_fedsig_jetsolaris",
+	-- 							Position	= Vector(0, -15, 91),
+	-- 							Angles		= Angle(0, 0, 0),
+	-- 							Scale		= 1
+	-- 						},
+	-- 					}
 						
-					},
-					{ Variant = "Alternate",
-						Components = {
-							{
-								Inherit 	= "@jetsolaris_front",
-								Scale		= 0.5,
-								Position	= Vector(0, -15, 100 )
-							}
-						}
-					},
-				}
-			},
-			{ Option = "None",
+	-- 				},
+	-- 				{ Variant = "Alternate",
+	-- 					Components = {
+	-- 						{
+	-- 							Inherit 	= "@jetsolaris_front",
+	-- 							Scale		= 0.5,
+	-- 							Position	= Vector(0, -15, 100 )
+	-- 						}
+	-- 					}
+	-- 				},
+	-- 			}
+	-- 		},
+	-- 		{ Option = "None",
 			
-			},
-		},
-	},
-	{
-		Category = "Antennas",
-		Options = {
-			{
-				Option = "MPDC",
-				Props = {
-					{
-						Model = "models/sentry/antenna4.mdl",
-						Position = Vector( -22.6, -91, 82.6 ),
-						Angles = Angle( -5, 0, 6 ),
-						Scale = 0.8
-					},
-					{
-						Model = "models/sentry/antenna5.mdl",
-						Position = Vector( 22.6, -91, 82.6 ),
-						Angles = Angle( 5, 0, 6 ),
-						Scale = 0.6
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Spotlights (Decorative)",
-		Options = {
-			{
-				Option = "Decorative",
-				Props = {
-					{
-						Model = "models/sentry/props/spotlightpar46_left_up.mdl",
-						Position = Vector( -39.4, 37, 63 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1.1
-					},
-					{
-						Model = "models/sentry/props/spotlightpar46_right_down.mdl",
-						Position = Vector( 39.4, 37, 63 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1.1
-					}
-				}
-			}
-		}
-	}
+	-- 		},
+	-- 	},
+	-- }
 	-- },
 	-- {
 	-- 	Category = "Rear Lightbar",

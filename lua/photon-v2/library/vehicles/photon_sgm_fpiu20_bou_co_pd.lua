@@ -111,7 +111,28 @@ VEHICLE.Selections = {
 			}
 		}
 	},
-	
+	{
+		Category = "Spotlights (Decorative)",
+		Options = {
+			{
+				Option = "Decorative",
+				Props = {
+					{
+						Model = "models/sentry/props/spotlight_left_down.mdl",
+						Position = Vector( -39.4, 37, 63 ),
+						Angles = Angle( 20, 0, -10 ),
+						Scale = 1.1
+					},
+					{
+						Model = "models/sentry/props/spotlight_right_down.mdl",
+						Position = Vector( 39.4, 37, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1
+					}
+				}
+			}
+		}
+	}
 	-- {
 	-- 	Category = "Forward Lightbar",
 	-- 	Options = {

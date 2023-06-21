@@ -370,23 +370,25 @@ COMPONENT.Segments = {
 			["ON"] = { 1 }
 		}
 	},
-	Headlight_L = {
+	HighBeam_L = {
 		Frames = {
-			[1] = "21:W 23:W"
+			[1] = "21:W 23:W",
 		},
 		Sequences = {
 			["ON"] = { 1 },
+			["WIG-WAG"] = sequence():Alternate( 1, 0, 6 )
 		}
 	},
-	Headlight_R = {
+	HighBeam_R = {
 		Frames = {
 			[1] = "22:W 24:W"
 		},
 		Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			["WIG-WAG"] = sequence():Alternate( 0, 1, 6 )
 		}
 	},
-	HighBeam_L = {
+	Headlight_L = {
 		Frames = {
 			[1] = "25:W 27:W",
 		},
@@ -395,7 +397,7 @@ COMPONENT.Segments = {
 			["WIG-WAG"] = sequence():Alternate( 0, 1, 6 )
 		}
 	},
-	HighBeam_R = {
+	Headlight_R = {
 		Frames = {
 			[1] = "26:W 28:W"
 		},

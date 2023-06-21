@@ -45,7 +45,7 @@ local printf = Photon2.Debug.PrintF
 ---@field BoneParent integer If set, parents the light to the specified bone on the parent entity.
 ---@field FlipHorizontal boolean When true, texture quads will flip and mirror along the horizontal axis.
 ---@field FlipVertical boolean When true, texture quads will flip and mirror along the vertical axis.
----@field Persist boolean
+---@field Persist boolean Forces the light to render when its visibility is zero. Can be used if glow effects cause undesirable bleeding.
 --@field ComponentScale boolean
 local Light = exmeta.New()
 
@@ -125,6 +125,13 @@ Light.States = {
 		InnerGlowColor = Color(0, 64, 512),
 		SourceDetailColor = Color(0,255,255), 
 		ShapeGlowColor = Color(0, 0, 255),
+	},
+	["G"] = {
+		SourceFillColor = Color(0,255,0),
+		GlowColor = Color(0, 255, 0),
+		InnerGlowColor = Color(0, 512, 64),
+		SourceDetailColor = Color(0,255,0), 
+		ShapeGlowColor = Color(0, 255, 0),
 	},
 	-- ORIGINAL GREEN-SHIFTED COLORS
 	-- ["R"] = {

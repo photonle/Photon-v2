@@ -1,0 +1,27 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0.02"
+	"$refracttint" "{255 255 255}"
+	"$dudvmap" "sentry/props/spotlight/par46_ref"
+	"$normalmap" "sentry/props/spotlight/par46_ref"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.25 0.25 .25]"
+	"$nowritez" "1"
+	"$carfixenabled" "1"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color
+		}
+	}
+}
+
+
+
+
+
+
+
