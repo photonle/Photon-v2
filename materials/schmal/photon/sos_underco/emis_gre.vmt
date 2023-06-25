@@ -1,0 +1,22 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "vgui/white"
+	"$bumpmap" "photon/common/flat"
+   	 $phong "1"
+    	$phongexponent 1
+   	 $phongboost "0"
+   	 $phongfresnelranges "[ 1 1 1]"
+	"$rimlight" "1"
+	"$nocull" "1"
+	"$nodecal" "1"
+	"$color2" "{0 255 0}"
+	"$selfillum" 0
+	"$emissiveblendenabled"	1
+	"$emissiveblendstrength"	1
+	"$emissiveblendtexture"	"vgui/white"
+	"$emissiveblendbasetexture"	"vgui/white"
+	"$emissiveblendflowtexture"	"vgui/white"
+	"$emissiveblendtint"	"{ 255 512 128 }"
+	"$emissiveblendscrollvector"	"[ 0 0 ]"
+}
+
