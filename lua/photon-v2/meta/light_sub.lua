@@ -19,6 +19,11 @@ function Light.New( data, template )
 	return light
 end
 
+Light.States = {
+	["OFF"] = {
+		Material = nil
+	}
+}
 
 function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonLightSub })

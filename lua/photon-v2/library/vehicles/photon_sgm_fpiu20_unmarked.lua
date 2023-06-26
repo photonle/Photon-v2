@@ -8,24 +8,12 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Ford Police Interceptor (2020) Demonstrator"
+VEHICLE.Title 		= "Ford Police Interceptor (2020) Unmarked"
 VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
 VEHICLE.Equipment = {}
-
-
-local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
-})
 
 if CLIENT then
 	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))

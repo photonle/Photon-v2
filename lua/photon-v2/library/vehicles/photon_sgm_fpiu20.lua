@@ -126,6 +126,28 @@ VEHICLE.Selections = {
 		}
 	},
 	{
+		Category = "Hide-Aways",
+		Options = {
+			{
+				Option = "SOS Undercover",
+				Components = {
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( -41.4, 90, 51.5 ),
+						Angles = Angle( 0, 74, -76 ),
+						Scale = 0.4
+					},
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( 41.4, 90, 51.5 ),
+						Angles = Angle( 0, -74, -76 ),
+						Scale = 0.4
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Mirror",
 		Options = {
 			{

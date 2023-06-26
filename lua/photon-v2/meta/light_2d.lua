@@ -271,6 +271,7 @@ end
 		COMPILE
 --]]
 ---@param data table Data input table.
+---@return PhotonLight2D
 function Light.NewTemplate( data )
 	---@type PhotonLight2D
 	local light = setmetatable( data, { __index = PhotonLight2D } )

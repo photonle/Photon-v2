@@ -107,7 +107,8 @@ COMPONENT.Segments = {
 			[5] = "1:GRE 2:G 3:G 4:G 5:G 6:G 7:L_GRE",
 		},
 		Sequences = {
-			["FLASH1"] = { 2 },
+			-- ["FLASH1"] = { 1 },
+			["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2):Add(3):Do(4):Add(0):Do(2):Add(4):Do(4):Add(0):Do(2):Add(5):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Alternate( 1, 0, 5 )

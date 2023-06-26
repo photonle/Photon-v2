@@ -61,7 +61,7 @@ function Component.New( name, data, base )
 
 
 	--[[
-			Compile Light States
+			Compile COMPONENT-Wide Light States
 	--]]
 
 	local lightStates = {}
@@ -69,8 +69,11 @@ function Component.New( name, data, base )
 		local lightClass = PhotonLight.FindClass( lightClassName )
 		local lightStateClass = PhotonLightState.FindClass( lightClassName )
 		-- Use actual COMPONENT.LightStates table to get around load/dependency order issues.
+
 		-- Set __index to the base class's Light.States table.
 		lightStates[lightClassName] = setmetatable( states, { __index = lightClass.States })
+
+		-- Initialize each custom state from raw data
 		for stateId, state in pairs( states ) do
 			states[stateId] = lightStateClass:New( stateId, state, states )
 		end
@@ -113,6 +116,28 @@ function Component.New( name, data, base )
 				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", templateName ) )
 			end
 
+			-- Set the metatable __index of each template's States to the COMPONENT.LightStates
+
+			--
+			-- Process Template's Light States
+			--
+
+			local lightStateClass = PhotonLightState.FindClass( lightClassName )
+			
+			-- set the "parent" table to either COMPONENT.LightStates[class] or the default states
+			local parentStatesTable = lightStates[lightClassName] or PhotonLight.FindClass( lightClassName ).States
+			local templateStates = setmetatable( templateData.States or {}, { __index = parentStatesTable } )
+			
+			for stateId, state in pairs( templateStates ) do
+				templateStates[stateId] = lightStateClass:New( stateId, state, templateStates )
+			end
+
+			templateData.States = templateStates
+
+			--
+			-- Generate Light Template Object
+			--
+
 			lightTemplates[templateName] = lightClass.NewTemplate( templateData )
 
 			if ( not lightTemplates[templateName] ) then
@@ -149,7 +174,9 @@ function Component.New( name, data, base )
 		local lightClass = PhotonLight.FindClass( template.Class )
 		-- print("\t\t\tClass: " .. tostring( template.Class ))
 		-- Set value of light.States and light.Inverse automatically
-		light.States = light.States or lightStates[template.Class]
+		-- light.States = light.States or template.States
+		light.States = template.States
+		
 		if ( light.Inverse == nil ) then light.Inverse = inverse end
 
 		-- Additional data passed to light constructor for the light
