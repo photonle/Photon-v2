@@ -11,7 +11,7 @@
 	"$nodecal" "1"
 	"$color2" "{ 0 0 8192 }"
 	"$selfillum" 1
-	"$translucent" 0
+	"$translucent" 1
 	"$emissiveblendenabled"	1
 	"$emissiveblendstrength"	1
 	"$emissiveblendtexture"	"vgui/white"

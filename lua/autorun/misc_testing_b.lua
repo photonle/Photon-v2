@@ -1,3 +1,16 @@
+
+-- for _,ply in pairs(player.GetAll()) do
+-- 	ply:SetViewOffsetDucked(Vector(0,0,28))
+-- 	ply:SetHullDuck( Vector(-100, -100, -100), Vector(100,100,100) )
+-- 	print('working')
+-- end
+
+-- hook.Add("HandlePlayerDucking", "DisableDuckingShit", function( ply, vel )
+-- 	print("ducking?")
+-- 	ply:SetViewOffsetDucked(Vector(0,0,100))
+-- 	return true
+-- end)
+
 if SERVER then
 
 end
