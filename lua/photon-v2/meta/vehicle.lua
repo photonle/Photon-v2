@@ -50,7 +50,7 @@ function Vehicle.New( data )
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
-		SubMaterials = data.SubMaterials
+		SubMaterials 		= data.SubMaterials
 	}
 
 

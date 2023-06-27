@@ -92,8 +92,34 @@ VEHICLE.Selections = {
 						Options = {
 							FeetHeight = 0.55,
 							HookMount = { -3, -1 }
+						},
+						BodyGroups = {
+							forward_hotfeet = 1,
+							alley_hotfeet = 1
 						}
 					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Antennas",
+		Options = {
+			{
+				Option = "Antennas",
+				Props = {
+					{
+						Model = "models/sentry/antenna4.mdl",
+						Position = Vector( 0, -50, 85.4 ),
+						Angles = Angle( 0, 0, 2 ),
+						Scale = 1.3
+					},
+					{
+						Model = "models/schmal/antennas/antenna_6.mdl",
+						Position = Vector( 0, -77, 95.5 ),
+						Angles = Angle( 0, 0, 6 ),
+						Scale = 2.2
+					},
 				}
 			}
 		}

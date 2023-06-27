@@ -24,7 +24,6 @@ COMPONENT.Lighting = {
 		}
 	},
 	["Sub"] = {
-		LightSubMat = {},
 		LED = {
 			States = {
 				["B"] = { Material = "schmal/photon/sos_underco/emis_blu" },
@@ -46,13 +45,7 @@ COMPONENT.Lighting = {
 	}
 }
 
-COMPONENT.LightStates = {
-	-- ["Sub"] = {
-	-- 	["OFF"] = {
-	-- 		Material = nil
-	-- 	},
-	-- }
-}
+COMPONENT.LightStates = {}
 
 COMPONENT.Lights = {
 	[1] = { "LED", Indexes = { 2 } },

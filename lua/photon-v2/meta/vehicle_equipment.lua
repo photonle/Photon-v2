@@ -27,6 +27,7 @@ function Equipment.GetTemplate()
 	}
 end
 
+-- Factory that returns a new Template object with empty tables for each supported equipment type.
 function Equipment.ApplyTemplate( tbl )
 	for k, v in pairs( Equipment.GetTemplate() ) do
 		tbl[k] = rawget( tbl, k ) or v

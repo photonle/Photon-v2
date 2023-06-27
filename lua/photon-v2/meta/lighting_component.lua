@@ -16,6 +16,7 @@ local printf = Photon2.Debug.PrintF
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 ---@field ColorMap table<integer, string[]>
 ---@field Inputs table<string, string[]>
+---@field LightGroups table<string, integer[]>
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -171,11 +172,17 @@ function Component.New( name, data, base )
 			error( string.format( "Light template [%s] is not defined.", light[1] ) )
 		end
 
+		-- Process light states
 		local lightClass = PhotonLight.FindClass( template.Class )
-		-- print("\t\t\tClass: " .. tostring( template.Class ))
-		-- Set value of light.States and light.Inverse automatically
-		-- light.States = light.States or template.States
-		light.States = template.States
+		local lightStateClass = PhotonLightState.FindClass( template.Class )
+		if ( istable( light.States ) ) then
+			setmetatable( light.States, { __index = template.States } )
+			for stateId, state in pairs( light.States ) do
+				light.States[stateId] = lightStateClass:New( stateId, state, light.States )
+			end
+		else
+			light.States = template.States
+		end
 		
 		if ( light.Inverse == nil ) then light.Inverse = inverse end
 
@@ -365,3 +372,21 @@ function Component:RemoveVirtual()
 		self.Lights[i]:DeactivateNow()
 	end
 end
+
+function Component:SetColorMap( colorMap )
+	if ( isstring( colorMap ) ) then
+		-- error("Setting string ColorMap: " .. tostring(colorMap))
+		colorMap = Photon2.ComponentBuilder.ColorMap( colorMap --[[@as string]], self.LightGroups )
+	end
+	self.ColorMap = colorMap
+end
+
+Component.Parameters = {}
+
+Component.PropertyFunctionMap = {
+	["ColorMap"] = "SetColorMap"
+}
+
+Component.PropertiesUpdatedOnSoftUpdate = {
+	["ColorMap"] = true
+}

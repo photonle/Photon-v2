@@ -235,6 +235,9 @@ function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 	local map = self.PropertyFunctionMap
 	-- Auto-apply supported properties
 	for property, value in pairs( equipment ) do
+		-- if ( ( map[property] == nil ) ) then
+		-- 	error("Unsupported equipment property [" .. tostring( property) .. "].")
+		-- end
 		if ((map[property] ~= nil) and ((not isSoftUpdate) or (self.PropertiesUpdatedOnSoftUpdate[property]))) then
 			self:SetProperty( property, value )
 		end

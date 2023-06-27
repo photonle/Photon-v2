@@ -107,6 +107,9 @@ function Segment.New( name, segmentData, lightGroups )
 			local frame = frames[frameIndex]
 			for stateIndex = 1, #frame do
 				if ( isstring(frame[stateIndex][1]) ) then
+					if ( not lightGroups ) then
+						error("Component failed to compile when attempting to build the zero frame. This may indicate an uncaught error in the segment's frame syntax.")
+					end
 					local group = lightGroups[frame[stateIndex][1]]
 					if ( not group ) then 
 						error( string.format( "Light group name is not valid %s", frame[stateIndex][1] ) )
@@ -244,11 +247,12 @@ function Segment:Initialize( componentInstance )
 		end
 	end
 
-	-- Setup sequences
-	for sequenceName, sequence in pairs( self.Sequences ) do
-		printf( "Initializing sequence [%s]", sequenceName )
-		-- segment.Sequences[sequenceName] = sequence:Initialize( segment )
-	end
+	-- -- Setup sequences
+	-- for sequenceName, sequence in pairs( self.Sequences ) do
+	-- 	error("Deprecated...")
+	-- 	-- printf( "Initializing sequence [%s]", sequenceName )
+	-- 	-- segment.Sequences[sequenceName] = sequence:Initialize( segment )
+	-- end
 
 	-- Setup inputs (new/revised sequences)
 	for channelMode, sequenceData in pairs( self.Inputs ) do
