@@ -148,18 +148,23 @@ function ENT:SetupStaticBones()
 		if ( not istable( data ) ) then
 			data = { data }
 		end
-		for i=1, #data do
-			local var = data[i]
-			if ( isvector( var ) ) then
-				self:ManipulateBonePosition( boneId, var )
-			elseif ( isangle( var ) ) then
-				self:ManipulateBoneAngles( boneId, var )
-			elseif ( isnumber( var ) ) then
-				self:ManipulateBoneScale( boneId, Vector(var, var, var) )
-			else
-				error("Unable to manipulate bone [" .. boneName .. "] with parameter type [" .. type( var ) .. "] (" .. tostring( var ) .. "). Must be a Vector (position), Angle (angles), or number (scale)." )
-			end
-		end
+		
+		self:ManipulateBonePosition( boneId, data[1] or Vector() )
+		self:ManipulateBoneAngles( boneId, data[2] or Angle() )
+		if ( isnumber(data[3]) ) then data[3] = Vector(data[3], data[3], data[3]) end
+		self:ManipulateBoneScale( boneId, data[3] or Vector( 1, 1, 1 ) )
+		-- for i=1, #data do
+		-- 	local var = data[i]
+		-- 	if ( isvector( var ) ) then
+		-- 		self:ManipulateBonePosition( boneId, var )
+		-- 	elseif ( isangle( var ) ) then
+		-- 		self:ManipulateBoneAngles( boneId, var )
+		-- 	elseif ( isnumber( var ) ) then
+		-- 		self:ManipulateBoneScale( boneId, Vector(var, var, var) )
+		-- 	else
+		-- 		error("Unable to manipulate bone [" .. boneName .. "] with parameter type [" .. type( var ) .. "] (" .. tostring( var ) .. "). Must be a Vector (position), Angle (angles), or number (scale)." )
+		-- 	end
+		-- end
 	end
 end
 

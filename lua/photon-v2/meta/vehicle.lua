@@ -144,6 +144,8 @@ function Vehicle.New( data )
 	Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
 	Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
 
+	Equipment.BuildComponents( vehicle.Equipment, "Components", data.ID )
+
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 
 	-- Populate entry in Map table

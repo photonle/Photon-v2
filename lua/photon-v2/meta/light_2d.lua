@@ -46,6 +46,7 @@ local printf = Photon2.Debug.PrintF
 ---@field FlipHorizontal boolean When true, texture quads will flip and mirror along the horizontal axis.
 ---@field FlipVertical boolean When true, texture quads will flip and mirror along the vertical axis.
 ---@field Persist boolean Forces the light to render when its visibility is zero. Can be used if glow effects cause undesirable bleeding.
+---@field InnerSpread number Scale of inner glow effects.
 --@field ComponentScale boolean
 local Light = exmeta.New()
 
@@ -61,6 +62,7 @@ Light.Height = 1
 Light.Scale = 1
 Light.Ratio = 1
 Light.UseBasicPlacement = true
+Light.InnerSpread = 1
 
 -- Light.ComponentScale = 1
 
@@ -97,6 +99,8 @@ Light.BoneParent = -1
 -- 	["W"] = { Primary = Color( 255, 255, 255 ), Overlay = Color(255, 255, 255) },
 -- 	["A"] = { Primary = Color( 255, 96, 0 ), Overlay = Color(255, 255, 0) },
 -- }
+
+local wScale = 0.8
 
 Light.States = {
 	["~OFF"] = {
@@ -159,11 +163,18 @@ Light.States = {
 	},
 	["W"] = {
 		SourceDetailColor = Color(205,205,255), 
-		SourceFillColor = Color(128,128,128),
-		GlowColor = Color(225, 225, 255),
-		InnerGlowColor = Color(205, 205, 255),
-		ShapeGlowColor = Color(205, 205, 255),
+		SourceFillColor = Color(0*wScale,0*wScale,0*wScale),
+		GlowColor = Color(0*wScale, 0*wScale, 255*wScale),
+		InnerGlowColor = Color(200*wScale, 200*wScale, 255*wScale),
+		ShapeGlowColor = Color(100*wScale, 100*wScale, 255*wScale),
 	},
+	["#DEBUG"] = {
+		SourceDetailColor = Color( 255, 255, 255 ),
+		SourceFillColor = Color( 255, 255, 0 ),
+		GlowColor = Color( 255, 0, 255 ),
+		InnerGlowColor = Color( 0, 255, 0 ),
+		ShapeGlowColor = Color( 255, 0, 0 )
+	}
 }
 
 function Light.OnLoad()

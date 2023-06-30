@@ -1,10 +1,13 @@
 Photon2.Library = Photon2.Library or {
 	Components = {},
+	-- Stores copies of raw components 
+	ComponentsGraph = {},
 	Vehicles = {}
 }
 
 local library = Photon2.Library
 local _g = _G
+local Util = Photon2.Util
 
 local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
@@ -34,7 +37,6 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	UNSET = _UNSET
 	if (isReload) then
 		Photon2.CompileComponent( name, library.Components[name] )
-		hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )
 	end
 end
 
@@ -47,6 +49,19 @@ function Photon2.LoadComponentLibrary( folderPath )
 	end
 	hook.Call("Photon2.LoadComponentLibrary")
 	Photon2.Index.ProcessComponentLibrary()
+end
+
+function Photon2.BuildParentLibraryComponent( childId, parentId )
+	---@type PhotonLibraryComponent
+	local libraryComponent = Photon2.Library.Components[parentId]
+	-- local libraryComponent = table.Copy(Photon2.Library.Components[parentId])
+	if ( not libraryComponent ) then
+		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
+	end
+	if ( libraryComponent.Base ) then
+		Util.Inherit( libraryComponent, Photon2.BuildParentLibraryComponent( parentId, libraryComponent.Base ))
+	end
+	return libraryComponent
 end
 
 function Photon2.ReloadComponent( id )

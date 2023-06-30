@@ -4,9 +4,9 @@ NAME = "PhotonLight2DState"
 BASE = "PhotonLightState"
 
 ---@class PhotonLight2DState : PhotonLightState
----@field SingleSourceColor Color Source color for lights that use a *single* 2D source material.
----@field SourceFillColor Color Base color used for the fill material on Fill/Detail-configured lights.
----@field SourceDetailColor Color Detail/overlay color used for the detail material on Fill/Detail-configured lights.
+---@field SingleSourceColor PhotonLightColor Source color for lights that use a *single* 2D source material.
+---@field SourceFillColor PhotonLightColor Base color used for the fill material on Fill/Detail-configured lights.
+---@field SourceDetailColor PhotonLightColor Detail/overlay color used for the detail material on Fill/Detail-configured lights.
 ---@field GlowColor Color
 local State = exmeta.New()
 

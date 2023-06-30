@@ -179,6 +179,7 @@ function ENT:OnVehicleCompiled( name, vehicle, hardReload )
 		end
 	end
 
+	-- self:HardReload()
 	if ( hardReload ) then
 		self:HardReload()
 	else 
@@ -538,11 +539,14 @@ end
 -- Called when a component file is saved and reloaded
 ---@param componentId string
 function ENT:OnComponentReloaded( componentId )
+	-- TODO: the switch to automatic inheritance broke this
+	-- self:SetupComponentArrays()
+	-- if true then return end
 	local matched = false
 	printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
-		if ( component.Name == componentId ) then
+		if ( component.Ancestors[componentId] ) then
 			self:RemoveEquipmentComponentByIndex( equipmentId )
 			self:SetupComponent( equipmentId )
 			matched = true
@@ -550,7 +554,7 @@ function ENT:OnComponentReloaded( componentId )
 	end
 	-- Reload virtual components
 	for equipmentId, component in pairs( self.VirtualComponents ) do
-		if ( component.Name == componentId ) then
+		if ( component.Ancestors[componentId] ) then
 			self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
 			self:SetupVirtualComponent( equipmentId )
 			matched = true

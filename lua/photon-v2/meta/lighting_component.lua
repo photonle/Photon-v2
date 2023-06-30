@@ -8,6 +8,9 @@ local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLightingComponent : PhotonBaseEntity
 ---@field Name string
+---@field Ancestors table<string, boolean>
+---@field Descendants table<string, boolean>
+---@field Children table<string, boolean>
 ---@field Lights table<integer, PhotonLight>
 ---@field Segments table<string, PhotonLightingSegment>
 ---@field InputPriorities table<string, integer>
@@ -33,16 +36,25 @@ local dumpLibraryData = false
 -- [Internal] Compile a Library Component to store in the Index.
 ---@param name string
 ---@param data PhotonLibraryComponent
+---@param base string Deprecated
 ---@return PhotonLightingComponent
 function Component.New( name, data, base )
 
 	data = table.Copy( data )
 
-	if ( base ) then
-		Util.Inherit( data, table.Copy( base ) )
+	local ancestors = { [name] = true }
+
+	if ( data.Base ) then
+		Util.Inherit( data, table.Copy(Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
+		Photon2.Library.ComponentsGraph[data.Base][name] = true
+
+		-- if ( Photon2.Library.Components[data.Base] ) then
+		-- 	Photon2.Library.Components[data.Base].Children[name] = true
+		-- end
 	end
 
-	if (dumpLibraryData) then
+	if ( dumpLibraryData ) then
 		print("_______________________________________")
 		PrintTable(data)
 		print("_______________________________________")
@@ -51,6 +63,9 @@ function Component.New( name, data, base )
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
+		Ancestors = ancestors,
+		Descendants = {},
+		Children = {},
 		Model = data.Model,
 		Lights = {},
 		Segments = {},
@@ -59,6 +74,20 @@ function Component.New( name, data, base )
 		LightGroups = data.LightGroups,
 		SubMaterials = data.SubMaterials
 	}
+
+	-- --[[
+	-- 		Build Ancestors Dictionary
+	-- --]]
+
+	-- local lastParent = data.Base
+
+	-- while ( lastParent ) do
+	-- 	ancestors[lastParent] = true
+	-- 	if ( Photon2.Library.Components[lastParent] ) then
+	-- 		Photon2.Library.Components[lastParent].Descendants[name] = true
+	-- 		lastParent = Photon2.Library.Components[lastParent].Base
+	-- 	end
+	-- end
 
 
 	--[[
@@ -231,6 +260,7 @@ function Component.New( name, data, base )
 			]]--\
 			local rank = 1
 			for segmentName, sequence in pairs ( sequences ) do
+				-- if sequence == "<UNSET>" then continue end
 
 				local sequenceName = patternName .. "/" .. sequence
 				print("Sequence name: " .. sequenceName)

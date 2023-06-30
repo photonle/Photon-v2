@@ -81,11 +81,15 @@ VEHICLE.Selections = {
 						Variant = "Default",
 						Components = {
 							{
-								Name = "@nforce54",
-								Component = "photon_sos_nforce_54",
-								Position = Vector( 0, -15, 87.55 ),
+								Name = "@nforce48",
+								Component = "photon_sos_nforce_48",
+								Position = Vector( 0, -15, 87.6 ),
 								Angles = Angle( 0, 0, -1 ),
-								Scale = 1.029
+								Scale = 1.029,
+								Bones = {
+									["foot_l"] = { Vector( -3, 0, 0 ), Angle(), 1 },
+									["foot_r"] = { Vector( 3, 0, 0 ), Angle(), 1 }
+								}
 							}
 						}
 					},

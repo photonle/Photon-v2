@@ -28,6 +28,9 @@ Photon2.Index = Photon2.Index or {
 local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
 
+local lastSave = SysTime()
+local doubleSaveThreshold = 1
+
 local index = Photon2.Index
 local library = Photon2.Library
 local debug = Photon2.Debug
@@ -116,6 +119,18 @@ function Photon2.CompileComponent( name, inputComponent )
 	else
 		Photon2.Index.Components[name] = component
 	end
+
+	-- Rebuild child components
+	-- error("about to check for child components")
+	for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
+		-- error("Child component ID: " .. tostring( id ))
+		if Photon2.Library.Components[id] then
+			-- error("About to compile [" .. tostring(id) .. "]")
+			Photon2.CompileComponent( id, Photon2.Library.Components[id] )
+		end
+	end
+
+	hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )
 	return Photon2.Index.Components[name]
 end
 
@@ -254,6 +269,10 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		elseif ((newVehicle.Selections) and (not currentSelectionsSignature)) then
 			hardSet = true
 		end
+
+		-- Saving a file twice within the specified threshold forces a hard-reload of the profile
+		if ( ( lastSave + doubleSaveThreshold ) <= SysTime() ) then hardSet = true end
+		lastSave = SysTime()
 	end
 
 	if (PHOTON2_DEBUG_VEHICLE_HARDRELOAD) then

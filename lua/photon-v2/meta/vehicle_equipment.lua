@@ -117,4 +117,23 @@ function Equipment.ProcessInheritance( equipmentTable, nameTable, loadedParents 
 	end
 end
 
+-- Builds components as new inherited variants for each equipment entry
+function Equipment.BuildComponents( equipmentTable, key, vehicleId )
+	print("Building Components [" .. key .. "]")
+	for key, entry in pairs( equipmentTable[key] ) do
+		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
+		local component = {
+			Base = entry.Component,
+			ColorMap = entry.ColorMap,
+			Generated = true
+		}
+		Photon2.Library.Components[componentId] = component
+		Photon2.CompileComponent( componentId, component )
+		entry.Component = componentId
+		print("NEW Component ID: [" .. componentId .. "]" )
+		print("Equipment key: " .. tostring(key) )
+		PrintTable( entry )
+	end
+end
+
 -- function Equipment.BuildMapSignature()

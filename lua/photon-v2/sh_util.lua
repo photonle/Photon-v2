@@ -28,6 +28,9 @@ function Photon2.Util.Inherit( target, base )
 	end
 
 	if ( metaTable.Inherits ) then
+		if ( metaTable.Inherits == base ) then
+			return
+		end
 		error("Attempt to setup inheritance on a table that has already been inherited. To preserve parent data integrity, this action is not allowed.")
 	end
 

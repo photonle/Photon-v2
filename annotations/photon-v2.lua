@@ -67,7 +67,8 @@ PhotonDynamicMaterial = PhotonDynamicMaterial
 ---@field Vehicles table<string, string>
 
 ---@class PhotonLibraryComponent
----@field Author string Author's name.
+---@field Author string Component author's name.
+---@field Base string Base component ID if inheriting from an existing component.
 ---@field Credits table<string, string>
 ---@field PrintName string
 ---@field Model string

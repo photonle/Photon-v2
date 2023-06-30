@@ -48,7 +48,7 @@ COMPONENT.LightStates = {
 	["2D"] = {
 		["B0.5"] = {
 			Inherit = "B",
-			Intensity = 0.5
+			Intensity = 0.75
 		}
 	}
 }
