@@ -33,6 +33,7 @@ local printf = Photon2.Debug.PrintF
 ---@field GlowColor PhotonLightColor
 ---@field ShapeGlowColor PhotonLightColor
 ---@field SubtractiveMid PhotonLightColor
+---@field SourceIntensity PhotonLightColor
 ---@field ShouldDraw boolean
 ---@field Matrix VMatrix
 ---@field ViewNormal Vector
@@ -132,7 +133,8 @@ Light.States = {
 		SubtractiveMid = black,
 		ShapeGlowColor = black, 
 		InnerGlowColor = black,
-		BloomColor = black
+		BloomColor = black,
+		SourceIntensity = black,
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
@@ -143,7 +145,8 @@ Light.States = {
 		SourceDetailColor = PhotonColor(255,255,0), 
 		-- SourceDetailColor = Color(255,255,0), 
 		InnerGlowColor = PhotonColor(255, 0, 0):Scale( rScale ),
-		ShapeGlowColor = PhotonColor(255, 0, 0)
+		ShapeGlowColor = PhotonColor(255, 255, 0),
+		SourceIntensity = PhotonColor( 255, 255, 0 )
 	},
 	["B"] = {
 		SourceFillColor = PhotonColor(0,32,255),
@@ -151,7 +154,8 @@ Light.States = {
 		SubtractiveMid = PhotonColor( 0, 0, 255 ):Negative():Scale(0.22),
 		InnerGlowColor = PhotonColor(0, 0, 255):Scale( bScale ),
 		SourceDetailColor = PhotonColor(0,255,255), 
-		ShapeGlowColor = PhotonColor(0, 0, 255),
+		ShapeGlowColor = PhotonColor(0, 255, 255),
+		SourceIntensity = PhotonColor( 128, 255, 255 )
 	},
 	["G"] = {
 		SourceFillColor = PhotonColor(0,255,0),
@@ -159,6 +163,7 @@ Light.States = {
 		InnerGlowColor = PhotonColor(0, 512, 64),
 		SourceDetailColor = PhotonColor(0,255,0), 
 		ShapeGlowColor = PhotonColor(0, 255, 0),
+		SourceIntensity = PhotonColor( 200, 255, 200 )
 	},
 	-- ORIGINAL GREEN-SHIFTED COLORS
 	-- ["R"] = {
@@ -183,6 +188,7 @@ Light.States = {
 		GlowColor = PhotonColor( 255, 185, 0 ):Negative(),
 		InnerGlowColor = PhotonColor( 255, 138, 0 ),
 		ShapeGlowColor = PhotonColor( 255, 205, 0 ),
+		SourceIntensity = PhotonColor( 200, 255, 200 ),
 	},
 	["W"] = {
 		SourceDetailColor = PhotonColor(205,205,255), 
@@ -190,6 +196,7 @@ Light.States = {
 		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale),
 		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale),
 		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale),
+		SourceIntensity = PhotonColor( 255, 255, 255 )
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),
@@ -244,6 +251,7 @@ function Light:Initialize( id, parentEntity )
 	self.InnerGlowColor = PhotonLightColor()
 	self.ShapeGlowColor = PhotonLightColor()
 	self.SubtractiveMid = PhotonLightColor()
+	self.SourceIntensity = PhotonLightColor()
 
 	-- Adjust to component's scale
 	local scale = parentEntity:GetModelScale()
@@ -505,6 +513,7 @@ function Light:OnStateChange( state )
 	self.InnerGlowColor:SetTarget( state.InnerGlowColor )
 	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor )
 	self.SubtractiveMid:SetTarget( state.SubtractiveMid )
+	self.SourceIntensity:SetTarget( state.SourceIntensity )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
@@ -531,6 +540,7 @@ function Light:OnStateChange( state )
 		self.InnerGlowColor:SetIntensity( self.Intensity )
 		self.ShapeGlowColor:SetIntensity( self.Intensity )
 		self.SubtractiveMid:SetIntensity( self.Intensity )
+		self.SourceIntensity:SetIntensity( self.Intensity )
 	end
 end
 

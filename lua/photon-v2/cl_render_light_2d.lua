@@ -108,7 +108,7 @@ function Photon2.RenderLight2D.DrawDebug()
 end
 
 
-local glowSize = 12
+local glowSize = 8
 local subtractiveGlowMid = glowSize * 0.5
 local subtractiveGlowOuter = glowSize * 2
 local glow1 = subtractiveGlowOuter * 2
@@ -165,19 +165,31 @@ function Photon2.RenderLight2D.Render()
 		if ( drawQuadSprite and drawBloom ) then
 			if ( light.MaterialBloom ) then
 				render.SetMaterial( light.MaterialBloom )		-- ******
-				render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(light.ShapeGlowColor, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+				render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1)-7, (light.Height * 1)-7, ColorAlpha(light.ShapeGlowColor, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			end
 		end
 		if ( light.Material and drawShape ) then
 			render.SetMaterial( light.Material )
-			render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
-				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+			render.OverrideBlend( true, 1, 1, 2 )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
 			render.OverrideBlend( false )
+			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha( light.SourceFillColor, 0 ), light.Angles[3] - 180 )
 		end
 
 		if ( light.MaterialOverlay and drawDetail ) then
 			render.SetMaterial( light.MaterialOverlay )
-			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+			render.OverrideBlend( true, 1, 3, 0 )
+				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1.1, light.Height * 1.1, Color(0,0,0), light.Angles[3] - 180 )
+			render.OverrideBlend( false )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+		end
+
+		if ( light.MaterialBloom ) then
+			render.SetMaterial( light.MaterialBloom )		-- ******
+			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(Color(0,255,0), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1)+1, (light.Height * 1)+1, ColorAlpha(light.SourceIntensity, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1), (light.Height * 1), ColorAlpha(Color(0,255,0), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 		end
 	end
 		
