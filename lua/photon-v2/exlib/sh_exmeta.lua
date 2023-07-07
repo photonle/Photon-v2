@@ -104,6 +104,9 @@ function exmeta.LoadTable(name, base, tbl, erase)
 			setmetatable( debug.getregistry()[name], metaTable )
 		end
 	end
+	-- if ( rawget( meta, "__call" ) ) then
+	-- 	getmetatable( meta ).__call = meta.__call
+	-- end
 	meta.ClassName = name
 	hook.Run("EXMeta.TableLoaded", name, meta, base)
 end

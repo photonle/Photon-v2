@@ -8,6 +8,7 @@ BASE = "PhotonLightState"
 ---@field SourceFillColor PhotonLightColor Base color used for the fill material on Fill/Detail-configured lights.
 ---@field SourceDetailColor PhotonLightColor Detail/overlay color used for the detail material on Fill/Detail-configured lights.
 ---@field GlowColor Color
+---@field SubtractiveMid PhotonLightColor
 local State = exmeta.New()
 
 State.SourceFillColor = nil

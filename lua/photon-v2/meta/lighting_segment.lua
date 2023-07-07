@@ -233,6 +233,9 @@ function Segment:Initialize( componentInstance )
 		local frame = segment.InitializedFrames[i]
 		for lightId, stateId in pairs(self.Frames[i]) do
 			if ( isnumber( stateId ) ) then
+				if ( not segment.ColorMap[lightId] ) then
+					error( "Light ID [" .. tostring( lightId ) .. "] could not be found in the ColorMap.")
+				end
 				stateId = segment.ColorMap[lightId][stateId]
 				if ( not stateId ) then
 					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
@@ -334,7 +337,7 @@ end
 ---@param sequence string
 ---@param conditions? table
 function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
-	printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
+	-- printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
 	if (istable(conditions)) then
 		-- TODO: conditional
 	end

@@ -114,6 +114,7 @@ function Photon2.CompileComponent( name, inputComponent )
 	end
 
 	local component = PhotonLightingComponent.New( name, inputComponent, base )
+	component.CompileTime = RealTime()
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)
 	else
@@ -121,11 +122,8 @@ function Photon2.CompileComponent( name, inputComponent )
 	end
 
 	-- Rebuild child components
-	-- error("about to check for child components")
 	for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-		-- error("Child component ID: " .. tostring( id ))
 		if Photon2.Library.Components[id] then
-			-- error("About to compile [" .. tostring(id) .. "]")
 			Photon2.CompileComponent( id, Photon2.Library.Components[id] )
 		end
 	end

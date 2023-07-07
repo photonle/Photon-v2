@@ -84,7 +84,7 @@ COMPONENT.Lighting = {
 	["2D"] = {
 		TailLights = {
 			Width = 20,
-			Height = 19,
+			Height = 20,
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_tail_shape.png").MaterialName,
 			-- MaterialOverlay = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_tail_shape.png").MaterialName,
 			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sgm_fpiu20_tail_bloom.png").MaterialName,
@@ -96,7 +96,7 @@ COMPONENT.Lighting = {
 		},
 		TailLightsAlt = {
 			Width = 20,
-			Height = 19,
+			Height = 20,
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_tail_alt_shape.png").MaterialName,
 			-- MaterialOverlay = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_tail_shape.png").MaterialName,
 			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sgm_fpiu20_tail_alt_bloom.png").MaterialName,
@@ -241,10 +241,10 @@ COMPONENT.LightGroups = {
 }
 
 COMPONENT.Lights = {
-	[1] = { "TailLights", Vector( -38.3, -121.6, 50.8 ), Angle( 0, 180-27, 0 ) },
+	[1] = { "TailLights", Vector( -38.3, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
 	[2] = { "TailSubMat", Indexes = { 17 } },
 	[3] = { "TailLightEdge", Vector( -41.7, -119.5, 51.5 ), Angle( 0, 180-81, 0 ) },
-	[4] = { "TailLightsAlt", Vector( 38.3, -121.6, 50.8 ), Angle( 0, 180+27, 0 ) },
+	[4] = { "TailLightsAlt", Vector( 38.3, -121.6, 50.8 ), Angle( 0, 180+25, 0 ) },
 	[5] = { "TailSubMat", Indexes = { 19 } },
 	[6] = { "TailLightEdge", Vector( 41.7, -119.5, 51.5 ), Angle( 0, 180+81, 0 ) },
 

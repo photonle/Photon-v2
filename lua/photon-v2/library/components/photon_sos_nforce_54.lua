@@ -59,6 +59,7 @@ COMPONENT.Lighting = {
 	["2D"] = {
 		Main = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_shape.png").MaterialName,
+			-- MaterialOverlay = "photon/lights/sos_nforce_main_detail",
 			MaterialOverlay = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_detail.png").MaterialName,
 			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sos_nforce_main_bloom.png").MaterialName,
 			Width = 9.9,
@@ -66,8 +67,8 @@ COMPONENT.Lighting = {
 			Ratio = 2.4,
 			Scale = 1.2,
 			ForwardVisibilityOffset = -0.1,
-			ForwardBloomOffset = 0.5,
-			LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
+			-- ForwardBloomOffset = 0.5,
+			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
 			LightMatrixScaleMultiplier = 1
 		},
 		Corner3 = {
@@ -149,6 +150,7 @@ COMPONENT.Segments = {
 			["FLASH"] = sequence():Flash( 4, 5, 4 ),
 			["FLASH_2"] = sequence():Flash(1, 2, 3):Do(3):Add( 1, 1, 3, 2, 2, 3 ):Do(5),
 			["FLASH_3"] = sequence():Flash( 4, 5, 3 ):Flash( 6, 7, 3 ),
+			["ALT"] = sequence():Alternate( 4, 5, 5 ),
 			["PHOTO"] = { 3 }
 		}
 	}
@@ -160,7 +162,7 @@ COMPONENT.Patterns = {
 			All = "FLASH_2"
 		},
 		["MODE2"] = {
-			All = "FLASH_3"
+			All = "ALT"
 		}
 	},
 	["Emergency.Marker"] = {

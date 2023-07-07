@@ -240,7 +240,7 @@ function Mat.ProcessMaterialData( data )
 end
 
 
-Mat.__call = Mat.Create
+-- Mat.__call = Mat.Create
 
 hook.Add( "Photon2:ClientMaterialsLoaded", "Photon2:ClientMaterialsLoaded", function()
 	Repository = Photon2.DynamicMaterials

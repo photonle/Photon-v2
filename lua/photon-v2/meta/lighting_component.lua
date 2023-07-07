@@ -263,7 +263,7 @@ function Component.New( name, data, base )
 				-- if sequence == "<UNSET>" then continue end
 
 				local sequenceName = patternName .. "/" .. sequence
-				print("Sequence name: " .. sequenceName)
+				-- print("Sequence name: " .. sequenceName)
 				local segment = component.Segments[segmentName]
 				if (not segment) then
 					error( string.format("Invalid segment: '%s'", segmentName) )
@@ -278,9 +278,9 @@ function Component.New( name, data, base )
 
 				rank = rank + 1
 				
-				print("Segment Inputs =======================")
-				PrintTable( segment.Inputs )
-				print("========================================")
+				-- print("Segment Inputs =======================")
+				-- PrintTable( segment.Inputs )
+				-- print("========================================")
 			end
 
 			

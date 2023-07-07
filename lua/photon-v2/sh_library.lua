@@ -53,15 +53,16 @@ end
 
 function Photon2.BuildParentLibraryComponent( childId, parentId )
 	---@type PhotonLibraryComponent
-	local libraryComponent = Photon2.Library.Components[parentId]
+	local parentLibraryComponent = Photon2.Library.Components[parentId]
 	-- local libraryComponent = table.Copy(Photon2.Library.Components[parentId])
-	if ( not libraryComponent ) then
+	if ( not parentLibraryComponent ) then
 		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
 	end
-	if ( libraryComponent.Base ) then
-		Util.Inherit( libraryComponent, Photon2.BuildParentLibraryComponent( parentId, libraryComponent.Base ))
+	parentLibraryComponent = table.Copy( parentLibraryComponent )
+	if ( parentLibraryComponent.Base ) then
+		Util.Inherit( parentLibraryComponent, Photon2.BuildParentLibraryComponent( parentId, parentLibraryComponent.Base ))
 	end
-	return libraryComponent
+	return parentLibraryComponent
 end
 
 function Photon2.ReloadComponent( id )

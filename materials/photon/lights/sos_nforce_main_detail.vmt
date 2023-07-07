@@ -1,0 +1,9 @@
+"UnlitGeneric"
+{
+	"$basetexture"		"photon/lights/sos_nforce_main_detail"
+	"$nocull" 1
+	"$translucent" 0
+	"$vertexcolor" 1
+	"$ignorez"    0
+	"$additive" 0
+}

@@ -17,24 +17,29 @@ local s = 1.2
 COMPONENT.Lighting = {
 	["2D"] = {
 		Primary = {
-			Width 		= 5.2,
-			Height		= 4,
-			MaterialOverlay 	= "photon/lights/legend_wide_leds",
-			Material 			= "sprites/emv/legend_wide",
+			Width 		= 5.5,
+			Height		= 2.7,
+			MaterialOverlay 	= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
+			-- MaterialOverlay 	= "photon/lights/legend_wide_leds",
+			Material 			= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
+			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/fs_valor_bloom.png").MaterialName,
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
-			LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			LightMatrixScaleMultiplier = 1
+			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
+			LightMatrixScaleMultiplier = 0.5
 		},
 		Rear = {
-			Width 		= 5.4,
-			Height		= 4,
-			MaterialOverlay 	= "photon/lights/legend_wide_leds",
-			Material 			= "sprites/emv/legend_wide",
+			Width 		= 5.8,
+			Height		= 2.9,
+			-- MaterialOverlay 	= "photon/lights/legend_wide_leds",
+			-- Material 			= "sprites/emv/legend_wide",
+			MaterialOverlay 	= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
+			Material 			= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
+			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/fs_valor_bloom.png").MaterialName,
 			Scale 		= 1.2,
 			Ratio 		= 2,
-			LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
+			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
 			LightMatrixScaleMultiplier = 0.5
 		}
 	}
@@ -86,7 +91,7 @@ COMPONENT.Lights = {
 	[28] = { "Rear", Vector( -8.2, -2.35, 1.85 ), Angle( 0, 90, 0 ) },
 }
 
-COMPONENT.ColorMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [W] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
+COMPONENT.ColorMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -96,11 +101,18 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "1:R 2:B 3:R 4:B 5:R 6:B 7:R 8:B 9:R 10:B 11:R 12:B 13:R 14:B 15:R 16:B 17:R 18:B 19:R 20:B 21:R 22:B 23:R 24:B 25:R 26:B 27:R 28:B",
 			[2] = "1 4 5 8 9 12 13 16 17 20 21 24 25 28",
-			[3] = "2 3 6 7 10 11 14 15 18 19 22 23 26 27"
+			[3] = "2 3 6 7 10 11 14 15 18 19 22 23 26 27",
+			[4] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28",
+			[5] = "1 5 9 13 17 21 25 4 8 12 16 20 24 28",
+			[6] = "2 6 10 14 18 22 26 3 7 11 15 19 23 27",
+			-- [7] = "1 5 9 13 17 21 25 4 8 12 16 20 24 28"
 		},
 		Sequences = {
-			["DEV"] = { 3 },
-			["MIX"] = { 2, 0, 2, 0, 2, 2, 2, 2, 0, 3, 0, 3, 0, 3, 3, 3, 3 }
+			["DEV"] = { 4 },
+			-- ["T"] = { 6, 5 },
+			-- ["MIX"] = { 2, 0, 2, 0, 2, 2, 2, 2, 0, 3, 0, 3, 0, 3, 3, 3, 3 },
+			-- ["MI2"] = { 5, 0, 5, 0, 5, 5, 5, 5, 0, 6, 0, 6, 0, 6, 6, 6, 6 }
+			["MIX"] = { 5, 0, 5, 0, 5, 5, 5, 5, 0, 6, 0, 6, 0, 6, 6, 6, 6 }
 		}
 	}
 }

@@ -80,6 +80,9 @@ COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Undercover = "FLASH1"
+		},
+		["MODE2"] = {
+			Undercover = "FLASH1"
 		}
 	}
 }
