@@ -12,13 +12,13 @@ COMPONENT.PrintName = [[Federal Signal Valor (51")]]
 
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
-local s = 1.2
+local s = 1.5
 
 COMPONENT.Lighting = {
 	["2D"] = {
 		Primary = {
 			Width 		= 5.5,
-			Height		= 2.7,
+			Height		= 2.8,
 			MaterialOverlay 	= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
 			-- MaterialOverlay 	= "photon/lights/legend_wide_leds",
 			Material 			= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
@@ -27,7 +27,7 @@ COMPONENT.Lighting = {
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			LightMatrixScaleMultiplier = 0.5
+			LightMatrixScaleMultiplier = 1
 		},
 		Rear = {
 			Width 		= 5.8,
@@ -40,7 +40,7 @@ COMPONENT.Lighting = {
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			LightMatrixScaleMultiplier = 0.5
+			LightMatrixScaleMultiplier = 1
 		}
 	}
 }
@@ -48,29 +48,29 @@ COMPONENT.Lighting = {
 local mult56 = 0.8
 
 COMPONENT.Lights = {
-	[1] = { "Primary", Vector( 11.3, 2.3, 1.9 ), Angle( 0, -54, 0 ), Width = 6.5 },
-	[2] = { "Primary", Vector( 11.3, -2.3, 1.9 ), Angle( 0, 180 + 54, 0 ), Width = 6.5 },
+	[1] = { "Primary", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -54, 0 ), Width = 7 },
+	[2] = { "Primary", Vector( 11.3, -2.3, 1.85 ), Angle( 0, 180 + 54, 0 ), Width = 7 },
 
-	[3] = { "Primary", Vector( 8.3, 6.4, 1.9 ), Angle( 0, -54, 0 ) },
-	[4] = { "Primary", Vector( 8.3, -6.4, 1.9 ), Angle( 0, 180 + 54, 0 ) },
+	[3] = { "Primary", Vector( 8.3, 6.4, 1.85 ), Angle( 0, -54, 0 ) },
+	[4] = { "Primary", Vector( 8.3, -6.4, 1.85 ), Angle( 0, 180 + 54, 0 ) },
 
-	[5] = { "Primary", Vector( 5.6, 10, 1.9 ), Angle( 0, -54, 0 ) },
-	[6] = { "Primary", Vector( 5.6, -10, 1.9 ), Angle( 0, 180 + 54, 0 ) },
+	[5] = { "Primary", Vector( 5.6, 10, 1.85 ), Angle( 0, -54, 0 ) },
+	[6] = { "Primary", Vector( 5.6, -10, 1.85 ), Angle( 0, 180 + 54, 0 ) },
 
-	[7] = { "Primary", Vector( 2.98, 13.625, 1.9 ), Angle( 0, -54, 0 ) },
-	[8] = { "Primary", Vector( 2.98, -13.625, 1.9 ), Angle( 0, 180 + 54, 0 ) },
+	[7] = { "Primary", Vector( 2.98, 13.625, 1.85 ), Angle( 0, -54, 0 ) },
+	[8] = { "Primary", Vector( 2.98, -13.625, 1.85 ), Angle( 0, 180 + 54, 0 ) },
 
-	[9] = { "Primary", Vector( 1.7, 17.9, 1.9 ), Angle( 0, -90, 0 ) },
-	[10] = { "Primary", Vector( 1.7, -17.9, 1.9 ), Angle( 0, -90, 0 ) },
+	[9] = { "Primary", Vector( 1.7, 17.87, 1.85 ), Angle( 0, -90, 0 ), Width = 5.8 },
+	[10] = { "Primary", Vector( 1.7, -17.87, 1.85 ), Angle( 0, -90, 0 ), Width = 5.8 },
 
-	[11] = { "Primary", Vector( 1.7, 22.6, 1.9 ), Angle( 0, -90, 0 ) },
-	[12] = { "Primary", Vector( 1.7, -22.6, 1.9 ), Angle( 0, -90, 0 ) },
+	[11] = { "Primary", Vector( 1.7, 22.68, 1.85 ), Angle( 0, -90, 0 ), Width = 5.8 },
+	[12] = { "Primary", Vector( 1.7, -22.68, 1.85 ), Angle( 0, -90, 0 ), Width = 5.8},
 
-	[13] = { "Primary", Vector( 0.2, 26.90, 1.9 ), Angle( 0, -49, 0 ) },
-	[14] = { "Primary", Vector( 0.2, -26.90, 1.9 ), Angle( 0, 180+49, 0 ) },
+	[13] = { "Primary", Vector( 0.2, 26.90, 1.85 ), Angle( 0, -49, 0 ) },
+	[14] = { "Primary", Vector( 0.2, -26.90, 1.85 ), Angle( 0, 180+49, 0 ) },
 
-	[15] = { "Primary", Vector( -4, 29.25, 1.9 ), Angle( 0, -10.8, 0 ), Width = 5.8 },
-	[16] = { "Primary", Vector( -4, -29.25, 1.9 ), Angle( 0, 180+10.8, 0 ), Width = 5.8 },
+	[15] = { "Primary", Vector( -3.95, 29.25, 1.85 ), Angle( 0, -11.5, 0 ), Width =6.2 },
+	[16] = { "Primary", Vector( -3.95, -29.25, 1.85 ), Angle( 0, 180+11.5, 0 ), Width = 6.2 },
 
 	[17] = { "Rear", Vector( -8.2, 26.35, 1.85 ), Angle( 0, 90, 0 ) },
 	[18] = { "Rear", Vector( -8.2, -26.35, 1.85 ), Angle( 0, 90, 0 ) },
