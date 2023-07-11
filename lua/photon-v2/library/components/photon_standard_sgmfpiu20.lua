@@ -118,7 +118,8 @@ COMPONENT.Lighting = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_turn_shape.png").MaterialName,
 			MaterialOverlay = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_turn_detail.png").MaterialName,
 			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sgm_fpiu20_turn_bloom.png").MaterialName,
-			Scale = 1.1,
+			Scale = 2,
+			ForwardBloomOffset = 0.3
 		},
 		Reverse = {
 			Width = 5.4,
@@ -126,7 +127,8 @@ COMPONENT.Lighting = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_shape.png").MaterialName,
 			MaterialOverlay = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_detail.png").MaterialName,
 			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sgm_fpiu20_rev_bloom.png").MaterialName,
-			Scale = 1,
+			Scale = 2,
+			ForwardBloomOffset = 0.5
 		},
 		Brake = {
 			Width = 11.2,
@@ -177,6 +179,7 @@ COMPONENT.Lighting = {
 				Vector( 1 * 1, 0, 0 ), Vector( -1 * 1, 0, 0 ), 
 			},
 			ForwardVisibilityOffset = -1,
+			ForwardBloomOffset = 0.5,
 			Persist = true
 		},
 	},
@@ -241,18 +244,18 @@ COMPONENT.LightGroups = {
 }
 
 COMPONENT.Lights = {
-	[1] = { "TailLights", Vector( -38.3, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
+	[1] = { "TailLights", Vector( -38, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
 	[2] = { "TailSubMat", Indexes = { 17 } },
 	[3] = { "TailLightEdge", Vector( -41.7, -119.5, 51.5 ), Angle( 0, 180-81, 0 ) },
-	[4] = { "TailLightsAlt", Vector( 38.3, -121.6, 50.8 ), Angle( 0, 180+25, 0 ) },
+	[4] = { "TailLightsAlt", Vector( 38, -121.6, 50.8 ), Angle( 0, 180+25, 0 ) },
 	[5] = { "TailSubMat", Indexes = { 19 } },
 	[6] = { "TailLightEdge", Vector( 41.7, -119.5, 51.5 ), Angle( 0, 180+81, 0 ) },
 
-	[7] = { "Turn", Vector( -36.4, -123, 47.9 ), Angle( 0, 180-22.5, 0 ) },
-	[8] = { "Turn", Vector( 36.4, -123, 47.9 ), Angle( 0, 180+22.5, 0 ), FlipHorizontal = true },
+	[7] = { "Turn", Vector( -36.4, -122.9, 47.9 ), Angle( 0, 180-22.5, 0 ) },
+	[8] = { "Turn", Vector( 36.4, -122.9, 47.9 ), Angle( 0, 180+22.5, 0 ), FlipHorizontal = true },
 
-	[9] = { "Reverse", Vector( -36.4, -123, 52.4 ), Angle( 0, 180-22.5, 0 ) },
-	[10] = { "Reverse", Vector( 36.4, -123, 52.4 ), Angle( 0, 180+22.5, 0 ), FlipHorizontal = true },
+	[9] = { "Reverse", Vector( -36.4, -122.6, 52.4 ), Angle( 0, 180-22.5, 0 ) },
+	[10] = { "Reverse", Vector( 36.4, -122.6, 52.4 ), Angle( 0, 180+22.5, 0 ), FlipHorizontal = true },
 	
 	[11] = { "Brake", Vector( -5, -112, 78.1), Angle( 0, 180-4, 0 ) },
 	[12] = { "Brake", Vector( 5, -112, 78.1), Angle( 0, 180+4, 0 ), FlipHorizontal = true },
@@ -267,17 +270,17 @@ COMPONENT.Lights = {
 	[19] = { "Park", Vector( -29.94, 109.08, 50.44), Angle( 0, 31, 1.8 ), Width = 3.5 },
 	[20] = { "Park", Vector( 29.94, 109.08, 50.44), Angle( 180, 180-31, -1.8 ), Width = 3.5 },
 	
-	[21] = { "Headlight", Vector( -28.8, 105.6, 48.6 ), Angle( 0, 0, 0 ), Persist = true }, -- headlight upper
-	[22] = { "Headlight", Vector( 28.8, 105.6, 48.6 ), Angle( 0, 0, 0 ) }, -- headlight upper
+	[21] = { "Headlight", Vector( -28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ), Persist = true }, -- headlight upper
+	[22] = { "Headlight", Vector( 28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ) }, -- headlight upper
 
-	[23] = { "Headlight", Vector( -28.8, 105.6, 46.9 ), Angle( 0, 0, 180 ) }, -- headlight lower
-	[24] = { "Headlight", Vector( 28.8, 105.6, 46.9 ), Angle( 0, 0, 180 ) },-- headlight lower
+	[23] = { "Headlight", Vector( -28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ) }, -- headlight lower
+	[24] = { "Headlight", Vector( 28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ) },-- headlight lower
 	
-	[25] = { "Headlight", Vector( -36.4, 100, 49.2), Angle( 0, 0, 0 ) }, -- high-beam upper
-	[26] = { "Headlight", Vector( 36.4, 100, 49.2 ), Angle( 0, 0, 0 ) }, -- high-beam upper
+	[25] = { "Headlight", Vector( -36.4, 99.5, 49.2), Angle( 0, 0, 0 ) }, -- high-beam upper
+	[26] = { "Headlight", Vector( 36.4, 99.5, 49.2 ), Angle( 0, 0, 0 ) }, -- high-beam upper
 
-	[27] = { "Headlight", Vector( -36.4, 100, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
-	[28] = { "Headlight", Vector( 36.4, 100, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
+	[27] = { "Headlight", Vector( -36.4, 99.5, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
+	[28] = { "Headlight", Vector( 36.4, 99.5, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
 
 }
 
@@ -303,6 +306,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["BRAKE"] = { 1 },
+			-- ["FLASH"] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 }
+			["FLASH"] = sequence():Alternate( 0, 1, 5 )
 		}
 	},
 	Tail_R = {
@@ -312,36 +317,47 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["BRAKE"] = { 1 },
+			-- ["FLASH"] = { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0 }
+			["FLASH"] = sequence():Alternate( 0, 1, 5 )
+
 		}
 	},
 	Turn_L = {
 		Frames = {
-			[1] = "7:A"
+			[1] = "7:A",
+			[2] = "7:B"
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["SIGNAL"] = sequence():Alternate( 1, 0, 8 )
+			["SIGNAL"] = sequence():Alternate( 1, 0, 8 ),
+			-- ["FLASH"] = { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, }
+			["FLASH"] = sequence():Alternate( 2, 0, 5 )
 		}
 	},
 	Turn_R = {
 		Frames = {
-			[1] = "8:A"
+			[1] = "8:A",
+			[2] = "8:B",
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["SIGNAL"] = sequence():Alternate( 1, 0, 8 )
+			["SIGNAL"] = sequence():Alternate( 1, 0, 8 ),
+			["FLASH"] = sequence():Alternate( 2, 0, 5 )
+
 		}
 	},
 	Reverse_L = {
-		Frames = { [1] = "9:W" },
+		Frames = { [1] = "9:W", [2] = "9:B" },
 		Sequences = { 
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			["FLASH"] = { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 }
 		}
 	},
 	Reverse_R = {
-		Frames = { [1] = "10:W" },
+		Frames = { [1] = "10:W", [2] = "10:B" },
 		Sequences = { 
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			["FLASH"] = { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 }
 		}
 	},
 	Brake = {
@@ -454,9 +470,19 @@ COMPONENT.Patterns = {
 		}
 	},
 	["Emergency.Warning"] = {
+		["MODE1"] = {
+			Tail_L = "FLASH",
+			Tail_R = "FLASH",
+			Turn_L = "FLASH",
+			Turn_R = "FLASH",
+		},
 		["MODE3"] = {
 			HighBeam_L = "WIG-WAG",
 			HighBeam_R = "WIG-WAG",
+			Tail_L = "FLASH",
+			Tail_R = "FLASH",
+			Turn_L = "FLASH",
+			Turn_R = "FLASH",
 		}
 	},
 	["Vehicle.Brake"] = {

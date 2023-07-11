@@ -126,7 +126,14 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			Base = entry.Component,
 			ColorMap = entry.ColorMap,
 			Generated = true
+
 		}
+
+		-- Distinguish Component/Entity properties from equipment-only metadata (necessary?)
+
+		-- for key, value in pairs( entry ) do
+		-- 	if ( not  )
+		-- end
 		Photon2.Library.Components[componentId] = component
 		Photon2.CompileComponent( componentId, component )
 		entry.Component = componentId

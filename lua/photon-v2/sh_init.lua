@@ -31,6 +31,8 @@ function LoadPhoton2MetaFiles()
 
 	exmeta.LoadFile("photon-v2/meta/base_entity.lua")
 
+	exmeta.LoadFile("photon-v2/meta/component.lua")
+	exmeta.LoadFile("photon-v2/meta/aural_component.lua")
 	exmeta.LoadFile("photon-v2/meta/lighting_component.lua")
 	exmeta.LoadFile("photon-v2/meta/lighting_segment.lua")
 	exmeta.LoadFile("photon-v2/meta/sequence.lua")

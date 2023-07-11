@@ -65,7 +65,7 @@ COMPONENT.Lighting = {
 			Width = 9.9,
 			Height = 9.9,
 			Ratio = 2.4,
-			Scale = 1.2,
+			Scale = 2,
 			ForwardVisibilityOffset = -0.1,
 			-- ForwardBloomOffset = 0.5,
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
@@ -151,7 +151,8 @@ COMPONENT.Segments = {
 			["FLASH_2"] = sequence():Flash(1, 2, 3):Do(3):Add( 1, 1, 3, 2, 2, 3 ):Do(5),
 			["FLASH_3"] = sequence():Flash( 4, 5, 3 ):Flash( 6, 7, 3 ),
 			["ALT"] = sequence():Alternate( 4, 5, 5 ),
-			["PHOTO"] = { 3 }
+			["PHOTO"] = { 3 },
+			["TEASER"] = { }
 		}
 	}
 }

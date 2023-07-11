@@ -57,6 +57,12 @@ PhotonLightMeshState = PhotonLightMeshState
 ---@type PhotonDynamicMaterial
 PhotonDynamicMaterial = PhotonDynamicMaterial
 
+---@type PhotonComponent
+PhotonComponent = PhotonComponent
+
+---@type PhotonAuralComponent
+PhotonAuralComponent = PhotonAuralComponent
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.

@@ -82,11 +82,12 @@ function Light:UpdateState()
 		end
 	end
 	if state == "PASS" then state = "OFF" end
-	if (state ~= self.CurrentStateId) then
+	
+	-- if (state ~= self.CurrentStateId) then
 		self.CurrentStateId = state
 		-- print("Setting light state to: " .. tostring(state))
 		self:OnStateChange( self.States[state] )
-	end
+	-- end
 
 	-- Set light to auto-deactivate when it has no more inputs
 	if (#self.SortedInputs < 1) then

@@ -51,7 +51,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["STEADY"] = { 1 },
-			["COLOR_ALT"] = sequence():Flash( 2, 3, 6 )
+			["COLOR_ALT"] = sequence():Alternate( 2, 3, 5 )
 		}
 	}
 }
@@ -60,7 +60,7 @@ COMPONENT.Patterns = {
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
 			-- Full = "COLOR_ALT"
-			Full = "STEADY"
+			Full = "COLOR_ALT"
 		}
 	}
 }
