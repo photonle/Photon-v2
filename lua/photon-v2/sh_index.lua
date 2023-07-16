@@ -103,7 +103,7 @@ end
 
 ---@param name string
 ---@param inputComponent PhotonLibraryComponent
----@return PhotonLightingComponent
+---@return PhotonComponent
 function Photon2.CompileComponent( name, inputComponent )
 	print("Compiling component [" .. name .. "]")
 	

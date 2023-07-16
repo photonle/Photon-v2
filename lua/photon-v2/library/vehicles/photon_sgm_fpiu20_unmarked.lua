@@ -70,90 +70,97 @@ VEHICLE.Selections = {
 				},
 				Components = {
 					{
-						Component = "photon_sos_mpf4_lic_h",
-						Angles = Angle( 0, -90, 0 ),
-						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96
+						Component = "siren_prototype",
+						Position = Vector(0, 0, 100),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 3,
 					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Standard",
-		Options = {
-			{
-				Option = "Standard Lighting",
-				VirtualComponents = {
-					{
-						Component = "photon_standard_sgmfpiu20"
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Grille",
-		Options = {
-			{
-				Option = "Intersectors",
-				Components = {
-					{
-						Component = "photon_sos_intersector_surf",
-						-- inheritance ID concept...
-						-- component < vehicle : equipmentId >
-						-- photon_sos_intersector_surf<photon_sgm_fpiu_unmarked:12>
-						Position = Vector( -11, 116.2, 48 ),
-						Angles = Angle( 0, 7, 12 ),
-						Scale = 1,
-						ColorMap = "[A] Intersector",
-						-- Properties = {
-						-- 	ColorMap = "[A] Intersector"
-						-- }
-					},
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( 11, 116.2, 48 ),
-						Angles = Angle( 0, -7, 12 ),
-						Scale = 1,
-						ColorMap = "[G] Intersector"
+					-- {
+					-- 	Component = "photon_sos_mpf4_lic_h",
+					-- 	Angles = Angle( 0, -90, 0 ),
+					-- 	Position = Vector( 0, -125, 49 ),
+					-- 	Scale = 0.96
+					-- }
 
-					}
 				}
 			}
 		}
 	},
-	{
-		Category = "Mirror",
-		Options = {
-			{
-				Option = "Intersectors (Surface)",
-				Components = {
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( -45.5, 34.5, 57.3 ),
-						Angles = Angle( 1, 90, 2 ),
-						Scale = 1,
-						Bones = {
-							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
-						},
-						ColorMap = "[B] Intersector"
-					},
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( 45.5, 34.5, 57.3 ),
-						Angles = Angle( -1, -90, 2 ),
-						Scale = 1,
-						Bones = {
-							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
-						},
-						ColorMap = "[R] Intersector"
+	-- {
+	-- 	Category = "Standard",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Standard Lighting",
+	-- 			VirtualComponents = {
+	-- 				{
+	-- 					Component = "photon_standard_sgmfpiu20"
+	-- 				}
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
+	-- {
+	-- 	Category = "Grille",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Intersectors",
+	-- 			Components = {
+	-- 				{
+	-- 					Component = "photon_sos_intersector_surf",
+	-- 					-- inheritance ID concept...
+	-- 					-- component < vehicle : equipmentId >
+	-- 					-- photon_sos_intersector_surf<photon_sgm_fpiu_unmarked:12>
+	-- 					Position = Vector( -11, 116.2, 48 ),
+	-- 					Angles = Angle( 0, 7, 12 ),
+	-- 					Scale = 1,
+	-- 					ColorMap = "[A] Intersector",
+	-- 					-- Properties = {
+	-- 					-- 	ColorMap = "[A] Intersector"
+	-- 					-- }
+	-- 				},
+	-- 				{
+	-- 					Component = "photon_sos_intersector_surf",
+	-- 					Position = Vector( 11, 116.2, 48 ),
+	-- 					Angles = Angle( 0, -7, 12 ),
+	-- 					Scale = 1,
+	-- 					ColorMap = "[G] Intersector"
 
-					},
-				}
-			}
-		}
-	},
+	-- 				}
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
+	-- {
+	-- 	Category = "Mirror",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Intersectors (Surface)",
+	-- 			Components = {
+	-- 				{
+	-- 					Component = "photon_sos_intersector_surf",
+	-- 					Position = Vector( -45.5, 34.5, 57.3 ),
+	-- 					Angles = Angle( 1, 90, 2 ),
+	-- 					Scale = 1,
+	-- 					Bones = {
+	-- 						["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+	-- 					},
+	-- 					ColorMap = "[B] Intersector"
+	-- 				},
+	-- 				{
+	-- 					Component = "photon_sos_intersector_surf",
+	-- 					Position = Vector( 45.5, 34.5, 57.3 ),
+	-- 					Angles = Angle( -1, -90, 2 ),
+	-- 					Scale = 1,
+	-- 					Bones = {
+	-- 						["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+	-- 					},
+	-- 					ColorMap = "[R] Intersector"
+
+	-- 				},
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
 	-- {
 	-- 	Category = "Build",
 	-- 	Options = {

@@ -63,6 +63,12 @@ PhotonComponent = PhotonComponent
 ---@type PhotonAuralComponent
 PhotonAuralComponent = PhotonAuralComponent
 
+---@type PhotonLightSound
+PhotonLightSound = PhotonLightSound
+
+---@type PhotonLightSoundState
+PhotonLightSoundState = PhotonLightSoundState
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.

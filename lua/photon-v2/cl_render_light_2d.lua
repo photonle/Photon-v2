@@ -10,17 +10,6 @@ local this = Photon2.RenderLight2D
 local overlayConVar = GetConVar("ph2_debug_light_overlay")
 local drawLights = GetConVar("ph2_draw_light2d")
 
-local drawGlow = true
-local drawQuadSprite = true
-
---[[
-		RENDER OPTIONS		
---]]
-local drawDetail = true
-local drawShape = true
-local drawBloom = true
-local drawSubtractive = true
-local drawAdditive = true
 
 local function invertColor( color )
 	-- return { r = 0, g = 255, b = 512, a = 512 }
@@ -54,33 +43,6 @@ local spriteHint = Material("photon/debug/sprite_hint")
 
 local light
 
-
-local BLENDFUNC_ADD 				= 0
-local BLENDFUNC_SUBTRACT 			= 1
-local BLENDFUNC_REVERSE_SUBTRACT 	= 2
-local BLENDFUNC_MIN 				= 3
-local BLENDFUNC_MAX 				= 4
-
-local BLEND_ZERO 					= 0
-local BLEND_ONE 					= 1
-local BLEND_DST_COLOR				= 2
-local BLEND_ONE_MINUS_DST_COLOR		= 3
-local BLEND_SRC_ALPHA				= 4
-local BLEND_ONE_MINUS_SRC_ALPHA		= 5
-local BLEND_DST_ALPHA				= 6
-local BLEND_ONE_MINUS_DST_ALPHA		= 7
-local BLEND_SRC_ALPHA_SATURATE		= 8
-local BLEND_SRC_COLOR				= 9
-local BLEND_ONE_MINUS_SRC_COLOR		= 10
-
-local s = 1
-local lightMatrix = {
-	Vector( 0, s, 0 ),
-	Vector( 0, 0, 0 ),
-	Vector( 0, -s, 0)
-}
-
-
 function Photon2.RenderLight2D.DrawDebug()
 	local activeLights = this.Active
 	-- line/dev testing
@@ -108,13 +70,37 @@ function Photon2.RenderLight2D.DrawDebug()
 end
 
 
-local glowSize = 8
+
+--[[
+		RENDER OPTIONS		
+--]]
+local drawDetail 		= true
+local drawShape 		= true
+local drawBloom 		= true
+local drawSubtractive 	= true
+local drawAdditive 		= true
+
+local drawGlow 			= true
+local drawQuadSprite 	= true
+
+--[[
+		SPRITE SCALE OPTIONS
+--]]
+
+local glowSize 	= 8
 local subtractiveGlowMid = glowSize * 0.5
 local subtractiveGlowOuter = glowSize * 2
 local glow1 = subtractiveGlowOuter * 2
 local glow2 = glowSize * 3
 
 function Photon2.RenderLight2D.Render()
+	-- if true then return end
+	-- render.SetGoalToneMappingScale(090)
+	-- render.SetAmbientLight(512,0,0)
+	-- render.SetColorModulation(255,255,0)
+	-- render.OverrideBlendFunc()
+
+	render.OverrideColorWriteEnable( true, true )
 	local activeLights = this.Active
 
 	-- benchmark test
@@ -158,36 +144,48 @@ function Photon2.RenderLight2D.Render()
 	end
 
 	for i=1, #activeLights do
+
 		light = activeLights[i] --[[@as PhotonLight2D]]
+
 		if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" ) then continue end
-		local angles = light.Angles
-		local position = light.Position
+
 		if ( drawQuadSprite and drawBloom ) then
 			if ( light.MaterialBloom ) then
 				render.SetMaterial( light.MaterialBloom )		-- ******
-				render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1)-7, (light.Height * 1)-7, ColorAlpha(light.ShapeGlowColor, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+				
+				render.OverrideBlend( true, 1, 1, 2 )
+					-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1) + 1, (light.Height * 1) + 1, ColorAlpha(invertColor(light.ShapeGlowColor), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+				render.OverrideBlend( false )
+				
+				render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1), (light.Height * 1), ColorAlpha(light.ShapeGlowColor, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			end
 		end
+
 		if ( light.Material and drawShape ) then
 			render.SetMaterial( light.Material )
 			render.OverrideBlend( true, 1, 1, 2 )
-			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
-			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
+				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
 			render.OverrideBlend( false )
-			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha( light.SourceFillColor, 0 ), light.Angles[3] - 180 )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha( light.SourceFillColor, 255 ), light.Angles[3] - 180 )
 		end
 
 		if ( light.MaterialOverlay and drawDetail ) then
 			render.SetMaterial( light.MaterialOverlay )
-			render.OverrideBlend( true, 1, 3, 0 )
-				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1.1, light.Height * 1.1, Color(0,0,0), light.Angles[3] - 180 )
-			render.OverrideBlend( false )
 			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+			
+			render.OverrideBlend( true, 1, 1, 2 )
+				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+			render.OverrideBlend( false )
+			
+			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 		end
 
+		-- NEW
 		if ( light.MaterialBloom ) then
 			render.SetMaterial( light.MaterialBloom )		-- ******
-			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(Color(0,255,0), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(light.SourceIntensity, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
+			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(Color(255,255,255), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1)+1, (light.Height * 1)+1, ColorAlpha(light.SourceIntensity, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1), (light.Height * 1), ColorAlpha(Color(0,255,0), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 		end
@@ -198,12 +196,93 @@ function Photon2.RenderLight2D.Render()
 	if (overlayConVar:GetBool()) then
 		this.DrawDebug()
 	end
+	render.OverrideColorWriteEnable( false, false )
 	
 end
+
+local execBloom = false
+
 -- hook.Add( "PreDrawEffects", "Photon2.Light2D:Render", this.Render )
 -- hook.Remove( "PreDrawEffects", "Photon2.Light2D:Render" )
 hook.Add( "PostDrawTranslucentRenderables", "Photon2.Light2D:Render", function( drawingDepth, drawingSkybox, draw3dSkybox)
 	if (draw3dSkybox or drawingSkybox or draw3dSkybox) then return end
+	if ( execBloom ) then
+		Photon2.RunBloomShader()
+		return
+	end
 	this.Render()
 end)
 -- hook.Remove( "PostDrawTranslucentRenderables", "Photon2.Light2D:Render" )
+
+--[[
+		BLOOM SHADING
+--]]
+local mat_Copy		= Material( "pp/copy" )
+local mat_Add		= Material( "pp/add" )
+local mat_Sub		= Material( "pp/sub" )
+local rt_Store		= render.GetScreenEffectTexture( 0 )
+local rt_Blur		= render.GetScreenEffectTexture( 1 )
+local bloomAdditive = true
+
+
+function Photon2.RunBloomShader()
+	local rt_Scene = render.GetRenderTarget()
+	render.CopyRenderTargetToTexture( rt_Store )
+	cam.Start3D()
+		render.SetStencilEnable( true )
+		render.SuppressEngineLighting( true )
+		render.SetStencilWriteMask( 1 )
+		render.SetStencilTestMask( 1 )
+		render.SetStencilReferenceValue( 1 )
+		render.SetStencilCompareFunction( STENCIL_ALWAYS )
+		render.SetStencilPassOperation( STENCIL_REPLACE )
+		render.SetStencilFailOperation( STENCIL_KEEP )
+		render.SetStencilZFailOperation( STENCIL_KEEP )
+
+		--[[
+				RENDER SCENE		
+		--]]
+
+			this.Render()
+
+		--[[
+				FINISH 3D DRAW
+		--]]
+
+		render.SetStencilCompareFunction( STENCIL_EQUAL )
+		render.SetStencilPassOperation( STENCIL_KEEP )
+
+		cam.Start2D()
+			surface.SetDrawColor( 255, 255, 255, 255 )
+			surface.DrawRect( 0, 0, ScrW(), ScrH() )
+		cam.End2D()
+
+		render.SuppressEngineLighting( false )
+		render.SetStencilEnable( false )
+	cam.End3D()
+
+	render.CopyRenderTargetToTexture( rt_Blur )
+	mat_Copy:SetTexture( "$basetexture", rt_Store )
+	mat_Copy:SetString("$color", "1 1 1")
+	render.SetMaterial( mat_Copy )
+	render.DrawScreenQuad()
+
+	render.SetStencilEnable( true )
+		render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
+
+		if ( bloomAdditive ) then
+			mat_Add:SetTexture( "$basetexture", rt_Blur )
+			render.SetMaterial( mat_Add )
+		else
+			mat_Sub:SetTexture( "$basetexture", rt_Blur )
+			render.SetMaterial( mat_Sub )
+		end
+
+		render.DrawScreenQuad()
+	render.SetStencilEnable( false )
+
+	render.SetStencilTestMask( 0 )
+	render.SetStencilWriteMask( 0 )
+	render.SetStencilReferenceValue( 0 )
+
+end

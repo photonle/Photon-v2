@@ -49,6 +49,7 @@ local printf = Photon2.Debug.PrintF
 ---@field FlipVertical boolean When true, texture quads will flip and mirror along the vertical axis.
 ---@field Persist boolean Forces the light to render when its visibility is zero. Can be used if glow effects cause undesirable bleeding.
 ---@field InnerSpread number Scale of inner glow effects.
+---@field AutoInsetSize number
 --@field ComponentScale boolean
 local Light = exmeta.New()
 
@@ -135,6 +136,7 @@ Light.States = {
 		InnerGlowColor = black,
 		BloomColor = black,
 		SourceIntensity = black,
+		PeakColor = black
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
@@ -145,17 +147,19 @@ Light.States = {
 		SourceDetailColor = PhotonColor(255,255,0), 
 		-- SourceDetailColor = Color(255,255,0), 
 		InnerGlowColor = PhotonColor(255, 0, 0):Scale( rScale ),
-		ShapeGlowColor = PhotonColor(255, 255, 0),
-		SourceIntensity = PhotonColor( 255, 255, 0 )
+		ShapeGlowColor = PhotonColor(255, 0, 0),
+		SourceIntensity = PhotonColor( 255, 255, 0 ),
+		PeakColor = PhotonColor( 255, 255, 220 )
 	},
 	["B"] = {
-		SourceFillColor = PhotonColor(0,32,255),
-		GlowColor = PhotonColor(64+64, 0, 255):Negative():Scale(0.33),
+		SourceFillColor = PhotonColor(0,0,255),
+		GlowColor = PhotonColor(48, 0, 255):Negative():Scale(0.33),
 		SubtractiveMid = PhotonColor( 0, 0, 255 ):Negative():Scale(0.22),
-		InnerGlowColor = PhotonColor(0, 0, 255):Scale( bScale ),
+		InnerGlowColor = PhotonColor(0, 64, 255):Scale( bScale ),
 		SourceDetailColor = PhotonColor(0,255,255), 
-		ShapeGlowColor = PhotonColor(0, 255, 255),
-		SourceIntensity = PhotonColor( 128, 255, 255 )
+		ShapeGlowColor = PhotonColor(0, 0, 255),
+		SourceIntensity = PhotonColor( 0, 255, 255 ),
+		PeakColor = PhotonColor( 255, 255, 255 )
 	},
 	["G"] = {
 		SourceFillColor = PhotonColor(0,255,0),
@@ -163,7 +167,8 @@ Light.States = {
 		InnerGlowColor = PhotonColor(0, 512, 64),
 		SourceDetailColor = PhotonColor(0,255,0), 
 		ShapeGlowColor = PhotonColor(0, 255, 0),
-		SourceIntensity = PhotonColor( 200, 255, 200 )
+		SourceIntensity = PhotonColor( 200, 255, 200 ),
+		PeakColor = PhotonColor( 255, 255, 255 )
 	},
 	-- ORIGINAL GREEN-SHIFTED COLORS
 	-- ["R"] = {
@@ -185,18 +190,20 @@ Light.States = {
 	["A"] = {
 		SourceDetailColor = PhotonColor(255,255,0), 
 		SourceFillColor = PhotonColor(200,64,0),
-		GlowColor = PhotonColor( 255, 185, 0 ):Negative(),
-		InnerGlowColor = PhotonColor( 255, 138, 0 ),
+		GlowColor = PhotonColor( 255, 100, 0 ):Negative(),
+		InnerGlowColor = PhotonColor( 255, 148, 0 ),
 		ShapeGlowColor = PhotonColor( 255, 205, 0 ),
-		SourceIntensity = PhotonColor( 200, 255, 200 ),
+		SourceIntensity = PhotonColor( 255, 255, 0 ),
+		PeakColor = PhotonColor( 255, 255, 255 )
 	},
 	["W"] = {
 		SourceDetailColor = PhotonColor(205,205,255), 
-		SourceFillColor = PhotonColor( 0, 0, 0 ),
-		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale),
+		SourceFillColor = PhotonColor( 255, 255, 255 ),
+		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Negative(),
 		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale),
 		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale),
-		SourceIntensity = PhotonColor( 255, 255, 255 )
+		SourceIntensity = PhotonColor( 255, 255, 255 ),
+		PeakColor = PhotonColor( 255, 255, 255 )
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),

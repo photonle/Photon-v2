@@ -19,12 +19,14 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/light_color.lua")
 	exmeta.LoadFile("photon-v2/meta/light_state.lua")
 	exmeta.LoadFile("photon-v2/meta/light_2d_state.lua")
-
+	exmeta.LoadFile("photon-v2/meta/light_sound_state.lua")
+	exmeta.LoadFile("photon-v2/meta/light_sub_state.lua")
+	
 	exmeta.LoadFile("photon-v2/meta/light.lua")
 	exmeta.LoadFile("photon-v2/meta/light_2d.lua")
+	exmeta.LoadFile("photon-v2/meta/light_sound.lua")
 
 	exmeta.LoadFile("photon-v2/meta/light_sub.lua")
-	exmeta.LoadFile("photon-v2/meta/light_sub_state.lua")
 
 	exmeta.LoadFile("photon-v2/meta/light_mesh.lua")
 	exmeta.LoadFile("photon-v2/meta/light_mesh_state.lua")

@@ -164,6 +164,22 @@ VEHICLE.Selections = {
 				}
 			}
 		}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(0, 0, 100),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 3,
+					}
+				}
+			}
+		}
 	}
 	-- {
 	-- 	Category = "Forward Lightbar",
