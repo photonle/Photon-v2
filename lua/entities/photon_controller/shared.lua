@@ -158,9 +158,9 @@ function ENT:SoftEquipmentReload()
 		prop:SetupSubMaterials()
 		prop:SetupBodyGroups()
 	end
-	for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
-		self:SetupBodyGroup( id )
-	end
+	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
+	-- 	self:SetupBodyGroup( id )
+	-- end
 end
 
 
@@ -264,6 +264,8 @@ function ENT:SetupProp( id )
 	self.Props[id] = ent
 end
 
+---@param id string
+
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
@@ -279,6 +281,15 @@ function ENT:SetupBodyGroup( id )
 
 	printf("\tSetting bodygroup [%s] to [%s]", bodyGroup, value )
 	self:GetParent():SetBodygroup( bodyGroup, value )
+end
+
+function ENT:SetupSubMaterial( id )
+	-- if CLIENT then return end
+	local data = self.Equipment.SubMaterials[id]
+	printf( "Setting up SubMaterial [%s]", id )
+	local index = data.Id
+	local material = data.Material
+	self:GetParent():SetSubMaterial( index, material )
 end
 
 ---@param id string
@@ -373,6 +384,10 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #bodyGroups do
 		self:SetupBodyGroup( bodyGroups[i] )
 	end
+	local subMaterials = equipmentTable.SubMaterials
+	for i=1, #subMaterials do
+		self:SetupSubMaterial( subMaterials[i] )
+	end
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -426,6 +441,10 @@ function ENT:SetupProfile( name, isReload )
 		for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 			self:SetupBodyGroup( id )
 		end
+		-- Setup sub-materials
+		for id, subMaterialData in pairs( self.Equipment.SubMaterials ) do
+			self:SetupSubMaterial( id )
+		end
 	else
 		self:SetupSelections()
 	end
@@ -477,6 +496,7 @@ end
 function ENT:SetupSelections()
 	local profile = self.CurrentProfile
 	if (profile.Selections) then
+		-- TODO: is this reseting the current equipment configuration on each save?
 		self.CurrentSelections = {}
 		for categoryIndex, category in pairs(profile.Selections) do
 			self.CurrentSelections[categoryIndex] = 1

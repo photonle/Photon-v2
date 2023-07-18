@@ -114,6 +114,10 @@ function Vehicle.New( data )
 							Equipment.ProcessTable( variant.BodyGroups, currentVariant.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
 						end
 
+						if ( variant.SubMaterials ) then
+							Equipment.ProcessTable( variant.SubMaterials, currentVariant.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
+						end
+
 						map[selection] = currentVariant
 					end
 				else
@@ -138,6 +142,10 @@ function Vehicle.New( data )
 						Equipment.ProcessTable( option.BodyGroups, currentOption.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
 					end
 
+					if ( option.SubMaterials ) then
+						Equipment.ProcessTable( option.SubMaterials, currentOption.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
+					end
+
 					map[currentOption.Selection] = currentOption
 				end
 			end
@@ -152,6 +160,7 @@ function Vehicle.New( data )
 	Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
 	Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
 	Equipment.ProcessInheritance( vehicle.Equipment.BodyGroups, nameTable.BodyGroups, loadedParents.BodyGroups )
+	Equipment.ProcessInheritance( vehicle.Equipment.SubMaterials, nameTable.SubMaterials, loadedParents.SubMaterials )
 
 	Equipment.BuildComponents( vehicle.Equipment, "Components", data.ID )
 

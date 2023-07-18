@@ -269,7 +269,9 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		end
 
 		-- Saving a file twice within the specified threshold forces a hard-reload of the profile
-		if ( ( lastSave + doubleSaveThreshold ) <= SysTime() ) then hardSet = true end
+		if ( ( lastSave + doubleSaveThreshold ) >= SysTime() ) then 
+			hardSet = true 
+		end
 		lastSave = SysTime()
 	end
 
