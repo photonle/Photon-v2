@@ -80,7 +80,7 @@ local s = 1
 
 -- Templates
 -- Each name must be unique, even they aren't the same light class.
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		TailLights = {
 			Width = 20,

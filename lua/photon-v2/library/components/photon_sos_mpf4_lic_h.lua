@@ -15,7 +15,7 @@ COMPONENT.Model = "models/sentry/props/soundofffascia_plate_horizontal.mdl"
 
 local s = 2
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		Full = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_mpf4_shape.png").MaterialName,

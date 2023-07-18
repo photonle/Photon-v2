@@ -13,7 +13,7 @@ COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4" - Vertical License Moun
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_vertical.mdl"
 
-COMPONENT.Lighting = {}
+COMPONENT.Templates = {}
 
 COMPONENT.Lights = {}
 

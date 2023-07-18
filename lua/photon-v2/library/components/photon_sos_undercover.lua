@@ -12,7 +12,7 @@ COMPONENT.PrintName = [[SoundOff Signal Universal Undercover]]
 
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		Mid = {
 			Width = 3,

@@ -13,7 +13,7 @@ COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 3"]]
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_small.mdl"
 
-COMPONENT.Lighting = {}
+COMPONENT.Templates = {}
 
 COMPONENT.Lights = {}
 

@@ -342,6 +342,12 @@ function ENT:RemoveAllComponents()
 	end
 end
 
+function ENT:RemoveAllProps()
+	for id, ent in pairs( self.Props ) do
+		self:RemoveEquipmentPropByIndex( id )
+	end
+end
+
 function ENT:RemoveEquipmentComponentByIndex( index )
 	printf("Controller is removing equipment ID [%s]", index)
 	if (IsValid(self.Components[index])) then
@@ -412,6 +418,7 @@ function ENT:SetupProfile( name, isReload )
 	local profile = Photon2.Index.Vehicles[name]
 
 	self:RemoveAllComponents()
+	self:RemoveAllProps()
 
 	self.CurrentSelections = nil
 	self.CurrentProfile = profile

@@ -14,7 +14,7 @@ COMPONENT.PrintName = "Federal Signal Jet Solaris"
 
 COMPONENT.Model = "models/schmal/fedsig_jetsolaris.mdl"
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		Main = {
 			Width 		= 7.4,

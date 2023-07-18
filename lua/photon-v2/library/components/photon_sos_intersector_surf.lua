@@ -12,7 +12,7 @@ COMPONENT.PrintName = [[SoundOff Signal Intersector (Surface)]]
 
 COMPONENT.Model = "models/schmal/sos_int_surf.mdl"
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		LED_Main = {
 			-- Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/led_shape.png").MaterialName,

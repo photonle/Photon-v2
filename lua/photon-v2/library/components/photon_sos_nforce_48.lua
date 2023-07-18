@@ -14,7 +14,7 @@ COMPONENT.Model = "models/photon/sentry/nforce.mdl"
 
 local s = 1.2
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		Main = {
 			Material = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_shape.png").MaterialName,

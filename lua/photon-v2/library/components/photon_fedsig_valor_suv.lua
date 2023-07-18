@@ -14,7 +14,7 @@ COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
 local s = 1.5
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["2D"] = {
 		Primary = {
 			Width 		= 5.5,

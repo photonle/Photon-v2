@@ -127,7 +127,7 @@ function Component.New( name, data, base )
 	--]]
 
 	local lightTemplates = {}
-	for lightClassName, templates in pairs( data.Lighting or {} ) do
+	for lightClassName, templates in pairs( data.Templates or {} ) do
 		-- printf( "\t\tLight class %s templates...", lightClassName )
 
 		local lightClass = _G["PhotonLight" .. lightClassName]
