@@ -93,4 +93,13 @@ function Photon2.Util.GetModelMesh( model, search, resultIndex )
 	return Util.ModelMeshes[model][search]
 end
 
+function Photon2.Util.FindBodyGroupOptionByName( ent, bodyGroupIndex, name )
+	if ( string.len(name) > 0 ) then name = name .. ".smd" end
+	for index, subModel in pairs( ent:GetBodyGroups()[bodyGroupIndex+1].submodels ) do
+		if ( name == subModel ) then return index end
+	end
+	ErrorNoHaltWithStack(string.format("Could not find body group option [%s] in body group index [%s] in model [%s]", name, bodyGroup, self:GetModel() ))
+	return 0
+end
+
 -- PrintTable(Util.ModelMeshes)

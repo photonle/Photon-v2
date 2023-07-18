@@ -158,7 +158,11 @@ function ENT:SoftEquipmentReload()
 		prop:SetupSubMaterials()
 		prop:SetupBodyGroups()
 	end
+	for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
+		self:SetupBodyGroup( id )
+	end
 end
+
 
 
 ---@param name string
@@ -260,6 +264,23 @@ function ENT:SetupProp( id )
 	self.Props[id] = ent
 end
 
+function ENT:SetupBodyGroup( id )
+	if CLIENT then return end
+	local data = self.Equipment.BodyGroups[id]
+	printf( "Setting up BodyGroup [%s]", id )
+	local bodyGroup = data.BodyGroup
+	local value = data.Value
+	if ( isstring( bodyGroup ) ) then bodyGroup = self:GetParent():FindBodygroupByName( bodyGroup ) end
+	if ( isstring( value ) ) then value = Photon2.Util.FindBodyGroupOptionByName( self, bodyGroup, option ) end
+	
+	if ( bodyGroup == -1 ) then
+		error("Body group [" .. tostring( data.BodyGroup ) .. "] could not be identified.")
+	end
+
+	printf("\tSetting bodygroup [%s] to [%s]", bodyGroup, value )
+	self:GetParent():SetBodygroup( bodyGroup, value )
+end
+
 ---@param id string
 function ENT:SetupComponent( id )
 	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
@@ -348,6 +369,10 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #props do
 		self:SetupProp( props[i] )
 	end
+	local bodyGroups = equipmentTable.BodyGroups
+	for i=1, #bodyGroups do
+		self:SetupBodyGroup( bodyGroups[i] )
+	end
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -397,6 +422,10 @@ function ENT:SetupProfile( name, isReload )
 		for id, prop in pairs( self.Equipment.Props ) do
 			self:SetupProp( id )
 		end
+		-- Setup body groups
+		for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
+			self:SetupBodyGroup( id )
+		end
 	else
 		self:SetupSelections()
 	end
@@ -409,7 +438,6 @@ end
 
 function ENT:ApplySubMaterials( subMaterials )
 	for index, materialName in pairs( subMaterials ) do
-
 		self:GetParent():SetSubMaterial( index, materialName )
 	end
 end
@@ -539,7 +567,6 @@ end
 -- Called when a component file is saved and reloaded
 ---@param componentId string
 function ENT:OnComponentReloaded( componentId )
-	-- TODO: the switch to automatic inheritance broke this
 	-- self:SetupComponentArrays()
 	-- if true then return end
 	local matched = false
