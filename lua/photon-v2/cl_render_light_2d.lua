@@ -11,6 +11,8 @@ local overlayConVar = GetConVar("ph2_debug_light_overlay")
 local drawLights = GetConVar("ph2_draw_light2d")
 
 
+local render = render
+
 local function invertColor( color )
 	-- return { r = 0, g = 255, b = 512, a = 512 }
 	return { r = 255 - color.r, g = 255 - color.g * 2, b = 255 - color.b, a = 255 }
@@ -105,8 +107,10 @@ function Photon2.RenderLight2D.Render()
 
 	-- benchmark test
 
-	-- for i=1, 10000 do
-	-- 	local x = Vector( 10, 20, 30 )
+	-- local vectors = {}
+	-- for i=1, 100 do
+	-- 	local x = Vector( 10 + i, 20 + i, 30 + i ) * i
+	-- 	vectors[#vectors+1] = x
 	-- end
 
 	--
@@ -153,9 +157,9 @@ function Photon2.RenderLight2D.Render()
 			if ( light.MaterialBloom ) then
 				render.SetMaterial( light.MaterialBloom )		-- ******
 				
-				render.OverrideBlend( true, 1, 1, 2 )
+				-- render.OverrideBlend( true, 1, 1, 2 )
 					-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1) + 1, (light.Height * 1) + 1, ColorAlpha(invertColor(light.ShapeGlowColor), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
-				render.OverrideBlend( false )
+				-- render.OverrideBlend( false )
 				
 				render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1), (light.Height * 1), ColorAlpha(light.ShapeGlowColor, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			end
@@ -183,7 +187,7 @@ function Photon2.RenderLight2D.Render()
 
 		-- NEW
 		if ( light.MaterialBloom ) then
-			render.SetMaterial( light.MaterialBloom )		-- ******
+			-- render.SetMaterial( light.MaterialBloom )		-- ******
 			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(light.SourceIntensity, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha(Color(255,255,255), ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)
 			-- render.DrawQuadEasy( light.Position + (light.Angles:Forward() * light.ForwardBloomOffset), light.Angles:Forward(), (light.Width * 1)+1, (light.Height * 1)+1, ColorAlpha(light.SourceIntensity, ((255 * ((light.ViewDot * 10) + 0.9)) *  light.Visibility)), light.Angles[3] - 180)

@@ -299,7 +299,7 @@ function ENT:SetupComponent( id )
 		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
 	end
-	print(string.format("Setting up component [%s]", id))
+	print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
 	local component = Photon2.Index.Components[data.Component]

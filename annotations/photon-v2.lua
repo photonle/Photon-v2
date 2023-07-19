@@ -69,6 +69,12 @@ PhotonLightSound = PhotonLightSound
 ---@type PhotonLightSoundState
 PhotonLightSoundState = PhotonLightSoundState
 
+---@type PhotonLightProjected
+PhotonLightProjected = PhotonLightProjected
+
+---@type PhotonLightProjectedState
+PhotonLightProjectedState = PhotonLightProjectedState
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.

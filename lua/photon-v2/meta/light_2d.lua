@@ -388,7 +388,7 @@ function Light:DeactivateNow()
 end
 
 local IsValid = IsValid
-local LocalTowWorld = LocalToWorld
+local LocalToWorld = LocalToWorld
 
 -- Micro-optimization to reuse Vector
 local normalRef = Vector()
@@ -417,7 +417,7 @@ function Light:DoPreRender()
 		-- 	print("BONE AND ENTITY POSITIONS ARE THE SAME")
 		-- end
 
-		self.Position, self.Angles = LocalTowWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
+		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
 
 
