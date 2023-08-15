@@ -52,6 +52,7 @@ Light.NearZ = 4
 Light.FarZ = 1020
 Light.FOV = 40
 Light.Brightness = 10
+Light.Texture = "effects/flashlight001"
 
 function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonLightProjected } )
@@ -103,7 +104,7 @@ function Light:Activate()
 	self.IsActivated = true
 	manager.Active[#manager.Active+1] = self
 	local projectedTexture = ProjectedTexture()
-	projectedTexture:SetTexture( "effects/flashlight001" )
+	projectedTexture:SetTexture( self.Texture )
 	projectedTexture:SetFarZ( self.FarZ )
 	projectedTexture:SetNearZ( self.NearZ )
 	projectedTexture:SetFOV( self.FOV )

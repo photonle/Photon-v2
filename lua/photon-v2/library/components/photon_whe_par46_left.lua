@@ -28,13 +28,17 @@ COMPONENT.Templates = {
 		Projected = {
 
 		}
+	},
+	["Bone"] = {
+		LightHead = {}
 	}
 }
 
 COMPONENT.Lights = {
 	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	-- [1] = { "Light", Vector( -5.35, 8, 4.445 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 }
+	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
+	[3] = { "LightHead", BoneId = 4, Axis = 'y' },
+	[4] = { "LightHead", BoneId = 1, Axis = 'p' }
 }
 
 COMPONENT.Segments = {
@@ -47,7 +51,14 @@ COMPONENT.Segments = {
 		Sequences = {
 			["ON"] = { 1 },
 			["FLASH"] = { 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 3, 3, 3, 0, 0, 0 },
-			-- ["R"] = { 2 },
+		}
+	},
+	Rotating = {
+		Frames = {
+			[1] = "3:ROT 4:ROT"
+		},
+		Sequences = {
+			["ROTATE"] = { 1 }
 		}
 	}
 }
@@ -55,7 +66,8 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["Emergency.Illuminate"] = {
 		["SPOT"] = {
-			Light = "FLASH"
+			Light = "FLASH",
+			Rotating = "ROTATE"
 		}
 	}
 }

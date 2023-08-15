@@ -21,7 +21,7 @@ end
 
 VEHICLE.SubMaterials = {
 	-- [20] = mpdcSkin.Name,
-	[3] = "photon/common/blank"
+	-- [3] = "photon/common/blank"
 	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
 }
 
@@ -30,6 +30,9 @@ VEHICLE.Selections = {
 	{
 		Category = "License Plate",
 		Options = {
+			{
+				Option = "None",
+			},
 			{
 				Option = "Visible",
 				Props = {
@@ -62,11 +65,11 @@ VEHICLE.Selections = {
 							["mount"] = "mount"
 						}
 					},
-					{
-						Model = "models/schmal/sgm_fpiu20_win.mdl",
-						Position = Vector(),
-						Angles = Angle(0, -90, 0)
-					}
+					-- {
+					-- 	Model = "models/schmal/sgm_fpiu20_win.mdl",
+					-- 	Position = Vector(),
+					-- 	Angles = Angle(0, -90, 0)
+					-- }
 				},
 				Components = {
 					{
@@ -86,6 +89,89 @@ VEHICLE.Selections = {
 			}
 		}
 	},
+	{
+		Category = "Pushbar",
+		Options = {
+			{
+				Option = "None",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 0 }
+				}
+			},
+			{
+				Option = "Pushbar",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 1 }
+				}
+			}
+		}
+	},
+	{
+		Category = "Windows",
+		Options = {
+			{
+				Option = "Default",
+				SubMaterials = {
+					{ Id = 3, Material = nil }
+				}
+			},
+			{
+				Option = "Modified",
+				SubMaterials = {
+					{ Id = 3, Material = "photon/common/blank" }
+				},
+				Props = {
+					{
+						Model = "models/schmal/sgm_fpiu20_win.mdl",
+						Position = Vector(),
+						Angles = Angle(0, -90, 0)
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Lightbar",
+		Options = {
+			{ Option = "None" },
+			{
+				Option = "nForce 54\"",
+				Components = {
+					{
+						Name = "@nforce54",
+						Component = "photon_sos_nforce_54",
+						Position = Vector( 0, -15, 87.55 ),
+						Angles = Angle( 0, 0, -1 ),
+						Scale = 1.029
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Spotlight",
+		Options = {
+			{
+				Option = "Whelen PAR6",
+				Components = {
+					{
+						Component = "photon_whe_par46_left",
+						Position = Vector( -39.4, 37, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1,
+						-- not: 3
+						Bones = {
+							-- YAW ( yaw axis )
+							-- [4] = { Vector(0, 0, 0), Angle(0, 30, 0), 1 },
+							-- ROLL ( pitch axis )
+							-- [1] = { Vector(0, 0, 0), Angle(40, 0, 0), 1 },
+						},
+					}
+				}
+			},
+			{ Option = "None" },
+		}
+	}
 	-- {
 	-- 	Category = "Standard",
 	-- 	Options = {

@@ -140,8 +140,9 @@ Light.States = {
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
-		SourceFillColor = PhotonColor(255,32,0),
-		GlowColor = PhotonColor(255, 0, 96):Negative():Scale(0.33),
+		SourceFillColor = PhotonColor(255,0,0),
+		GlowColor = PhotonColor(255, 0, 0):Negative():Scale(0.33),
+		-- GlowColor = PhotonColor(255, 0, 96):Negative():Scale(0.33),
 		SubtractiveMid = PhotonColor( 255, 0, 0 ):Negative():Scale(0.22),
 		-- GlowColor = Color(255, 0, 48),
 		SourceDetailColor = PhotonColor(255,255,0), 

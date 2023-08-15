@@ -18,7 +18,7 @@ Sound.Class = "Sound"
 
 Sound.Volume = 1
 Sound.Pitch = 100
-Sound.Level = 0
+Sound.Level = 120
 Sound.Muted = false
 function Sound.New( sound, template )
 	if ( isstring( sound[2] ) ) then

@@ -75,6 +75,19 @@ PhotonLightProjected = PhotonLightProjected
 ---@type PhotonLightProjectedState
 PhotonLightProjectedState = PhotonLightProjectedState
 
+---@type PhotonLightBone
+PhotonLightBone = PhotonLightBone
+
+---@type PhotonLightBoneState
+PhotonLightBoneState = PhotonLightBoneState
+
+---@alias PhotonBoneLightActivity
+---| '"Rotate"' # Continuously rotates in one direction.
+---| '"Sweep"' # Rotates back and forth between the `Target` angle and `SweepTo` angle.
+---| '"Fixed"' # Rotates to a specified `Target` angle and then freezes.
+---| '"Spot"' # (TODO) Manually positioned by the player. Networked.
+---| '"Off"' # Stops all motion and holds position.
+
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
@@ -123,7 +136,7 @@ PhotonLightProjectedState = PhotonLightProjectedState
 
 ---@class PhotonVehicleSelectionOption
 ---@field Option string Selection name.
----@field Variants PhotonVehicleSelectionVariant[]
+---@field Variants? PhotonVehicleSelectionVariant[]
 
 
 ---@class PhotonVehicleSelectionVariant

@@ -13,12 +13,20 @@
 
 if SERVER then
 
+
+
 end
 
 concommand.Add("setsize", function(ply, cmd, args)
 	local targ = ply:GetEyeTrace().Entity
 	targ:SetModelScale(0.9)
 	targ:Activate()
+end)
+
+concommand.Add("setbodygroup", function(ply, cmd, args)
+	local targ = ply:GetEyeTrace().Entity
+	print( tostring( targ ) )
+	targ:SetBodygroup(args[1], args[2])
 end)
 
 if true then return end

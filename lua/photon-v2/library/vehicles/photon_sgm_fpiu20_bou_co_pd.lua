@@ -72,6 +72,23 @@ VEHICLE.Selections = {
 		}
 	},
 	{
+		Category = "Pushbar",
+		Options = {
+			{
+				Option = "Pushbar",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 1 }
+				}
+			},
+			{
+				Option = "None",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 0 }
+				}
+			}
+		}
+	},
+	{
 		Category = "Lightbar",
 		Options = {
 			{
@@ -155,6 +172,7 @@ VEHICLE.Selections = {
 						Angles = Angle( 20, 0, -10 ),
 						Scale = 1.1
 					},
+					
 					{
 						Model = "models/sentry/props/spotlight_right_down.mdl",
 						Position = Vector( 39.4, 37, 63 ),
@@ -173,10 +191,94 @@ VEHICLE.Selections = {
 				Components = {
 					{
 						Component = "siren_prototype",
-						Position = Vector(0, 0, 100),
+						Position = Vector(-11, 125, 35),
 						Angles = Angle(1.5, -90, 0),
-						Scale = 3,
-					}
+						Scale = 1.4,
+					},
+					{
+						Component = "siren_prototype",
+						Position = Vector(11, 125, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						ColorMap = "[ON+5] 1 2 3"
+					},
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(11, 125, 35),
+					-- 	Angles = Angle(1.5, -90, 0),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-5] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(-9, 125, 35),
+					-- 	Angles = Angle(1.5, -90, 180),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON+10] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(9, 125, 35),
+					-- 	Angles = Angle(1.5, -90, 180),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-10] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(-21, 123, 42),
+					-- 	Angles = Angle(14, -90, 90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON+15] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(21, 123, 42),
+					-- 	Angles = Angle(14, -90, -90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-15] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(-21, 124.1, 33),
+					-- 	Angles = Angle(3, -90, 90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON+20] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(21, 124.1, 33),
+					-- 	Angles = Angle(3, -90, -90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-20] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(-21, 124.1, 24),
+					-- 	Angles = Angle(-5, -90, 90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON+25] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(21, 124.1, 24),
+					-- 	Angles = Angle(-5, -90, -90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-25] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(-20.2, 124.1, 24),
+					-- 	Angles = Angle(-5, -90, -90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON+30] 1 2 3"
+					-- },
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(20.2, 124.1, 24),
+					-- 	Angles = Angle(-5, -90, 90),
+					-- 	Scale = 1.4,
+					-- 	ColorMap = "[ON-30] 1 2 3"
+					-- },
 				}
 			}
 		}

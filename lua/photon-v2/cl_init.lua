@@ -13,6 +13,8 @@ include("sh_component_builder.lua")
 include("cl_render_light_projected.lua")
 include("cl_render_light_2d.lua")
 include("cl_render_light_mesh.lua")
+include("cl_render_light_bone.lua")
+include("cl_input.lua")
 
 include("sh_ent_meta.lua")
 include("sh_library.lua")

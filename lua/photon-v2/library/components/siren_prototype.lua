@@ -23,11 +23,28 @@ COMPONENT.PrintName = "Photon Siren Prototype"
 
 COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"
 
-COMPONENT.Lighting = {
+COMPONENT.Templates = {
 	["Sound"] = {
-		Speaker = {}
+		Speaker = {
+			States = {
+				["ON+5"] = { Pitch = 101, Play = true, Mute = false },
+				["ON+10"] = { Pitch = 102, Play = true, Mute = false },
+				["ON+15"] = { Pitch = 103, Play = true, Mute = false },
+				["ON+20"] = { Pitch = 104, Play = true, Mute = false },
+				["ON+25"] = { Pitch = 105, Play = true, Mute = false },
+				["ON+30"] = { Pitch = 106, Play = true, Mute = false },
+				["ON-5"] = { Pitch = 107, Play = true, Mute = false },
+				["ON-10"] = { Pitch = 108, Play = true, Mute = false },
+				["ON-15"] = { Pitch = 109, Play = true, Mute = false },
+				["ON-20"] = { Pitch = 110, Play = true, Mute = false },
+				["ON-25"] = { Pitch = 111, Play = true, Mute = false },
+				["ON-30"] = { Pitch = 112, Play = true, Mute = false },
+			}
+		}
 	}
 }
+
+COMPONENT.ColorMap = "[ON] 1 2 3"
 
 COMPONENT.Lights = {
 	[1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
@@ -35,34 +52,29 @@ COMPONENT.Lights = {
 	[3] = { "Speaker", "emv/sirens/federal sig ss/emv_priority.wav" },
 }
 
+local sequence = Photon2.SequenceBuilder.New
+
 COMPONENT.Segments = {
 	Siren = {
 		Frames = {
-			[1] = "1:ON",
-			[2] = "2:ON",
-			[3] = "3:ON",
+			[1] = "1",
+			[2] = "2",
+			[3] = "3",
 		},
 		Sequences = {
 			["WAIL"] = { 1 },
 			["YELP"] = { 2 },
 			["PRIORITY"] = { 3 },
+			["DEMO"] = sequence():Add(3):Do(16):Add(1):Do(16)
 		}
 	}
 }
 
-COMPONENT.Sounds = {
-	[1] = { File = "emv/sirens/federal sig ss/emv_wail.wav", Name = "Wail" },
-	[2] = { File = "emv/sirens/federal sig ss/emv_yelp.wav", Name = "Yelp" },
-	[3] = { File = "emv/sirens/federal sig ss/emv_priority.wav", Name = "Priority" },
-	[4] = { File = "emv/sirens/federal sig ss/emv_hilo.wav", Name = "Hi-Lo" },
-	[5] = { File = "emv/sirens/federal sig ss/emv_horn.wav", Name = "Horn" },
-	[6] = { File = "emv/sirens/federal sig ss/emv_manual.wav", Name = "Manual" },
-}
-
-COMPONENT.Patterns = {
+COMPONENT.Patterns = { -- Inputs
 	["Emergency.Siren"] = {
 		["WAIL"] = { Siren = "WAIL" },
 		["YELP"] = { Siren = "YELP" },
 		["PRIORITY"] = { Siren = "PRIORITY" },
+		["DEMO"] = { Siren = "DEMO" }
 	}
 }
