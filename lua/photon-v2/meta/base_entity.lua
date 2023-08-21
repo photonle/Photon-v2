@@ -137,6 +137,19 @@ function ENT:UpdateAndApplyStaticBoneData( boneData )
 end
 
 function ENT:SetupStaticBones()
+	
+	-- TODO: better approach instead of polling
+	if ( ( not IsValid( self:GetParent() ) )  and ( not self.IsVirtual ) ) then
+		local this = self
+		timer.Simple( 0.001, function()
+			if ( not IsValid( this ) ) then return end
+			this:SetupStaticBones()
+		end)
+		return
+	end
+
+	local follow
+
 	for boneName, data in pairs(self.Bones) do
 		local boneId = boneName
 		if ( isstring( boneId ) ) then
@@ -150,10 +163,66 @@ function ENT:SetupStaticBones()
 			data = { data }
 		end
 		
-		self:ManipulateBonePosition( boneId, data[1] or Vector() )
-		self:ManipulateBoneAngles( boneId, data[2] or Angle() )
-		if ( isnumber(data[3]) ) then data[3] = Vector(data[3], data[3], data[3]) end
-		self:ManipulateBoneScale( boneId, data[3] or Vector( 1, 1, 1 ) )
+		data.Position = data.Position or data[1] or Vector()
+		data.Angles = data.Angles or data[2] or Angle()
+		data.Scale = data.Scale or data[3] or Vector( 1, 1, 1 )
+		if ( isnumber(data.Scale) ) then data.Scale = Vector(data.Scale, data.Scale, data.Scale) end
+		data.Follow = data.Follow or data[4] or false
+
+		if ( not data.Follow ) then
+			self:ManipulateBonePosition( boneId, data.Position )
+			self:ManipulateBoneAngles( boneId, data.Angles )
+			self:ManipulateBoneScale( boneId, data.Scale )
+		end
+
+		if ( data.Follow ) then
+			follow = follow or {
+				Parent = self:GetParent() or self
+			}
+			
+			local parent = follow.Parent
+			local type = false
+			local target
+			
+			if ( data.Follow.Attachment ) then
+				target = data.Follow.Attachment
+				type = "Attachments"
+
+				if ( not isnumber(target) ) then
+					target = parent:LookupAttachment( target )
+				end
+
+				if ( target == 0 ) then
+					ErrorNoHaltWithStack( "Attachment name '" .. data.Follow.Attachment .. "' could not be found (0) on parent model: " .. parent:GetModel() )
+					type = false
+				elseif ( target == -1 ) then
+					ErrorNoHaltWithStack( "Attachment lookup resulted in an invalid model error (-1) on parent model: " .. parent:GetModel() )
+					type = false
+				end
+
+			elseif ( data.Follow.Bone ) then
+				target = data.Follow.Bone
+				type = "Bones"
+
+				if ( not isnumber(target) ) then
+					target = parent:LookupBone( target )
+				end
+
+				if ( not target ) then
+					ErrorNoHaltWithStack( "Bone name '" .. data.Follow.Attachment .. "' could not be found on parent model: " .. parent:GetModel() )
+					type = false
+				end
+			end
+			
+			if ( type ) then
+				follow[type] = follow[type] or {}
+				follow[type][boneId] = {
+					Target = tonumber( target ),
+					Data = data
+				}
+			end
+		end
+
 		-- for i=1, #data do
 		-- 	local var = data[i]
 		-- 	if ( isvector( var ) ) then
@@ -167,8 +236,43 @@ function ENT:SetupStaticBones()
 		-- 	end
 		-- end
 	end
+
+	self.MergedBones = follow
+
+	if ( self.MergedBones ) then
+		hook.Add( "Think", self, function()
+			self:UpdateMergedBones()
+		end)
+	else
+		hook.Remove( "Think", self )
+	end
 end
 
+local vectorZero = Vector()
+local angleZero	 = Angle()
+
+-- TODO: current implementation assumes bone the position and angle are zero...
+-- whether setting this via SetBonePosition works is untested
+function ENT:UpdateMergedBones()
+	if ( not self.MergedBones ) then return false end
+	-- print("updating merged bones")
+	local parent = self.MergedBones.Parent
+	if ( self.MergedBones.Bones ) then
+
+	end
+
+	if ( self.MergedBones.Attachments ) then
+		for boneId, data in pairs ( self.MergedBones.Attachments ) do
+			local attachmentData = self.MergedBones.Parent:GetAttachment( data.Target )
+			-- TODO: possible scaling problems
+			local pos, ang = LocalToWorld( Vector(data.Data.Position) * parent:GetModelScale(), data.Data.Angles, WorldToLocal( attachmentData.Pos, attachmentData.Ang, self:GetPos(), self:GetAngles() ) )
+			self:SetBonePosition( boneId, vectorZero, angleZero )
+			-- self:SetupBones()
+			self:ManipulateBonePosition( boneId, pos  )
+			self:ManipulateBoneAngles( boneId, ang )
+		end
+	end
+end
 
 ---@param controller PhotonController
 ---@return PhotonBaseEntity

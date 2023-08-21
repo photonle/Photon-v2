@@ -1,4 +1,7 @@
 
+
+
+
 -- for _,ply in pairs(player.GetAll()) do
 -- 	ply:SetViewOffsetDucked(Vector(0,0,28))
 -- 	ply:SetHullDuck( Vector(-100, -100, -100), Vector(100,100,100) )
@@ -29,9 +32,81 @@ concommand.Add("setbodygroup", function(ply, cmd, args)
 	targ:SetBodygroup(args[1], args[2])
 end)
 
-if true then return end
 if not CLIENT then return end
 
+local attachments = {
+	"wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"
+}
+
+local wheelBones = {
+	"wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"
+}
+
+local x = 1.72
+local y = 0.548
+local z = 1
+
+local transforms = {
+	Vector( -x, y, z ),
+	Vector( x, -y, z ),
+	Vector( x, -y, z ),
+	Vector( -x, y, z ),
+}
+
+local angleTransforms = {
+
+}
+
+local function durangoWheelTest()
+	if true then return end
+	-- print('wheel')
+	for k, ent in pairs( ents.GetAll() ) do
+		ent = ent ---@as Entity
+		local parent = ent:GetParent()
+		if ( IsValid( ent ) and ( ent:GetModel() == "models/schmal/dodur21_wheels.mdl") ) then
+			-- print("found durango extras")
+			-- local boneCount = parent:GetBoneCount()
+			-- print("Bone count: " .. tostring( boneCount ) )
+			
+			for i=1, #attachments do
+				local parentAttachmentIndex = parent:LookupAttachment( attachments[i] )
+				local boneIndex = ent:LookupBone( wheelBones[i] )
+				
+				-- PrintTable( parent:Get)
+				
+				
+				-- print("parent index: " .. tostring(parentAttachmentIndex))
+				-- print(parentAttachmentIndex .. ": (" .. tostring( parent:GetAttachment( parentAttachmentIndex ).Pos ) .. ") [" .. tostring( parent:GetAttachment( parentAttachmentIndex ).Ang ) .. "]")
+				
+				local attachmentData = parent:GetAttachment( parentAttachmentIndex )
+				
+				-- local pos, ang = WorldToLocal( attachmentData.Pos, attachmentData.Ang, ent:GetPos(), ent:GetAngles() )
+				-- local lpos, lang = LocalToWorld( Vector(-2.7,0,0), Angle(), pos, ang )
+				local lpos, lang = LocalToWorld( Vector(-2.7,0,0), Angle(), WorldToLocal( attachmentData.Pos, attachmentData.Ang, ent:GetPos(), ent:GetAngles() ) )
+				-- local attachmentLocalPos = ent:WorldToLocal( attachmentData.Pos )
+				-- local attachmentLocalAng = ent:WorldToLocalAngles( attachmentData.Ang )--[[@as Angle]]
+				-- attachmentLocalAng.r = attachmentLocalAng.r * -1
+				
+				-- local parentBoneIndex = parent:LookupBone(wheelBones[i])
+				-- local parentBonePos, parentBoneAng = parent:GetBonePosition( parentBoneIndex )
+				-- print("parent pos: " .. tostring(parentBonePos) .. " parent ang: " .. tostring( parentBoneAng ) )
+				-- local boneIndex = ent:LookupBone( extraBones[i] )
+				
+				ent:ManipulateBonePosition( boneIndex, lpos )
+				-- local transformedAngle = Angle( lang.r * -1, lang.y, -lang.p ) 
+				-- lang:RotateAroundAxis(lang:Right(), 0)
+				ent:ManipulateBoneAngles( boneIndex, lang )
+
+				-- ent:ManipulateBonePosition( boneIndex, Vector( 0, 0, -6 ) )
+				-- print( "Bone: " .. extraBones[i] .. " is: " .. boneIndex )
+			end
+		end
+	end
+end
+hook.Add( "Think", "Photon2.Testing:WheelTest", durangoWheelTest )
+
+
+if true then return end
 local mat = Material("sentry/props/nforce/top_c")
 if (mat:IsError()) then error("bad material") end
 

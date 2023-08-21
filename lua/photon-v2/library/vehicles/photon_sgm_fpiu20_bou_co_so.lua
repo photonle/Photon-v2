@@ -46,9 +46,7 @@ VEHICLE.Selections = {
 						Angles = Angle( 0, 0, 80 ),
 						Scale = 1.2,
 						SubMaterials = {
-							[1] = "",
-							-- [1] = "photon/license/plates/mpdc_demo"
-							-- [1] = "!ph2_mpdc_demo"
+							[1] = "photon/license/plates/ph2_co_gvt"
 						},
 						BodyGroups = {
 							["screws_top"] = 1,
@@ -96,7 +94,47 @@ VEHICLE.Selections = {
 				},
 			},
 		},
-	}
+	},
+	{
+		Category = "Spotlights (Decorative)",
+		Options = {
+			{
+				Option = "Decorative",
+				Props = {
+					{
+						Model = "models/sentry/props/spotlight_left_down.mdl",
+						Position = Vector( -39.4, 37, 63 ),
+						Angles = Angle( 20, 0, -10 ),
+						Scale = 1.1
+					},
+					
+					{
+						Model = "models/sentry/props/spotlight_right_down.mdl",
+						Position = Vector( 39.4, 37, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Pushbar",
+		Options = {
+			{
+				Option = "Pushbar",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 1 }
+				}
+			},
+			{
+				Option = "None",
+				BodyGroups = {
+					{ BodyGroup = "pushbar", Value = 0 }
+				}
+			}
+		}
+	},
 	-- },
 	-- {
 	-- 	Category = "Rear Lightbar",

@@ -180,6 +180,7 @@ function Vehicle.New( data )
 	local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
 	vehicleTable.Category			 = data.Category or target.Category
 	vehicleTable.Name				 = data.Title
+	vehicleTable.IconOverride		 = "entities/" .. data.ID .. ".png"
 	vehicleTable.IsPhoton2Generated  = true
 	list.Set( "Vehicles", vehicleListId, vehicleTable )
 

@@ -1,7 +1,8 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "sentry/shared/skin"
-	"$bumpmap" "sentry/shared/skin_nm"
+	"$basetexture" "photon/common/white"
+	"$bumpmap" "photon/common/flat"
+
     $phong "1"
     $phongexponent "7"
     $phongboost "1"
@@ -9,15 +10,6 @@
 	"$rimlight"               "1"
 	"$rimlightexponent"       "17"
 	"$rimlightboost"          "1.2"
-	"$carpenisenabled" "[0.125 0.125 0.125]"
-	Proxies // proxies are listed inside this block
-	{
-		Equals // a proxy which produces a penis
-		{
-			srcVar1 $carpenisenabled
-			resultVar	$color // The shader parameter to be manipulated
-
-		}
-	}
+	"$color2" "{32 32 32}"
 }
 
