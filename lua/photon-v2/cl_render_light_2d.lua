@@ -13,9 +13,13 @@ local drawLights = GetConVar("ph2_draw_light2d")
 
 local render = render
 
+---@param color PhotonLightColor
 local function invertColor( color )
+	return color
 	-- return { r = 0, g = 255, b = 512, a = 512 }
-	return { r = 255 - color.r, g = 255 - color.g * 2, b = 255 - color.b, a = 255 }
+	-- return { r = (255 - color.TargetR) * color.Intensity, g = (255 - (color.TargetG * 2)) * color.Intensity, b = (255 - color.TargetB) * color.Intensity, a = 0 }
+	-- return { r = 0, g = 0, b = 0, a = 0 }
+	-- return { r = 255 - color.r, g = 255 - color.g, b = 255 - color.b, a = 255 }
 end
 
 function Photon2.RenderLight2D.OnPreRender()
@@ -125,11 +129,11 @@ function Photon2.RenderLight2D.Render()
 			if (drawSubtractive) then
 				render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 				render.SetMaterial( mat1 )
-				render.DrawSprite( light.EffectPosition, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, light.GlowColor )
-				render.DrawSprite( light.EffectPosition, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, light.SubtractiveMid )
+				render.DrawSprite( light.EffectPosition, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, invertColor(light.GlowColor) )
+				render.DrawSprite( light.EffectPosition, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, invertColor(light.SubtractiveMid) )
 				if ( light.LightMatrixEnabled ) then
 					for i=1, #light.WorldLightMatrix do
-						render.DrawSprite( light.WorldLightMatrix[i], (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, light.GlowColor )
+						render.DrawSprite( light.WorldLightMatrix[i], (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, invertColor(light.GlowColor) )
 					end
 				end
 				render.OverrideBlend( false )
@@ -137,7 +141,6 @@ function Photon2.RenderLight2D.Render()
 			render.SetMaterial( mat1_add )
 			render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * light.ViewDot, (glow1 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 64) )
 			render.SetMaterial( mat_add )
-			-- render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * light.ViewDot, (glow1 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.GlowColor, 255) )
 			render.DrawSprite( light.EffectPosition, (glow2 * light.Scale * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 255) )	
 			if ( light.LightMatrixEnabled ) then
 				for i=1, #light.WorldLightMatrix do
@@ -168,7 +171,7 @@ function Photon2.RenderLight2D.Render()
 		if ( light.Material and drawShape ) then
 			render.SetMaterial( light.Material )
 			render.OverrideBlend( true, 1, 1, 2 )
-				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
 			render.OverrideBlend( false )
 			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, ColorAlpha( light.SourceFillColor, 255 ), light.Angles[3] - 180 )

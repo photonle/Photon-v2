@@ -66,8 +66,8 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["Emergency.Illuminate"] = {
 		["SPOT"] = {
-			Light = "FLASH",
-			Rotating = "ROTATE"
+			Light = "ON",
+			-- Rotating = "ROTATE"
 		}
 	}
 }

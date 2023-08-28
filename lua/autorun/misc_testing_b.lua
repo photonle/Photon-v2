@@ -32,7 +32,39 @@ concommand.Add("setbodygroup", function(ply, cmd, args)
 	targ:SetBodygroup(args[1], args[2])
 end)
 
+
 if not CLIENT then return end
+
+local gradient = {
+	{ 0, 0, 255 },
+	{ 0, 255, 0 }
+}
+
+local function getColor( x )
+	local start = gradient[1]
+	local stop = gradient[2]
+
+	local r = start[1] + ((stop[1] - start[1]) * x)
+	local g = start[2] + ((stop[2] - start[2]) * x)
+	local b = start[3] + ((stop[3] - start[3]) * x)
+
+	print( Color(r,g,b) )
+end
+
+-- getColor(0.0)
+
+local function getBlendColor( baseColor, shiftColor, x )
+	return {
+		baseColor[1] + (( shiftColor[1] - baseColor[1]) * x ),
+		baseColor[2] + (( shiftColor[2] - baseColor[2]) * x ),
+		baseColor[3] + (( shiftColor[3] - baseColor[3]) * x )
+	}
+end
+
+PrintTable( getBlendColor({0,0,32}, {0,32,32}, 0.9))
+
+if true then return end
+
 
 local attachments = {
 	"wheel_fl", "wheel_fr", "wheel_rl", "wheel_rr"
@@ -46,12 +78,6 @@ local x = 1.72
 local y = 0.548
 local z = 1
 
-local transforms = {
-	Vector( -x, y, z ),
-	Vector( x, -y, z ),
-	Vector( x, -y, z ),
-	Vector( -x, y, z ),
-}
 
 local angleTransforms = {
 
@@ -106,7 +132,6 @@ end
 hook.Add( "Think", "Photon2.Testing:WheelTest", durangoWheelTest )
 
 
-if true then return end
 local mat = Material("sentry/props/nforce/top_c")
 if (mat:IsError()) then error("bad material") end
 

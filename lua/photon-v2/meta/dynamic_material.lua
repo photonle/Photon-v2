@@ -136,7 +136,7 @@ function Mat.CreateNow( id, material, onCreate )
 		mat = CreateMaterial( materialName, shader, parameters )
 	else
 		-- printf("The material appears to already exist...")
-		mat = Material( material.MaterialName )
+		mat = Material( material.MaterialName, "smooth mips" )
 	end
 
 	material.Material = mat
@@ -232,7 +232,7 @@ function Mat.ProcessMaterialData( data )
 	for key, value in pairs( data ) do
 		if (textureParams[key]) then
 			if ( isstring( value ) and string.EndsWith( value, ".png" ) ) then
-				data[key] = Material( value ):GetTexture( "$basetexture" )
+				data[key] = Material( value, "smooth mips" ):GetTexture( "$basetexture" )
 			end
 		end
 	end

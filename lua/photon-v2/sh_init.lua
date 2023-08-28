@@ -6,7 +6,7 @@ include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
 include("sh_schema.lua")
 
-
+---@return PhotonColor
 function PhotonColor( r, g, b, a )
 	return _PhotonColor.New( r, g, b, a )
 end
@@ -14,6 +14,7 @@ end
 
 function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/dynamic_material.lua")
+	exmeta.LoadFile("photon-v2/meta/blend_color.lua")
 	exmeta.LoadFile("photon-v2/meta/color.lua")
 
 	exmeta.LoadFile("photon-v2/meta/light_color.lua")

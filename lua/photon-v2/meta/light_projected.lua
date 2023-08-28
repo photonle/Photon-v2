@@ -50,9 +50,10 @@ Light.Rotation = Angle( 0, 90, 0 ) -- 0 90 0?
 Light.TranslatedLocalAngles = Angle()
 Light.NearZ = 4
 Light.FarZ = 1020
-Light.FOV = 40
-Light.Brightness = 10
+Light.FOV = 90
+Light.Brightness = 4
 Light.Texture = "effects/flashlight001"
+Light.EnableShadows = false
 
 function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonLightProjected } )
@@ -109,6 +110,7 @@ function Light:Activate()
 	projectedTexture:SetNearZ( self.NearZ )
 	projectedTexture:SetFOV( self.FOV )
 	projectedTexture:SetBrightness( self.Brightness )
+	projectedTexture:SetEnableShadows( self.EnableShadows )
 	self.ProjectedTexture = projectedTexture
 end
 

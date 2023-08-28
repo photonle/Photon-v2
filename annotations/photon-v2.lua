@@ -81,6 +81,9 @@ PhotonLightBone = PhotonLightBone
 ---@type PhotonLightBoneState
 PhotonLightBoneState = PhotonLightBoneState
 
+---@type PhotonBlendColor
+PhotonBlendColor = PhotonBlendColor
+
 ---@alias PhotonBoneLightActivity
 ---| '"Rotate"' # Continuously rotates in one direction.
 ---| '"Sweep"' # Rotates back and forth between the `Target` angle and `SweepTo` angle.
@@ -154,6 +157,10 @@ PhotonLightBoneState = PhotonLightBoneState
 ---@field MoveType MOVETYPE
 ---@field OnServer boolean -- (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
 
+---@class RGB
+---@field r number Red
+---@field g number Green
+---@field b number Blue
 
 ---@class PixVisHandle
 

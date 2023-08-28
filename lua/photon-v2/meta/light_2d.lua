@@ -34,6 +34,7 @@ local printf = Photon2.Debug.PrintF
 ---@field ShapeGlowColor PhotonLightColor
 ---@field SubtractiveMid PhotonLightColor
 ---@field SourceIntensity PhotonLightColor
+---@field BlendColor RGB
 ---@field ShouldDraw boolean
 ---@field Matrix VMatrix
 ---@field ViewNormal Vector
@@ -85,7 +86,7 @@ Light.QuadRotation = Angle( 0, 90, 90 )
 Light.TranslatedLocalAngles = Angle( 0, 0, 0 )
 
 Light.Intensity = 1
-Light.IntensityGainFactor = 20
+Light.IntensityGainFactor = 10
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1
 
@@ -114,6 +115,7 @@ local function reverseColor( color )
 end
 
 local black = Color( 0, 0, 0 )
+local white = Color( 255, 255, 255 )
 
 --[[
 	Adding additional state colors:
@@ -121,6 +123,11 @@ local black = Color( 0, 0, 0 )
 	2. 
 --]] 
 
+local white = { r = 255, g = 255, b = 255 }
+local red = { r = 255, g = 0, b = 0 }
+local blue = { r = 0, g = 0, b = 255 }
+local green = { r = 0, g = 255, b = 0 }
+local amber = { r = 255, g = 255, b = 0 }
 
 Light.States = {
 	["~OFF"] = {
@@ -128,6 +135,7 @@ Light.States = {
 		IntensityTransitions 	= true,
 	},
 	["OFF"] = {
+		Blend = PhotonColor( 0, 0, 0 ),
 		SourceDetailColor = black, 
 		SourceFillColor = black, 
 		GlowColor = black,
@@ -140,36 +148,34 @@ Light.States = {
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
-		SourceFillColor = PhotonColor(255,0,0),
-		GlowColor = PhotonColor(255, 0, 0):Negative():Scale(0.33),
-		-- GlowColor = PhotonColor(255, 0, 96):Negative():Scale(0.33),
-		SubtractiveMid = PhotonColor( 255, 0, 0 ):Negative():Scale(0.22),
-		-- GlowColor = Color(255, 0, 48),
-		SourceDetailColor = PhotonColor(255,255,0), 
-		-- SourceDetailColor = Color(255,255,0), 
-		InnerGlowColor = PhotonColor(255, 0, 0):Scale( rScale ),
-		ShapeGlowColor = PhotonColor(255, 0, 0),
-		SourceIntensity = PhotonColor( 255, 255, 0 ),
-		PeakColor = PhotonColor( 255, 255, 220 )
+		Blend = PhotonColor( 255, 0, 0 ),
+		SourceFillColor = PhotonColor( 255, 0, 0 ):Negative(true):Blend( red ):GetBlendColor(),
+		GlowColor = PhotonColor( 255, 0, 0 ):Negative(true):Blend(red):Scale(0.6):GetBlendColor(),
+		SubtractiveMid = PhotonColor( 255, 0, 0 ):Negative(true):Blend(red):Scale(0.6):GetBlendColor(),
+		SourceDetailColor = PhotonColor( 255,255,0 ):Blend(red):GetBlendColor(), 
+		InnerGlowColor = PhotonColor(255, 0, 0):Blend(red):Scale( rScale ):GetBlendColor(),
+		ShapeGlowColor = PhotonColor(255, 0, 0):Blend(red):GetBlendColor()
 	},
 	["B"] = {
-		SourceFillColor = PhotonColor(0,0,255),
-		GlowColor = PhotonColor(48, 0, 255):Negative():Scale(0.33),
-		SubtractiveMid = PhotonColor( 0, 0, 255 ):Negative():Scale(0.22),
-		InnerGlowColor = PhotonColor(0, 64, 255):Scale( bScale ),
-		SourceDetailColor = PhotonColor(0,255,255), 
-		ShapeGlowColor = PhotonColor(0, 0, 255),
-		SourceIntensity = PhotonColor( 0, 255, 255 ),
-		PeakColor = PhotonColor( 255, 255, 255 )
+		Blend = PhotonColor( 0, 0, 255 ),
+		-- inverted
+		SourceFillColor = PhotonColor(0,0,255):Negative(true):Blend( blue ):GetBlendColor(),
+		-- inverted
+		GlowColor = PhotonColor(48, 0, 255):Negative(true):Blend(blue):Scale(0.6):GetBlendColor(), --*
+		-- inverted
+		SubtractiveMid = PhotonColor( 0, 0, 255 ):Negative(true):Blend(blue):Scale(0.6):GetBlendColor(), --*
+		InnerGlowColor = PhotonColor(0, 64, 255):Blend(blue):Scale( bScale ):GetBlendColor(),--*
+		SourceDetailColor = PhotonColor(0,255,255):Blend(blue):GetBlendColor(), --*
+		ShapeGlowColor = PhotonColor(0, 0, 255):Blend(blue):GetBlendColor(), --*
 	},
 	["G"] = {
-		SourceFillColor = PhotonColor(0,255,0),
-		GlowColor = PhotonColor(0, 255, 0):Negative(),
-		InnerGlowColor = PhotonColor(0, 512, 64),
-		SourceDetailColor = PhotonColor(0,255,0), 
-		ShapeGlowColor = PhotonColor(0, 255, 0),
-		SourceIntensity = PhotonColor( 200, 255, 200 ),
-		PeakColor = PhotonColor( 255, 255, 255 )
+		Blend = PhotonColor( 0, 255, 0 ):Blend(green):GetBlendColor(),
+		SourceFillColor = PhotonColor(0,255,0):Blend(green):GetBlendColor(),
+		GlowColor = PhotonColor(0, 255, 0):Blend(green):GetBlendColor(), --*
+		SubtractiveMid = PhotonColor( 0, 255, 0 ):Blend(green):Scale(0.5):GetBlendColor(), --*
+		InnerGlowColor = PhotonColor(0, 512, 64):Blend(green):GetBlendColor(),
+		SourceDetailColor = PhotonColor(0,255,0):Blend(green):GetBlendColor(), 
+		ShapeGlowColor = PhotonColor(0, 255, 0):Blend(green):GetBlendColor(),
 	},
 	-- ORIGINAL GREEN-SHIFTED COLORS
 	-- ["R"] = {
@@ -189,22 +195,20 @@ Light.States = {
 	-- },
 
 	["A"] = {
-		SourceDetailColor = PhotonColor(255,255,0), 
-		SourceFillColor = PhotonColor(200,64,0),
-		GlowColor = PhotonColor( 255, 100, 0 ):Negative(),
-		InnerGlowColor = PhotonColor( 255, 148, 0 ),
-		ShapeGlowColor = PhotonColor( 255, 205, 0 ),
-		SourceIntensity = PhotonColor( 255, 255, 0 ),
-		PeakColor = PhotonColor( 255, 255, 255 )
+		Blend = Color( 0, 255, 128 ),
+		SourceDetailColor = PhotonColor(255,255,0):Blend(amber):GetBlendColor(), 
+		SourceFillColor = PhotonColor(200,64,0):Blend(amber):GetBlendColor(),
+		GlowColor = PhotonColor( 255, 100, 0 ):Blend(amber):GetBlendColor(), --*
+		InnerGlowColor = PhotonColor( 255, 148, 0 ):Blend(amber):GetBlendColor(),
+		ShapeGlowColor = PhotonColor( 255, 205, 0 ):Blend(amber):GetBlendColor(),
 	},
 	["W"] = {
-		SourceDetailColor = PhotonColor(205,205,255), 
-		SourceFillColor = PhotonColor( 255, 255, 255 ),
-		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Negative(),
-		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale),
-		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale),
-		SourceIntensity = PhotonColor( 255, 255, 255 ),
-		PeakColor = PhotonColor( 255, 255, 255 )
+		Blend = Color( 200, 200, 255 ),
+		SourceDetailColor = PhotonColor(205,205,255):Blend(white):GetBlendColor(), 
+		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(white):GetBlendColor(),
+		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale):Blend(white):GetBlendColor(),
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),
@@ -214,7 +218,6 @@ Light.States = {
 		ShapeGlowColor = Color( 255, 0, 0 )
 	}
 }
-
 function Light.OnLoad()
 	for k, v in pairs( Light.States ) do
 		Light.States[k] = PhotonLight2DState:New( k, v, Light.States )
@@ -255,10 +258,10 @@ function Light:Initialize( id, parentEntity )
 	self.EffectPosition = Vector()
 	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )
 	self.SourceFillColor = PhotonLightColor()
-	self.GlowColor = PhotonLightColor()
+	self.GlowColor = PhotonLightColor( { Inverted = false } )
 	self.InnerGlowColor = PhotonLightColor()
 	self.ShapeGlowColor = PhotonLightColor()
-	self.SubtractiveMid = PhotonLightColor()
+	self.SubtractiveMid = PhotonLightColor( { Inverted = false } )
 	self.SourceIntensity = PhotonLightColor()
 
 	-- Adjust to component's scale
@@ -507,6 +510,7 @@ function Light:DoPreRender()
 		self.GlowColor:SetIntensity( self.Intensity )
 		self.ShapeGlowColor:SetIntensity( self.Intensity )
 		self.InnerGlowColor:SetIntensity( self.Intensity )
+		self.SubtractiveMid:SetIntensity( self.Intensity )
 
 	end
 
@@ -515,13 +519,14 @@ end
 
 function Light:OnStateChange( state )
 
-	self.SourceFillColor:SetTarget( state.SourceFillColor )
-	self.SourceDetailColor:SetTarget( state.SourceDetailColor )
-	self.GlowColor:SetTarget( state.GlowColor )
-	self.InnerGlowColor:SetTarget( state.InnerGlowColor )
-	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor )
-	self.SubtractiveMid:SetTarget( state.SubtractiveMid )
-	self.SourceIntensity:SetTarget( state.SourceIntensity )
+	self.BlendColor = state.Blend
+
+	self.SourceFillColor:SetTarget( state.SourceFillColor, self.BlendColor )
+	self.SourceDetailColor:SetTarget( state.SourceDetailColor, self.BlendColor )
+	self.GlowColor:SetTarget( state.GlowColor, self.BlendColor )
+	self.InnerGlowColor:SetTarget( state.InnerGlowColor, self.BlendColor )
+	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor, self.BlendColor )
+	self.SubtractiveMid:SetTarget( state.SubtractiveMid, self.BlendColor )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
@@ -548,7 +553,6 @@ function Light:OnStateChange( state )
 		self.InnerGlowColor:SetIntensity( self.Intensity )
 		self.ShapeGlowColor:SetIntensity( self.Intensity )
 		self.SubtractiveMid:SetIntensity( self.Intensity )
-		self.SourceIntensity:SetIntensity( self.Intensity )
 	end
 end
 

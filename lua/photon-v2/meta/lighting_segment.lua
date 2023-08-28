@@ -140,6 +140,10 @@ function Segment.New( name, segmentData, lightGroups )
 		
 		local inputFrame = segmentData.Frames[i]
 		
+		if ( not inputFrame ) then
+			error( "Expected to find frame index " .. tostring(i) .. ", but did not. Verify the numbering in the Frames table." )
+		end
+
 		if (isstring(inputFrame)) then
 			inputFrame = processFrameString( inputFrame )
 		end
