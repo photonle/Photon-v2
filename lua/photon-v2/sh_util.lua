@@ -48,50 +48,50 @@ function Photon2.Util.Inherit( target, base )
 	metaTable.Inherits = base
 end
 
-function Photon2.Util.CacheModelMesh( model, meshes )
-	local materialLookup = {}
-	Util.ModelMeshMap[model] = {}
-	for k, v in pairs( meshes or util.GetModelMeshes( model )) do
-		local material = v.material
-		-- local material = string.GetFileFromFilename( v.material )
-		if ( not materialLookup[material] ) then
-			materialLookup[material] = 0
-		end
-		materialLookup[material] = materialLookup[material] + 1
-		Photon2.Util.ModelMeshMap[model][material .. "[".. materialLookup[material] .. "]"] = k
-	end
-	print("MATERIAL LOOKUP RESULT")
-	PrintTable( materialLookup )
-end
+-- function Photon2.Util.CacheModelMesh( model, meshes )
+-- 	local materialLookup = {}
+-- 	Util.ModelMeshMap[model] = {}
+-- 	for k, v in pairs( meshes or util.GetModelMeshes( model )) do
+-- 		local material = v.material
+-- 		-- local material = string.GetFileFromFilename( v.material )
+-- 		if ( not materialLookup[material] ) then
+-- 			materialLookup[material] = 0
+-- 		end
+-- 		materialLookup[material] = materialLookup[material] + 1
+-- 		Photon2.Util.ModelMeshMap[model][material .. "[".. materialLookup[material] .. "]"] = k
+-- 	end
+-- 	print("MATERIAL LOOKUP RESULT")
+-- 	PrintTable( materialLookup )
+-- end
 
-function Photon2.Util.GetModelMesh( model, search, resultIndex )
-	resultIndex = resultIndex or 1
+-- function Photon2.Util.GetModelMesh( model, mesh, index )
+-- 	index = index or 1
 	
-	local meshes
+-- 	local meshes
 	
-	if ( isstring( search ) ) then
-		local prev = search
-		if ( Util.ModelMeshMap[model] == nil ) then
-			meshes = util.GetModelMeshes( model )
-			Util.CacheModelMesh( model, meshes )
-		end
-		search = Util.ModelMeshMap[model][search .. "[" .. resultIndex .. "]"]
-		if ( not search ) then
-			error("No mesh with material '" .. tostring(prev) .."' was found on model '" .. tostring(mdl) .. "'")
-		end
-	end
+-- 	if ( isstring( mesh ) ) then
+-- 		local prev = mesh
+-- 		if ( Util.ModelMeshMap[model] == nil ) then
+-- 			meshes = util.GetModelMeshes( model )
+-- 			Util.CacheModelMesh( model, meshes )
+-- 		end
+-- 		mesh = Util.ModelMeshMap[model][mesh .. "[" .. index .. "]"]
+-- 		if ( not mesh ) then
+-- 			error("No mesh with material '" .. tostring(prev) .."' was found on model '" .. tostring(mdl) .. "'")
+-- 		end
+-- 	end
 
-	if ( isnumber( search ) ) then
-		Util.ModelMeshes[model] = Util.ModelMeshes[model] or {}
-		if ( not Util.ModelMeshes[model][search] ) then
-			meshes = meshes or util.GetModelMeshes( model )
-			Util.ModelMeshes[model][search] = Mesh()
-			Util.ModelMeshes[model][search]:BuildFromTriangles( meshes[search].triangles )
-		end
-	end
+-- 	if ( isnumber( mesh ) ) then
+-- 		Util.ModelMeshes[model] = Util.ModelMeshes[model] or {}
+-- 		if ( not Util.ModelMeshes[model][mesh] ) then
+-- 			meshes = meshes or util.GetModelMeshes( model )
+-- 			Util.ModelMeshes[model][mesh] = Mesh()
+-- 			Util.ModelMeshes[model][mesh]:BuildFromTriangles( meshes[mesh].triangles )
+-- 		end
+-- 	end
 
-	return Util.ModelMeshes[model][search]
-end
+-- 	return Util.ModelMeshes[model][mesh]
+-- end
 
 function Photon2.Util.FindBodyGroupOptionByName( ent, bodyGroupIndex, name )
 	if ( string.len(name) > 0 ) then name = name .. ".smd" end

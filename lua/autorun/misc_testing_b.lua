@@ -1,4 +1,4 @@
-
+print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 
 
 
@@ -32,8 +32,169 @@ concommand.Add("setbodygroup", function(ply, cmd, args)
 	targ:SetBodygroup(args[1], args[2])
 end)
 
-
 if not CLIENT then return end
+
+
+concommand.Add("p2_getmodel", function(ply, cmd, args)
+	local targ = ply:GetEyeTrace().Entity
+	if ( IsValid( targ ) ) then
+		print( tostring( targ:GetModel() ) )
+		SetClipboardText( targ:GetModel() )
+	end
+end)
+
+-- MESH TESTING
+-- local model = "models/schmal/sos_undercover.mdl"
+
+local mat_Copy		= Material( "pp/copy" )
+local mat_Add		= Material( "pp/add" )
+local mat_Sub		= Material( "pp/sub" )
+local rt_Store		= render.GetScreenEffectTexture( 0 )
+local rt_Blur		= render.GetScreenEffectTexture( 1 )
+
+local function meshTest()
+	local model = "models/sentry/21durango.mdl"
+	local targetMaterial = "sentry/21durango/tail_ct"
+	local targetMaterialSubMesh = 1
+	-- util.PrecacheModel( model )
+	-- local meshes = util.GetModelMeshes( model )
+
+	local drawMaterial = Material("photon/common/glow")
+
+	local position = Vector( 0, 0, 0 )
+	local angles = Angle( 0, 0, 0 )
+	local scale = Vector( 1, 1, 1 )
+	-- local index = exutil.GetModelMesh( model, "sentry/21durango/tail_cb" )
+	-- print("index: " .. tostring( index ))
+	-- 
+	-- local meshLookup = {}
+	-- for k, v in pairs( meshes ) do
+	-- 	meshLookup[v.material] = meshLookup[v.material] or {}
+	-- 	meshLookup[v.material][#meshLookup[v.material]+1] = v
+	-- 	print( tostring(k) .. ": " .. tostring(v) )
+	-- 	for _k, _v in pairs( v ) do
+	-- 		print( "\t" .. tostring(_k) .. ": " .. tostring(_v) )
+	-- 	end
+	-- end
+
+	-- for k, v in pairs( meshLookup ) do
+	-- 	print("Material: " .. tostring( k ) .. " Count: " .. tostring(#v))
+	-- end
+
+	-- print( "Was mesh found for material: " .. tostring(meshLookup[targetMaterial] ~= nil ) )
+	-- print( "Was sub-mesh found for mesh: " .. tostring(meshLookup[targetMaterial][targetMaterialSubMesh] ~= nil ) )
+	-- print( "Does sub-mesh have .triangles: " .. (tostring(meshLookup[targetMaterial][targetMaterialSubMesh].triangles ~= nil)))
+	
+	-- local meshTriangles = meshLookup[targetMaterial][targetMaterialSubMesh].triangles
+	-- print( "Is meshTriangles still valid: " .. (tostring( meshTriangles ~= nil )))
+
+
+	-- local vertexMesh = Mesh( drawMaterial )
+	-- vertexMesh:BuildFromTriangles( meshTriangles )
+	local vertexMesh = Photon2.MeshCache.GetMesh( model, targetMaterial, targetMaterialSubMesh )
+	local matrix = Matrix()
+	print( "Does vertexMesh exist: " .. tostring(vertexMesh ~= nil))
+
+	local function drawMesh()
+		matrix:SetTranslation( position )
+		matrix:SetAngles( angles )
+		matrix:SetScale( scale )
+
+		cam.Start3D()
+			cam.PushModelMatrix( matrix, false )
+			render.OverrideColorWriteEnable( true, true)
+			render.SetColorModulation(1, 1, 1)
+			drawMaterial:SetVector( "$color", Vector(0, 255, 255))
+			render.SetMaterial( drawMaterial )
+			vertexMesh:Draw()
+			render.OverrideColorWriteEnable( false, true)
+			cam.PopModelMatrix()
+		cam.End3D()
+
+	end
+
+	-- hook.Remove("PostDrawTranslucentRenderables", "Photon2:MeshDrawTest")
+
+	hook.Add( "PreDrawHalos", "Photon2:MeshDrawTest", function( a, b, c )
+		if (a or b or c) then return end
+		drawMesh()
+	end)
+
+	local additive = true
+
+	local drawPasses = 1
+
+	local function drawBloom()
+		local rt_Scene = render.GetRenderTarget()
+		render.CopyRenderTargetToTexture( rt_Store )
+		if ( additive ) then
+			render.Clear( 0, 0, 0, 255, false, true )
+		else
+			render.Clear( 255, 255, 255, 255, false, true )
+		end
+
+		cam.Start3D()
+			render.SetStencilEnable( true )
+				render.SuppressEngineLighting( true )
+				render.SetStencilWriteMask( 1 )
+				render.SetStencilTestMask( 1 )
+				render.SetStencilReferenceValue( 1 )
+
+				render.SetStencilCompareFunction( STENCIL_ALWAYS )
+				render.SetStencilPassOperation( STENCIL_REPLACE )
+				render.SetStencilFailOperation( STENCIL_KEEP )
+				render.SetStencilZFailOperation( STENCIL_KEEP )
+
+				drawMesh()
+
+				render.SetStencilCompareFunction( STENCIL_EQUAL )
+				render.SetStencilPassOperation( STENCIL_KEEP )
+
+				cam.Start2D()
+					surface.SetDrawColor( 255, 255, 255, 255 )
+					surface.DrawRect( 0, 0, ScrW(), ScrH() )
+				cam.End2D()
+				
+				render.SuppressEngineLighting( false )
+			render.SetStencilEnable( false)
+		cam.End3D()
+
+		render.CopyRenderTargetToTexture( rt_Blur )
+		render.BlurRenderTarget( rt_Blur, 1, 1, 1 )
+
+
+		render.SetRenderTarget( rt_Scene )
+		mat_Copy:SetTexture( "$basetexture", rt_Store )
+		mat_Copy:SetString( "$color", "1 1 1")
+		render.SetMaterial( mat_Copy )
+		render.DrawScreenQuad()
+
+
+		render.SetStencilEnable( true )
+			render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
+			
+			if ( additive ) then
+				mat_Add:SetTexture( "$basetexture", rt_Blur )
+				render.SetMaterial( mat_Add )
+			end
+
+			for i=0, drawPasses do
+				render.DrawScreenQuad()
+			end
+		render.SetStencilEnable( false )
+
+		render.SetStencilTestMask( 0 )
+		render.SetStencilWriteMask( 0 )
+		render.SetStencilReferenceValue( 0 )
+
+	end
+
+	hook.Add( "PostDrawEffects", "Photon2:BloomTest", function()
+		drawBloom()
+	end)
+
+end
+-- meshTest()
 
 local gradient = {
 	{ 0, 0, 255 },
@@ -61,7 +222,7 @@ local function getBlendColor( baseColor, shiftColor, x )
 	}
 end
 
-PrintTable( getBlendColor({0,0,32}, {0,32,32}, 0.9))
+-- PrintTable( getBlendColor({0,0,32}, {0,32,32}, 0.9))
 
 if true then return end
 

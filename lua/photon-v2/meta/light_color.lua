@@ -2,23 +2,29 @@ if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLightColor"
 
+
 ---@class PhotonLightColor
----@field r number
----@field g number
----@field b number
----@field TargetR number
----@field TargetG number
----@field TargetB number
----@field BlendR number
----@field BlendG number
----@field BlendB number
----@field Inverted boolean
----@field Intensity number
----@field AddIntensity number
+---@field r number Current value of red channel.
+---@field g number Current value of green channel.
+---@field b number Current value of blue channel.
+---@field a number Current value of alpha channel.
+---@field TargetR number Red channel target value.
+---@field TargetG number Green channel target value.
+---@field TargetB number Blue channel target value.
+---@field TargetA number Alpha channel target value.
+---@field BlendR number Blend color red channel.
+---@field BlendG number Blend color green channel.
+---@field BlendB number Blend color blue channel.
+---@field BlendA number Blend color alpha channel.
+---@field Inverted boolean If color should be inverted.
+---@field Intensity number Current intensity of the color.
+---@field AddIntensity number Static value to always add to the intensity.
+---@field Vector Vector The current color as a normalized vector.
 local LightColor = exmeta.New()
 
 local blendIntensity = true
 
+-- NOTE: Color is only actually updated when the intensity is set.
 function LightColor:SetIntensity( intensity )
 	intensity = intensity + ( self.AddIntensity * intensity )
 
@@ -48,6 +54,10 @@ function LightColor:SetIntensity( intensity )
 	end
 
 	self.Intensity = intensity
+
+	self.Vector[1] = self.r / 255
+	self.Vector[2] = self.g / 255
+	self.Vector[3] = self.b / 255
 end
 
 ---@param color PhotonBlendColor | RGB
@@ -87,6 +97,22 @@ function LightColor:Reset()
 	self.r = self.TargetR
 	self.g = self.TargetG
 	self.b = self.TargetB
+
+	self.Vector[1] = self.r / 255
+	self.Vector[2] = self.g / 255
+	self.Vector[3] = self.b / 255
+end
+
+function LightColor:GetVector()
+	local result = Vector(
+		self.r / 255,
+		self.g / 255,
+		self.b / 255
+	)
+
+	print( tostring(result) )
+
+	return result
 end
 
 ---@param data PhotonLightColor
@@ -104,7 +130,8 @@ function LightColor:__call( data )
 		BlendG = 0,
 		BlendB = 0,
 		Intensity = 1,
-		AddIntensity = data.AddIntensity or 0
+		AddIntensity = data.AddIntensity or 0,
+		Vector = Vector(),
 	}, { __index = LightColor } )
 end
 

@@ -1,4 +1,5 @@
 include("sh_init.lua")
+include("cl_mesh_cache.lua")
 include("cl_convars.lua")
 include("cl_net.lua")
 include("cl_render.lua")

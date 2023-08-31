@@ -139,9 +139,9 @@ function Photon2.RenderLight2D.Render()
 				render.OverrideBlend( false )
 			end
 			render.SetMaterial( mat1_add )
-			render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * light.ViewDot, (glow1 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 64) )
+				render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * light.ViewDot, (glow1 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 64) )
 			render.SetMaterial( mat_add )
-			render.DrawSprite( light.EffectPosition, (glow2 * light.Scale * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 255) )	
+				render.DrawSprite( light.EffectPosition, (glow2 * light.Scale * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 255) )	
 			if ( light.LightMatrixEnabled ) then
 				for i=1, #light.WorldLightMatrix do
 					render.DrawSprite( light.WorldLightMatrix[i], (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, light.InnerGlowColor )
@@ -170,7 +170,7 @@ function Photon2.RenderLight2D.Render()
 
 		if ( light.Material and drawShape ) then
 			render.SetMaterial( light.Material )
-			render.OverrideBlend( true, 1, 1, 2 )
+			render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
 			render.OverrideBlend( false )
@@ -181,7 +181,7 @@ function Photon2.RenderLight2D.Render()
 			render.SetMaterial( light.MaterialOverlay )
 			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 			
-			render.OverrideBlend( true, 1, 1, 2 )
+			render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
 			render.OverrideBlend( false )
 			

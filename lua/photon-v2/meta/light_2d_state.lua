@@ -14,6 +14,7 @@ local State = exmeta.New()
 State.SourceFillColor = nil
 State.SourceDetailColor = nil
 
+---@return PhotonLight2DState
 function State.New( self, name, data, collection )
-	return PhotonLightState.New( PhotonLight2DState, name, data, collection )
+	return PhotonLightState.New( PhotonLight2DState, name, data, collection ) --[[@as PhotonLight2DState]]
 end

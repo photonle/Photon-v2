@@ -14,6 +14,11 @@ COMPONENT.IsVirtual = true
 COMPONENT.Templates = {
 	["Sub"] = {
 		SubMaterial = {}
+	},
+	["Mesh"] = {
+		["Model"] = {
+			Model = "models/sentry/21durango.mdl"
+		}
 	}
 }
 
@@ -55,6 +60,8 @@ COMPONENT.Lights = {
 	
 	[9] = { "SubMaterial", Indexes = { 9 } }, -- Tail Center Top
 	[10] = { "SubMaterial", Indexes = { 10 } }, -- Tail Center Bottom
+
+	[11] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_ct" }
 	
 	
 
@@ -111,7 +118,7 @@ COMPONENT.Segments = {
 	},
 	Tail_Center = {
 		Frames = {
-			[1] = "9:Tail_Red 10:Tail_Red"
+			[1] = "9:Tail_Red 10:Tail_Red 11:B"
 		 },
 		 Sequences = {
 			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }

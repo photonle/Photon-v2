@@ -315,6 +315,7 @@ function Light:SetLightScale( scale )
 end
 
 -- Internal function. Converts string material names to Material objects.
+-- 8/28: ??????? not implemented?
 function Light:LoadMaterials()
 
 
