@@ -61,27 +61,32 @@ COMPONENT.Lights = {
 	[9] = { "SubMaterial", Indexes = { 9 } }, -- Tail Center Top
 	[10] = { "SubMaterial", Indexes = { 10 } }, -- Tail Center Bottom
 
-	[11] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_ct" }
+	[11] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_ct", DrawMaterial = "sentry/21durango/lights_on" },
+	[12] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_cb", DrawMaterial = "sentry/21durango/lights_on" },
 	
+	[13] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_l", DrawMaterial = "sentry/21durango/lights_on" },
+	[14] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_r", DrawMaterial = "sentry/21durango/lights_on" },
 	
+	[15] = { "Model", Vector( 0, .1, 0 ), Angle( 0, 90, 0 ), { "sentry/21durango/drl_l" }, DrawMaterial = "sentry/21durango/lights_on" },
+	[16] = { "Model", Vector( 0, .1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/drl_r", DrawMaterial = "sentry/21durango/lights_on" },
 
 }
 
 COMPONENT.Segments = {
 	DRL_R = {
 		 Frames = {
-			[1] = "1:DRL"
+			[1] = "1:DRL 16:W"
 		 },
 		 Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 1, 1, 1, 1, 0, 0, 0, 0 }
 		 }
 	},
 	DRL_L = {
 		Frames = {
-			[1] = "2:DRL"
+			[1] = "2:DRL 15:W"
 		 },
 		 Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1  }
 		 }
 	},
 	Brake_R = {
@@ -102,7 +107,7 @@ COMPONENT.Segments = {
 	},
 	Tail_L = {
 		Frames = {
-			[1] = "7:Tail_Red"
+			[1] = "7:Tail_Red 13:R"
 		 },
 		 Sequences = {
 			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
@@ -110,7 +115,7 @@ COMPONENT.Segments = {
 	},
 	Tail_R = {
 		Frames = {
-			[1] = "8:Tail_Red"
+			[1] = "8:Tail_Red 14:R"
 		 },
 		 Sequences = {
 			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
@@ -118,7 +123,7 @@ COMPONENT.Segments = {
 	},
 	Tail_Center = {
 		Frames = {
-			[1] = "9:Tail_Red 10:Tail_Red 11:B"
+			[1] = "9:Tail_Red 10:Tail_Red 11:R 12:R"
 		 },
 		 Sequences = {
 			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }

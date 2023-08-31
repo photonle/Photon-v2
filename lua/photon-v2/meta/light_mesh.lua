@@ -199,12 +199,10 @@ function Light:OnStateChange( state )
 	if ( state.IntensityTransitions ) then
 
 	elseif ( self.TargetIntensity ~= 1 or (self.TargetIntensity ~= self.Intensity) ) then
-		print("setting intensity?")
 		self.Intensity = self.TargetIntensity
 		self.DrawColor:SetIntensity( self.Intensity )
 		self.BloomColor:SetIntensity( self.Intensity )
 	else
-		print("setting intensity?")
 		self.Intensity = self.TargetIntensity
 		self.DrawColor:SetIntensity( self.Intensity )
 		self.BloomColor:SetIntensity( self.Intensity )

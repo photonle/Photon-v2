@@ -109,9 +109,6 @@ function LightColor:GetVector()
 		self.g / 255,
 		self.b / 255
 	)
-
-	print( tostring(result) )
-
 	return result
 end
 

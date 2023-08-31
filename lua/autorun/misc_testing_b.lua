@@ -194,7 +194,7 @@ local function meshTest()
 	end)
 
 end
--- meshTest()
+meshTest()
 
 local gradient = {
 	{ 0, 0, 255 },
