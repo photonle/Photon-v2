@@ -74,15 +74,15 @@ COMPONENT.LightStates = {
 		["R1"] = {
 			Inherit = "R",
 			Intensity = 1,
-			IntensityGainFactor = 3,
-			IntensityLossFactor = 3,
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 10,
 			IntensityTransitions = true
 		},
 		["B1"] = {
 			Inherit = "B",
 			Intensity = 1,
-			IntensityGainFactor = 3,
-			IntensityLossFactor = 3,
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 10,
 			IntensityTransitions = true
 		},
 		["R0"] = {
@@ -172,7 +172,7 @@ COMPONENT.Segments = {
 		Sequences = {
 			["ON"] = { 1 },
 			["ALT"] = { 2, 2, 2, 2, 3, 3, 3, 3 },
-			["ALT2"] = sequence():Alternate(4,5,20)
+			["ALT2"] = sequence():Alternate(4,5,8)
 		}
 	},
 	Traffic = {
@@ -209,18 +209,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["STFL"] = { 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-				0, 1, 0, 1, 0, 1, 0
-			}
+			["STFL"] = sequence():Hold( 1, 32 ):Flash( 1, 0, 4 )
 		}
 	},
 	Takedown = {

@@ -44,6 +44,9 @@ function Photon2.SequenceBuilder:Append( sequence )
 	return self
 end
 
+function Photon2.SequenceBuilder:Hold( frame, length )
+	return self:Add( frame ):Do( length )
+end
 
 ---@param frameA integer First frame index.
 ---@param frameB integer Second frame index.

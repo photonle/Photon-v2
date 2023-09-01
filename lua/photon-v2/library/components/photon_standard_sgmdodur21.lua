@@ -67,10 +67,15 @@ COMPONENT.Lights = {
 	[13] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_l", DrawMaterial = "sentry/21durango/lights_on" },
 	[14] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/tail_r", DrawMaterial = "sentry/21durango/lights_on" },
 	
-	[15] = { "Model", Vector( 0, .1, 0 ), Angle( 0, 90, 0 ), { "sentry/21durango/drl_l" }, DrawMaterial = "sentry/21durango/lights_on" },
+	[15] = { "Model", Vector( 0, .1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/drl_l", DrawMaterial = "sentry/21durango/lights_on" },
 	[16] = { "Model", Vector( 0, .1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/drl_r", DrawMaterial = "sentry/21durango/lights_on" },
 
+	[17] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/reverse_l", DrawMaterial = "sentry/21durango/lights_ridges_white_on" },
+	[18] = { "Model", Vector( 0, -.1, 0 ), Angle( 0, 90, 0 ), "sentry/21durango/reverse_r", DrawMaterial = "sentry/21durango/lights_ridges_white_on" },
+
 }
+
+local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	DRL_R = {
@@ -78,7 +83,7 @@ COMPONENT.Segments = {
 			[1] = "1:DRL 16:W"
 		 },
 		 Sequences = {
-			["ON"] = { 1, 1, 1, 1, 0, 0, 0, 0 }
+			["ON"] =  sequence():Alternate( 0, 1, 8 )
 		 }
 	},
 	DRL_L = {
@@ -86,7 +91,7 @@ COMPONENT.Segments = {
 			[1] = "2:DRL 15:W"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1  }
+			["ON"]  = sequence():Alternate( 1, 0, 8 )
 		 }
 	},
 	Brake_R = {
@@ -102,7 +107,7 @@ COMPONENT.Segments = {
 			[1] = "4:Ridges_Red"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"] = { 1 }
 		 }
 	},
 	Tail_L = {
@@ -110,7 +115,7 @@ COMPONENT.Segments = {
 			[1] = "7:Tail_Red 13:R"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"] = sequence():Alternate( 0, 1, 8 )
 		 }
 	},
 	Tail_R = {
@@ -118,7 +123,7 @@ COMPONENT.Segments = {
 			[1] = "8:Tail_Red 14:R"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"]  = sequence():Alternate( 0, 1, 8 )
 		 }
 	},
 	Tail_Center = {
@@ -126,23 +131,23 @@ COMPONENT.Segments = {
 			[1] = "9:Tail_Red 10:Tail_Red 11:R 12:R"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"] = sequence():Alternate( 0, 1, 8 )
 		 }
 	},
 	Reverse_L = {
 		Frames = {
-			[1] = "5:Ridges_White"
+			[1] = "5:Ridges_White 17:W"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"]  = sequence():Alternate( 1, 0, 8 )
 		 }
 	},
 	Reverse_R = {
 		Frames = {
-			[1] = "6:Ridges_White"
+			[1] = "6:Ridges_White 18:W"
 		 },
 		 Sequences = {
-			["ON"] = { 0, 0, 0, 0, 1, 1, 1, 1 }
+			["ON"] = sequence():Alternate( 1, 0, 8 )
 		 }
 	},
 }

@@ -14,7 +14,7 @@ local bloomBlurY = 1
 local bloomPasses = 4
 
 ---@param additive boolean Additive bloom pass.
-function Photon2.RenderBloom.Render( additive )
+function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 
 	local scene = render.GetRenderTarget()
 	render.CopyRenderTargetToTexture( storeRenderTarget )
@@ -54,7 +54,7 @@ function Photon2.RenderBloom.Render( additive )
 	cam.End3D()
 
 	render.CopyRenderTargetToTexture( blurRenderTarget )
-	render.BlurRenderTarget( blurRenderTarget, bloomBlurX, bloomBlurY, bloomPasses )
+	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, passes )
 
 	render.SetRenderTarget( scene )
 	copyMaterial:SetTexture( "$basetexture", storeRenderTarget )
@@ -62,14 +62,15 @@ function Photon2.RenderBloom.Render( additive )
 	render.SetMaterial( copyMaterial )
 	render.DrawScreenQuad()
 
-	render.SetStencilEnable( false )
+	render.SetStencilEnable( !additive )
 		render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
 
 		if ( additive ) then
 			additiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
 			render.SetMaterial( additiveMaterial )
 		else
-
+			subtractiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
+			render.SetMaterial( subtractiveMaterial )
 		end
 
 		for i=0, bloomPasses do
@@ -86,6 +87,7 @@ end
 
 hook.Add( "PostDrawEffects", "Photon2.RenderBloom:Render", function ()
 	if (bloomEnabled) then
-		Photon2.RenderBloom.Render( true )
+		-- Photon2.RenderBloom.Render( false, 4, 4, 1 )
+		Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, bloomPasses )
 	end
 end)
