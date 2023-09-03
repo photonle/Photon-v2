@@ -1,6 +1,10 @@
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 
+local x = {
+	[{"1", "2"}] = "3"
+} 
 
+PrintTable( x )
 
 -- for _,ply in pairs(player.GetAll()) do
 -- 	ply:SetViewOffsetDucked(Vector(0,0,28))
@@ -15,9 +19,9 @@ print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 -- end)
 
 if SERVER then
-
-
-
+	-- hook.Add("PlayerButtonDown", "Photon2:TestButtonDown", function( ply, button ) 
+	-- 	print(tostring(ply) .. ": " .. tostring(button))
+	-- end)
 end
 
 concommand.Add("setsize", function(ply, cmd, args)

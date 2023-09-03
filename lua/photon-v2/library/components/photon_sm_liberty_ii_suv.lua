@@ -1,5 +1,6 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
+local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Author = "Schmal"
 
@@ -81,9 +82,14 @@ COMPONENT.LightStates = {
 		["B1"] = {
 			Inherit = "B",
 			Intensity = 1,
+			-- Alternate data format concept
+			Transitions = {
+				Intensity = { Gain = 10, Loss = 10 }
+			},
 			IntensityGainFactor = 10,
 			IntensityLossFactor = 10,
 			IntensityTransitions = true
+			
 		},
 		["R0"] = {
 			Inherit = "R1",
@@ -158,7 +164,6 @@ COMPONENT.LightGroups = {
 	["R_Corner"] = { 10, 14, 24, 26, 28, 30 },
 }
 
-local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	All = {
@@ -170,6 +175,7 @@ COMPONENT.Segments = {
 			[5] = "Left:R0 Right:B1"
 		},
 		Sequences = {
+			["MODE1"] = sequence():Steady( 1, 64 ):TripleFlash( 1 ),
 			["ON"] = { 1 },
 			["ALT"] = { 2, 2, 2, 2, 3, 3, 3, 3 },
 			["ALT2"] = sequence():Alternate(4,5,8)
@@ -177,7 +183,7 @@ COMPONENT.Segments = {
 	},
 	Traffic = {
 		Frames = {
-			[0] = "15:R0 17:R0 19:R0 21:R0 22:B0 20:B0 18:B0 16:B0",
+			[0] = "[R0] 15 17 19 21 [B0] 22 20 18 16",
 			[1] = "15",
 			[2] = "15 17",
 			[3] = "15 17 19",
@@ -209,7 +215,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["STFL"] = sequence():Hold( 1, 32 ):Flash( 1, 0, 4 )
+			["STFL"] = sequence():Steady( 1, 32 ):Flash( 1, 0, 4 )
 		}
 	},
 	Takedown = {
@@ -238,10 +244,20 @@ COMPONENT.Segments = {
 	}
 }
 
+-- Concept
+COMPONENT.CompoundInputs = {
+	-- [{"Emergency.Warning", "Vehicle.Brake"}] = {
+	-- 	[{"MODE1", "BRAKE"}], [{}] = {
+	-- 		LightbarBrake = "ER_BRAKE"
+	-- 	}
+	-- }
+}
+
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
+		[{}] = {},
 		["MODE1"] = {
-			All = "ON"
+			All = "MODE1"
 		},
 		["MODE2"] = {
 			All = "ALT2"

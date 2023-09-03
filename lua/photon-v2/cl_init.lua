@@ -16,6 +16,7 @@ include("cl_render_light_2d.lua")
 include("cl_render_light_mesh.lua")
 include("cl_render_light_bone.lua")
 include("cl_render_bloom.lua")
+include("sh_input.lua")
 include("cl_input.lua")
 
 include("sh_ent_meta.lua")

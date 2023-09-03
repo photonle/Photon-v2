@@ -243,6 +243,8 @@ function Component.New( name, data, base )
 
 		for modeName, sequences in pairs( channel ) do
 			
+			if ( not isstring( modeName ) ) then continue end
+
 			-- Build input interface modes
 			if ( istable( sequences ) and ( next(sequences) ~= nil) ) then
 				component.Inputs[channelName][#component.Inputs[channelName] + 1] = modeName
@@ -378,7 +380,6 @@ end
 ---@param segmentName string
 ---@param sequence PhotonSequence
 function Component:RemoveActiveSequence( segmentName, sequence)
-	printf("Removing sequence [%s]", sequence)
 	self.ActiveSequences[sequence] = nil
 end
 

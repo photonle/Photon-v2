@@ -77,20 +77,44 @@ function Segment.New( name, segmentData, lightGroups )
 	end
 
 	local function processFrameString( frame )
+
+		frame = string.Replace( frame, "\n", " " )
+		frame = string.Replace( frame, "\t", " " )
+		frame = string.Trim( frame )
+		while string.find( frame, "  " ) do
+			frame = string.Replace( frame, "  ", " " )
+		end
+
 		local result = {}
-		local lights = string.Split( frame, " " )
-		for i=1, #lights do
-			local lightData = string.Split(lights[i], ":")
+
+		local contextState, block
+		local blocks = string.Split( frame, " " )
+		for i=1, #blocks do
+
+			block = blocks[i]
+			if ( string.StartWith( blocks[i], "[") ) then
+				block = string.sub( block, 2, string.len( block ) - 1 )
+				block = string.Replace( block, " ", "" )
+				contextState = block
+				continue
+			end
+			
+			if ( contextState == "" ) then contextState = nil end
+
+			local lightData = string.Split(blocks[i], ":")
 			
 			local insert
 			
 			if (#lightData == 1) then
 				insert = (tonumber(lightData[1]) or lightData[1])
+				if ( ( insert) and contextState ~= nil ) then
+					insert = { insert, contextState }
+				end
 			else
 				insert = { (tonumber(lightData[1]) or lightData[1]), (tonumber(lightData[2]) or lightData[2]) }
 			end
 
-			if (insert) then
+			if ( insert ) then
 				result[#result+1] = insert
 			else
 				error("Frame string [" .. tostring(frame) .."] could not be parsed.")
@@ -358,7 +382,7 @@ end
 
 function Segment:AcceptsChannelMode( channelMode )
 	local exists = self.Patterns[channelMode] ~= nil
-	print("Checking if segment[" .. self.Name .. "] accepts channel mode [" .. channelMode .. "]. Result: [" .. tostring( exists ) .."]" )
+	-- print("Checking if segment[" .. self.Name .. "] accepts channel mode [" .. channelMode .. "]. Result: [" .. tostring( exists ) .."]" )
 	-- PrintTable( self.Patterns )
 	-- return true
 	return exists

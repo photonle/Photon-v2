@@ -8,6 +8,7 @@ include("sh_index.lua")
 include("sh_ent_meta.lua")
 include("sv_functions.lua")
 
+include("sh_input.lua")
 
 print("sv_init.lua")
 
