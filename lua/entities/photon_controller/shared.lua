@@ -106,7 +106,9 @@ function ENT:InitializeShared()
 	end)
 end
 
-
+function ENT:GetOperator()
+	return self:GetNW2Entity( "Photon2:Operator" )
+end
 
 function ENT:SetupChannels()
 	local channelList = {}
@@ -121,7 +123,7 @@ function ENT:SetupChannels()
 end
 
 function ENT:SetChannelMode( channel, state )
-	
+
 	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
 
 	if CLIENT then
@@ -145,6 +147,62 @@ function ENT:GetProfile( )
 	return Photon2.Index.Vehicles[self:GetProfileName()]
 end
 
+ENT.UserCommands = {
+	["OFF_TOGGLE"] 		= "UserCommandOffToggle",
+	["SET"] 			= "UserCommandSet",
+	["TOGGLE"] 			= "UserCommandToggle",
+	["CYCLE"] 			= "UserCommandCycle"
+}
+
+function ENT:UserCommandOffToggle( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode == "OFF" ) then
+		self:SetChannelMode( action.Channel, action.Value )
+	else
+		self:SetChannelMode( action.Channel, "OFF" )
+	end
+end
+
+function ENT:UserCommandSet( action )
+	self:SetChannelMode( action.Channel, action.Value )
+end
+
+function ENT:UserCommandToggle( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode == action.Value ) then
+		self:SetChannelMode( action.Channel, "OFF" )
+	else
+		self:SetChannelMode( action.Channel, action.Value )
+	end
+end
+
+function ENT:UserCommandCycle( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	local currentIndex = action.ValueMap[currentMode]
+	if ( currentIndex == nil ) then currentIndex = 0 end
+	local nextIndex = currentIndex + 1
+	if ( nextIndex > #action.Value ) then nextIndex = 1 end
+	self:SetChannelMode( action.Channel, action.Value[nextIndex] )
+end
+
+---@param actions table Actions to process and execute.
+---@param press? number Simulated button press state.
+---@param name? string Generic name of command.
+function ENT:InputUserCommand( actions, press, name )
+	-- any condition in which the server would run this and not the client?
+	self:EmitSound( "photon/controllers/fedsig_ssp_chirp.wav")
+	local action
+	for i=1, #actions do
+		action = actions[i].Action
+		print("[" .. tostring( action.Action ) .. "] " .. tostring( action.Channel ) .. "::" .. tostring( action.Value ))
+
+		local func = self[self.UserCommands[action.Action]]
+		if ( not isfunction(func) ) then
+			error( "Invalid/undefined controller action '" .. tostring( action ) .."'")
+		end
+		func( self, action )
+	end
+end
 
 function ENT:GetComponentParent()
 	return self:GetParent()

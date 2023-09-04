@@ -195,13 +195,13 @@ VEHICLE.Selections = {
 						Angles = Angle(1.5, -90, 0),
 						Scale = 1.4,
 					},
-					{
-						Component = "siren_prototype",
-						Position = Vector(11, 125, 35),
-						Angles = Angle(1.5, -90, 0),
-						Scale = 1.4,
-						ColorMap = "[ON+5] 1 2 3"
-					},
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(11, 125, 35),
+					-- 	Angles = Angle(1.5, -90, 0),
+					-- 	Scale = 1.4,
+					-- 	-- ColorMap = "[ON+5] 1 2 3"
+					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(11, 125, 35),

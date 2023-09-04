@@ -66,9 +66,17 @@ function Photon2.ClientInput.RegisterConfiguration( id, config )
 			end
 		end
 		for i, action in pairs( actions ) do
+			-- Process modifier keys
 			for modifierKey, _ in pairs( modifiers ) do
 				if ( action.ModifierConfig[modifierKey] == nil ) then
 					action.ModifierConfig[modifierKey] = false
+				end
+			end
+			-- Process value mapping
+			if ( istable( action.Value ) ) then
+				action.ValueMap = {}
+				for j, value in pairs( action.Value ) do
+					action.ValueMap[value] = j
 				end
 			end
 		end
@@ -79,27 +87,9 @@ end
 function Photon2.ClientInput.ExecuteActions( actions )
 	if ( not actions ) then return end
 	if ( not IsValid( Photon2.ClientInput.TargetController ) ) then return end
-	
-	local controller = Photon2.ClientInput.TargetController ---@as PhotonController
-	
-	local action
-	for i=1, #actions do
-		action = actions[i].Action
-		print("[" .. tostring( action.Action ) .. "] " .. tostring( action.Channel ) .. "::" .. tostring( action.Value ))
-
-		if ( action.Action == "TOGGLE_OFF" ) then
-			local currentValue = controller.CurrentModes[action.Channel]
-			if ( currentValue == action.Value ) then
-				controller:SetChannelMode( action.Channel, "OFF" )
-			else
-				controller:SetChannelMode( action.Channel, action.Value )
-			end
-		elseif ( action.Action == "SET" ) then
-			controller:SetChannelMode( action.Channel, action.Value )
-		end
-
-	end
 	-- print("Executing " .. tostring(#actions) .. " actions...")
+	local controller = Photon2.ClientInput.TargetController ---@as PhotonController
+	controller:InputUserCommand( actions )
 end
 
 function Photon2.ClientInput.ValidateActions( actions, key, trigger )
@@ -170,7 +160,7 @@ hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
 local prototypeInput = {
 	[KEY_F] = {
 		OnRelease = {
-			{ Action = "TOGGLE_OFF", Channel = "Emergency.Warning", Value = "MODE3" }
+			{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" }
 		}
 	},
 	[KEY_SPACE] = {
@@ -184,7 +174,7 @@ local prototypeInput = {
 	[KEY_LALT] = {
 		Name = "Warning Light Stage",
 		OnRelease = {
-			{ Action = "CYCLE", Channel = "Emergency.Warning", Value = { "OFF", "MODE1", "MODE2", "MODE3" } }
+			{ Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
 		},
 		OnHold = {
 			{ Action = "CYCLE", Channel = "Emergency.Warning", Value = { "OFF", "MODE1", "MODE2", "MODE3" } }
@@ -194,20 +184,26 @@ local prototypeInput = {
 		Name = "Lights & Sirens",
 		Toggle = true,
 		OnRelease = {
-			{ Action = "TOGGLE_OFF", Channel = "Emergency.Siren1", Value = "T1" },
-			{ Action = "TOGGLE_OFF", Channel = "Emergency.Warning", Value = "MODE3" }
+			{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
+			{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" }
 		}
 	},
 	[KEY_1] = {
 		OnPress = {
-			{ Action = "TOGGLE", Channel = "Emergency.Siren1", Value = "1" },
-			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "1", Modifiers = { KEY_RALT } }
+			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T1", Modifiers = { KEY_RALT } }
 		}
 	},
 	[KEY_2] = {
 		OnPress = {
-			{ Action = "TOGGLE", Channel = "Emergency.Siren1", Value = "2" },
-			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "2", Modifiers = { KEY_RALT } },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T2" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T2", Modifiers = { KEY_RALT } },
+		}
+	},
+	[KEY_3] = {
+		OnPress = {
+			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T3" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T3", Modifiers = { KEY_RALT } },
 		}
 	}
 }

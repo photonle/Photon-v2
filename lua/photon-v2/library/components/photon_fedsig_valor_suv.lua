@@ -173,6 +173,12 @@ COMPONENT.Patterns = {
 			P26_EDGE = "P26",
 			P26_FRONT = "P26",
 			P26_REAR = "P26",
+		},
+		["MODE3"] = {
+			-- All = "MIX"
+			P26_EDGE = "P26",
+			P26_FRONT = "P26",
+			P26_REAR = "P26",
 		}
 	},
 	["Emergency.Siren"] = {

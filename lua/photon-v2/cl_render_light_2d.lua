@@ -183,6 +183,17 @@ function Photon2.RenderLight2D.Render()
 				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 			end
 
+			if ( light.Material and drawDetail ) then
+				render.SetMaterial( light.Material )
+				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+				
+				-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
+					-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+				-- render.OverrideBlend( false )
+				
+				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.ShapeGlowColor, light.Angles[3] - 180 )
+			end
+
 		end
 			
 	end

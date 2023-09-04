@@ -72,9 +72,9 @@ COMPONENT.Segments = {
 
 COMPONENT.Patterns = { -- Inputs
 	["Emergency.Siren"] = {
-		["WAIL"] = { Siren = "WAIL" },
-		["YELP"] = { Siren = "YELP" },
-		["PRIORITY"] = { Siren = "PRIORITY" },
+		["T1"] = { Siren = "WAIL" },
+		["T2"] = { Siren = "YELP" },
+		["T3"] = { Siren = "PRIORITY" },
 		["DEMO"] = { Siren = "DEMO" }
 	}
 }

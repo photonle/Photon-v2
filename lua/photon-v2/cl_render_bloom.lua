@@ -11,7 +11,7 @@ local bloomEnabled = true
 
 local bloomBlurX = 1
 local bloomBlurY = 1
-local bloomPasses = 4
+local bloomPasses = 5
 
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )

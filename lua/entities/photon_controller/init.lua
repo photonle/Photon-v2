@@ -42,6 +42,9 @@ function ENT:SetSelectionOption( categoryIndex, optionIndex )
 	self:OnSelectionChanged( categoryIndex, optionIndex )
 end
 
+function ENT:SetOperator( ply )
+	self:SetNW2Entity( "Photon2:Operator", ply )
+end
 
 -- 
 function ENT:SyncSelections()
