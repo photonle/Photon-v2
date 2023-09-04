@@ -155,7 +155,7 @@ COMPONENT.Lights = {
 	[34] = { "AlleyIllumination", Vector( 0, -31.65, 0.4 ), Angle( 0, 180, 0 ) },
 }
 
-COMPONENT.ColorMap = "[R1] 1 3 7 9 13 15 17 19 21 23 25 27 29 [B1] 2 4 8 10 14 16 18 20 22 24 26 28 30 [W] 5 6 11 12 31 32 33 34"
+COMPONENT.ColorMap = "[R] 1 3 7 9 13 15 17 19 21 23 25 27 29 [B] 2 4 8 10 14 16 18 20 22 24 26 28 30 [W] 5 6 11 12 31 32 33 34"
 
 COMPONENT.LightGroups = {
 	["Left"] = { 1, 3, 7, 9, 13, 15, 17, 19, 21, 23, 25, 27, 29 },
@@ -169,8 +169,8 @@ COMPONENT.Segments = {
 	All = {
 		Frames = {
 			[1] = "1 2 3 4 7 8 9 10 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30",
-			[2] = "1 3 7 9 13 15 17 19 21 23 25 27 29",
-			[3] = "2 4 8 10 14 16 18 20 22 24 26 28 30",
+			[2] = "Left",
+			[3] = "Right",
 			[4] = "Left:R1 Right:B0",
 			[5] = "Left:R0 Right:B1"
 		},
@@ -178,7 +178,8 @@ COMPONENT.Segments = {
 			["MODE1"] = sequence():Steady( 1, 64 ):TripleFlash( 1 ),
 			["ON"] = { 1 },
 			["ALT"] = { 2, 2, 2, 2, 3, 3, 3, 3 },
-			["ALT2"] = sequence():Alternate(4,5,8)
+			["ALT2"] = sequence():Alternate( 4, 5, 8 ),
+			["ALT3"] = sequence():QuadFlash( 2, 3 )
 		}
 	},
 	Traffic = {
@@ -261,6 +262,9 @@ COMPONENT.Patterns = {
 		},
 		["MODE2"] = {
 			All = "ALT2"
+		},
+		["MODE3"] = {
+			All = "ALT3"
 		}
 	},
 	["Emergency.Directional"] = {

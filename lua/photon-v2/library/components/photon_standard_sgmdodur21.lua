@@ -173,5 +173,14 @@ COMPONENT.Patterns = {
 			["Reverse_L"] = "ON",
 			["Reverse_R"] = "ON"
 		}
+	},
+	["Emergency.Warning"] = {
+		["MODE3"] = {
+			["DRL_R"] = "ON",
+			["DRL_L"] = "ON",
+			["Tail_L"] = "ON",
+			["Tail_R"] = "ON",
+			["Tail_Center"] = "ON",
+		}
 	}
 }

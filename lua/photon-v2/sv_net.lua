@@ -4,6 +4,7 @@ local printf = Photon2.Debug.PrintF
 
 util.AddNetworkString( "Photon2:SetControllerChannelState" )
 util.AddNetworkString( "Photon2:SetControllerSelection" )
+util.AddNetworkString( "Photon2:SetPlayerInputControllerTarget")
 
 function Photon2.sv_Network.OnSetControllerChannelState(len, ply)
 	local controller = net.ReadEntity() --[[@as sv_PhotonController]]
@@ -36,3 +37,9 @@ function Photon2.sv_Network.OnControllerSelectionChange( len, ply )
 
 end
 net.Receive( "Photon2:SetControllerSelection", Photon2.sv_Network.OnControllerSelectionChange )
+
+function Photon2.sv_Network.NotifyPlayerInputController( ply, controller )
+	net.Start( "Photon2:SetPlayerInputControllerTarget" )
+		net.WriteEntity( controller )
+	net.Send( ply )
+end

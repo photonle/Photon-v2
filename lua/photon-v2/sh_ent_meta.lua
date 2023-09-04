@@ -8,5 +8,5 @@ function ent:GetPhotonController()
 end
 
 function ent:SetPhotonController( controller )
-	self:SetNW2Entity( controller )
+	self:SetNW2Entity( "Photon2:Controller", controller )
 end

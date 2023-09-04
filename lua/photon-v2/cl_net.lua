@@ -1,6 +1,7 @@
 Photon2.cl_Network = {}
 Photon2.Debug.Print("cl_net.lua")
 
+local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
 
 function Photon2.cl_Network.SetControllerChannelState(controller, channel, state)
@@ -19,3 +20,8 @@ function Photon2.cl_Network.SetControllerSelection( controller, table )
 		net.WriteTable( table )
 	net.SendToServer()
 end
+
+function Photon2.cl_Network.OnSetInputController( len )
+	Photon2.ClientInput.SetTargetController( net.ReadEntity() )
+end
+net.Receive( "Photon2:SetPlayerInputControllerTarget", Photon2.cl_Network.OnSetInputController )

@@ -32,3 +32,17 @@ end
 -- hook.Add( "InitPostEntity", "Photon2:RunVehicleListModification", Photon2.RunVehicleListModification )
 
 -- Photon2.RunVehicleListModification()
+
+function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
+	print("Player entered vehicle")
+	if ( IsValid( vehicle:GetPhotonController() ) ) then
+		Photon2.sv_Network.NotifyPlayerInputController( ply, vehicle:GetPhotonController() )
+	end
+end
+hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
+
+function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
+	print("Player left vehicle")
+	Photon2.sv_Network.NotifyPlayerInputController( ply, nil )
+end
+hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )

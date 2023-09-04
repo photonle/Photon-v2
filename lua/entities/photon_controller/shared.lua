@@ -120,6 +120,16 @@ function ENT:SetupChannels()
 	self.CurrentModes = channelList
 end
 
+function ENT:SetChannelMode( channel, state )
+	
+	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+
+	if CLIENT then
+		Photon2.cl_Network.SetControllerChannelState( self, channel, state )
+	end
+
+end
+
 
 function ENT:GetChannelState( channel )
     return self:GetNW2String( "Photon2:CS:" .. channel, "OFF" )

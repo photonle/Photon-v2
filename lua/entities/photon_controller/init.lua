@@ -6,10 +6,6 @@ AddCSLuaFile("cl_init.lua")
 ---@class sv_PhotonController : PhotonController
 ENT = ENT
 
-function ENT:SetChannelMode( channel, state )
-	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
-end
-
 function ENT:Initialize()
 	self:InitializeShared()
 	self:DrawShadow( false )
