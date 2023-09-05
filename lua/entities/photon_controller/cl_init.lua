@@ -102,7 +102,10 @@ end
 local function NetworkedVarChanged( ent, name, oldValue, newValue )
 	-- Must be delayed by a tick to ensure entity is properly
 	-- initialized first. Unpredictable results otherwise.
-	timer.Simple(0.001, function()
+	local duration = 0.001
+	if ( CurTime() > 10000 ) then duration = 0.01 end
+	if ( CurTime() > 100000 ) then duration = 0.1 end
+	timer.Simple(duration, function()
 		if (IsValid(ent) and (ent.IsPhotonController)) then
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )
