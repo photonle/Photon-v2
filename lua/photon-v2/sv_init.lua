@@ -21,7 +21,9 @@ Photon2.OnEntityCreated = function( ent )
 	--local targ = ent:GetInternalVariable("LightingOriginHack") or "<error>"
 	--Photon2.Debug.Print("KEY VALUE: " .. tostring(targ))
 	--ent.SetKeyValue = ent._oldSetKeyValue
-	timer.Simple(0.1, function()
+	local duration = 0.1
+	-- if ( CurTime() > 10000 ) then duration = 2 end
+	timer.Simple(duration, function()
 		if not IsValid( ent ) then return end
 		if (ent:IsVehicle()) then
 			-- Photon2.Debug.Print("@vehiclename: " .. tostring(ent["@vehiclename"]))
@@ -57,6 +59,7 @@ end
 function Photon2.AddControllerToVehicle( vehicle, profile )
 	local controller = Photon2.CreateController( params )
 	
+	controller:SetLinkedToVehicle( true )
 	controller:SetParent( vehicle )
 	controller:Initialize()
 	controller:SetLocalPos((Vector(0, 0, 50)))

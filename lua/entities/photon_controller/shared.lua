@@ -3,6 +3,14 @@
 ---@field Components table<string, PhotonLightingComponent>
 ---@field ComponentArray PhotonBaseEntity[]
 ---@field CurrentProfile PhotonVehicle
+---@field GetLinkedToVehicle fun(): boolean
+---@field GetVehicleBraking fun(): boolean
+---@field GetVehicleReversing fun(): boolean
+---@field GetVehicleSpeed fun(): number
+---@field SetVehicleBraking fun(self: PhotonController, braking: boolean)
+---@field SetVehicleReversing fun(self: PhotonController, reversing: boolean)
+---@field SetVehicleSpeed fun(self: PhotonController, speed: number)
+---@field SetLinkedToVehicle fun(self: PhotonController, linked: boolean)
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ENT = ENT
 
@@ -77,6 +85,14 @@ function ENT:GetChannelModeTree()
 	PrintTable(result)
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
 	return result
+end
+
+function ENT:SetupDataTables()
+	self:NetworkVar( "Bool", 0, "LinkedToVehicle" )
+	self:NetworkVar( "Bool", 1, "VehicleReversing" )
+	self:NetworkVar( "Bool", 2, "VehicleBraking" )
+	
+	self:NetworkVar( "Int",  0, "VehicleSpeed" )
 end
 
 function ENT:InitializeShared()
@@ -684,5 +700,56 @@ function ENT:OnComponentReloaded( componentId )
 	end
 	if ( matched ) then
 		self:SetupComponentArrays()
+	end
+end
+
+function ENT:UpdateVehicleBraking( braking )	
+	if ( self:GetVehicleBraking() == braking ) then return end
+	
+	self:SetVehicleBraking( braking )
+	
+	if ( braking ) then
+		self:SetChannelMode( "Vehicle.Brake", "BRAKE" )
+	else
+		self:SetChannelMode( "Vehicle.Brake", "OFF" )
+	end
+end
+
+function ENT:UpdateVehicleReversing( reversing )	
+	if ( self:GetVehicleReversing() == reversing ) then return end
+	
+	self:SetVehicleReversing( reversing )
+	
+	if ( reversing ) then
+		self:SetChannelMode( "Vehicle.Reverse", "REVERSE" )
+	else
+		self:SetChannelMode( "Vehicle.Reverse", "OFF" )
+	end
+end
+
+-- Vehicle-specific code
+---@param ply Player
+---@param moveData CMoveData
+function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
+	if ( not self:GetLinkedToVehicle() ) then return end
+
+	local velocity = vehicle:WorldToLocal( vehicle:GetVelocity() + vehicle:GetPos() ).y
+
+	-- and ( ( velocity < 1 ) )
+	-- and ( vehicle:GetSpeed() > 0 )
+	if ( moveData:KeyDown( IN_BACK ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) then
+		if ( self:GetVehicleReversing() ) then
+
+		elseif ( velocity < 1 ) then
+			self:UpdateVehicleReversing( true )
+		end
+	else
+		self:UpdateVehicleReversing( false )
+	end
+
+	if ( moveData:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( moveData:KeyDown( IN_BACK ) ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) ) then
+		self:UpdateVehicleBraking( true )
+	else
+		self:UpdateVehicleBraking( false )
 	end
 end

@@ -163,14 +163,6 @@ local prototypeInput = {
 			{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" }
 		}
 	},
-	[KEY_SPACE] = {
-		OnPress = {
-			{ Action = "SET", Channel = "Vehicle.Brake", Value = "BRAKE" }
-		},
-		OnRelease = {
-			{ Action = "SET", Channel = "Vehicle.Brake", Value = "OFF" }
-		}
-	},
 	[KEY_LALT] = {
 		Name = "Warning Light Stage",
 		OnRelease = {
