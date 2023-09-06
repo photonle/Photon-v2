@@ -168,7 +168,7 @@ COMPONENT.Patterns = {
 			["Brake_L"] = "ON",
 		}
 	},
-	["Vehicle.Reverse"] = {
+	["Vehicle.Transmission"] = {
 		["REVERSE"] = {
 			["Reverse_L"] = "ON",
 			["Reverse_R"] = "ON"

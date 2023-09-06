@@ -1,5 +1,7 @@
 print("sv_functions.lua")
 
+local saveSteeringOnExit = true
+
 -- local ENT = FindMetaTable( "Entity" )
 
 -- if not ENT._oldSetKeyValue then
@@ -34,16 +36,28 @@ end
 -- Photon2.RunVehicleListModification()
 
 function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
-	print("Player entered vehicle")
 	if ( IsValid( vehicle:GetPhotonController() ) ) then
-		Photon2.sv_Network.NotifyPlayerInputController( ply, vehicle:GetPhotonController() )
+		vehicle:GetPhotonController():PlayerEnteredLinkedVehicle( ply, vehicle, role )
 	end
 end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
-	print("Player left vehicle")
+	if ( IsValid( vehicle:GetPhotonController() ) ) then
+		vehicle:GetPhotonController():PlayerExitedLinkedVehicle( ply, vehicle )
+	end
+	
 	Photon2.sv_Network.NotifyPlayerInputController( ply, nil )
+
+	if ( saveSteeringOnExit ) then
+		local steering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
+		local increment = 1
+		if ( steering < 0 ) then increment = increment * -1; steering = steering * -1 end
+		for i=1,math.Round(steering) do
+			vehicle:Fire( "steer", increment )
+		end
+	end
+
 end
 hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )
 
@@ -51,5 +65,6 @@ function Photon2.OnVehicleMove( ply, vehicle, moveData )
 	if ( IsValid( vehicle:GetPhotonController() ) ) then
 		vehicle:GetPhotonController():UpdateVehicleParameters( ply, vehicle, moveData )
 	end
+	-- print(vehicle:GetSteering())
 end
 hook.Add( "VehicleMove", "Photon2:OnVehicleMove", Photon2.OnVehicleMove )

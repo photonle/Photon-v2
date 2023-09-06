@@ -44,11 +44,13 @@ ENT.ChannelTree = {
     ["Vehicle"] = {
         "Signal",
         "Brake",
-        "Reverse",
+        "Transmission",
         "Lights",
         "HighBeam"
     }
 }
+
+
 
 -- Returns table of all _utilized_ channels and modes.
 function ENT:GetChannelModeTree()
@@ -165,10 +167,93 @@ end
 
 ENT.UserCommands = {
 	["OFF_TOGGLE"] 		= "UserCommandOffToggle",
+	["ON_TOGGLE"] 		= "UserCommandOnToggle",
 	["SET"] 			= "UserCommandSet",
 	["TOGGLE"] 			= "UserCommandToggle",
-	["CYCLE"] 			= "UserCommandCycle"
+	["CYCLE"] 			= "UserCommandCycle",
+	["SOUND"]			= "UserCommandSound",
 }
+
+local BUTTON_UP_SOUND_NEVER 	= 0 -- No button up sound (SoundOff)
+local BUTTON_UP_SOUND_MOMENTARY = 1 -- Button up sound only plays on certain momentary switches (Federal Signal)
+local BUTTON_UP_SOUND_RELEASE	= 2 -- Button up sound always plays (Whelen)
+
+local buttonSounds = {
+	[1] = "photon/controllers/code3_z3s_chirp.wav",
+	[2] = "photon/controllers/fedsig_ssp_chirp.wav",
+	[3] = "photon/controllers/sos_nergy_chirp.wav",
+	[4] = "photon/controllers/whelen_cencom_click.wav",
+	[5] = "photon/controllers/whelen_cencom_click_double.wav",
+}
+
+--[[
+		SOUND PROFILES
+
+		Classes (default):
+			1) Emergency
+			2) Vehicle functions
+
+
+--]]
+-- Controller sound profiles:
+--
+
+local emergencyConfigs = {
+	[1] = {
+		Name = "Code 3 Z3S",
+		-- Default sound played
+		ButtonDefault = { Sound = "photon/controllers/code3_z3s_chirp.wav", Volume = 100, Duration = 0.1, Pitch = 100 },
+		-- Sounds played as soon as button is pressed
+		ButtonPress = true,
+		-- Sounds played when any specified button is released
+		ButtonRelease = false,
+		-- Sounds played when the button is "momentary," e.g. manual and horn
+		ButtonMomentary = false
+	},
+	[1] = {
+		Name = "Code 3 Z3S",
+		Button = "photon/controllers/code3_z3s_chirp.wav",
+		ReleaseSound = false,
+		MomentarySound = false
+	},
+}
+
+-- local 
+
+-- To be moved into vehicle profile...
+ENT.Interactions = {
+	Activations = {
+		Button = CurTime(),
+		Click = CurTime()
+	},
+	Sounds = {
+		Button = buttonSounds[4],
+		Click = "photon/generic/click1.wav"
+	},
+	OnButtonUp = BUTTON_UP_SOUND_RELEASE
+}
+
+function ENT:UserCommandSound( action, press, name )
+	local sound = self.Interactions.Sounds[action.Sound]
+	local lastPlayed = self.Interactions.Activations[action.Sound]
+
+	if ( CurTime() < lastPlayed + 0.04 ) then return end
+
+	if ( press == "RELEASE" ) then
+		if ( self.Interactions.OnButtonUp == BUTTON_UP_SOUND_NEVER ) then return end
+		if ( self.Interactions.OnButtonUp == BUTTON_UP_SOUND_MOMENTARY ) and ( not action.Momentary ) then return end
+	end
+
+	self:EmitSound( sound )
+	self.Interactions.Activations[action.Sound] = CurTime()
+end
+
+function ENT:UserCommandOnToggle( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode == "OFF" ) then
+		self:SetChannelMode( action.Channel, action.Value )
+	end
+end
 
 function ENT:UserCommandOffToggle( action )
 	local currentMode = self.CurrentModes[action.Channel]
@@ -201,22 +286,25 @@ function ENT:UserCommandCycle( action )
 	self:SetChannelMode( action.Channel, action.Value[nextIndex] )
 end
 
+
+
 ---@param actions table Actions to process and execute.
 ---@param press? number Simulated button press state.
 ---@param name? string Generic name of command.
-function ENT:InputUserCommand( actions, press, name )
+function ENT:InputUserCommand( actions, key, press, name )
 	-- any condition in which the server would run this and not the client?
-	self:EmitSound( "photon/controllers/fedsig_ssp_chirp.wav")
+	-- self:EmitSound( self.Interactions.Sounds.Button )
 	local action
 	for i=1, #actions do
 		action = actions[i].Action
 		print("[" .. tostring( action.Action ) .. "] " .. tostring( action.Channel ) .. "::" .. tostring( action.Value ))
 
 		local func = self[self.UserCommands[action.Action]]
-		if ( not isfunction(func) ) then
-			error( "Invalid/undefined controller action '" .. tostring( action ) .."'")
+		if ( not isfunction( func ) ) then
+			continue
+			-- error( "Invalid/undefined controller action '" .. tostring( action ) .."'")
 		end
-		func( self, action )
+		func( self, action, press, name )
 	end
 end
 
@@ -721,9 +809,9 @@ function ENT:UpdateVehicleReversing( reversing )
 	self:SetVehicleReversing( reversing )
 	
 	if ( reversing ) then
-		self:SetChannelMode( "Vehicle.Reverse", "REVERSE" )
+		self:SetChannelMode( "Vehicle.Transmission", "REVERSE" )
 	else
-		self:SetChannelMode( "Vehicle.Reverse", "OFF" )
+		self:SetChannelMode( "Vehicle.Transmission", "OFF" )
 	end
 end
 

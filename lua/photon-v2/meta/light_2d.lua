@@ -104,7 +104,7 @@ Light.BoneParent = -1
 -- 	["A"] = { Primary = Color( 255, 96, 0 ), Overlay = Color(255, 255, 0) },
 -- }
 
-local wScale = 0.8
+local wScale = 0.9
 local bScale = 0.66
 local rScale = 0.66
 local function reverseColor( color )
@@ -127,7 +127,7 @@ local white = { r = 255, g = 255, b = 255 }
 local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
-local amber = { r = 255, g = 255, b = 0 }
+local amber = { r = 255, g = 0, b = 0 }
 
 Light.States = {
 	["~OFF"] = {
@@ -195,18 +195,18 @@ Light.States = {
 	-- },
 
 	["A"] = {
-		Blend = Color( 0, 255, 128 ),
-		SourceDetailColor = PhotonColor(255,255,0):Blend(amber):GetBlendColor(), 
+		Blend = Color( 0, 0, 255 ),
+		SourceDetailColor = PhotonColor(255,128,0):Blend(amber):GetBlendColor(), 
 		SourceFillColor = PhotonColor(200,64,0):Blend(amber):GetBlendColor(),
 		GlowColor = PhotonColor( 255, 100, 0 ):Blend(amber):GetBlendColor(), --*
 		InnerGlowColor = PhotonColor( 255, 148, 0 ):Blend(amber):GetBlendColor(),
-		ShapeGlowColor = PhotonColor( 255, 205, 0 ):Blend(amber):GetBlendColor(),
+		ShapeGlowColor = PhotonColor( 255, 200, 0 ):Blend(amber):GetBlendColor(),
 	},
 	["W"] = {
 		Blend = Color( 200, 200, 255 ),
-		SourceDetailColor = PhotonColor(205,205,255):Blend(white):GetBlendColor(), 
+		SourceDetailColor = PhotonColor(255,255,255):Blend(white):GetBlendColor(), 
 		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(white):GetBlendColor(),
-		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		GlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
 		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Blend(white):GetBlendColor(),
 		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale):Blend(white):GetBlendColor(),
 	},

@@ -20,13 +20,6 @@ function ENT:Initialize()
 	if ( IsValid( phys ) ) then
 		phys:Wake()
 	end
-
-	timer.Simple(1, function()
-		-- self:SetChannelMode( "Emergency.Warning", "STAGE_1" )
-		-- self:SetChannelMode( "Vehicle.Lights", "HEADLIGHTS" )
-		-- self:SetChannelMode( "Emergency.Warning", "STAGE_1")
-		-- self:SetChannelMode( "Emergency.Auxiliary", "LEFT")
-	end)
 end
 
 function ENT:SetProfileName( name )
@@ -49,4 +42,13 @@ end
 -- 
 function ENT:SyncSelections()
 	self:SetNW2String( "Photon2:Selections", table.concat(self.CurrentSelections," "))
+end
+
+function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
+	Photon2.sv_Network.NotifyPlayerInputController( ply, self )
+end
+
+function ENT:PlayerExitedLinkedVehicle( ply, vehicle )
+	self:UpdateVehicleBraking( false )
+	self:UpdateVehicleReversing( false )
 end

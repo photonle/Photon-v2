@@ -270,11 +270,11 @@ COMPONENT.Lights = {
 	[19] = { "Park", Vector( -29.94, 109.08, 50.44), Angle( 0, 31, 1.8 ), Width = 3.5 },
 	[20] = { "Park", Vector( 29.94, 109.08, 50.44), Angle( 180, 180-31, -1.8 ), Width = 3.5 },
 	
-	[21] = { "Headlight", Vector( -28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ), Persist = true }, -- headlight upper
-	[22] = { "Headlight", Vector( 28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ) }, -- headlight upper
+	[21] = { "Headlight", Vector( -28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ), Persist = true, Scale = 1 }, -- headlight upper
+	[22] = { "Headlight", Vector( 28.8, 105.1, 48.6 ), Angle( 0, 0, 0 ), Scale = 1 }, -- headlight upper
 
-	[23] = { "Headlight", Vector( -28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ) }, -- headlight lower
-	[24] = { "Headlight", Vector( 28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ) },-- headlight lower
+	[23] = { "Headlight", Vector( -28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ), Scale = 1 }, -- headlight lower
+	[24] = { "Headlight", Vector( 28.8, 105.1, 46.9 ), Angle( 0, 0, 180 ), Scale = 1 },-- headlight lower
 	
 	[25] = { "Headlight", Vector( -36.4, 99.5, 49.2), Angle( 0, 0, 0 ) }, -- high-beam upper
 	[26] = { "Headlight", Vector( 36.4, 99.5, 49.2 ), Angle( 0, 0, 0 ) }, -- high-beam upper
@@ -508,7 +508,7 @@ COMPONENT.Patterns = {
 			FwdSignal_R = "SIGNAL"
 		}
 	},
-	["Vehicle.Reverse"] = {
+	["Vehicle.Transmission"] = {
 		["REVERSE"] = {
 			Reverse_L = "ON",
 			Reverse_R = "ON",

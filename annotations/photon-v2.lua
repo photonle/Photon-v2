@@ -106,7 +106,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Credits table<string, string>
 ---@field PrintName string
 ---@field Model string
----@field Lighting table
+---@field Templates table
 ---@field Lights table
 ---@field LightGroups table
 ---@field Segments table

@@ -18,7 +18,7 @@ Photon2.DefaultChannelTree = {
     ["Vehicle"] = {
         "Signal",
         "Brake",
-        "Reverse",
+        "Transmission",
         "Lights",
         "HighBeam"
     }
