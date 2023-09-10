@@ -12,7 +12,12 @@ COMPONENT.PrintName = [[Code 3 MX7000]]
 
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
 
-COMPONENT.SubMaterials = {}
+COMPONENT.SubMaterials = {
+	[0] = "photon/textures/mx7000_glass_colored",
+	-- [2] = "photon/textures/mx7000",
+	-- [0] = nil,
+	-- [2] = nil
+}
 
 COMPONENT.LightStates = {}
 

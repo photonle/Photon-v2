@@ -85,8 +85,11 @@ function Segment.New( name, segmentData, lightGroups )
 			frame = string.Replace( frame, "  ", " " )
 		end
 
+		
 		local result = {}
-
+		
+		if ( frame == "" or frame == " " ) then return result end
+		
 		local contextState, block
 		local blocks = string.Split( frame, " " )
 		for i=1, #blocks do

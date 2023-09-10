@@ -184,6 +184,23 @@ VEHICLE.Selections = {
 		}
 	},
 	{
+		Category = "Wheel Lights",
+		Options = {
+			{
+				Option = "Demo",
+				Components = {
+					{
+						Component = "photon_sos_mpf4_lic_h",
+						Angles = Angle( 0, -90, 0 ),
+						Position = Vector( 0, -125, 49 ),
+						Scale = 0.96,
+						
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Siren",
 		Options = {
 			{

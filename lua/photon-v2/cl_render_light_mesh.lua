@@ -38,7 +38,8 @@ function Photon2.RenderLightMesh.DrawBloom()
 end
 
 local light
-function Photon2.RenderLightMesh.Render()
+function Photon2.RenderLightMesh.Render( depth, sky )
+	if ( depth or sky ) then return end
 	local activeLights = this.Active
 	cam.Start3D()
 		for i=1, #activeLights do
@@ -53,4 +54,4 @@ function Photon2.RenderLightMesh.Render()
 		end
 	cam.End3D()
 end
-hook.Add( "PreDrawHalos", "Photon2.RenderLightMesh", Photon2.RenderLightMesh.Render )
+hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderLightMesh", Photon2.RenderLightMesh.Render )

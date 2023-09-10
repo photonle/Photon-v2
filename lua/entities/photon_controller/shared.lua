@@ -196,25 +196,43 @@ local buttonSounds = {
 
 --]]
 -- Controller sound profiles:
---
+
+local normalVehicleConfigs = {
+	["default"] = {
+		Name = "Default",
+		Default = {
+			Sound = "photon/generic/click1.wav",
+			Duration = 0.1
+		},
+		Press = true,
+		Release = true,
+		Momentary = true
+	}
+}
 
 local emergencyConfigs = {
-	[1] = {
+	["code3_z3"] = {
 		Name = "Code 3 Z3S",
 		-- Default sound played
-		ButtonDefault = { Sound = "photon/controllers/code3_z3s_chirp.wav", Volume = 100, Duration = 0.1, Pitch = 100 },
+		Default = { 
+			Sound = "photon/controllers/code3_z3s_chirp.wav", 
+			Volume = 100, -- default: 100
+			Duration = 0.1, -- default: 0.1 -- specified to prevent undesired sound overlapping
+			Pitch = 100 -- default: 100
+		},
 		-- Sounds played as soon as button is pressed
-		ButtonPress = true,
+		Press = true,
 		-- Sounds played when any specified button is released
-		ButtonRelease = false,
+		Release = false,
 		-- Sounds played when the button is "momentary," e.g. manual and horn
-		ButtonMomentary = false
+		Momentary = false
 	},
-	[1] = {
-		Name = "Code 3 Z3S",
-		Button = "photon/controllers/code3_z3s_chirp.wav",
-		ReleaseSound = false,
-		MomentarySound = false
+	["fedsig_ssp"] = {
+		Name = "Federal Signal SSP",
+		Default = "photon/controllers/fedsig_ssp_chirp.wav",
+		Press = true,
+		Momentary = true,
+		Release = false
 	},
 }
 
@@ -228,23 +246,31 @@ ENT.Interactions = {
 	},
 	Sounds = {
 		Button = buttonSounds[4],
+		Controller = emergencyConfigs["code3_z3"],
 		Click = "photon/generic/click1.wav"
 	},
 	OnButtonUp = BUTTON_UP_SOUND_RELEASE
 }
 
 function ENT:UserCommandSound( action, press, name )
-	local sound = self.Interactions.Sounds[action.Sound]
-	local lastPlayed = self.Interactions.Activations[action.Sound]
+	if true then return end
+	local class = self.Interactions.Sounds[action.Sound]
+	local sound = class[press]
 
-	if ( CurTime() < lastPlayed + 0.04 ) then return end
+	if ( sound and isbool( sound ) ) then sound = class.Default end
+	if not sound then return end
+
+	-- local sound = self.Interactions.Sounds[action.Sound]
+	local lastPlayed = sound.LastPlayed or 0
+
+	if ( CurTime() < lastPlayed + ( sound.Duration or 0.1 ) ) then return end
 
 	if ( press == "RELEASE" ) then
 		if ( self.Interactions.OnButtonUp == BUTTON_UP_SOUND_NEVER ) then return end
 		if ( self.Interactions.OnButtonUp == BUTTON_UP_SOUND_MOMENTARY ) and ( not action.Momentary ) then return end
 	end
 
-	self:EmitSound( sound )
+	self:EmitSound( sound.Sound )
 	self.Interactions.Activations[action.Sound] = CurTime()
 end
 

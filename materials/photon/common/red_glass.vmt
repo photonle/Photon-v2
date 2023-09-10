@@ -1,0 +1,19 @@
+"Modulate"
+{
+	"$basetexture" "color/white"
+	"$bumpmap" 	"photon/common/flat"
+	"$phong" "1"
+	"$phongboost" 10
+	"$mod2x" "1"
+	"$nocull" "1"
+	"$carpenisenabled" "[0.45 0.1 0.20]"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a penis
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
