@@ -64,8 +64,8 @@ Light.States = {
 		DrawColor = PhotonColor( 0, 0, 0 ),
 	},
 	["R"] = {
-		BloomColor = PhotonColor( 255, 30, 0 ):Blend( red ),
-		DrawColor = PhotonColor( 255, 255, 0 ):Blend( red ),
+		BloomColor = PhotonColor( 255, 0, 0 ):Blend( red ),
+		DrawColor = PhotonColor( 255, 128, 0 ):Blend( red ),
 	},
 	["G"] = {
 		BloomColor = PhotonColor( 0, 255, 0 ):Blend( green ),
@@ -77,15 +77,15 @@ Light.States = {
 	},
 	["A"] = {
 		BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ),
-		DrawColor = PhotonColor( 255, 200, 0 ):Blend( amber ),
+		DrawColor = PhotonColor( 255, 100, 0 ):Blend( amber ),
 	},
 	["W"] = {
 		BloomColor = PhotonColor( 200, 200, 255 ):Blend( white ),
 		DrawColor = PhotonColor( 255, 255, 255 ):Blend( white ),
 	},
 	["SW"] = {
-		BloomColor = PhotonColor( 255, 235, 225 ):Blend( white ),
-		DrawColor = PhotonColor( 255, 245, 235 ):Blend( white ),
+		BloomColor = PhotonColor( 255, 235, 205 ):Blend( white ),
+		DrawColor = PhotonColor( 255, 245, 205 ):Blend( white ),
 	},
 }
 

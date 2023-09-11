@@ -37,6 +37,8 @@ function Photon2.RenderLightMesh.DrawBloom()
 	end
 end
 
+local glowTest = Material("photon/common/glow_test")
+
 local light
 function Photon2.RenderLightMesh.Render( depth, sky )
 	if ( depth or sky ) then return end
@@ -46,9 +48,17 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			light = activeLights[i]
 			if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) ) then continue end
 			cam.PushModelMatrix( light.Matrix )
+			-- render.SetMaterial( glowTest --[[@as IMaterial]] )
 			render.SetMaterial( light.DrawMaterial --[[@as IMaterial]] )
 			-- light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", Vector( 0, 0, 1 ) )
 			light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", light.DrawColor:GetVector() )
+			-- local cMatrix = Matrix({{512, 512, 512, 512}, {512, 512, 512, 512}, {512,512,512,512}, {512,512,512,512}})
+			-- cMatrix:Translate(Vector(1024, 1024, 0))
+			-- l
+			-- glowTest:SetVector( "$color", Vector(1, 1, 1))
+			-- glowTest:SetString( "$color2", "{255 512 512}")
+			-- light.DrawMaterial:SetVector( "$color2", Vector(1, 5, 1))
+			-- light.DrawMaterial:SetMatrix( "$color2", cMatrix )
 				light.Mesh:Draw()
 			cam.PopModelMatrix()
 		end

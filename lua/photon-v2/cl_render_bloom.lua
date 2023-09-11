@@ -41,6 +41,10 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 		render.SetStencilFailOperation( STENCIL_KEEP )
 		render.SetStencilZFailOperation( STENCIL_KEEP )
 
+		Photon2.RenderLightMesh.Render()
+		render.CopyRenderTargetToTexture( storeRT2 )
+
+
 		-- RENDER MESHES
 		Photon2.RenderLightMesh.DrawBloom()
 		Photon2.RenderLight2D.DrawBloom()
@@ -60,7 +64,6 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 	
 	render.CopyRenderTargetToTexture( blurRenderTarget )
 	-- render.BlurRenderTarget( blurRenderTarget, 0, 0, 0 )
-	-- render.CopyRenderTargetToTexture( storeRT2 )
 	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, passes )
 	render.CopyRenderTargetToTexture( storeRT )
 	
@@ -96,10 +99,10 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 end
 
 function Photon2.RenderBloom.DrawAdditive()
-	-- additiveMaterial:SetTexture( "$basetexture", storeRT2 )
-	-- render.SetMaterial( additiveMaterial )
+	additiveMaterial:SetTexture( "$basetexture", storeRT2 )
+	render.SetMaterial( additiveMaterial )
 	-- for i=0, bloomPasses do
-	-- render.DrawScreenQuad()
+	render.DrawScreenQuad()
 
 	-- end
 	additiveMaterial:SetTexture( "$basetexture", storeRT )

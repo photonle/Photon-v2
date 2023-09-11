@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "photon/common/glow_gradient_b"
+	"$translucent" "1"
+	"$nocull" "1"
+}
+
+
