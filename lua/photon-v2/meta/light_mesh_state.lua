@@ -4,8 +4,8 @@ NAME = "PhotonLightMeshState"
 BASE = "PhotonLightState"
 
 ---@class PhotonLightMeshState : PhotonLightState
----@field DrawColor? PhotonColor 
----@field BloomColor? PhotonColor
+---@field DrawColor? PhotonBlendColor 
+---@field BloomColor? PhotonBlendColor
 ---@field Intensity? number
 ---@field IntensityTransitions? boolean
 local State = exmeta.New()

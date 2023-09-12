@@ -18,8 +18,8 @@ local printf = Photon2.Debug.PrintF
 ---@field Angles Angle
 ---@field Matrix VMatrix
 ---@field Scale Vector
----@field BloomColor PhotonLightColor
----@field DrawColor PhotonLightColor
+---@field BloomColor PhotonBlendColor
+---@field DrawColor PhotonBlendColor
 ---@field Intensity number
 ---@field IntensityGainFactor number
 ---@field IntensityLossFactor number
@@ -45,7 +45,7 @@ Light.EnableDraw = true
 Light.EnableBloom = true
 
 Light.Intensity = 1
-Light.IntensityGainFactor = 10
+Light.IntensityGainFactor = 200
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1
 Light.IntensityTransitions = false
@@ -57,6 +57,7 @@ local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
 local amber = { r = 255, g = 255, b = 0 }
+local black = { r = 0, g = 0, b = 0 }
 
 Light.States = {
 	["~OFF"] = {
@@ -68,28 +69,28 @@ Light.States = {
 		DrawColor = PhotonColor( 0, 0, 0 ),
 	},
 	["R"] = {
-		BloomColor = PhotonColor( 255, 0, 0 ):Blend( red ),
-		DrawColor = PhotonColor( 255, 128, 0 ):Blend( red ),
+		BloomColor = PhotonColor( 255, 0, 0 ):Blend( red ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 128, 0 ):Blend( red ):GetBlendColor(),
 	},
 	["G"] = {
-		BloomColor = PhotonColor( 0, 255, 0 ):Blend( green ),
-		DrawColor = PhotonColor( 128, 255, 128 ):Blend( green ),
+		BloomColor = PhotonColor( 0, 255, 0 ):Blend( green ):GetBlendColor(),
+		DrawColor = PhotonColor( 128, 255, 128 ):Blend( green ):GetBlendColor(),
 	},
 	["B"] = {
-		BloomColor = PhotonColor( 0, 0, 255 ):Blend( blue ),
-		DrawColor = PhotonColor( 0, 255, 255 ):Blend( blue ),
+		BloomColor = PhotonColor( 0, 0, 255 ):Blend( blue ):GetBlendColor(),
+		DrawColor = PhotonColor( 0, 255, 255 ):Blend( blue ):GetBlendColor(),
 	},
 	["A"] = {
-		BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ),
-		DrawColor = PhotonColor( 255, 100, 0 ):Blend( amber ),
+		BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),
 	},
 	["W"] = {
-		BloomColor = PhotonColor( 200, 200, 255 ):Blend( white ),
-		DrawColor = PhotonColor( 255, 255, 255 ):Blend( white ),
+		BloomColor = PhotonColor( 200, 200, 255 ):Blend( white ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 255, 255 ):Blend( white ):GetBlendColor(),
 	},
 	["SW"] = {
-		BloomColor = PhotonColor( 255, 235, 205 ):Blend( white ),
-		DrawColor = PhotonColor( 255, 245, 205 ):Blend( white ),
+		BloomColor = PhotonColor( 255, 235, 205 ):Blend( white ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 245, 205 ):Blend( white ):GetBlendColor(),
 	},
 }
 
@@ -202,6 +203,24 @@ function Light:DoPreRender()
 
 	self.Matrix:SetTranslation( self.Position )
 	self.Matrix:SetAngles( self.Angles )
+
+	if ( self.IntensityTransitions ) then
+		local state = self.States[self.CurrentStateId]
+		if ( self.Intensity > self.TargetIntensity ) then
+			self.Intensity = self.Intensity - (RealFrameTime() * state.IntensityLossFactor)
+			if (self.Intensity < self.TargetIntensity) then
+				self.Intensity = self.TargetIntensity
+			end
+		else
+			-- self.Intensity = self.Intensity + (RealFrameTime() * state.IntensityGainFactor)
+			self.Intensity = self.Intensity + (RealFrameTime() * 20)
+			if (self.Intensity > self.TargetIntensity) then
+				self.Intensity = self.TargetIntensity
+			end
+		end
+		self.DrawColor:SetIntensity( self.Intensity )
+		self.BloomColor:SetIntensity( self.Intensity )
+	end
 
 	return self
 end

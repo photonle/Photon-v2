@@ -79,10 +79,9 @@ COMPONENT.Lights = {
 	[22] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DrawMaterial = "photon/common/glow_gradient_a" },
 	
 	[23] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_a" },
-	
 }
 
-COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [R] 17 18 21 22 23 [SW] 11 12 19 20 [A] 13 14 15 16"
+COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [R] 17 18 21 22 23 25 27 [SW] 11 12 19 20 [A] 13 14 15 16"
 
 COMPONENT.Segments = {
 	["All"] = {

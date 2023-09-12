@@ -53,6 +53,8 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			render.SetMaterial( light.DrawMaterial --[[@as IMaterial]] )
 			-- light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", Vector( 0, 0, 1 ) )
 			light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", light.DrawColor:GetVector() )
+			
+			light.DrawMaterial--[[@as IMaterial]]:SetInt( "$alpha", light.Intensity )
 			-- local cMatrix = Matrix({{512, 512, 512, 512}, {512, 512, 512, 512}, {512,512,512,512}, {512,512,512,512}})
 			-- cMatrix:Translate(Vector(1024, 1024, 0))
 			-- l
