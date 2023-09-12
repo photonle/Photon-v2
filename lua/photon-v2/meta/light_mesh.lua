@@ -17,6 +17,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Position Vector
 ---@field Angles Angle
 ---@field Matrix VMatrix
+---@field Scale Vector
 ---@field BloomColor PhotonLightColor
 ---@field DrawColor PhotonLightColor
 ---@field Intensity number
@@ -29,6 +30,7 @@ local printf = Photon2.Debug.PrintF
 ---@field DrawMaterial string | IMaterial Material to use when drawing the mesh.
 ---@field BloomMaterial string | IMaterial Material to use 
 ---@field States table<string, PhotonLightMeshState>
+---@field BoneParent integer
 local Light = exmeta.New()
 
 Light.Class = "Mesh"
@@ -47,6 +49,8 @@ Light.IntensityGainFactor = 10
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1
 Light.IntensityTransitions = false
+Light.Scale = Vector( 1, 1, 1 )
+Light.BoneParent = -1
 
 local white = { r = 255, g = 255, b = 255 }
 local red = { r = 255, g = 0, b = 0 }
@@ -147,6 +151,8 @@ function Light:Initialize( id, parentEntity )
 	self.Matrix = Matrix()
 	self.DrawColor = PhotonLightColor()
 	self.BloomColor = PhotonLightColor()
+	if ( isnumber( self.Scale ) ) then self.Scale = Vector( self.Scale, self.Scale, self.Scale ) end
+	self.Matrix:SetScale( self.Scale )
 
 	local scale = parentEntity:GetModelScale()
 	if ( scale ~= 1 ) then
@@ -161,6 +167,7 @@ end
 
 function Light:SetLightScale( scale )
 	-- TODO
+	self.Matrix:SetScale( self.Scale * scale )
 end
 
 -- Internal
@@ -184,6 +191,14 @@ function Light:DoPreRender()
 	if ( not self.IsActivated ) then return nil end
 
 	self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, self.Parent:GetPos(), self.Parent:GetAngles() )
+
+	if ( self.BoneParent < 0 ) then
+		
+	else
+		self.Parent:SetupBones()
+		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
+		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
+	end
 
 	self.Matrix:SetTranslation( self.Position )
 	self.Matrix:SetAngles( self.Angles )

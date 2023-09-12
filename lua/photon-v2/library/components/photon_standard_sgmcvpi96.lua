@@ -18,7 +18,7 @@ COMPONENT.Templates = {
 	["Mesh"] = {
 		["Model"] = {
 			Model = "models/schmal/sgmcvpi96_lights.mdl",
-			Scale = 0.9
+			Scale = 1
 		}
 	},
 	["2D"] = {
