@@ -19,12 +19,26 @@ COMPONENT.SubMaterials = {
 	-- [2] = nil
 }
 
+local blue = { r = 0, g = 255, b = 255 }
+local red = { r = 255, g = 64, b = 0 }
+
 COMPONENT.LightStates = {
 	["Mesh"] = {
-		["~SW"] = {
-			Inherit = "SW",
+		["OFF"] = { Intensity = 0, IntensityTransitions = true },
+		["~SW"] = { Inherit = "SW", IntensityTransitions = true },
+		["~R"] = { 
+			Intensity = 1,
 			IntensityTransitions = true,
-		}
+			BloomColor = PhotonColor( 255, 0, 0 ):Blend( red ):GetBlendColor(),
+			DrawColor = PhotonColor( 255, 225, 100 ):Blend( red ):GetBlendColor(),
+		},
+		["~B"] = { 
+			Intensity = 1,
+			IntensityTransitions = true,
+			BloomColor = PhotonColor( 0, 190, 255 ):Blend( blue ):GetBlendColor(),
+			DrawColor = PhotonColor( 150, 215, 255 ):Blend( blue ):GetBlendColor(),
+		},
+		["~A"] = { Inherit = "A", IntensityTransitions = true, },
 	}
 }
 
@@ -36,13 +50,13 @@ COMPONENT.Templates = {
 		Mesh = {
 			Model = "models/schmal/mx7000_lights.mdl",
 			Scale = 1.001,
-			IntensityGainFactor = 200,
+			IntensityGainFactor = 1,
 			IntensityLossFactor = 1
 		}
 	}
 }
 
-COMPONENT.ColorMap = "[ROT] 1 2 3 4 5 [SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 [R] 7 9 21 23 35 37 39 41 43 45 [B] 8 10 22 24 36 38 40 42 44 46 [A] 25 26 27 28 29 30 31 32"
+COMPONENT.ColorMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 [~R] 7 9 21 23 35 37 39 41 43 45 [~B] 8 10 22 24 36 38 40 42 44 46 [~A] 25 26 27 28 29 30 31 32"
 
 COMPONENT.Lights = {
 	[1] = { "Rotator", BoneId = 2, Axis = "z", Speed = 400 },
@@ -121,7 +135,7 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	Rotators = {
 		Frames = {
-			[1] = ""
+			[1] = "1 2 3 4 5 6 7 8 9 10"
 		},
 		Sequences = {
 			ON = { 1 }
@@ -135,13 +149,25 @@ COMPONENT.Segments = {
 			ON = { 1 }
 		}
 	},
-	Test = {
+	Takedown = {
 		Frames = {
 			[0] = "[~OFF] 11 12",
-			[1] = "[~SW] 11 12"
+			[1] = "[~SW] 11",
+			[2] = "[~SW] 12",
+			[3] = "[~SW] 11 12",
 		},
 		Sequences = {
-			TEST = sequence():Alternate( 1, 0, 12 )
+			TEST = sequence():Alternate( 1, 2, 8 )
+		}
+	},
+	LowerFront = {
+		Frames = {
+			[0] = "[~OFF] 21 22 23 24",
+			[1] = "21 22",
+			[2] = "23 24",
+		},
+		Sequences = {
+			INOUT = sequence():Alternate( 1, 2, 7 )
 		}
 	}
 }
@@ -149,7 +175,9 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Test = "TEST"
+			Takedown = "TEST",
+			LowerFront = "INOUT",
+			Rotators = "ON",
 			-- Rotators = "ON",
 			-- Mesh = "ON"
 		}

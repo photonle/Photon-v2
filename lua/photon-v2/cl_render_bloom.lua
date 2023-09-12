@@ -112,16 +112,19 @@ function Photon2.RenderBloom.DrawAdditive()
 	end
 end
 
-hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderBloom:Render", function ()
-	if (bloomEnabled) then
-		-- Photon2.RenderBloom.Render( false, 4, 4, 1 )
+local inPreDraw = false
+
+hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderBloom:Render", function (depth, sky, sky3d)
+	if (depth or sky or sky3d) then return end
+	if (bloomEnabled and inPreDraw) then
 		Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, bloomPasses )
+		-- Photon2.RenderBloom.Render( false, 4, 4, 1 )
 	end
 end)
 
 
 hook.Add( "PostDrawTranslucentRenderables", "Photon2.RenderBloom:Draw", function( depth, sky )
-	-- if true then return end
 	if ( depth or sky ) then return end
+	if ( not inPreDraw ) then Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, bloomPasses ) end
 	Photon2.RenderBloom.DrawAdditive()
 end )

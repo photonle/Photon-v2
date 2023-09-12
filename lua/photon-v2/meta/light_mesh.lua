@@ -45,8 +45,8 @@ Light.EnableDraw = true
 Light.EnableBloom = true
 
 Light.Intensity = 1
-Light.IntensityGainFactor = 200
-Light.IntensityLossFactor = 10
+Light.IntensityGainFactor = 2
+Light.IntensityLossFactor = 2
 Light.TargetIntensity = 1
 Light.IntensityTransitions = false
 Light.Scale = Vector( 1, 1, 1 )
@@ -65,6 +65,7 @@ Light.States = {
 		IntensityTransitions = true,
 	},
 	["OFF"] = {
+		Intensity = 0,
 		BloomColor = PhotonColor( 0, 0, 0 ),
 		DrawColor = PhotonColor( 0, 0, 0 ),
 	},
@@ -207,13 +208,15 @@ function Light:DoPreRender()
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
-			self.Intensity = self.Intensity - (RealFrameTime() * state.IntensityLossFactor)
+			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
+			-- print(state.IntensityLossFactor)
 			if (self.Intensity < self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 			end
 		else
-			-- self.Intensity = self.Intensity + (RealFrameTime() * state.IntensityGainFactor)
-			self.Intensity = self.Intensity + (RealFrameTime() * 20)
+			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
+			-- print(state.IntensityGainFactor)
+			-- self.Intensity = self.Intensity + (RealFrameTime() * 20)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 			end
@@ -233,6 +236,8 @@ function Light:OnStateChange( state )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
+	self.IntensityGainFactor = state.IntensityGainFactor
+	self.IntensityLossFactor = state.IntensityLossFactor
 
 	if ( state.IntensityTransitions ) then
 
