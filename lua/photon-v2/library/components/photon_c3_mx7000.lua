@@ -50,8 +50,8 @@ COMPONENT.Templates = {
 		Mesh = {
 			Model = "models/schmal/mx7000_lights.mdl",
 			Scale = 1.001,
-			IntensityGainFactor = 1,
-			IntensityLossFactor = 1
+			IntensityGainFactor = 5,
+			IntensityLossFactor = 5
 		}
 	}
 }

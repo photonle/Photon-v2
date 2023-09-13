@@ -215,7 +215,7 @@ function Light:DoPreRender()
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
-			-- print(state.IntensityGainFactor)
+			-- print("Gain: " .. state.IntensityGainFactor)
 			-- self.Intensity = self.Intensity + (RealFrameTime() * 20)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity

@@ -30,12 +30,10 @@ function Photon2.ClientInput.StartListening()
 	-- if ( not IsValid( controller ) ) then 
 	-- 	ErrorNoHaltWithStack( "ClientInput instructed to start listening with an invalid controller entity.")
 	-- end
-	print("ClientInput: LISTENING")
 	Photon2.ClientInput.Listening = true
 end
 
 function Photon2.ClientInput.StopListening()
-	print("ClientInput: NOT LISTENING")
 	Photon2.ClientInput.Listening = false
 end
 
@@ -127,7 +125,7 @@ function Photon2.ClientInput.OnPress( key )
 	-- print("OnPress:" .. tostring( input.GetKeyName(key) ) )
 	if ( Photon2.ClientInput.Active[key] ) then
 		Photon2.ClientInput.KeysPressed[key] = RealTime()
-		Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnPress, key, "PRESS" )
+		Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnPress, key, "Press" )
 	end
 end
 hook.Add( "Photon2:KeyPressed", "Photon2.ClientInput:OnPress", Photon2.ClientInput.OnPress )
@@ -137,7 +135,7 @@ function Photon2.ClientInput.OnRelease( key )
 	-- print("OnRelease:" .. tostring( input.GetKeyName(key) ) )
 	if ( Photon2.ClientInput.KeysPressed[key] ) then
 		Photon2.ClientInput.KeysPressed[key] = nil
-		Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnRelease, key, "RELEASE" )
+		Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnRelease, key, "Release" )
 	elseif ( Photon2.ClientInput.KeysHeld[key] ) then
 		-- Release will not run if key is configured for hold
 		Photon2.ClientInput.KeysHeld[key] = nil
@@ -153,7 +151,7 @@ function Photon2.ClientInput.ScanPressed()
 		if ( RealTime() >= ( time + holdThreshold ) and ( Photon2.ClientInput.Active[key].OnHold ) ) then
 			Photon2.ClientInput.KeysPressed[key] = nil
 			Photon2.ClientInput.KeysHeld[key] = RealTime()
-			Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnHold, key, "HOLD" )
+			Photon2.ClientInput.ValidateActions(  Photon2.ClientInput.Active[key].OnHold, key, "Hold" )
 		end
 	end
 end
@@ -162,32 +160,32 @@ hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
 local prototypeInput = {
 	[KEY_F] = {
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" },
 		},
 		OnRelease = {
-			{ Action = "SOUND", Sound = "Button" }
+			{ Action = "SOUND", Sound = "Controller" }
 		}
 	},
 	[KEY_LALT] = {
 		Name = "Warning Light Stage",
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 		},
 		OnRelease = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
 		},
 	},
 	[KEY_R] = {
 		Name = "Lights & Sirens",
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
 			{ Action = "ON_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" }
 		},
 		OnRelease = {
-			{ Action = "SOUND", Sound = "Button" }
+			{ Action = "SOUND", Sound = "Controller" }
 		}
 	},
 	[KEY_H] = {
@@ -234,27 +232,27 @@ local prototypeInput = {
 	},
 	[KEY_1] = {
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T1", Modifiers = { KEY_RALT } }
 		},
-		OnRelease = { { Action = "SOUND", Sound = "Button" }, }
+		OnRelease = { { Action = "SOUND", Sound = "Controller" }, }
 	},
 	[KEY_2] = {
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T2" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T2", Modifiers = { KEY_RALT } },
 		},
-		OnRelease = { { Action = "SOUND", Sound = "Button" }, }
+		OnRelease = { { Action = "SOUND", Sound = "Controller" }, }
 	},
 	[KEY_3] = {
 		OnPress = {
-			{ Action = "SOUND", Sound = "Button" },
+			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T3" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T3", Modifiers = { KEY_RALT } },
 		},
-		OnRelease = { { Action = "SOUND", Sound = "Button" }, }
+		OnRelease = { { Action = "SOUND", Sound = "Controller" }, }
 	}
 }
 

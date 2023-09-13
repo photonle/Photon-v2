@@ -13,8 +13,8 @@ local State = exmeta.New()
 
 State.Intensity = 1
 State.IntensityTransitions = false
-State.IntensityGainFactor = 10
-State.IntensityLossFactor = 10
+-- State.IntensityGainFactor = 10
+-- State.IntensityLossFactor = 10
 
 function State.FindClass( lightClassName )
 	local lightStateClass = _G["PhotonLight" .. tostring( lightClassName ) .. "State"]

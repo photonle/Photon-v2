@@ -171,3 +171,16 @@ function include(filename) end
 ---@param object any
 ---@return boolean
 function istable( object ) end
+
+---@class PhotonControllerSoundFile
+---@field Sound string
+---@field Volume? integer
+---@field Duration? number
+---@field Pitch? integer
+
+---@class PhotonControllerSound
+---@field Default PhotonControllerSoundFile
+---@field Press? PhotonControllerSoundFile | boolean
+---@field Momentary? PhotonControllerSoundFile | boolean
+---@field Release? PhotonControllerSoundFile | boolean
+---@field Hold? PhotonControllerSoundFile | boolean
