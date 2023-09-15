@@ -125,3 +125,8 @@ function Light.FindClass( className )
 
 	return lightClass
 end
+
+function Light:GetProxy( id )
+	local proxy = self.Proxies[id]
+	return self.Parent--[[@as PhotonLightingComponent]].Lights[proxy[1]][proxy[2]]
+end

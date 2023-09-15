@@ -23,7 +23,6 @@ include("sh_ent_meta.lua")
 include("sh_library.lua")
 include("sh_index.lua")
 
-
 if CLIENT then
 	hook.Add("Initialize", "Photon2:Initialize", LoadPhoton2MetaFiles)
 end

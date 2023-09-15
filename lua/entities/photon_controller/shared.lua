@@ -14,6 +14,28 @@
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ENT = ENT
 
+
+local emergencyConfigs = {
+	["code3_z3"] = {
+		Name = "Code 3 Z3S",
+		Default = { 
+			Sound = "photon/controllers/code3_z3s_chirp.wav", 
+			Volume = 100, -- default: 100
+			Duration = 0.1, -- default: 0.1 -- specified to prevent undesired sound overlapping
+			Pitch = 100 -- default: 100
+		},
+		Press = true,
+		Release = false,
+		Momentary = false,
+		Hold = true
+	},
+	["fedsig_ssp"] = {
+		Name = "Federal Signal SSP",
+		Default = { Sound = "photon/controllers/fedsig_ssp_chirp.wav" },
+		Release = false,
+	},
+}
+
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
@@ -122,6 +144,7 @@ function ENT:InitializeShared()
 		hook.Add("Photon2.VehicleCompiled", self, self.OnVehicleCompiled)
 		hook.Add("Photon2:ComponentReloaded", self, self.OnComponentReloaded)
 	end)
+	self:SetInteractionSound( "Controller", emergencyConfigs["fedsig_ssp"] )
 end
 
 function ENT:GetOperator()
@@ -188,26 +211,6 @@ local normalVehicleConfigs = {
 	}
 }
 
-local emergencyConfigs = {
-	["code3_z3"] = {
-		Name = "Code 3 Z3S",
-		Default = { 
-			Sound = "photon/controllers/code3_z3s_chirp.wav", 
-			Volume = 100, -- default: 100
-			Duration = 0.1, -- default: 0.1 -- specified to prevent undesired sound overlapping
-			Pitch = 100 -- default: 100
-		},
-		Press = true,
-		Release = false,
-		Momentary = false,
-		Hold = true
-	},
-	["fedsig_ssp"] = {
-		Name = "Federal Signal SSP",
-		Default = { Sound = "photon/controllers/fedsig_ssp_chirp.wav" },
-		Release = false,
-	},
-}
 
 -- local 
 
@@ -215,7 +218,7 @@ local emergencyConfigs = {
 ENT.Interactions = {
 	---@type table<string, PhotonControllerSound>
 	Sounds = {
-		Controller = emergencyConfigs["fedsig_ssp"],
+		Controller = emergencyConfigs["code3_z3"],
 		Click = normalVehicleConfigs["default"]
 	},
 }
@@ -257,7 +260,7 @@ function ENT:SetInteractionSound( type, config )
 		end
 	end
 
-	self.Interactions[type] = config
+	self.Interactions.Sounds[type] = config
 end
 
 

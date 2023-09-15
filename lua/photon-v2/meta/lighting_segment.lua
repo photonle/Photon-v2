@@ -227,8 +227,12 @@ function Segment.New( name, segmentData, lightGroups )
 		segment:AddFrame( i, rebuildFrame( copyTo ) )
 	end
 	
+	if ( not segmentData.Sequences ) then
+		ErrorNoHaltWithStack( "Segment is missing .Sequences = {}")
+	end
+
 	-- Add sequences
-	for sequenceName, frameSequence in pairs( segmentData.Sequences ) do
+	for sequenceName, frameSequence in pairs( segmentData.Sequences or {} ) do
 		segment:AddNewSequence( sequenceName, frameSequence )
 	end
 

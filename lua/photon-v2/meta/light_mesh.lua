@@ -38,6 +38,7 @@ Light.MeshSubIndex = 1
 Light.LocalPosition = Vector()
 Light.LocalAngles = Angle()
 
+Light.ManipulateAlpha = true
 Light.DrawMaterial = "photon/common/glow"
 Light.BloomMaterial = "photon/common/glow"
 
@@ -187,6 +188,33 @@ function Light:DeactivateNow()
 	self.Deactivate = false
 end
 
+local function interpolateY(ang, min, max)
+
+	if ( min > max ) then
+		if ( ang < max ) then
+			ang = ang + 360
+		end
+		max = max + 360
+	elseif min < 0 then
+		min = min - min
+		max = max - min
+		ang = ang - min
+	end
+
+	-- Ensure X is within the valid range
+	if ang < min then
+		ang = min
+	elseif ang > max then
+		ang = max
+	end
+
+	-- Calculate Y using a sine wave with adjustable frequency
+	local t = (ang - min) / (max - min)
+	local Y = math.sin(math.pi * t)
+
+	return math.Round(Y, 3)
+end
+
 -- Internal
 function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
@@ -215,12 +243,47 @@ function Light:DoPreRender()
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
-			-- print("Gain: " .. state.IntensityGainFactor)
+			-- print("Gain: " .. self.IntensityGainFactor)
 			-- self.Intensity = self.Intensity + (RealFrameTime() * 20)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 			end
 		end
+		self.DrawColor:SetIntensity( self.Intensity )
+		self.BloomColor:SetIntensity( self.Intensity )
+	end
+
+	if ( self.Proxies ) then
+		if (self.Mirror2) then
+
+			local peak = self.Mirror2[1]
+			local fov = self.Mirror2[2]
+			
+			local min = ( peak - ( fov / 2 ) ) % 360
+			local max = ( peak + ( fov / 2 ) ) % 360
+
+			if ( ( max % 360 ) < 180 ) then
+
+			elseif ( ( max % 360 ) > 180 ) then
+
+			end
+
+			local ang = (self:GetProxy("R") + 180) % 360
+			-- local shift = 
+
+			-- print("Ang: " .. math.Round(ang) .. " Min: " .. tostring( min ) .. " Max: " .. tostring( max ) )
+
+			-- print("Progress:" .. calculateProgress( peak, fov, ang ) )
+			self.Intensity = interpolateY( ang, min, max )
+			-- self.Intensity = calculateProgress( peak, fov, ang )
+		
+		elseif ( self.Mirror ) then
+			local proxAng = (self:GetProxy("R") + self.Mirror[3]) % 360
+			self.Intensity = interpolateY( proxAng, self.Mirror[1], self.Mirror[2])
+			
+		end
+		
+		-- print( "PROXY!   ...   " .. tostring(self:GetProxy("R")))
 		self.DrawColor:SetIntensity( self.Intensity )
 		self.BloomColor:SetIntensity( self.Intensity )
 	end

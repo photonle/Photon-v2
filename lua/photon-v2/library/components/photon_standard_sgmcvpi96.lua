@@ -11,6 +11,10 @@ COMPONENT.PrintName = "1996 Ford Crown Victoria"
 
 COMPONENT.IsVirtual = true
 
+COMPONENT.LightStates = {
+
+}
+
 COMPONENT.Templates = {
 	["Sub"] = {
 		SubMaterial = {}
@@ -18,7 +22,9 @@ COMPONENT.Templates = {
 	["Mesh"] = {
 		["Model"] = {
 			Model = "models/schmal/sgmcvpi96_lights.mdl",
-			Scale = 1
+			Scale = 1.001,
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 10
 		}
 	},
 	["2D"] = {
@@ -32,16 +38,29 @@ COMPONENT.Templates = {
 	}
 }
 
+local amber = { r = 255, g = 200, b = 0 }
+
+
 COMPONENT.LightStates = {
 	["Sub"] = {
 		-- ["Glow"] = { Material = "sentry/96cvpi/glow_on" },
 		-- ["Amber"] = { Material = "sentry/96cvpi/glow_on_orange" },
 		["Glow"] = { Material = "photon/common/blank" }, ["Amber"] = { Material = "photon/common/blank" }
+	},
+	["Mesh"] = {
+		["~SW"] = { Inherit = "SW", IntensityTransitions = true },
+		["~R"] = { Inherit = "R", IntensityTransitions = true },
+		["~RD"] = { Inherit = "R", Intensity = 0.5, IntensityTransitions = true },
+		["~A"] = { 
+			IntensityTransitions = true,
+			BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),
+			DrawColor = PhotonColor( 255, 200, 0 ):Blend( amber ):GetBlendColor(),
+		},
+		["~AD"] = { Inherit = "~A", Intensity = 0.5, IntensityTransitions = true },
 	}
 }
 
 COMPONENT.LightGroups = {
-
 }
 
 COMPONENT.Lights = {
@@ -72,16 +91,21 @@ COMPONENT.Lights = {
 	[17] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", DrawMaterial = "photon/common/glow_gradient_a" },
 	[18] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", DrawMaterial = "photon/common/glow_gradient_a" },
 
-	[19] = { "Model", Vector(0, -0.1, 0), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", DrawMaterial = "photon/common/glow_gradient_a" },
-	[20] = { "Model", Vector(0, -0.1, 0), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", DrawMaterial = "photon/common/glow_gradient_a" },
+	[19] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", DrawMaterial = "photon/common/glow_gradient_a" },
+	[20] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", DrawMaterial = "photon/common/glow_gradient_a" },
 
 	[21] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DrawMaterial = "photon/common/glow_gradient_a" },
 	[22] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DrawMaterial = "photon/common/glow_gradient_a" },
 	
 	[23] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_a" },
+
+	[24] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/hib_fr", DrawMaterial = "photon/common/glow_gradient_a" },
+	[25] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/hib_fl", DrawMaterial = "photon/common/glow_gradient_a" },
 }
 
-COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [R] 17 18 21 22 23 25 27 [SW] 11 12 19 20 [A] 13 14 15 16"
+COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16"
+
+local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	["All"] = {
@@ -95,26 +119,40 @@ COMPONENT.Segments = {
 	},
 	["Headlights"] = {
 		Frames = {
-			[1] = "1 2 11 12"
+			[1] = "11 12"
 		},
 		Sequences = {
 			ON = { 1 }
+		}
+	},
+	["HighBeams"] = {
+		Frames = {
+			[0] = "[~OFF] 24 25",
+			[1] = "25",
+			[2] = "24"
+		},
+		Sequences = {
+			WIGWAG = sequence():Alternate( 1, 2, 10 )
 		}
 	},
 	["Marker_L"] = {
 		Frames = {
-			[1] = "13"
+			[1] = "13",
+			[2] = "[~AD] 13"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			DIM = { 2 }
 		}
 	},
 	["Marker_R"] = {
 		Frames = {
-			[1] = "14"
+			[1] = "14",
+			[2] = "[~AD] 14"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			DIM = { 2 },
 		}
 	},
 	["Tail_L"] = {
@@ -135,39 +173,73 @@ COMPONENT.Segments = {
 	},
 	["Signal_L"] = {
 		Frames = {
-			[1] = "15"
+			[0] = "[~OFF] 15 21",
+			[1] = "15 21",
+			[2] = "[~RD] 21"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			SIGNAL = sequence():Alternate( 1, 0, 12 ),
+			DIM = { 2 }
 		}
 	},
 	["Signal_R"] = {
 		Frames = {
-			[1] = "16"
+			[0] = "[~OFF] 16 22",
+			[1] = "16 22",
+			[2] = "[~RD] 22"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			SIGNAL = sequence():Alternate( 1, 0, 12 ),
+			DIM = { 2 }
 		}
 	},
 	["Reverse_L"] = {
 		Frames = {
+			[0] = "[~OFF] 19",
 			[1] = "19"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			REVERSE = { 1 }
 		}
 	},
 	["Reverse_R"] = {
 		Frames = {
+			[0] = "[~OFF] 20",
 			[1] = "20"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			REVERSE = { 1 }
+		}
+	},
+	["Brake_L"] = {
+		Frames = {
+			[0] = "[~OFF] 17",
+			[1] = "17",
+			[2] = "[~RD] 17",
+		},
+		Sequences = {
+			ON = { 1 },
+			DIM = { 2 }
+		}
+	},
+	["Brake_R"] = {
+		Frames = {
+			[0] = "[~OFF] 18",
+			[1] = "18",
+			[2] = "[~RD] 18",
+		},
+		Sequences = {
+			ON = { 1 },
+			DIM = { 2 }
 		}
 	},
 	["Brake"] = {
 		Frames = {
-			[1] = "23"
+			[1] = "17 18 23"
 		},
 		Sequences = {
 			ON = { 1 }
@@ -183,9 +255,56 @@ COMPONENT.Patterns = {
 			Tail_R = "ON",
 			Marker_L = "ON",
 			Marker_R = "ON",
-			Brake = "ON"
+			Brake = "ON",
+			HighBeams = "WIGWAG"
+
 			-- Signal_L = "ON",
 			-- Signal_R = "ON",
+		},
+		["HEADLIGHTS"] = {
+			Marker_L = "DIM",
+			Marker_R = "DIM",
+			Headlights = "ON",
+			Signal_L = "DIM",
+			Signal_R = "DIM",
+			Brake_L = "DIM",
+			Brake_R = "DIM",
+		},
+		["PARKING"] = {
+			Marker_L = "DIM",
+			Marker_R = "DIM",
+			Brake_L = "DIM",
+			Brake_R = "DIM",
+			Signal_L = "DIM",
+			Signal_R = "DIM",
+		}
+	},
+	["Emergency.Warning"] = {
+		["MODE1"] = {
+			HighBeams = "WIGWAG"
+		}
+	},
+	["Vehicle.Brake"] = {
+		["BRAKE"] = {
+			Brake = "ON"
+		}
+	},
+	["Vehicle.Signal"] = {
+		["LEFT"] = {
+			Signal_L = "SIGNAL"
+		},
+		["RIGHT"] = {
+			Signal_R = "SIGNAL"
+		},
+		["HAZARD"] = {
+			Signal_L = "SIGNAL",
+			Signal_R = "SIGNAL"
+		}
+	},
+	["Vehicle.Transmission"] = {
+		["REVERSE"] = {
+			Reverse_L = "REVERSE",
+			Reverse_R = "REVERSE",
 		}
 	}
 }

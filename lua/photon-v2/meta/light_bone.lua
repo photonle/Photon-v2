@@ -123,6 +123,28 @@ function Element:UpdateCurrentActivity()
 	print("Updating abstract activity function.")
 end
 
+function Element:CalculateMirrorIntensity( peakAngle, fieldOfView )
+	local ang = self.Value
+
+	if ( peakAngle > 180 ) then
+
+	elseif ( peakAngle < 180 ) then
+
+	end
+
+	local min = peakAngle - ( fieldOfView / 2 )
+	local max = peakAngle + ( fieldOfView / 2 )
+
+
+	if ang < min then
+		ang = min
+	elseif ang > max then
+		ang = max
+	end
+
+	return math.Round( math.sin( math.pi * ( ( ang - min ) / ( max - min ) ) ), 3 )
+end
+
 function Element:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return end
@@ -131,13 +153,17 @@ function Element:DoPreRender()
 	self:UpdateCurrentActivity()
 
 	-- Apply value to the target bone
-	print( "original bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
+	-- print( "original bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
 	local angle = self.Parent:GetManipulateBoneAngles( self.BoneId )
 	angle[self.Axis] = self.Value
 	self.Parent:ManipulateBoneAngles( self.BoneId, angle)
 	-- self.Parent:GetManipulateBoneAngles( self.BoneId )[self.Axis] = self.Value
-	print( "manipulated bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
-
+	-- print( "manipulated bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
+	-- print("sin: " .. tostring( math.abs((((( self.Value + 90) % 360 ))/360))) )
+	-- local ang = (self.Value + 180) % 360
+	-- print( "RES = " .. interpolateY( ang ) )
+	-- print( "ANG: " .. tostring((self.Value + 180) % 360))
+	-- print(math.sin(0.4))
 	return self
 end
 

@@ -1,6 +1,7 @@
 PHOTON2_UNSET = "<UNSET>"
 
 include("sh_util.lua")
+include("sh_tonemapping.lua")
 include("sh_functions.lua")
 include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")

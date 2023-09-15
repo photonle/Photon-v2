@@ -1,10 +1,46 @@
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 
-local x = {
-	[{"1", "2"}] = "3"
-} 
+-- Global Reinhard tone mapping
+function reinhardToneMapping(color)
+    local r, g, b = color[1], color[2], color[3]
 
-PrintTable( x )
+    r = r / (r + 1)
+    g = g / (g + 1)
+    b = b / (b + 1)
+
+    return {r, g, b}
+end
+
+-- Green boost based on brightness
+function greenBoost(color, brightness)
+    local r, g, b = color[1], color[2], color[3]
+
+    g = g + brightness * 0.1  -- Adjust the multiplier as needed
+
+    -- Ensure all channels remain within the [0, 1] range
+    r = math.clamp(r, 0, 1)
+    g = math.clamp(g, 0, 1)
+    b = math.clamp(b, 0, 1)
+
+    return {r, g, b}
+end
+
+-- Combined function
+function toneMapAndBoost(color, brightness)
+    local toneMappedColor = reinhardToneMapping(color)
+    return greenBoost(toneMappedColor, brightness)
+end
+
+-- Helper function to clamp values within a given range
+function math.clamp(value, low, high)
+    return math.min(math.max(value, low), high)
+end
+
+-- Example usage:
+local hdrColor = {1, 0, 0}  -- Red color with brightness > 1 to simulate an HDR value
+local resultColor = toneMapAndBoost(hdrColor, 10)  -- This will tone map and then boost the green based on the brightness
+
+PrintTable( resultColor )
 
 -- for _,ply in pairs(player.GetAll()) do
 -- 	ply:SetViewOffsetDucked(Vector(0,0,28))
@@ -95,9 +131,9 @@ local function meshTest()
 
 	-- local vertexMesh = Mesh( drawMaterial )
 	-- vertexMesh:BuildFromTriangles( meshTriangles )
-	local vertexMesh = Photon2.MeshCache.GetMesh( model, targetMaterial, targetMaterialSubMesh )
-	local matrix = Matrix()
-	print( "Does vertexMesh exist: " .. tostring(vertexMesh ~= nil))
+	-- local vertexMesh = Photon2.MeshCache.GetMesh( model, targetMaterial, targetMaterialSubMesh )
+	-- local matrix = Matrix()
+	-- print( "Does vertexMesh exist: " .. tostring(vertexMesh ~= nil))
 
 	local function drawMesh()
 		matrix:SetTranslation( position )
@@ -120,8 +156,8 @@ local function meshTest()
 	-- hook.Remove("PostDrawTranslucentRenderables", "Photon2:MeshDrawTest")
 
 	hook.Add( "PreDrawHalos", "Photon2:MeshDrawTest", function( a, b, c )
-		if (a or b or c) then return end
-		drawMesh()
+		-- if (a or b or c) then return end
+		-- drawMesh()
 	end)
 
 	local additive = true
@@ -198,7 +234,7 @@ local function meshTest()
 	end)
 
 end
-meshTest()
+-- meshTest()
 
 local gradient = {
 	{ 0, 0, 255 },

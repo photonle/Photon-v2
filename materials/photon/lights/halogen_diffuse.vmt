@@ -1,0 +1,8 @@
+"UnlitGeneric"
+{
+	"$basetexture" "photon/lights/halogen_diffuse"
+	"$translucent" "1"
+	"$alpha" 1
+}
+
+
