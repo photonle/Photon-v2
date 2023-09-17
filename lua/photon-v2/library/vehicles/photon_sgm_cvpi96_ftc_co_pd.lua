@@ -150,7 +150,7 @@ VEHICLE.Selections = {
 				Components = {
 					{
 						Component = "photon_c3_mx7000",
-						Position = Vector( 0, -17, 66.8 ),
+						Position = Vector( 0, -17, 66.9 ),
 						Angles = Angle( 0, 180, 0 ),
 						Scale = 1.14
 					}

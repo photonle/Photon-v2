@@ -13,8 +13,8 @@ local storeRT2 = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CH
 
 local bloomEnabled = true
 
-local bloomBlurX = 0.5
-local bloomBlurY = 0.5
+local bloomBlurX = 3
+local bloomBlurY = 3
 local bloomPasses = 5
 
 ---@param additive boolean Additive bloom pass.
