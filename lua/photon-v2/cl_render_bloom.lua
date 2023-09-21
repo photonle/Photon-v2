@@ -7,15 +7,21 @@ local subtractiveMaterial = Material( "pp/sub" )
 local storeRenderTarget = render.GetScreenEffectTexture( 0 )
 local blurRenderTarget = render.GetScreenEffectTexture( 1 )
 
+-- local storeRenderTarget = render.GetBloomTex0()
+-- local blurRenderTarget = render.GetBloomTex1()
+
 local storeRT = GetRenderTargetEx( "Photon2_RT", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 local storeRT2 = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
+local bloomTex2 = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
 local bloomEnabled = true
 
-local bloomBlurX = 3
-local bloomBlurY = 3
+local bloomBlur = 3
 local bloomPasses = 5
+
+local bloomBlurX = bloomBlur
+local bloomBlurY = bloomBlur
 
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
@@ -51,11 +57,6 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 
 		render.SetStencilCompareFunction( STENCIL_EQUAL )
 		render.SetStencilPassOperation( STENCIL_KEEP )
-
-		-- cam.Start2D()
-			-- surface.SetDrawColor( 0, 0, 255, 255 )
-			-- surface.DrawRect( 0, 0, ScrW(), ScrH() )
-		-- cam.End2D()
 		
 		render.SuppressEngineLighting( false )
 		render.SetStencilEnable( false)
@@ -63,53 +64,61 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 
 	
 	render.CopyRenderTargetToTexture( blurRenderTarget )
+	render.CopyRenderTargetToTexture( bloomTex2 )
 	-- render.BlurRenderTarget( blurRenderTarget, 0, 0, 0 )
 	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, passes )
 	render.CopyRenderTargetToTexture( storeRT )
 	
+	render.BlurRenderTarget( bloomTex2, 1, 1, passes )
+
+
 	render.SetRenderTarget( scene )
 	copyMaterial:SetTexture( "$basetexture", storeRenderTarget )
 	copyMaterial:SetVector( "$color", Vector(1,1,1) )
 	render.SetMaterial( copyMaterial )
 	render.DrawScreenQuad()
 
-	render.SetStencilEnable( !additive )
-		render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
+	-- render.SetStencilEnable( !additive )
+	-- 	render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
 
-		-- if ( additive ) then
-		-- 	additiveMaterial:SetTexture( "$basetexture", storeRT )
-		-- 	-- additiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
-		-- 	render.SetMaterial( additiveMaterial )
-		-- else
-		-- 	subtractiveMaterial:SetTexture( "$basetexture", storeRT )
-		-- 	-- subtractiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
-		-- 	render.SetMaterial( subtractiveMaterial )
-		-- end
+	-- 	if ( additive ) then
+	-- 		-- additiveMaterial:SetTexture( "$basetexture", storeRT )
+	-- 		-- additiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
+	-- 		-- render.SetMaterial( additiveMaterial )
+	-- 	else
+	-- 		subtractiveMaterial:SetTexture( "$basetexture", storeRT )
+	-- 		-- subtractiveMaterial:SetTexture( "$basetexture", blurRenderTarget )
+	-- 		render.SetMaterial( subtractiveMaterial )
+	-- 	end
 
-		-- for i=0, bloomPasses do
-		-- 	render.DrawScreenQuad()
-		-- end
+	-- 	-- for i=0, bloomPasses do
+	-- 	-- 	render.DrawScreenQuad()
+	-- 	-- end
 
-	render.SetStencilEnable( false )
+	-- render.SetStencilEnable( false )
 
-	render.SetStencilTestMask( 0 )
-	render.SetStencilWriteMask( 0 )
-	render.SetStencilReferenceValue( 0 )
+	-- render.SetStencilTestMask( 0 )
+	-- render.SetStencilWriteMask( 0 )
+	-- render.SetStencilReferenceValue( 0 )
 
 end
 
 function Photon2.RenderBloom.DrawAdditive()
-	additiveMaterial:SetTexture( "$basetexture", storeRT2 )
-	render.SetMaterial( additiveMaterial )
-	-- for i=0, bloomPasses do
-	render.DrawScreenQuad()
+	
 
-	-- end
 	additiveMaterial:SetTexture( "$basetexture", storeRT )
 	render.SetMaterial( additiveMaterial )
 	for i=0, bloomPasses do
 		render.DrawScreenQuad()
 	end
+
+	additiveMaterial:SetTexture( "$basetexture", bloomTex2 )
+	for i=0, bloomPasses do
+		render.DrawScreenQuad()
+	end
+
+	additiveMaterial:SetTexture( "$basetexture", storeRT2 )
+	render.DrawScreenQuad()
 end
 
 local inPreDraw = false

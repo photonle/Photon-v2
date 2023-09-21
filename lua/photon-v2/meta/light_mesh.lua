@@ -236,6 +236,7 @@ function Light:DoPreRender()
 
 	self.Matrix:SetTranslation( self.Position )
 	self.Matrix:SetAngles( self.Angles )
+	self.Matrix:SetScale( self.Scale )
 
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
