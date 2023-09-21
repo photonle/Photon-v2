@@ -17,8 +17,9 @@ local bloomTex2 = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_C
 
 local bloomEnabled = true
 
-local bloomBlur = 3
-local bloomPasses = 5
+local bloomBlur = 4
+local bloomPasses = 2
+local blurPasses = 1
 
 local bloomBlurX = bloomBlur
 local bloomBlurY = bloomBlur
@@ -66,10 +67,10 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 	render.CopyRenderTargetToTexture( blurRenderTarget )
 	render.CopyRenderTargetToTexture( bloomTex2 )
 	-- render.BlurRenderTarget( blurRenderTarget, 0, 0, 0 )
-	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, passes )
+	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, blurPasses )
 	render.CopyRenderTargetToTexture( storeRT )
 	
-	render.BlurRenderTarget( bloomTex2, 1, 1, passes )
+	render.BlurRenderTarget( bloomTex2, 1, 1, 1 )
 
 
 	render.SetRenderTarget( scene )
@@ -113,7 +114,7 @@ function Photon2.RenderBloom.DrawAdditive()
 	end
 
 	additiveMaterial:SetTexture( "$basetexture", bloomTex2 )
-	for i=0, bloomPasses do
+	for i=0, bloomPasses*2 do
 		render.DrawScreenQuad()
 	end
 
@@ -126,7 +127,7 @@ local inPreDraw = false
 hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderBloom:Render", function (depth, sky, sky3d)
 	if (depth or sky or sky3d) then return end
 	if (bloomEnabled and inPreDraw) then
-		Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, bloomPasses )
+		Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses )
 		-- Photon2.RenderBloom.Render( false, 4, 4, 1 )
 	end
 end)
@@ -134,6 +135,6 @@ end)
 
 hook.Add( "PostDrawTranslucentRenderables", "Photon2.RenderBloom:Draw", function( depth, sky )
 	if ( depth or sky ) then return end
-	if ( not inPreDraw ) then Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, bloomPasses ) end
+	if ( not inPreDraw ) then Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses ) end
 	Photon2.RenderBloom.DrawAdditive()
 end )
