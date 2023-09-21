@@ -1,4 +1,6 @@
-Photon2.UI = Photon2.UI or {}
+Photon2.UI = Photon2.UI or {
+	CursorReleased = false
+}
 
 function Photon2.UI.ReloadMenubar()
 	-- Photon2.Debug.Print("\t" .. tostring(Photon2.UI.MenuBar))
@@ -279,3 +281,20 @@ end
 hook.Add( "PopulateToolMenu", "Photon2:ToolMenu", function() 
 	spawnmenu.AddToolMenuOption( "Utilities", "Photon 2", "photon2_utilities_blendining", "Blending Options", "", "", Photon2.UI.BuildBlendingController )
 end )
+
+PHOTON2_CL_CVAR_F3CURSORTOGGLE = CreateClientConVar( "ph2_f3cursor_enable", "0", true, false, "Toggle cursor with F3", 0, 1 )
+
+function Photon2.UI.ToggleCursorRelease()
+	if ( Photon2.UI.CursorReleased ) then RememberCursorPosition() end
+	Photon2.UI.CursorReleased = !Photon2.UI.CursorReleased
+	gui.EnableScreenClicker( Photon2.UI.CursorReleased )
+	if ( Photon2.UI.CursorReleased ) then RestoreCursorPosition() end
+end
+
+hook.Add( "PlayerBindPress", "Photon2.UI:F3CursorRelease", function( ply, bind, press )
+	if ( PHOTON2_CL_CVAR_F3CURSORTOGGLE:GetBool() ) then
+		if ( string.find( bind, "gm_showspare1" ) ) then
+			Photon2.UI.ToggleCursorRelease()
+		end
+	end
+end)
