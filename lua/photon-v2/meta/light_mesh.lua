@@ -155,6 +155,10 @@ function Light:Initialize( id, parentEntity )
 	self.DrawColor = PhotonLightColor()
 	self.BloomColor = PhotonLightColor()
 	if ( isnumber( self.Scale ) ) then self.Scale = Vector( self.Scale, self.Scale, self.Scale ) end
+	
+	-- Fix for bizarre scaling bug in 64-bit game
+	self.Scale = self.Scale + Vector( 0.0000000001, 0.0000000001, 0.0000000001 )
+	
 	self.Matrix:SetScale( self.Scale )
 
 	local scale = parentEntity:GetModelScale()

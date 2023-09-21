@@ -609,9 +609,8 @@ end
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:RemoveEquipment( equipmentTable )
 	print("Controller is removing an equipment table...")
-	local equipmentComponents = equipmentTable.Components
-	for i=1, #equipmentComponents do
-		self:RemoveEquipmentComponentByIndex(equipmentComponents[i])
+	for i=1, #equipmentTable.Components do
+		self:RemoveEquipmentComponentByIndex(equipmentTable.Components[i])
 	end
 	for i=1, #equipmentTable.VirtualComponents do
 		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
@@ -777,8 +776,9 @@ function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- print("Controller:OnSelectionChanged() - Selections:")
 	-- PrintTable( self.CurrentProfile.Selections )
 	local category = self.CurrentProfile.Selections[categoryIndex].Map
-	
-	self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
+	if ( istable(category[self.CurrentSelections[categoryIndex]]) ) then 
+		self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
+	end
 	self.CurrentSelections[categoryIndex] = optionIndex
 	self:AddEquipment(category[optionIndex])
 	self:SetupComponentArrays()

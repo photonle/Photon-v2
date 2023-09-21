@@ -11,9 +11,15 @@ function Photon2.MeshCache.GetMesh( model, material, index )
 	local cache = Photon2.MeshCache.Cache
 
 	index = index or 1
+	local modelExists = true
 
 	if ( not cache[model] ) then
 		local meshes = util.GetModelMeshes( model )
+
+		if ( not meshes ) then
+			modelExists = false
+			meshes = {}
+		end
 
 		cache[model] = {}
 		
@@ -30,13 +36,18 @@ function Photon2.MeshCache.GetMesh( model, material, index )
 		
 	end
 
-	if ( not cache[model][material] ) then
-		error("Material name '" .. tostring(material) .. "' was not found in model '" .. tostring(model) .. "'.")
+	if ( modelExists ) then
+		if ( not cache[model][material] ) then
+			error("Material name '" .. tostring(material) .. "' was not found in model '" .. tostring(model) .. "'.")
+		end
+	
+		if ( not cache[model][material][index] ) then
+			error("Mesh material index '" .. tostring( index ) .. "' was not located in model mesh '" .. tostring(material) .."' in model '" .. tostring(model) .."'" )
+		end
+	else
+		error( "Model " .. tostring( model ) .. " could not be found." )
 	end
-
-	if ( not cache[model][material][index] ) then
-		error("Mesh material index '" .. tostring( index ) .. "' was not located in model mesh '" .. tostring(material) .."' in model '" .. tostring(model) .."'" )
-	end
+	
 
 	if ( not cache[model][material][index].Mesh ) then
 		cache[model][material][index].Mesh = Mesh()

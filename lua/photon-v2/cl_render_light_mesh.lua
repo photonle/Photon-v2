@@ -28,7 +28,7 @@ function Photon2.RenderLightMesh.DrawBloom()
 	for i=1, #activeLights do
 		light = activeLights[i]
 		if ( not light or ( light.CurrentStateId == "OFF" ) ) then continue end
-		cam.PushModelMatrix( light.Matrix )
+		cam.PushModelMatrix( light.Matrix, true )
 		render.SetMaterial( light.BloomMaterial --[[@as IMaterial]] )
 		-- light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", Vector(1, 0, 0) )
 		light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", light.BloomColor:GetVector() )
@@ -48,7 +48,9 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			light = activeLights[i]
 			if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) ) then continue end
 			-- light.Matrix:Scale(Vector(1.5,1.5,1.5))
+			
 			cam.PushModelMatrix( light.Matrix, true )
+			
 			-- render.SetMaterial( glowTest --[[@as IMaterial]] )
 			render.SetMaterial( light.DrawMaterial --[[@as IMaterial]] )
 			-- light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", Vector( 0, 0, 1 ) )

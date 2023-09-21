@@ -117,8 +117,10 @@ end
 function Light:DeactivateNow()
 	self.IsActivated = false
 	self.Deactivate = false
-	self.ProjectedTexture:Remove()
-	self.ProjectedTexture = nil
+	if ( IsValid( self.ProjectedTexture ) ) then
+		self.ProjectedTexture:Remove()
+		self.ProjectedTexture = nil
+	end
 end
 
 function Light:DoPreRender()

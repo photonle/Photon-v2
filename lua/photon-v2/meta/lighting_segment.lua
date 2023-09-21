@@ -294,7 +294,7 @@ function Segment:Initialize( componentInstance )
 
 	-- Setup inputs (new/revised sequences)
 	for channelMode, sequenceData in pairs( self.Inputs ) do
-		printf( "Initializing input sequence from channel mode [%s]", channelMode )
+		-- printf( "Initializing input sequence from channel mode [%s]", channelMode )
 		
 		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank )
 	end
@@ -426,7 +426,7 @@ function Segment:ApplyModeUpdate()
 	local newChannel = self:CalculatePriorityChannel( inputState )
 
 	if (not newChannel) then 
-		print("Segment:ApplyModeUpdate() -> newChannel is nil and the update is terminating.")
+		-- print("Segment:ApplyModeUpdate() -> newChannel is nil and the update is terminating.")
 		self:DectivateCurrentSequence()
 		-- self:ResetSegment()
 		self.ActivePattern = nil
@@ -434,11 +434,11 @@ function Segment:ApplyModeUpdate()
 		return 
 	end
 	
-	printf( "New channel calculated to be: %s", newChannel )
+	-- printf( "New channel calculated to be: %s", newChannel )
 	local newMode = newChannel .. ":" .. inputState[newChannel]
-	printf( "New mode calculated to be: %s", newMode )
+	-- printf( "New mode calculated to be: %s", newMode )
 	self.CurrentPriorityScore = self.InputPriorities[newChannel]
-	printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
+	-- printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
 	
 	-- Do nothing if active mode hasn't changed
 	if ( newMode == self.ActivePattern ) then return end
