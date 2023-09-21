@@ -18,6 +18,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Angles Angle
 ---@field Matrix VMatrix
 ---@field Scale Vector
+---@field FinalScale Vector The scale of the mesh multiplied by the scale of its spawned parent. Set automatically.
 ---@field BloomColor PhotonBlendColor
 ---@field DrawColor PhotonBlendColor
 ---@field Intensity number
@@ -158,8 +159,9 @@ function Light:Initialize( id, parentEntity )
 	
 	-- Fix for bizarre scaling bug in 64-bit game
 	self.Scale = self.Scale + Vector( 0.0000000001, 0.0000000001, 0.0000000001 )
+	self.FinalScale = self.Scale
 	
-	self.Matrix:SetScale( self.Scale )
+	self.Matrix:SetScale( self.FinalScale )
 
 	local scale = parentEntity:GetModelScale()
 	if ( scale ~= 1 ) then
@@ -174,7 +176,8 @@ end
 
 function Light:SetLightScale( scale )
 	-- TODO
-	self.Matrix:SetScale( self.Scale * scale )
+	self.FinalScale = self.Scale * scale
+	self.Matrix:SetScale( self.FinalScale )
 end
 
 -- Internal
@@ -236,7 +239,7 @@ function Light:DoPreRender()
 
 	self.Matrix:SetTranslation( self.Position )
 	self.Matrix:SetAngles( self.Angles )
-	self.Matrix:SetScale( self.Scale )
+	self.Matrix:SetScale( self.FinalScale )
 
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
