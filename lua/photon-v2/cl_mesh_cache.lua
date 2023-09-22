@@ -27,11 +27,14 @@ function Photon2.MeshCache.GetMesh( model, material, index )
 			local meshResult = meshes[i]
 			local _material = meshResult.material
 			cache[model][_material] = cache[model][_material] or {}
-			cache[model][_material][#cache[model][_material]+1] = {
-				MasterIndex = i,
-				Index = #cache[model][_material]+1,
-				Triangles = meshResult.triangles
-			}
+			-- Ignore meshes with no geometry
+			if ( istable( meshResult.triangles ) and #meshResult.triangles > 0 ) then
+				cache[model][_material][#cache[model][_material] + 1] = {
+					MasterIndex = i,
+					Index = #cache[model][_material] + 1,
+					Triangles = meshResult.triangles
+				}
+			end
 		end
 		
 	end
