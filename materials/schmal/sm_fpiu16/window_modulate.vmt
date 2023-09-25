@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/sm_fpiu16/modulate_clear"
+	"$model" "1"
+	"$nocull" "0"
+}

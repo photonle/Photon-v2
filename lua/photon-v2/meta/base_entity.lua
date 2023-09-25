@@ -21,7 +21,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.SceneRight"] 		= 120,
 	["Vehicle.Signal"] 				= 110,
 	["Vehicle.Brake"] 				= 100,
-	["Vehicle.Transmission"] 			= 90,
+	["Vehicle.Transmission"] 		= 90,
 	["Emergency.Directional"] 		= 80,
 	["Emergency.Auxiliary"] 		= 70,
 	["Emergency.Marker"] 			= 60,
@@ -83,6 +83,22 @@ function ENT:Setup()
 	return self
 end
 
+function ENT:FindSubMaterialByName( materialName )
+	if ( not self._subMaterialMap ) then
+		self._subMaterialMap = {}
+		local materials = self:GetMaterials()
+		PrintTable( materials )
+		for i=1, #materials do
+			self._subMaterialMap[materials[i]] = i - 1
+		end
+	end
+	local result = self._subMaterialMap[ materialName ]
+	if ( not result ) then
+		ErrorNoHaltWithStack( "Sub-material [" .. tostring( materialName ) .. "] not found in model [" .. tostring( self:GetModel() ) .. "]")
+	end
+	return result
+end
+
 function ENT:UpdateAndApplySubMaterials( subMaterials )
 	self.SubMaterials = subMaterials
 	self:SetupSubMaterials()
@@ -95,6 +111,9 @@ end
 
 function ENT:SetupSubMaterials()
 	for index, subMaterial in pairs( self.SubMaterials ) do
+		if ( isstring( index ) ) then
+			index = self:FindSubMaterialByName( index )
+		end
 		self.Entity:SetSubMaterial( index, subMaterial )
 	end
 end

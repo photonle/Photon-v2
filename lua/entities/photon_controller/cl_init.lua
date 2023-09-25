@@ -80,7 +80,7 @@ function ENT:Think()
 			self.NextFrameTime = RealTime() + self.FrameDuration
 			local componentArray = self.ComponentArray
 			for i=1,#componentArray do
-				componentArray[i]:FrameTick() -- ***rebuild component array on equipment change ***
+				if ( componentArray[i].FrameTick) then componentArray[i]:FrameTick() end -- ***rebuild component array on equipment change *** 
 			end
 			for i=1, #self.VirtualComponentArray do
 				self.VirtualComponentArray[i]:FrameTick()

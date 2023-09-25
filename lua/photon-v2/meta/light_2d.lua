@@ -195,12 +195,11 @@ Light.States = {
 	-- },
 
 	["A"] = {
-		Blend = Color( 0, 0, 255 ),
-		SourceDetailColor = PhotonColor(255,128,0):Blend(amber):GetBlendColor(), 
+		SourceDetailColor = PhotonColor(255,255,0):Blend(amber):GetBlendColor(), 
 		SourceFillColor = PhotonColor(200,64,0):Blend(amber):GetBlendColor(),
 		GlowColor = PhotonColor( 255, 100, 0 ):Blend(amber):GetBlendColor(), --*
-		InnerGlowColor = PhotonColor( 255, 148, 0 ):Blend(amber):GetBlendColor(),
-		ShapeGlowColor = PhotonColor( 255, 200, 0 ):Blend(amber):GetBlendColor(),
+		InnerGlowColor = PhotonColor( 255, 128, 0 ):Blend(amber):GetBlendColor(),
+		ShapeGlowColor = PhotonColor( 255, 128, 0 ):Blend(amber):GetBlendColor(),
 	},
 	["W"] = {
 		Blend = Color( 200, 200, 255 ),

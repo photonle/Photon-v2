@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/liveries/sm_fpiu16/lvmpd_modulate"
+	"$model" "1"
+	"$nocull" "0"
+}

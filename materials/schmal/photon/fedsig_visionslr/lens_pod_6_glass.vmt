@@ -1,0 +1,16 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/photon/fedsig_visionslr/glass"
+	"$bumpmap"    "photon/common/flat"
+	"$envmap" env_cubemap
+	"$translucent" 1
+	"$phong" "1" 
+	"$phongboost" "1" 
+	"$phongexponent" "10"
+	"$phongfresnelranges" "[1 10 1]"
+	"$envmaptint" "[0.1 0.1 0.1]"
+	"$envmapfresnel" "1"
+	"$color"	"[1 1 1]"
+ }
+
+

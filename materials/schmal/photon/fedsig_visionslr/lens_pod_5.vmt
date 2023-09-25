@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/photon/fedsig_visionslr/lens_color_clear"
+	"$model" "1"
+	"$nocull" "1"
+}

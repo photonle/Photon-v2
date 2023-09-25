@@ -1,0 +1,35 @@
+"VertexlitGeneric"
+{
+	"$basetexturetransform" "center 0 0 scale 70 70 rotate 0 translate 0 0"
+	"$basetexture" "schmal/sm_fpiu16/glass"
+	"$bumpmap" "photon/common/flat"
+
+	"$translucent" 1
+	"$normalmapalphaenvmapmask" 1
+	"$nodecal" "1"
+
+	"$phong" 1
+	"$phongtint" "[1 1 1]"
+	"$phongexponent" 220
+	"$phongboost" "2"
+	"$phongfresnelranges" "[1 2 4 1]" 
+
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.35 0.35 0.35]"
+	"$envmapfresnel" "1"
+
+	"$rimlight" "1"
+	"$rimlightexponent" "4"
+	"$rimlightboost" "0.1"
+//	"$rimmask" "1"
+
+	"$colorfix" "{255 255 255}"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $colorfix
+			resultVar	$color
+		}
+	}
+}
