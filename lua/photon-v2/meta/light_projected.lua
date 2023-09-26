@@ -31,6 +31,7 @@ local printf = Photon2.Debug.PrintF
 ---@field TargetIntensity number
 ---@field IntensityTransitions boolean
 ---@field IntensityFOVFloor number The minimum FOV multiplier to use when the light intensity is zero.
+---@field IntensityDistanceFactor number Multiplied by light's intensity to modify its distance. Used to smooth intensity transition effects.
 local Light = exmeta.New()
 
 Light.Class = "Projected"
@@ -73,6 +74,7 @@ Light.IntensityLossFactor = 2
 Light.TargetIntensity = 1
 Light.IntensityTransitions = false
 Light.IntensityFOVFloor = 0.66
+Light.IntensityDistanceFactor = 1.5
 
 function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonLightProjected } )
@@ -192,10 +194,11 @@ function Light:DoPreRender()
 	end
 
 	local fovIntensity = ( ( self.Intensity * ( 1 - self.IntensityFOVFloor ) ) + self.IntensityFOVFloor )
+	local disanceIntensity = ( math.Clamp( self.Intensity * self.IntensityDistanceFactor, 0, 1 ) )
 
 	self.ProjectedTexture:SetHorizontalFOV( self.HorizontalFOV * fovIntensity )
 	self.ProjectedTexture:SetVerticalFOV( self.HorizontalFOV * fovIntensity )
-	self.ProjectedTexture:SetFarZ( self.FarZ * self.Intensity )
+	self.ProjectedTexture:SetFarZ( self.FarZ * disanceIntensity )
 	self.ProjectedTexture:SetBrightness( self.Brightness * self.Intensity )
 	
 	self.ProjectedTexture:SetPos( self.Position )
