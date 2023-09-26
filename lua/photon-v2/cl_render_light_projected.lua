@@ -3,6 +3,8 @@ Photon2.RenderLightProjected = Photon2.RenderLightProjected or {
 	Active = {}
 }
 
+local overlayConVar = GetConVar("ph2_debug_light_overlay")
+
 local alternateActive = {}
 local this = Photon2.RenderLightProjected
 
@@ -21,3 +23,24 @@ function Photon2.RenderLightProjected.Update()
 	this.Active = nextTable
 end
 hook.Add( "PreRender", "Photon2.LightProjected:Update", this.Update )
+
+function Photon2.RenderLightProjected.DrawDebug()
+	if ( not overlayConVar:GetBool() ) then return end
+
+	local activeLights = this.Active
+	
+	local light
+	cam.Start3D()
+		for i=1, #activeLights do 
+			light = activeLights[i] --[[@as PhotonLightProjected]]
+			local angles = light.Angles
+			local position = light.Position
+			render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))
+			render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
+			render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
+			debugoverlay.Text( position, light.Id, 0, false )
+		end
+	cam.End3D()
+end
+-- hook.Remove( "DrawOverlay", "Photon2.RenderLightProjected:DrawDebug" )
+hook.Add( "PostDrawEffects", "Photon2.RenderLightProjected:DrawDebug", Photon2.RenderLightProjected.DrawDebug )

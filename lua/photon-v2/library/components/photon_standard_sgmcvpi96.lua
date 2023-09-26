@@ -23,8 +23,8 @@ COMPONENT.Templates = {
 		["Model"] = {
 			Model = "models/schmal/sgmcvpi96_lights.mdl",
 			Scale = 1.001,
-			IntensityGainFactor = 10,
-			IntensityLossFactor = 10
+			IntensityGainFactor = 2,
+			IntensityLossFactor = 2
 		}
 	},
 	["2D"] = {
@@ -34,6 +34,15 @@ COMPONENT.Templates = {
 			Scale = 1,
 			Width = 1.5,
 			Height = 1.5
+		}
+	},
+	["Projected"] = {
+		["HighBeams"] = {
+			FOV = 90,
+			NearZ = 1,
+			Brightness = 1,
+			IntensityGainFactor = 2,
+			IntensityLossFactor = 2
 		}
 	}
 }
@@ -57,6 +66,9 @@ COMPONENT.LightStates = {
 			DrawColor = PhotonColor( 255, 200, 0 ):Blend( amber ):GetBlendColor(),
 		},
 		["~AD"] = { Inherit = "~A", Intensity = 0.5, IntensityTransitions = true },
+	},
+	["Projected"] = {
+		["~W"] = { Inherit = "W", IntensityTransitions = true }
 	}
 }
 
@@ -101,9 +113,12 @@ COMPONENT.Lights = {
 
 	[24] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/hib_fr", DrawMaterial = "photon/common/glow_gradient_a" },
 	[25] = { "Model", Vector(0, 0, 0), Angle( 0, 0, 0 ), "photon/vehicle/hib_fl", DrawMaterial = "photon/common/glow_gradient_a" },
+
+	[26] = { "HighBeams", Vector( -17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
+	[27] = { "HighBeams", Vector( 17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
 }
 
-COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16"
+COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -127,12 +142,14 @@ COMPONENT.Segments = {
 	},
 	["HighBeams"] = {
 		Frames = {
-			[0] = "[~OFF] 24 25",
-			[1] = "25",
-			[2] = "24"
+			[0] = "[~OFF] 24 25 [~OFF] 26 27",
+			[1] = "25 [~W] 26",
+			[2] = "24 [~W] 27",
+			[3] = "24 25 26 27",
 		},
 		Sequences = {
-			WIGWAG = sequence():Alternate( 1, 2, 10 )
+			WIGWAG = sequence():Alternate( 1, 2, 10 ),
+			ON = { 3 }
 		}
 	},
 	["Marker_L"] = {
@@ -256,7 +273,7 @@ COMPONENT.Patterns = {
 			Marker_L = "ON",
 			Marker_R = "ON",
 			Brake = "ON",
-			HighBeams = "WIGWAG"
+			-- HighBeams = "WIGWAG"
 
 			-- Signal_L = "ON",
 			-- Signal_R = "ON",

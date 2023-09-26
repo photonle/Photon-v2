@@ -23,11 +23,23 @@ local printf = Photon2.Debug.PrintF
 ---@field NearZ number
 ---@field FarZ number
 ---@field FOV number
+---@field HorizontalFOV number
+---@field VerticalFOV number
+---@field Intensity number
+---@field IntensityGainFactor number
+---@field IntensityLossFactor number
+---@field TargetIntensity number
+---@field IntensityTransitions boolean
+---@field IntensityFOVFloor number The minimum FOV multiplier to use when the light intensity is zero.
 local Light = exmeta.New()
 
 Light.Class = "Projected"
 
 Light.States = {
+	["~OFF"] = {
+		Intensity = 0,
+		IntensityTransitions = 1
+	},
 	["OFF"] = {
 		Color = PhotonColor( 0, 0, 0 ),
 		-- Brightness = 0
@@ -54,6 +66,13 @@ Light.FOV = 90
 Light.Brightness = 4
 Light.Texture = "effects/flashlight001"
 Light.EnableShadows = false
+
+Light.Intensity = 1
+Light.IntensityGainFactor = 2
+Light.IntensityLossFactor = 2
+Light.TargetIntensity = 1
+Light.IntensityTransitions = false
+Light.IntensityFOVFloor = 0.66
 
 function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonLightProjected } )
@@ -87,15 +106,32 @@ function Light:Initialize( id, parentEntity )
 	---@type PhotonLightProjected
 	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightProjected]]
 	self.Matrix = Matrix()
+	self.HorizontalFOV = self.HorizontalFOV or self.FOV
+	self.VerticalFOV = self.VerticalFOV or self.FOV
 	return self
 end
 
 ---@param state PhotonLightProjectedState
 function Light:OnStateChange( state )
+
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
 		self:Activate()
 	end
+	
 	self.Color = state.Color
+
+	self.IntensityTransitions = state.IntensityTransitions
+	self.TargetIntensity = state.Intensity
+	self.IntensityGainFactor = state.IntensityGainFactor
+	self.IntensityLossFactor = state.IntensityLossFactor
+
+	if ( state.IntensityTransitions ) then
+
+	elseif ( self.TargetIntensity ~= 1 or (self.TargetIntensity ~= self.Intensity) ) then
+		self.Intensity = self.TargetIntensity
+	else
+		self.Intensity = self.TargetIntensity
+	end
 end
 
 function Light:Activate()
@@ -108,8 +144,9 @@ function Light:Activate()
 	projectedTexture:SetTexture( self.Texture )
 	projectedTexture:SetFarZ( self.FarZ )
 	projectedTexture:SetNearZ( self.NearZ )
-	projectedTexture:SetFOV( self.FOV )
-	projectedTexture:SetBrightness( self.Brightness )
+	projectedTexture:SetHorizontalFOV( self.HorizontalFOV or self.FOV)
+	projectedTexture:SetVerticalFOV( self.VerticalFOV or self.FOV)
+	projectedTexture:SetBrightness( self.Brightness * self.Intensity )
 	projectedTexture:SetEnableShadows( self.EnableShadows )
 	self.ProjectedTexture = projectedTexture
 end
@@ -139,6 +176,28 @@ function Light:DoPreRender()
 
 	self.ProjectedTexture:SetColor( self.Color )
 
+	if ( self.IntensityTransitions ) then
+		if ( self.Intensity > self.TargetIntensity ) then
+			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
+			if (self.Intensity < self.TargetIntensity) then
+				self.Intensity = self.TargetIntensity
+			end
+		else
+			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
+			if (self.Intensity > self.TargetIntensity) then
+				self.Intensity = self.TargetIntensity
+			end
+		end
+		
+	end
+
+	local fovIntensity = ( ( self.Intensity * ( 1 - self.IntensityFOVFloor ) ) + self.IntensityFOVFloor )
+
+	self.ProjectedTexture:SetHorizontalFOV( self.HorizontalFOV * fovIntensity )
+	self.ProjectedTexture:SetVerticalFOV( self.HorizontalFOV * fovIntensity )
+	self.ProjectedTexture:SetFarZ( self.FarZ * self.Intensity )
+	self.ProjectedTexture:SetBrightness( self.Brightness * self.Intensity )
+	
 	self.ProjectedTexture:SetPos( self.Position )
 	self.ProjectedTexture:SetAngles( self.Angles )
 	self.ProjectedTexture:Update()
