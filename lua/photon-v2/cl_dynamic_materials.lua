@@ -14,7 +14,7 @@ function Materials.ProcessQueue()
 	-- Game seems to crash upon starting a new session (retry)
 	-- and the dumbass delay seems to resolve it
 	for id, material in pairs( Materials.Queue ) do
-		printf( "Processing material [%s] from queue.", id )
+		-- printf( "Processing material [%s] from queue.", id )
 		Materials.Index[id] = PhotonDynamicMaterial.CreateNow( id, material )
 		Materials.Queue[id] = nil
 	end
@@ -26,7 +26,7 @@ function Materials.LoadNextInQueue()
 	local mat = Materials.Queue[#Materials.Queue]
 	local count = 0
 	for id, material in pairs( Materials.Queue ) do
-		printf( "Processing material [%s] from queue.", id )
+		-- printf( "Processing material [%s] from queue.", id )
 		Materials.Index[id] = PhotonDynamicMaterial.CreateNow( id, material )
 		Materials.Queue[id] = nil
 		count = count + 1

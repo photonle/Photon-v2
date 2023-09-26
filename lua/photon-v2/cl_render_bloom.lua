@@ -5,19 +5,21 @@ local additiveMaterial = Material( "pp/add" )
 local subtractiveMaterial = Material( "pp/sub" )
 
 local storeRenderTarget = render.GetScreenEffectTexture( 0 )
+-- local storeRenderTarget = GetRenderTargetEx( "Photon2_RT5", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
+
 local blurRenderTarget = render.GetScreenEffectTexture( 1 )
+-- local blurRenderTarget = GetRenderTargetEx( "Photon2_RT6", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
 -- local storeRenderTarget = render.GetBloomTex0()
 -- local blurRenderTarget = render.GetBloomTex1()
 
 local storeRT = GetRenderTargetEx( "Photon2_RT", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 local storeRT2 = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-
 local bloomTex2 = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
 local bloomEnabled = true
 
-local bloomBlur = 4
+local bloomBlur = 5
 local bloomPasses = 2
 local blurPasses = 1
 
@@ -37,6 +39,7 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 	end
 
 	cam.Start3D()
+
 		render.SetStencilEnable( true )
 		render.SuppressEngineLighting( true )
 		render.SetStencilWriteMask( 1 )
@@ -122,19 +125,7 @@ function Photon2.RenderBloom.DrawAdditive()
 	render.DrawScreenQuad()
 end
 
-local inPreDraw = false
-
-hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderBloom:Render", function (depth, sky, sky3d)
-	if (depth or sky or sky3d) then return end
-	if (bloomEnabled and inPreDraw) then
-		Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses )
-		-- Photon2.RenderBloom.Render( false, 4, 4, 1 )
-	end
-end)
-
-
-hook.Add( "PostDrawTranslucentRenderables", "Photon2.RenderBloom:Draw", function( depth, sky )
-	if ( depth or sky ) then return end
-	if ( not inPreDraw ) then Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses ) end
+hook.Add( "PreDrawViewModels", "Photon2.RenderBloom:Draw", function( depth, sky )
+	Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses )
 	Photon2.RenderBloom.DrawAdditive()
 end )
