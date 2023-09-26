@@ -43,7 +43,6 @@ local light
 function Photon2.RenderLightMesh.Render( depth, sky )
 	if ( depth or sky ) then return end
 	local activeLights = this.Active
-	cam.Start3D()
 		for i=1, #activeLights do
 			light = activeLights[i]
 			if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) ) then continue end
@@ -73,6 +72,5 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 				light.Mesh:Draw()
 			cam.PopModelMatrix()
 		end
-	cam.End3D()
 end
 hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderLightMesh", Photon2.RenderLightMesh.Render )
