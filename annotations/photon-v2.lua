@@ -106,7 +106,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Credits table<string, string>
 ---@field PrintName string
 ---@field Model string
----@field Templates table
+---@field Templates { Bone?: table<string, PhotonLightBone>, Mesh?: table<string, PhotonLightMesh>, Sprite?: table<string, PhotonLight2D>, Projected?: table<string, PhotonLightProjected>,  }
 ---@field Lights table
 ---@field LightGroups table
 ---@field Segments table

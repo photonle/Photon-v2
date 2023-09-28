@@ -27,6 +27,7 @@ COMPONENT.Templates = {
 	["Sound"] = {
 		Speaker = {
 			States = {
+				["ON-90"] = { Pitch = 97, Play = true, Mute = false },
 				["ON+5"] = { Pitch = 101, Play = true, Mute = false },
 				["ON+10"] = { Pitch = 102, Play = true, Mute = false },
 				["ON+15"] = { Pitch = 103, Play = true, Mute = false },
@@ -44,7 +45,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[ON] 1 2 3"
+COMPONENT.ColorMap = "[ON-90] 1 2 3"
 
 COMPONENT.Lights = {
 	[1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },

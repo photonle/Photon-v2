@@ -10,14 +10,18 @@ local printf = Photon2.Debug.PrintF
 ---@class PhotonLightBone : PhotonLight
 ---@field Value number
 ---@field BoneId number
+---@field Bone string
 ---@field Activity PhotonBoneLightActivity
 ---@field Axis number | string
 ---@field Smooth number Smoothing factor when reaching target value (only applies to sweep and static)
 ---@field Direction number -1 or +1
 ---@field Speed number Controls how fast rotation is.
 ---@field Target number Required for static and sweep modes.
----@field SweepTo number Required for sweep functionality.
----@field SweepPause number
+---@field SweepStart number Angle the sweep should start at.
+---@field SweepEnd number Angle the sweep should end at.
+---@field SweepPause number Pause duration while sweeping.
+---@field private InTransit boolean
+---@field private PauseTime number
 local Element = exmeta.New()
 
 -- Rotation behaviors...
@@ -39,9 +43,13 @@ Element.Target 			= 0
 Element.Value 			= 0
 Element.Axis 			= "y"
 
-Element.SweepFrom 		= -1
-Element.SweepTo 		= 1
-Element.SweepPause 		= 0
+Element.PauseTime		= 0
+Element.InTransit		= false
+Element.Momentum		= 1
+
+Element.SweepEnd		= 1
+Element.SweepStart 		= 359
+Element.SweepPause 		= 1
 
 --Element.ActivityParameters?
 
@@ -62,6 +70,7 @@ end
 
 function Element:Initialize( id, parentEntity )
 	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightBone]]
+	if ( isstring( self.Bone ) ) then self.Bone = parentEntity:LookUpBoneOrError( self.Bone ) end
 	return self
 end
 
@@ -75,7 +84,18 @@ function Element:OnStateChange( state )
 	self.Direction = state.Direction
 	self.Speed = state.Speed
 	self.Target = state.Target
+	self.SweepStart = state.SweepStart
+	self.SweepEnd = state.SweepEnd
+	self.SweepPause = state.SweepPause
 	self.UpdateCurrentActivity = self["UpdateActivity" .. self.Activity]
+
+	if ( state.Activity == "Fixed" and self.Value ~= state.Target ) then
+		self.InTransit = true
+	elseif ( state.Activity == "Sweep" ) then
+		self.InTransit = true
+		self.Direction = self.Direction * -1
+	end
+
 end
 
 function Element:Activate()
@@ -106,12 +126,64 @@ function Element:UpdateActivityRotate()
 	return self:SetValue( self.Value + ( ( self.Speed * FrameTime() ) * self.Direction ) )
 end
 
-function Element:UpdateActivitySweep()
+function Element:ReachedTargetAngle( newAngle, oldAngle, target, direction )
+	local crossedThreshold = ( newAngle < 0 ) or ( newAngle > 360 )
+	newAngle = newAngle % 360
+	if ( newAngle < 0 ) then newAngle = 360 + newAngle end
+	
+	if ( direction > 0 ) then
+		if 
+			( ( crossedThreshold ) and ( oldAngle < target ) and ( newAngle < target ) )
+			or ( ( newAngle >= target ) and ( oldAngle < target ) ) 
+		then
+			newAngle = target
+		end
+	else
+		if
+			( ( newAngle <= target ) and ( oldAngle > target ) )
+			or ( ( crossedThreshold ) and ( oldAngle > target ) and ( newAngle > target ) )
+		then
+			newAngle = target
+		end
+	end
+	return newAngle
+end
 
+function Element:UpdateActivitySweep()
+	if ( not self.InTransit ) then
+		if ( ( self.PauseTime + self.SweepPause ) <= RealTime() ) then
+			self.InTransit = true
+			self.Direction = self.Direction * -1
+		else
+			return
+		end
+	end
+
+	local newValue = (self.Value + (( self.Speed * FrameTime() ) * self.Direction))
+	local target 
+
+	if ( self.Direction > 0 ) then
+		-- Target is sweepEnd
+		target = self.SweepEnd
+	else
+		-- Target is sweepStart
+		target = self.SweepStart
+	end
+	self:SetValue( self:ReachedTargetAngle( newValue, self.Value, target, self.Direction ) )
+	
+	if ( self.Value == target ) then
+		self.InTransit = false
+		self.PauseTime = RealTime()
+	end
 end
 
 function Element:UpdateActivityFixed()
-
+	if ( self.InTransit ) then
+		local newValue = (self.Value + (( self.Speed * FrameTime() ) * self.Direction))
+		self:SetValue( self:ReachedTargetAngle( newValue, self.Value, self.Target, self.Direction ) )
+		if ( self.Value == self.Target ) then self.InTransit = false end
+	end
+	return self.Value
 end
 
 function Element:UpdateActivityManual()
@@ -155,8 +227,8 @@ function Element:DoPreRender()
 	-- Apply value to the target bone
 	-- print( "original bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
 	local angle = self.Parent:GetManipulateBoneAngles( self.BoneId )
-	angle[self.Axis] = self.Value
-	self.Parent:ManipulateBoneAngles( self.BoneId, angle)
+	angle[self.Axis] = self.Value * -1
+	self.Parent:ManipulateBoneAngles( self.BoneId, angle )
 	-- self.Parent:GetManipulateBoneAngles( self.BoneId )[self.Axis] = self.Value
 	-- print( "manipulated bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
 	-- print("sin: " .. tostring( math.abs((((( self.Value + 90) % 360 ))/360))) )

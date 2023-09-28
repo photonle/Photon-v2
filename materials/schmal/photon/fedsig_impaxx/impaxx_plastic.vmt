@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"photon/common/matte"
+	"$bumpmap"	"photon/common/flat"
+	"$detail"		"photon/common/matte"
+	"$detailblendmode" "1"
+	"$detailscale"	4
+	"$scale"		"0.1"
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"0.1"
+	"$rimlight"	"0"
+	"$rimlightexponent"	"0"
+	"$rimlightboost"	"1"
+	"$phongfresnelranges"	"[0.05 1 1]"
+	"$color2"		"{24 24 24}"
+	
+}

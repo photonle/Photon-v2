@@ -14,13 +14,13 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentStateId string
 ---@field Inputs table
 ---@field SortedInputs table
+---@field BoneParent number|string Model bone to attach the light to (if supported).
 local Light = exmeta.New()
 
 ---@param id integer
 ---@param parent Entity
 ---@return PhotonLight
 function Light:Initialize( id, parent )
-	---@type PhotonLight2D
 	local light = {
 		Id = id,
 		Class = self.Class,
@@ -28,6 +28,9 @@ function Light:Initialize( id, parent )
 		Inputs = {},
 		SortedInputs = {}
 	}
+	if ( isstring( self.BoneParent ) ) then
+		self.BoneParent = parent:LookUpBoneOrError( self.BoneParent )
+	end
 	return setmetatable( light, { __index = self } )
 end
 
