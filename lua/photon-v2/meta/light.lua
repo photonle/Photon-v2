@@ -90,6 +90,8 @@ function Light:UpdateState()
 	
 	if (state ~= self.CurrentStateId) then
 		self.CurrentStateId = state
+		self.StateProxy = self.States[state].Proxy
+		self.CurrentStateProxyId = nil
 		-- print("Setting light state to: " .. tostring(state))
 		self:OnStateChange( self.States[state] )
 	end
@@ -100,6 +102,24 @@ function Light:UpdateState()
 	else
 		self:Activate()
 	end
+end
+
+function Light:UpdateProxyState()
+	if ( not self.StateProxy ) then return false end
+	local currentState = self.States[self.CurrentStateId]
+	local proxyTarget, proxyState
+	
+	if ( self.StateProxy.Type == "FROM_LIGHT" ) then
+		proxyTarget = self.Parent.Lights
+	end
+	
+	if ( not proxyTarget ) then error( "StateProxy lookup failed. Verify 'Type' is supported and that the 'Target' is valid." ) end
+	
+	proxyStateId = proxyTarget[self.StateProxy.Key][self.StateProxy.Value]
+	-- print("proxyStateId: " .. tostring(proxyStateId))
+	if ( self.CurrentStateProxyId == proxyStateId ) then return end
+	self.CurrentStateProxyId = proxyStateId
+	self:OnStateChange( self.States[proxyStateId] )
 end
 
 -- Marks the light as "activated" to enable rendering optimizations

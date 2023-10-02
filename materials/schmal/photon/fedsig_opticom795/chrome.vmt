@@ -1,0 +1,19 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "photon/common/white"
+	"$bumpmap"    "photon/common/flat"
+	"$envmap" env_cubemap
+	"$nocull"	"1"
+	"$translucent" 0
+	"$phong" "1" 
+	"$phongboost" "1" 
+	"$phongexponent" "10"
+	"$phongfresnelranges" "[1 10 1]"
+	"$envmaptint" "[0.3 0.3 0.3]"
+	"$envmapfresnel" "1"
+	"$color2"	"{128 128 128}"
+ }
+
+
+
+

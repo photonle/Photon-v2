@@ -9,7 +9,9 @@ BASE = "PhotonLightState"
 ---@field Direction number
 ---@field Speed number
 ---@field Target number
----@field SweepTo number
+---@field SweepStart number
+---@field SweepEnd number
+---@field SweepPause number
 local State = exmeta.New()
 
 function State:New( name, data, collection )

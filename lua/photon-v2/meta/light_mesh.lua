@@ -227,6 +227,8 @@ function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return nil end
 
+	self:UpdateProxyState()
+
 	self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, self.Parent:GetPos(), self.Parent:GetAngles() )
 
 	if ( self.BoneParent < 0 ) then

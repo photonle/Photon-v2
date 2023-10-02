@@ -56,12 +56,14 @@ VEHICLE.Selections = {
 				Components = {
 					{
 						Component = "photon_fedsig_visionslr",
-						Position = Vector( 0, -15, 87.4 ),
-						Angles = Angle( 1, 90, 0 ),
+						Position = Vector( 0, -15, 87 ),
+						Angles = Angle( 2, 90, 0 ),
 						Scale = 1.08,
 						Bones = {
-							["feet_left"] = { Vector( -0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
-							["feet_right"] = { Vector( 0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
+							["hook_mount_foot_lf"] = { Vector( -0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
+							["hook_mount_foot_rf"] = { Vector( 0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
+							["hook_mount_foot_lr"] = { Vector( -0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
+							["hook_mount_foot_rr"] = { Vector( 0.2, 0, 0.7 ), Angle( 0, 0, 0 ), 1 },
 						},
 						SubMaterials = {
 							["schmal/photon/fedsig_visionslr/lens_pod_1"] = "schmal/photon/fedsig_visionslr/lens_color_red",
@@ -79,6 +81,12 @@ VEHICLE.Selections = {
 							["schmal/photon/fedsig_visionslr/lens_pod_7"] = "schmal/photon/fedsig_visionslr/lens_color_red",
 							["schmal/photon/fedsig_visionslr/lens_pod_7_glass"] = "schmal/photon/fedsig_visionslr/glass_color_red",
 						}
+					},
+					{
+						Component = "photon_fedsig_opticom795",
+						Position = Vector( 19, -8.8, 85.2 ),
+						Angles = Angle( 0, -90, 0 ),
+						Scale = 0.15
 					}
 				}
 			}
@@ -101,7 +109,14 @@ VEHICLE.Selections = {
 			{
 				Option = "Setina Push Bar",
 				BodyGroups = {
-					{ BodyGroup = "Pushbar", Value = 1 }
+					-- { BodyGroup = "Pushbar", Value = 1 }
+				},
+				Components = {
+					{
+						Component = "photon_setina_fpiu16",
+						Position = Vector( 0, 120, 32.7 ),
+						Angles = Angle( 0, 180, 0 ),
+					}
 				}
 			}
 		}
@@ -129,6 +144,92 @@ VEHICLE.Selections = {
 						Angles = Angle(1.5, -90, -180),
 						Scale = 1.4,
 					}
+				}
+			}
+		}
+	},
+	{
+		Category = "License Plates",
+		Options = {
+			{
+				Option = "License Plates",
+				Props = {
+					{
+						Name = "@rear_plate",
+						Model = "models/license/na_license_plate.mdl",
+						Position = Vector( 0, -120.8, 49 ),
+						Angles = Angle( 0, 0, 71 ),
+						Scale = 1.1,
+						SubMaterials = {
+							[1] = "photon/license/plates/ph2_lvmpd_nv",
+							-- [1] = "photon/license/plates/mpdc_demo"
+							-- [1] = "!ph2_mpdc_demo"
+						},
+						BodyGroups = {
+							["screws_top"] = 1,
+							["screws_bottom"] = 1,
+							["face"] = "face_circular"
+						}
+					},
+					{
+						Inherit = "@rear_plate",
+						Name = "@front_plate",
+						Angles = Angle( 0, 180, 90 ),
+						Position = Vector( 0, 118.8, 27.1 ),
+					},
+				}
+			}
+		}
+	},
+	{
+		Category = "Cellular Antenna",
+		Options = {
+			{
+				Option = "Cellular",
+				Props = {
+					{
+						Model = "models/sentry/antenna4.mdl",
+						Position = Vector( -21, 12, 82 ),
+						Angles = Angle( -3, 0, -6 ),
+						Scale = 1.6,
+						SubMaterials = {
+							[0] = "photon/common/white_gloss"
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Lojack Antennas",
+		Options = {
+			{
+				Option = "Lojack Antennas",
+				Props = {
+					{
+						Model = "models/sentry/antenna1.mdl",
+						Position = Vector( -4.9, -37, 85 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = Vector( 1, 1, 1.8)
+					},
+					{
+						Model = "models/sentry/antenna1.mdl",
+						Position = Vector( 4.9, -37, 85 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = Vector( 1, 1, 1.8)
+					},
+					{
+						Model = "models/sentry/antenna1.mdl",
+						Position = Vector( -4.9, -45, 85 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = Vector( 1, 1, 1.8)
+					},
+					{
+						Model = "models/sentry/antenna1.mdl",
+						Position = Vector( 4.9, -45, 85 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = Vector( 1, 1, 1.8)
+					},
 				}
 			}
 		}

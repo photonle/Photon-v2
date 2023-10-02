@@ -20,6 +20,7 @@ local printf = Photon2.Debug.PrintF
 ---@field SweepStart number Angle the sweep should start at.
 ---@field SweepEnd number Angle the sweep should end at.
 ---@field SweepPause number Pause duration while sweeping.
+---@field AngleOutputMap table<integer, table<number, any>>
 ---@field private InTransit boolean
 ---@field private PauseTime number
 local Element = exmeta.New()
@@ -51,6 +52,9 @@ Element.SweepEnd		= 1
 Element.SweepStart 		= 359
 Element.SweepPause 		= 1
 
+Element.AngleOutputCeil	= 0
+Element.AngleOutputFloor= 0
+Element.AngleOutput = "OFF"
 --Element.ActivityParameters?
 
 Element.States = {
@@ -87,6 +91,8 @@ function Element:OnStateChange( state )
 	self.SweepStart = state.SweepStart
 	self.SweepEnd = state.SweepEnd
 	self.SweepPause = state.SweepPause
+	self.AngleOutputMap = state.AngleOutputMap
+
 	self.UpdateCurrentActivity = self["UpdateActivity" .. self.Activity]
 
 	if ( state.Activity == "Fixed" and self.Value ~= state.Target ) then
@@ -123,6 +129,7 @@ function Element:UpdateActivityOff()
 end
 
 function Element:UpdateActivityRotate()
+	self.InTransit = true
 	return self:SetValue( self.Value + ( ( self.Speed * FrameTime() ) * self.Direction ) )
 end
 
@@ -160,17 +167,12 @@ function Element:UpdateActivitySweep()
 	end
 
 	local newValue = (self.Value + (( self.Speed * FrameTime() ) * self.Direction))
-	local target 
+	local target = self.SweepEnd
 
-	if ( self.Direction > 0 ) then
-		-- Target is sweepEnd
-		target = self.SweepEnd
-	else
-		-- Target is sweepStart
-		target = self.SweepStart
-	end
+	if ( self.Direction < 0 ) then target = self.SweepStart end
+
 	self:SetValue( self:ReachedTargetAngle( newValue, self.Value, target, self.Direction ) )
-	
+
 	if ( self.Value == target ) then
 		self.InTransit = false
 		self.PauseTime = RealTime()
@@ -195,27 +197,6 @@ function Element:UpdateCurrentActivity()
 	print("Updating abstract activity function.")
 end
 
-function Element:CalculateMirrorIntensity( peakAngle, fieldOfView )
-	local ang = self.Value
-
-	if ( peakAngle > 180 ) then
-
-	elseif ( peakAngle < 180 ) then
-
-	end
-
-	local min = peakAngle - ( fieldOfView / 2 )
-	local max = peakAngle + ( fieldOfView / 2 )
-
-
-	if ang < min then
-		ang = min
-	elseif ang > max then
-		ang = max
-	end
-
-	return math.Round( math.sin( math.pi * ( ( ang - min ) / ( max - min ) ) ), 3 )
-end
 
 function Element:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
@@ -229,6 +210,48 @@ function Element:DoPreRender()
 	local angle = self.Parent:GetManipulateBoneAngles( self.BoneId )
 	angle[self.Axis] = self.Value * -1
 	self.Parent:ManipulateBoneAngles( self.BoneId, angle )
+
+	if ( self.InTransit and self.AngleOutputMap ) then
+		local result = 1
+		local updated = false
+
+		if ( #self.AngleOutputMap > 1 ) then
+			if ( self.Value > self.AngleOutputCeil or self.Value < self.AngleOutputFloor ) then
+				updated = true
+			-- if ( self.Direction > 0 ) then
+				for i=1, #self.AngleOutputMap do
+					if ( i == #self.AngleOutputMap ) then
+						self.AngleOutputFloor = self.AngleOutputMap[i][1]
+						self.AngleOutputCeil = 360
+						result = i
+						break
+					elseif ( self.Value > self.AngleOutputMap[i][1] and self.Value <= self.AngleOutputMap[i+1][1] ) then
+						self.AngleOutputFloor = self.AngleOutputMap[i][1]
+						self.AngleOutputCeil = self.AngleOutputMap[i+1][1]
+						result = i
+						break
+					end
+				end
+			end
+			-- else
+			-- 	for i=#self.AngleOutputMap, 2, -1 do
+
+			-- 	end
+			-- end
+		else
+
+		end
+
+		if ( updated ) then
+			self.AngleOutput = self.AngleOutputMap[result][2]
+			-- print("Angle output " .. tostring( self.Value) .. ": " .. tostring( self.AngleOutput ) )
+		
+		end
+	end
+
+
+	-- print("Bone's angle output: " .. tostring( self.AngleOutput ) )
+
 	-- self.Parent:GetManipulateBoneAngles( self.BoneId )[self.Axis] = self.Value
 	-- print( "manipulated bone angle: " .. tostring( self.Parent:GetManipulateBoneAngles( self.BoneId ) ) )
 	-- print("sin: " .. tostring( math.abs((((( self.Value + 90) % 360 ))/360))) )
