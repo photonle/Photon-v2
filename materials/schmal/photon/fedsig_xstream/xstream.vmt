@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/fedsig_xstream/xstream"
+	"$bumpmap"	"schmal/photon/fedsig_xstream/xstream_nm"
+	//"$detail"		"photon/common/matte"
+	//"$detailblendmode" "1"
+	//"$detailscale"	4
+	//"$scale"		"0.1"
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"0.1"
+	"$rimlight"	"0"
+	"$rimlightexponent"	"0"
+	"$rimlightboost"	"1"
+	"$phongfresnelranges"	"[0.05 1 1]"
+	"$color2"		"{255 255 255}"
+	
+}

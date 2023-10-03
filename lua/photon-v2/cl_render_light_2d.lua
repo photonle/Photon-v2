@@ -94,8 +94,8 @@ function Photon2.RenderLight2D.DrawBloom()
 	local activeLights = this.Active
 	for i=1, #activeLights do
 		light = activeLights[i] --[[@as PhotonLight2D]]
-		if ( light.Material and drawShape ) then
-			render.SetMaterial( light.Material )
+		if ( light.Shape and drawShape ) then
+			render.SetMaterial( light.Shape )
 			-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, Color(255,255,255,0), light.Angles[3] - 180 )
@@ -172,8 +172,8 @@ function Photon2.RenderLight2D.Render()
 
 			if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" ) then continue end
 
-			if ( light.MaterialOverlay and drawDetail ) then
-				render.SetMaterial( light.MaterialOverlay )
+			if ( light.Detail and drawDetail ) then
+				render.SetMaterial( light.Detail )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 				
 				render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
@@ -183,8 +183,8 @@ function Photon2.RenderLight2D.Render()
 				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 			end
 
-			if ( light.Material and drawDetail ) then
-				render.SetMaterial( light.Material )
+			if ( light.Shape and drawDetail ) then
+				render.SetMaterial( light.Shape )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 				
 				-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )

@@ -59,8 +59,8 @@ Light.Class = "2D"
 Light.LocalPosition = Vector(0, 0, 0)
 Light.LocalAngles = Angle(0, 0, 0)
 
-Light.Material = "photon/common/blank"
-Light.MaterialOverlay = "photon/common/blank"
+Light.Shape = "photon/common/blank"
+Light.Detail = "photon/common/blank"
 Light.Width = 1
 Light.Height = 1
 Light.Scale = 1
@@ -281,12 +281,12 @@ function Light:Initialize( id, parentEntity )
 
 	local baseClass = getmetatable( self ).__index
 
-	if ( isstring( baseClass.Material ) ) then
-		baseClass.Material = Material( baseClass.Material )
+	if ( isstring( baseClass.Shape ) ) then
+		baseClass.Shape = Material( baseClass.Shape )
 	end
 
-	if ( isstring(baseClass.MaterialOverlay) ) then
-		baseClass.MaterialOverlay = Material( baseClass.MaterialOverlay )
+	if ( isstring(baseClass.Detail) ) then
+		baseClass.Detail = Material( baseClass.Detail )
 	end
 
 	if ( isstring( baseClass.MaterialBloom ) ) then

@@ -133,6 +133,36 @@ VEHICLE.Selections = {
 		}
 	},
 	{
+		Category = "Rear Lights",
+		Options = {
+			{
+				Option = "X-Streams",
+				Components = {
+					{
+						Component = "photon_fedsig_xstream_single",
+						Position = Vector( -12, -104, 75 ),
+						Angles = Angle( 0, -90 - 10, 0 ),
+						Scale = 1,
+						BodyGroups = {
+							["Mount"] = 2,
+							["Shroud"] = 1
+						}
+					},
+					{
+						Component = "photon_fedsig_xstream_single",
+						Position = Vector( 12, -104, 75 ),
+						Angles = Angle( 0, -90 + 10, 0 ),
+						Scale = 1,
+						BodyGroups = {
+							["Mount"] = 2,
+							["Shroud"] = 1
+						}
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Siren",
 		Options = {
 			{
