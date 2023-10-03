@@ -25,6 +25,19 @@ VEHICLE.SubMaterials = {
 
 VEHICLE.Selections = {
 	{
+		Category = "Vehicle Lighting",
+		Options = {
+			{
+				Option = "Default",
+				VirtualComponents = {
+					{
+						Component = "photon_standard_smfpiu16"
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Windows",
 		Options = {
 			{
@@ -140,7 +153,7 @@ VEHICLE.Selections = {
 				Components = {
 					{
 						Component = "photon_fedsig_xstream_single",
-						Position = Vector( -12, -104, 75 ),
+						Position = Vector( -12, -103.2, 75.5 ),
 						Angles = Angle( 0, -90 - 10, 0 ),
 						Scale = 1,
 						BodyGroups = {
@@ -150,7 +163,7 @@ VEHICLE.Selections = {
 					},
 					{
 						Component = "photon_fedsig_xstream_single",
-						Position = Vector( 12, -104, 75 ),
+						Position = Vector( 12, -103.2, 75.5 ),
 						Angles = Angle( 0, -90 + 10, 0 ),
 						Scale = 1,
 						BodyGroups = {

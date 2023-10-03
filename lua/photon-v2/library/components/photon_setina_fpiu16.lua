@@ -15,8 +15,8 @@ COMPONENT.Model = "models/schmal/fpiu16_setina.mdl"
 COMPONENT.Templates = {
 	["2D"] = {
 		Impaxx = {
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_detail.png").MaterialName,
+			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_detail.png").MaterialName,
+			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
 			Width = 5.7,
 			Height = 5.7/2,
 		}

@@ -113,6 +113,9 @@ function Sequence.New( name, frameSequence, segment, data )
 end
 
 function Sequence:SetFrame( frame )
+	-- allow empty sequences to silently fail
+	if ( #self < 1 ) then return end
+
 	self.CurrentFrame = frame
 	if (self.CurrentFrame > #self) then
 		if (self.IsRepeating) then
