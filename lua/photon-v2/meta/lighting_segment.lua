@@ -295,7 +295,9 @@ function Segment:Initialize( componentInstance )
 	-- Setup inputs (new/revised sequences)
 	for channelMode, sequenceData in pairs( self.Inputs ) do
 		-- printf( "Initializing input sequence from channel mode [%s]", channelMode )
-		
+		if ( not self.Sequences[sequenceData.Sequence] ) then
+			error( "Sequence [" .. tostring( sequenceData.Sequence ) .."] does not exist." )
+		end
 		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank )
 	end
 

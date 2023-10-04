@@ -20,6 +20,7 @@ local printf = Photon2.Debug.PrintF
 ---@field ColorMap table<integer, string[]>
 ---@field Inputs table<string, string[]>
 ---@field LightGroups table<string, integer[]>
+---@field Phase string
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -63,6 +64,7 @@ function Component.New( name, data, base )
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
+		Phase = data.Phase,
 		Ancestors = ancestors,
 		Descendants = {},
 		Children = {},
@@ -271,8 +273,27 @@ function Component.New( name, data, base )
 					error( string.format("Invalid segment: '%s'", segmentName) )
 				end
 
+				-- PHASING
+				local phase = component.Phase
+				
+
 				if (isstring(sequence)) then
+
+					if ( phase ) then
+						local newSequenceName = sequence .. ":" .. phase
+						print( "*********** COMPONENT HAS PHASING ***********" )
+						print( "Phase: " .. tostring( phase ) )
+						print( "New sequence name: " .. tostring( newSequenceName ) )
+						if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
+							print( "Phased sequence LOCATED.")
+							sequence = newSequenceName
+						else
+							print( "Phase NOT found." )
+						end
+					end
+
 					segment:AddPattern( patternName, sequence, priorityScore, rank )
+				
 				else
 					-- TODO: advanced pattern assignment
 					error( "Invalid pattern assignment." )

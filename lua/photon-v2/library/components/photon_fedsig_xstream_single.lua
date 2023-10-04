@@ -8,6 +8,8 @@ COMPONENT.Credits = {
 	Model = "Khuutznetsov",
 }
 
+COMPONENT.Phase = nil
+
 COMPONENT.PrintName = [[Federal Signal X-Stream Single]]
 
 COMPONENT.Model = "models/schmal/fedsig_xstream_single.mdl"
@@ -31,13 +33,18 @@ COMPONENT.LightStates = {}
 
 COMPONENT.ColorMap = "[R] 1"
 
+local sequence = Photon2.SequenceBuilder.New
+
 COMPONENT.Segments = {
 	["Light"] = {
 		Frames = {
 			[1] = "1"
 		},
 		Sequences = {
-			["ON"] = { 1 } 
+			["ON"] = { 1 },
+			["FLASH"] = sequence():QuadFlash( 1, 0 ),
+			["FLASH:A"] = { 1, 1, 1, 1, 0, 0, 0, 0 },
+			["FLASH:B"] = { 0, 0, 0, 0, 1, 1, 1, 1 },
 		}
 	}
 }
@@ -45,7 +52,7 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Light = "ON"
+			Light = "FLASH"
 		}
 	}
 }

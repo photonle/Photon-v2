@@ -159,7 +159,9 @@ VEHICLE.Selections = {
 						BodyGroups = {
 							["Mount"] = 2,
 							["Shroud"] = 1
-						}
+						},
+						ColorMap = "[B] 1",
+						Phase = "A"
 					},
 					{
 						Component = "photon_fedsig_xstream_single",
@@ -169,7 +171,8 @@ VEHICLE.Selections = {
 						BodyGroups = {
 							["Mount"] = 2,
 							["Shroud"] = 1
-						}
+						},
+						Phase = "B"
 					}
 				}
 			}

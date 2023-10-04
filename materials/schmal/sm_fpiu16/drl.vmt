@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "photon/common/glow_gradient_a"
+	"$basetexture" "models/supermighty/2016_fpiu/lights"
 	"$translucent" "1"
 	"$nocull" "0"
 	"$additive" 0

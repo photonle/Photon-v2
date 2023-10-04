@@ -114,6 +114,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field ColorMap table<integer, string[]> | string
 ---@field SubMaterials table<integer, string>
 ---@field LightStates { SubMat: table, Mesh: table } Light states.
+---@field Phase string Pattern variant identifier.
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.

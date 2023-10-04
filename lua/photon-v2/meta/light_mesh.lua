@@ -58,7 +58,7 @@ local white = { r = 255, g = 255, b = 255 }
 local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
-local amber = { r = 255, g = 255, b = 0 }
+local amber = { r = 255, g = 210, b = 0 }
 local black = { r = 0, g = 0, b = 0 }
 
 Light.States = {
@@ -85,7 +85,7 @@ Light.States = {
 	},
 	["A"] = {
 		BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),
-		DrawColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 180, 0 ):Blend( amber ):GetBlendColor(),
 	},
 	["W"] = {
 		BloomColor = PhotonColor( 200, 200, 255 ):Blend( white ):GetBlendColor(),
@@ -244,6 +244,7 @@ function Light:DoPreRender()
 	self.Matrix:SetScale( self.FinalScale )
 
 	if ( self.IntensityTransitions ) then
+		print("GAIN: " .. tostring( self.IntensityGainFactor ))
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)

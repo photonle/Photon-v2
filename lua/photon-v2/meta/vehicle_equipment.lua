@@ -125,6 +125,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		local component = {
 			Base = entry.Component,
 			ColorMap = entry.ColorMap,
+			Phase = entry.Phase,
 			Generated = true
 
 		}
