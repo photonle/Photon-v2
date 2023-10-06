@@ -54,6 +54,9 @@ Light.States = {
 	},
 	["B"] = {
 		Color = PhotonColor( 0, 0, 255 )
+	},
+	["A"] = {
+		Color = PhotonColor( 255, 220, 0 )
 	}
 }
 
@@ -166,6 +169,8 @@ end
 function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return end
+
+	self:UpdateProxyState()
 
 	if ( self.BoneParent < 0 ) then
 		self.Position = self.Parent:LocalToWorld( self.LocalPosition )

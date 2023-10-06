@@ -117,18 +117,28 @@ function Equipment.ProcessInheritance( equipmentTable, nameTable, loadedParents 
 	end
 end
 
+
+-- TODO: WORK IN PROGRESS
+local overrideableProperties = { "ColorMap", "Phase", "Segments", "Patterns", "LightGroups", "LightStates" }
+
 -- Builds components as new inherited variants for each equipment entry
 function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 	print("Building Components [" .. key .. "]")
 	for key, entry in pairs( equipmentTable[key] ) do
 		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
+		---@type PhotonLibraryComponent
 		local component = {
 			Base = entry.Component,
 			ColorMap = entry.ColorMap,
 			Phase = entry.Phase,
-			Generated = true
-
+			Generated = true,
+			Segments = entry.Segments,
+			Patterns = entry.Inputs or entry.Patterns,
+			LightGroups = entry.LightGroups,
+			LightStates = entry.LightStates
 		}
+
+		-- for 
 
 		-- Distinguish Component/Entity properties from equipment-only metadata (necessary?)
 

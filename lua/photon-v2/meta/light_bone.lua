@@ -21,6 +21,7 @@ local printf = Photon2.Debug.PrintF
 ---@field SweepEnd number Angle the sweep should end at.
 ---@field SweepPause number Pause duration while sweeping.
 ---@field AngleOutputMap table<integer, table<number, any>>
+---@field AddSpeed number Constant number to add speed by. Can be used to intentionally "drift" lights that are otherwise set to the same speed. 
 ---@field private InTransit boolean
 ---@field private PauseTime number
 local Element = exmeta.New()
@@ -40,6 +41,7 @@ Element.Activity 		= "Fixed"
 Element.Smooth 			= -1
 Element.Direction 		= 1
 Element.Speed 			= 100
+Element.AddSpeed		= 0
 Element.Target 			= 0
 Element.Value 			= 0
 Element.Axis 			= "y"
@@ -130,7 +132,7 @@ end
 
 function Element:UpdateActivityRotate()
 	self.InTransit = true
-	return self:SetValue( self.Value + ( ( self.Speed * FrameTime() ) * self.Direction ) )
+	return self:SetValue( self.Value + ( ( ( self.Speed + self.AddSpeed ) * FrameTime() ) * self.Direction ) )
 end
 
 function Element:ReachedTargetAngle( newAngle, oldAngle, target, direction )
@@ -166,7 +168,7 @@ function Element:UpdateActivitySweep()
 		end
 	end
 
-	local newValue = (self.Value + (( self.Speed * FrameTime() ) * self.Direction))
+	local newValue = (self.Value + (( ( self.Speed + self.AddSpeed ) * FrameTime() ) * self.Direction))
 	local target = self.SweepEnd
 
 	if ( self.Direction < 0 ) then target = self.SweepStart end
@@ -181,7 +183,7 @@ end
 
 function Element:UpdateActivityFixed()
 	if ( self.InTransit ) then
-		local newValue = (self.Value + (( self.Speed * FrameTime() ) * self.Direction))
+		local newValue = (self.Value + (( ( self.Speed + self.AddSpeed ) * FrameTime() ) * self.Direction))
 		self:SetValue( self:ReachedTargetAngle( newValue, self.Value, self.Target, self.Direction ) )
 		if ( self.Value == self.Target ) then self.InTransit = false end
 	end

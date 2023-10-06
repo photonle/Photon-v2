@@ -46,7 +46,7 @@ function Segment.New( name, segmentData, lightGroups )
 		Inputs = {}
 	}
 
-	setmetatable(segment, { __index = PhotonLightingSegment })
+	setmetatable( segment, { __index = PhotonLightingSegment } )
 
 	local function flattenFrame( frame )
 		local result = {}
@@ -211,9 +211,7 @@ function Segment.New( name, segmentData, lightGroups )
 
 	-- SAVE THIS LINE
 	-- segment:AddFrame( 0, processedFrames[0] )
-	
-	
-	
+
 	-- local zeroFrame = flattenFrame( processedFrames[0] )
 	local zeroFrame = flattenFrame(processedFrames[0])
 	segment:AddFrame( 0, rebuildFrame(zeroFrame) )
@@ -233,6 +231,17 @@ function Segment.New( name, segmentData, lightGroups )
 
 	-- Add sequences
 	for sequenceName, frameSequence in pairs( segmentData.Sequences or {} ) do
+		
+		-- debugging
+		-- local frameSequenceMetatable = getmetatable( frameSequence )
+		-- if ( istable(frameSequenceMetatable) ) then
+		-- 	print(" ^^^^^^ FRAME SEQUENCE HAS METATABLE ^^^^^^")
+		-- 	PrintTable( frameSequenceMetatable )
+		-- else
+		-- 	print("FRAME SEQUENCE HAS NO METATABLE")
+		-- end
+		
+		
 		segment:AddNewSequence( sequenceName, frameSequence )
 	end
 
@@ -327,7 +336,7 @@ function Segment:AddFrame( index, lightStates )
 		lightId = lightStates[i][1]
 		stateId = lightStates[i][2]
 		if string.StartsWith( lightId, "@" ) then
-
+			--????
 		else
 			result[lightId] = stateId
 		end
@@ -345,8 +354,8 @@ function Segment:IncrementFrame( count )
 
 	local sequence = self:GetCurrentSequence()
 	if ( not sequence ) then return end
-
-	sequence:SetFrame( (count % #sequence) + 1 )
+	sequence:IncrementFrame( count )
+	-- sequence:SetFrame( (count % #sequence) + 1 )
 end
 
 

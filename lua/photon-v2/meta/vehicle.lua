@@ -163,6 +163,7 @@ function Vehicle.New( data )
 	Equipment.ProcessInheritance( vehicle.Equipment.SubMaterials, nameTable.SubMaterials, loadedParents.SubMaterials )
 
 	Equipment.BuildComponents( vehicle.Equipment, "Components", data.ID )
+	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.ID )
 
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 

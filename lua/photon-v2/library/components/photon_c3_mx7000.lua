@@ -39,7 +39,7 @@ COMPONENT.LightStates = {
 		["~B"] = { 
 			Intensity = 1,
 			IntensityTransitions = true,
-			BloomColor = PhotonColor( 0, 190, 255 ):Blend( blue ):GetBlendColor(),
+			BloomColor = PhotonColor( 0, 150, 255 ):Blend( blue ):GetBlendColor(),
 			DrawColor = PhotonColor( 205, 255, 255 ):Blend( blue ):GetBlendColor(),
 		},
 		["~A"] = {

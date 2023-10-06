@@ -45,6 +45,23 @@ COMPONENT.Segments = {
 			["FLASH"] = sequence():QuadFlash( 1, 0 ),
 			["FLASH:A"] = { 1, 1, 1, 1, 0, 0, 0, 0 },
 			["FLASH:B"] = { 0, 0, 0, 0, 1, 1, 1, 1 },
+			["FLASH1"] = { 1 },
+			["FLASH1:A"] = { 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+			["FLASH1:B"] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
+
+		}
+	}
+}
+
+COMPONENT.VirtualOutputs = {
+	-- Virtual channel name
+	["Virtual.Siren"] = {
+		-- Mode
+		["T1"] = {
+			When = {
+				["Emergency.Siren"] = { "T1" },
+				["Emergency.Warning"] = { "MODE1", "MODE2", "MODE3" }
+			}
 		}
 	}
 }
@@ -53,6 +70,12 @@ COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Light = "FLASH"
+		},
+		["MODE2"] = {
+			Light = "FLASH"
 		}
+	},
+	["Virtual.Siren"] = {
+
 	}
 }

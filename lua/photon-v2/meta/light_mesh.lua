@@ -244,7 +244,6 @@ function Light:DoPreRender()
 	self.Matrix:SetScale( self.FinalScale )
 
 	if ( self.IntensityTransitions ) then
-		print("GAIN: " .. tostring( self.IntensityGainFactor ))
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)

@@ -59,11 +59,43 @@ COMPONENT.Templates = {
 
 COMPONENT.LightStates = {
 	["Bone"] = {
+		Standby ={
+			Activity = "Fixed",
+			Target = 359,
+			Speed = 200,
+			Direction = 1
+		},
 		Point90 = {
 			Activity = "Fixed",
 			Target = 360,
 			Speed = 200,
 			Direction = -1
+		},
+		Point215 = {
+			Activity = "Fixed",
+			Target = 136,
+			Speed = 200,
+			Direction = 1
+		},
+		Point135 = {
+			Activity = "Fixed",
+			Target = 179,
+			Speed = 200,
+			Direction = -1
+		},
+		Point180 = {
+			Activity = "Fixed",
+			Target = 180,
+			Speed = 200,
+			Direction = -1
+		},
+		RotateFast = {
+			Activity = "Rotate",
+			Speed = 700,
+		},
+		RotateMedium = {
+			Activity = "Rotate",
+			Speed = 500,
 		},
 		SweepForward = {
 			Activity = "Sweep",
@@ -83,6 +115,33 @@ COMPONENT.LightStates = {
 			SweepPause = 0.2,
 			-- AngleOutputMap = { { 0, "W" }, { 25, "R" }, { 135, "A" }, { 225, "B" }, { 335, "W" } }
 		},
+		LVMPD_M1_Pod4 = {
+			Activity = "Rotate",
+			Speed = 600,
+			AngleOutputMap = { { 0, "R" }, { 90, "OFF" }, { 135, "A" }, { 225, "OFF" }, { 315, "R" } }
+		},
+		LVMPD_M1_Sweep = {
+			Activity = "Sweep",
+			SweepStart = 145,
+			SweepEnd = 215,
+			Speed = 300,
+			Direction = -1,
+			SweepPause = 0.2,
+		},
+		LVMPD_M2_RA = {
+			Activity = "Rotate",
+			Speed = 500,
+			AngleOutputMap = { { 0, "R" }, { 90, "A"}, { 270, "R" } }
+		},
+		RearSweep_2 = {
+			Inherit = "RearSweep",
+			Speed = 300
+		},
+		ForwardFlash = {
+			Activity = "Rotate",
+			Speed = 600,
+			AngleOutputMap = { { 0, "R" }, { 90, "OFF" }, { 135, "A" }, { 225, "OFF" }, { 315, "R" } }
+		},
 		FixedRear = {
 			Activity = "Fixed",
 			Target = 180,
@@ -93,8 +152,76 @@ COMPONENT.LightStates = {
 	["Mesh"] = {
 		ProxyTest = {
 			Proxy = { Type = "FROM_LIGHT", Key = 1, Value = "AngleOutput" }		
-		}
+		},
+		Pod1Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 1, Value = "AngleOutput" }
+		},
+		Pod2Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 7, Value = "AngleOutput" }
+		},
+		Pod3Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 13, Value = "AngleOutput" }
+		},
+		Pod4Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 19, Value = "AngleOutput" }		
+		},
+		Pod5Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 16, Value = "AngleOutput" }
+		},
+		Pod6Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 10, Value = "AngleOutput" }
+		},
+		Pod7Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 4, Value = "AngleOutput" }
+		},
 	},
+	["Projected"] = {
+		Pod1Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 1, Value = "AngleOutput" }
+		},
+		Pod2Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 7, Value = "AngleOutput" }
+		},
+		Pod3Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 13, Value = "AngleOutput" }
+		},
+		Pod4Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 19, Value = "AngleOutput" }		
+		},
+		Pod5Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 16, Value = "AngleOutput" }
+		},
+		Pod6Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 10, Value = "AngleOutput" }
+		},
+		Pod7Proxy = {
+			Proxy = { Type = "FROM_LIGHT", Key = 4, Value = "AngleOutput" }
+		},
+	}
+}
+
+COMPONENT.LightGroups = {
+	["POD1_Light"] = { 2, 3, 30 },
+	-- ["POD1_Light"] = { 2, 3 },
+	["POD1"] = { 1 },
+	-- ["POD7_Light"] = { 5, 6 },
+	["POD7_Light"] = { 5, 6, 31 },
+	["POD7"] = { 4 },
+	-- ["POD2_Light"] = { 8, 9 },
+	["POD2_Light"] = { 8, 9, 32 },
+	["POD2"] = { 7 },
+	-- ["POD6_Light"] = { 11, 12 },
+	["POD6_Light"] = { 11, 12, 33 },
+	["POD6"] = { 10 },
+	-- ["POD3_Light"] = { 14, 15 },
+	["POD3_Light"] = { 14, 15, 34 },
+	["POD3"] = { 13 },
+	-- ["POD5_Light"] = { 17, 18 },
+	["POD5_Light"] = { 17, 18, 35 },
+	["POD5"] = { 16 },
+	["POD4_Light"] = { 20, 21, 36 },
+	-- ["POD4_Light"] = { 20, 21 },
+	["POD4"] = { 19 },
 }
 
 COMPONENT.Lights = {
@@ -167,10 +294,11 @@ COMPONENT.Segments = {
 			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21",
 			[2] = "[SweepForward] 1 4 7 10 13 16 19",
 			-- [3] = "[RearSweep] 1 [ProxyTest] 2 3"
-			[3] = "[RearSweep] 1 4 [FixedRear] 7 10 [R] 2 3 5 6 8 9 11 12 [A] 8 9 11 12"
+			[3] = "[RearSweep] 1 4 [FixedRear] 7 10 [R] 2 3 5 6 8 9 11 12 [A] 8 9 11 12",
+			[4] = "[RearSweep] POD7"
 		},
 		Sequences = {
-			TEST = { 3 }
+			TEST = { 4 }
 		}
 	},
 	ProjectedTest = {
@@ -181,17 +309,56 @@ COMPONENT.Segments = {
 			TEST = { 1 }
 		}
 	},
-	LVMPD = {
+	Pods = {
 		Frames = {
-			[1] = "2 3 5 6 30 31 [ROT] 1 4",
-			[2] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 30 31 32 33 34 35 36",
-			[3] = "1 2 3 4 5 6 7 10 13 14 15 16 17 18 19 20 21 30 31 34 35 36 [W] 8 9 11 12 32 33",
-			[4] = "1 2 3 4 5 6 7 10 13 14 15 16 17 18 19 30 31 34 35 [W] 8 9 11 12 32 33 20 21 36"
+			[0] = "[Standby] POD1 POD2 POD3 POD4 POD5 POD6 POD7"
 		},
 		Sequences = {
-			MODE1 = { 2 },
-			MODE2 = { 3 },
-			MODE3 = { 4 }
+			OFF = { 0 }
+		}
+	},
+	-- LVMPD = {
+	-- 	Frames = {
+	-- 		[1] = "2 3 5 6 30 31 [ROT] 1 4",
+	-- 		[2] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 30 31 32 33 34 35 36",
+	-- 		[3] = "1 2 3 4 5 6 7 10 13 14 15 16 17 18 19 20 21 30 31 34 35 36 [W] 8 9 11 12 32 33",
+	-- 		[4] = "1 2 3 4 5 6 7 10 13 14 15 16 17 18 19 30 31 34 35 [W] 8 9 11 12 32 33 20 21 36",
+	-- 		[5] = "[RearSweep] POD1 POD7 [RearSweep_2] POD2 POD6 [ForwardFlash] POD4 [R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+	-- 		[6] = "[Point135] POD1 POD2 [Point215] POD6 POD7 [ForwardFlash] POD4 [R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light"
+	-- 	},
+	-- 	Sequences = {
+	-- 		MODE1 = sequence():Add(6):Hold(40):Add(5):SetRepeating( false ),
+	-- 		MODE2 = { 3 },
+	-- 		MODE3 = { 4 }
+	-- 	}
+	-- },
+	LVMPD_Lights = {
+		Frames = {
+			[1] = "[R] POD1_Light",
+			[2] = "[R] POD1_Light [A] POD2_Light",
+			[3] = "[R] POD1_Light [A] POD2_Light [Pod4Proxy] POD4_Light",
+			[4] = "[R] POD1_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+			[5] = "[R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+			
+			[6] = "[R] POD1_Light POD7_Light [B] POD3_Light POD5_Light [Pod2Proxy] POD2_Light [Pod4Proxy] POD4_Light [Pod6Proxy] POD6_Light",
+			-- [7] = "[R] POD1_Light POD7_Light [B] POD3_Light POD5_Light",
+		},
+		Sequences = {
+			MODE1 = sequence():Add( 1, 2, 3, 4, 5 ):SetRepeating( false ),
+			MODE2 = sequence():Add( 6 ):SetRepeating( false )
+		}
+	},
+	LVMPD_Pods = {
+		Frames = {
+			[1] = "[Point135] POD1 POD2 [Point215] POD6 POD7 [LVMPD_M1_Pod4] POD4",
+			[2] = "[RearSweep] POD1 POD2 POD6 POD7 [LVMPD_M1_Pod4] POD4 [Standby] POD3 POD5",
+			-- Mode 2
+			[3] = "[Standby] POD1 POD2 POD3 POD4 POD5 POD6 POD7",
+			[4] = "[LVMPD_M2_RA] POD2 POD4 POD6 [RotateMedium] POD1 POD7 [RotateFast] POD3 POD5"
+		},
+		Sequences = {
+			MODE1 = sequence():Add( 1 ):Hold( 40 ):Add( 2 ):SetRepeating( false ),
+			MODE2 = sequence():Add( 3 ):Hold( 40 ):Add( 4 ):SetRepeating( false )
 		}
 	},
 	SignalMaster = {
@@ -234,18 +401,23 @@ COMPONENT.Segments = {
 
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
+		["OFF"] = {
+			Pods = "OFF"
+		},
 		["MODE1"] = {
-			LVMPD = "MODE1",
+			LVMPD_Lights = "MODE1",
+			LVMPD_Pods = "MODE1",
 			SignalMaster = "WARN1",
 		},
 		["MODE2"] = {
 			-- LVMPD = "MODE2",
-			Test = "TEST",
-			-- SignalMaster = "WARN2",
-			
+			-- Test = "TEST",
+			SignalMaster = "WARN2",
+			LVMPD_Lights = "MODE2",
+			LVMPD_Pods = "MODE2",
 		},
 		["MODE3"] = {
-			LVMPD = "MODE3",
+			-- LVMPD = "MODE3",
 			SignalMaster = "WARN4",
 			AlleyHotFeet = "ALL",
 			ForwardHotFeet = "ALL",

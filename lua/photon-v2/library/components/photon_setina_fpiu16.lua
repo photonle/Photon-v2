@@ -47,7 +47,12 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			ALL = { 1 },
-			FLASH = sequence():Alternate( 1, 2, 8 ):Alternate( 3, 4, 8 )
+			FLASH = sequence()
+					:Blink( 1, 4 ):Hold( 2 )
+					:Blink( 2, 4 ):Hold( 2 )
+					:Blink( 3, 4 ):Hold( 2 )
+					:Blink( 4, 4 ):Hold( 2 )
+			-- FLASH = sequence():Alternate( 1, 2, 8 ):Alternate( 3, 4, 8 )
 		}
 	},
 	Side = {
@@ -56,16 +61,16 @@ COMPONENT.Segments = {
 			[2] = "[B] 3 4",
 		},
 		Sequences = {
-			FLASH = sequence():Add( 1 ):Hold( 5 ):Add( 0 ):Hold( 8 ):Add( 2 ):Hold( 5 ):Add( 0 ):Hold( 8 )
+			FLASH = sequence()
+			:TripleFlash( 1, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 )
+			:TripleFlash( 2, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 )
 		}
 	}
 }
 
 COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			Upper = "FLASH",
-			Side = "FLASH"
-		}
+		["MODE2"] = { Upper = "FLASH", Side = "FLASH" },
+		["MODE3"] = { Upper = "FLASH", Side = "FLASH" },
 	}
 }

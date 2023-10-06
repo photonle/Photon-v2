@@ -31,7 +31,25 @@ VEHICLE.Selections = {
 				Option = "Default",
 				VirtualComponents = {
 					{
-						Component = "photon_standard_smfpiu16"
+						Component = "photon_standard_smfpiu16",
+						Segments = {
+							Reverse_Flasher = {
+								Frames = {
+									[1] = "[R] 11 [B] 12",
+									[2] = "[R] 12 [B] 11",
+								},
+								Sequences = {
+									FLASH = { 1, 0, 1, 0, 1, 1, 1, 1, 2, 0, 2, 0, 2, 2, 2, 2 }
+								}
+							}
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Reverse_Flasher = "FLASH" },
+								["MODE2"] = { Reverse_Flasher = "FLASH" },
+								["MODE3"] = { Reverse_Flasher = "FLASH" },
+							}
+						}
 					}
 				}
 			}
@@ -152,6 +170,7 @@ VEHICLE.Selections = {
 				Option = "X-Streams",
 				Components = {
 					{
+						Name = "@rear_xstream",
 						Component = "photon_fedsig_xstream_single",
 						Position = Vector( -12, -103.2, 75.5 ),
 						Angles = Angle( 0, -90 - 10, 0 ),
@@ -161,18 +180,21 @@ VEHICLE.Selections = {
 							["Shroud"] = 1
 						},
 						ColorMap = "[B] 1",
-						Phase = "A"
+						Phase = "A",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "FLASH1" },
+								["MODE2"] = { Light = "FLASH1" },
+								["MODE3"] = { Light = "FLASH1" },
+							}
+						}
 					},
 					{
-						Component = "photon_fedsig_xstream_single",
+						Inherit = "@rear_xstream",
 						Position = Vector( 12, -103.2, 75.5 ),
 						Angles = Angle( 0, -90 + 10, 0 ),
-						Scale = 1,
-						BodyGroups = {
-							["Mount"] = 2,
-							["Shroud"] = 1
-						},
-						Phase = "B"
+						Phase = "B",
+						ColorMap = "[R] 1"
 					}
 				}
 			}

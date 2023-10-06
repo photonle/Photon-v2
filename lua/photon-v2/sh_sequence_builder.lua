@@ -102,6 +102,12 @@ function Photon2.SequenceBuilder:Blink( frame, flashes )
 	return self:Append( result )
 end
 
+---@param shouldRepeat boolean If the sequence should repeat itself.
+function Photon2.SequenceBuilder:SetRepeating( shouldRepeat )
+	self.IsRepeating = shouldRepeat
+	return self
+end
+
 -- Flashes frame A *once*, then frame B once (if set).
 ---@param frame integer Index of first (A) frame/phase to flash.
 ---@param alternateFrame? integer Index of second (B) frame/phase to flash. If left `nil`, there will be no phasing.
@@ -170,8 +176,11 @@ function Photon2.SequenceBuilder:Do( times )
 	return self
 end
 
-setmetatable( Photon2.SequenceBuilder, Photon2.SequenceBuilder )
+setmetatable( Photon2.SequenceBuilder, {
+	__call = function()
+		return setmetatable( { _previous = {} }, Photon2.SequenceBuilder )
+	end
+} )
 
 -- local s = Photon2.SequenceBuilder.New()
-
 -- print(s:Alternate(1,2,4):Do(3):Add(0):Flash(1,2,3):Do(3):ToLua())

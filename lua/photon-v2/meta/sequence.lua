@@ -83,15 +83,25 @@ function Sequence.New( name, frameSequence, segment, data )
 	-- unclear why this is needed
 	frameSequence._previous = nil
 
+	local shouldRepeat = true
+
+	if ( frameSequence.IsRepeating ~= nil ) then
+		shouldRepeat = frameSequence.IsRepeating
+	end
+
 	local sequence = {
 		Name = name,
-		FramesByIndex = frameSequence
+		IsRepeating = shouldRepeat
 	}
+
+
 	
 	local usedLightsByKey = {}
 	local checkedFrames = {}
+	local rebuiltFrameSequence = {}
 
-	for key, frame in pairs( frameSequence ) do
+	for key, frame in ipairs( frameSequence ) do
+		rebuiltFrameSequence[key] = frame
 		if (checkedFrames[frame]) then continue end
 		if ( not segment.Frames[frame] ) then
 			error("Frame #" .. tostring(frame) .. " does not exist.")
@@ -108,24 +118,44 @@ function Sequence.New( name, frameSequence, segment, data )
 	end
 
 	sequence.UsedLightsByIndex = usedLights
+	sequence.FramesByIndex = rebuiltFrameSequence
 
 	return setmetatable( sequence, { __index = PhotonSequence } )
 end
 
-function Sequence:SetFrame( frame )
+function Sequence:IncrementFrame( frame )
 	-- allow empty sequences to silently fail
 	if ( #self < 1 ) then return end
 
-	self.CurrentFrame = frame
-	if (self.CurrentFrame > #self) then
-		if (self.IsRepeating) then
-			self.CurrentFrame = self.RestartFrame
-		else
+	if ( self.IsRepeating and self.RestartFrame == 1 ) then
+		self.CurrentFrame = (frame % #self) + 1
+	elseif ( not self.IsRepeating ) then
+
+		if ( not self.PreviousFrame ) then self.CurrentFrame = 0 end
+		
+		if ( self.CurrentFrame >= #self ) then
 			self.CurrentFrame = #self
+		else
+			self.CurrentFrame = self.CurrentFrame + 1
 		end
+
+	else
+		self.CurrentFrame = (frame % #self) + 1
 	end
+
+	-- self.CurrentFrame = frame
+	-- if (self.CurrentFrame > #self) then
+	-- 	if (self.IsRepeating) then
+	-- 		print("sequence should repeat")
+	-- 		self.CurrentFrame = self.RestartFrame
+	-- 	else
+	-- 		print("sequence should not repeat")
+	-- 		self.CurrentFrame = #self
+	-- 	end
+	-- end
+
 	self.ActiveFrame = self[self.CurrentFrame]
-	-- if not (self.PreviousFrame == self.ActiveFrame) then
+	if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
 		if ( not self.ActiveFrame ) then
 			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
@@ -134,7 +164,7 @@ function Sequence:SetFrame( frame )
 			light:SetInput( self.Name, stateId )
 			-- light:SetState( stateId, self.Segment.Name, self.PriorityScore, self.Rank )
 		end
-	-- end
+	end
 	self.PreviousFrame = self.ActiveFrame
 end
 
