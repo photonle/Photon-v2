@@ -53,16 +53,28 @@ COMPONENT.Segments = {
 	}
 }
 
+COMPONENT.InputPriorities = {
+	["Virtual.Siren"] = 200
+}
+
 COMPONENT.VirtualOutputs = {
 	-- Virtual channel name
 	["Virtual.Siren"] = {
-		-- Mode
-		["T1"] = {
-			When = {
+		{
+			Mode = "T1",
+			Conditions = {
 				["Emergency.Siren"] = { "T1" },
 				["Emergency.Warning"] = { "MODE1", "MODE2", "MODE3" }
 			}
 		}
+		-- Mode
+		-- ["T1"] = { -- T1 is active when...
+		-- 	{ -- (Condition #1)
+		-- 		-- Siren mode is set to T1...
+		-- 		["Emergency.Siren"] = { "T1" },
+		-- 		-- AND Warning mode is MODE1, MODE2 or MODE3
+		-- 	}
+		-- }
 	}
 }
 
@@ -76,6 +88,8 @@ COMPONENT.Patterns = {
 		}
 	},
 	["Virtual.Siren"] = {
-
+		["T1"] = {
+			Light = "ON"
+		}
 	}
 }

@@ -48,7 +48,7 @@ VEHICLE.Selections = {
 								["MODE1"] = { Reverse_Flasher = "FLASH" },
 								["MODE2"] = { Reverse_Flasher = "FLASH" },
 								["MODE3"] = { Reverse_Flasher = "FLASH" },
-							}
+							},
 						}
 					}
 				}
@@ -182,11 +182,12 @@ VEHICLE.Selections = {
 						ColorMap = "[B] 1",
 						Phase = "A",
 						Inputs = {
+							["Virtual.Siren"] = { ["T1"] = { Light = "ON" } },
 							["Emergency.Warning"] = {
-								["MODE1"] = { Light = "FLASH1" },
-								["MODE2"] = { Light = "FLASH1" },
+								-- ["MODE1"] = { Light = "FLASH1" },
+								-- ["MODE2"] = { Light = "FLASH1" },
 								["MODE3"] = { Light = "FLASH1" },
-							}
+							},
 						}
 					},
 					{

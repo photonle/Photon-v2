@@ -20,13 +20,16 @@ local printf = Photon2.Debug.PrintF
 ---@field ColorMap table<integer, string[]>
 ---@field Inputs table<string, string[]>
 ---@field LightGroups table<string, integer[]>
+---@field UseControllerModes boolean If true, the component will use its controller's CurrentModes table. If false, it will manage its own (required for Virtual Inputs).
 ---@field Phase string
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
 local Util = Photon2.Util
 
+Component.UseControllerModes = true
 Component.IsPhotonLightingComponent = true
+Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 --[[
 		COMPILATION
@@ -46,7 +49,7 @@ function Component.New( name, data, base )
 	local ancestors = { [name] = true }
 
 	if ( data.Base ) then
-		Util.Inherit( data, table.Copy(Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+		Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
 		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 		Photon2.Library.ComponentsGraph[data.Base][name] = true
 
@@ -74,8 +77,13 @@ function Component.New( name, data, base )
 		Patterns = {},
 		Inputs = {},
 		LightGroups = data.LightGroups,
-		SubMaterials = data.SubMaterials
+		SubMaterials = data.SubMaterials,
+		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
 	}
+
+	-- if ( not component.InputPriorities ) then
+	-- 	error( "Component.InputPriorities was not set.")
+	-- end
 
 	-- --[[
 	-- 		Build Ancestors Dictionary
@@ -224,14 +232,30 @@ function Component.New( name, data, base )
 
 
 	--[[
-
 			Compile Segments
 	--]]
 
 	for segmentName, segmentData in pairs( data.Segments or {} ) do
-		component.Segments[segmentName] = PhotonLightingSegment.New( segmentName, segmentData, data.LightGroups )
+		component.Segments[segmentName] = PhotonLightingSegment.New( segmentName, segmentData, data.LightGroups, component.InputPriorities )
 	end
 
+	--[[
+			Setup Virtual Inputs
+	--]]
+
+	if ( istable( data.VirtualOutputs ) ) then
+		component.UseControllerModes = false
+		for outputChannel, outputModes in pairs( data.VirtualOutputs ) do
+			for modeIndex, modeData in pairs( outputModes ) do
+				for inputChannel, inputModes in pairs( modeData.Conditions ) do
+					for i=1, #inputModes do
+						inputModes[inputModes[i]] = true
+					end
+				end
+			end
+		end
+		component.VirtualOutputs = data.VirtualOutputs
+	end	
 
 	--[[
 			Compile Patterns
@@ -241,7 +265,13 @@ function Component.New( name, data, base )
 		-- Build input interface channels
 		component.Inputs[channelName] = {}
 		
-		local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
+		-- local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
+		local priorityScore = component.InputPriorities[channelName]
+	
+		if ( not priorityScore ) then
+			ErrorNoHaltWithStack( "Failed to find input priority score for Input (Pattern) [" .. tostring( channelName ) .. "].")
+			priorityScore = 0
+		end
 
 		for modeName, sequences in pairs( channel ) do
 			
@@ -281,14 +311,14 @@ function Component.New( name, data, base )
 
 					if ( phase ) then
 						local newSequenceName = sequence .. ":" .. phase
-						print( "*********** COMPONENT HAS PHASING ***********" )
-						print( "Phase: " .. tostring( phase ) )
-						print( "New sequence name: " .. tostring( newSequenceName ) )
+						-- print( "*********** COMPONENT HAS PHASING ***********" )
+						-- print( "Phase: " .. tostring( phase ) )
+						-- print( "New sequence name: " .. tostring( newSequenceName ) )
 						if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
-							print( "Phased sequence LOCATED.")
+							-- print( "Phased sequence LOCATED.")
 							sequence = newSequenceName
 						else
-							print( "Phase NOT found." )
+							-- print( "Phase NOT found." )
 						end
 					end
 
@@ -339,8 +369,11 @@ function Component:Initialize( ent, controller )
 	-- not PhotonBaseEntity.
 	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 
-	-- Set CurrentState to directly reference controller's table
-	component.CurrentModes = controller.CurrentModes
+	if ( self.UseControllerModes ) then
+		component.CurrentModes = controller.CurrentModes
+	else
+		component.CurrentModes = table.Copy( controller.CurrentModes )
+	end
 
 	component.Lights = {}
 	component.Segments = {}
@@ -369,6 +402,38 @@ function Component:OnScaleChange( newScale, oldScale )
 end
 
 function Component:ApplyModeUpdate()
+
+
+	-- Virtual outputs
+	-- local virtualOutputs = {}
+	for outputChannel, outputModes in pairs( self.VirtualOutputs or {} ) do
+		-- print("\tChecking output channel [" .. tostring( outputChannel ) .. "]")
+		local modeResult = "OFF"
+		for i=1, #outputModes do
+			-- print("\t\tChecking output mode [" .. tostring( outputModes[i].Mode ) .. "]")
+			local conditionsMet = true
+			for conditionChannel, conditionModes in pairs( outputModes[i].Conditions ) do
+				-- print("\t\t\tChecking condition channel [" .. tostring(conditionChannel .. "]"))
+				-- print("\t\t\t\tCurrent mode is [" .. tostring(self.CurrentModes[conditionChannel]) .."]" )
+				-- PrintTable( conditionModes )
+				if ( not conditionModes[self.CurrentModes[conditionChannel]] ) then
+					-- print("\t\t\t\tMode condition NOT met.")
+					conditionsMet = false
+					break
+				end
+			end
+			if ( conditionsMet ) then
+				-- print("\t\t\t\tMode conditions MET.")
+				modeResult = outputModes[i].Mode
+				break
+			end
+			-- if ( modeResult ~= "OFF" ) then break end
+		end
+		-- print("\t\tVirtual Outputs table:")
+		-- virtualOutputs[outputChannel] = modeResult
+		self.CurrentModes[outputChannel] = modeResult
+	end
+
 	for name, segment in pairs( self.Segments ) do
 		segment:ApplyModeUpdate()
 	end
@@ -376,16 +441,20 @@ function Component:ApplyModeUpdate()
 	self:FrameTick()
 end
 
--- Functionally identical to what :ApplyModeUpdate() does but logs it
--- for debugging purposes.
 function Component:SetChannelMode( channel, new, old )
 	
-	printf( "Component received mode change notification for [%s] => %s", channel, new )
-	-- Notify segments
-	for name, segment in pairs( self.Segments ) do
-		segment:OnModeChange( channel, new )
+	-- printf( "Component received mode change notification for [%s] => %s", channel, new )
+	
+	if ( not self.UseControllerModes ) then
+		self.CurrentModes[channel] = new
 	end
-	self:FrameTick()
+
+	-- Notify segments
+	self:ApplyModeUpdate()
+	-- for name, segment in pairs( self.Segments ) do
+	-- 	segment:OnModeChange( channel, new )
+	-- end
+	-- self:FrameTick()
 end
 
 

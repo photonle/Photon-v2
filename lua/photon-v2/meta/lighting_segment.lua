@@ -28,13 +28,13 @@ Segment.InputPriorities = {}
 Segment.Count = 0
 Segment.FrameDuration = 0.64
 Segment.LastFrameTime = 0
-Segment.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
+-- Segment.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 -- On compile
 ---@param segmentData any
 ---@param lightGroups table<string, integer[]>
 ---@return PhotonLightingSegment
-function Segment.New( name, segmentData, lightGroups )
+function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 
 	---@type PhotonLightingSegment
 	local segment = {
@@ -43,7 +43,8 @@ function Segment.New( name, segmentData, lightGroups )
 		Sequences = {},
 		Frames = {},
 		Patterns = {},
-		Inputs = {}
+		Inputs = {},
+		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } )
 	}
 
 	setmetatable( segment, { __index = PhotonLightingSegment } )
@@ -421,6 +422,10 @@ function Segment:CalculatePriorityChannel( inputState )
 				topScore = self.InputPriorities[channel]
 				result = channel
 			end
+		elseif ( self:AcceptsChannelMode( channel .. ":" .. inputState[channel] ) ) then
+			error( "Segment is configured to accept channel input [" .. tostring(channel) .. "] but the channel does not an Input Priority score defined." )
+		-- else
+			-- error("Input priority score not found for " .. tostring(channel))
 		end
 	end
 	return result
