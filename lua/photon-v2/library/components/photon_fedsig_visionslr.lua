@@ -14,7 +14,9 @@ COMPONENT.Model = "models/schmal/fedsig_visionslr.mdl"
 
 COMPONENT.Templates = {
 	["Bone"] = {
-		Pod = {}
+		Pod = {
+			DeactivationState = "Deactivate"
+		}
 	},
 	["Mesh"] = {
 		PodEmissive = {
@@ -35,6 +37,7 @@ COMPONENT.Templates = {
 			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
 			Width = 4.7,
 			Height = 4.5/2,
+			RequiredBodyGroups = { ["Hotfeet"] = { 0 } }
 		},
 		ForwardHotFeet = {
 			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
@@ -43,7 +46,8 @@ COMPONENT.Templates = {
 			Height = 4.5/2,
 			Scale = 1.2,
 			Ratio = 2,
-			VisibilityRadius = 0
+			VisibilityRadius = 0,
+			RequiredBodyGroups = { ["Hotfeet"] = { 0 } }
 		}
 	},
 	["Projected"] = {
@@ -59,10 +63,17 @@ COMPONENT.Templates = {
 
 COMPONENT.LightStates = {
 	["Bone"] = {
-		Standby ={
+		Deactivate = {
 			Activity = "Fixed",
-			Target = 359,
+			Target = 0,
 			Speed = 200,
+			Direction = 1,
+			DeactivateOnTarget = true
+		},
+		Standby = {
+			Activity = "Fixed",
+			Target = 0,
+			Speed = 350,
 			Direction = 1
 		},
 		Point90 = {
@@ -97,6 +108,10 @@ COMPONENT.LightStates = {
 			Activity = "Rotate",
 			Speed = 500,
 		},
+		RotateStart = {
+			Activity = "Rotate",
+			Speed = 250,
+		},
 		SweepForward = {
 			Activity = "Sweep",
 			SweepStart = 315,
@@ -130,8 +145,28 @@ COMPONENT.LightStates = {
 		},
 		LVMPD_M2_RA = {
 			Activity = "Rotate",
-			Speed = 500,
+			Speed = 550,
 			AngleOutputMap = { { 0, "R" }, { 90, "A"}, { 270, "R" } }
+		},
+		LVMPD_M3_RR = {
+			Activity = "Rotate",
+			Speed = 550,
+			AngleOutputMap = { { 0, "R" } }
+		},
+		LVMPD_M2_4_RA = {
+			Activity = "Rotate",
+			Speed = 400,
+			AngleOutputMap = { { 0, "R" }, { 90, "A"}, { 270, "R" } }
+		},
+		LVMPD_M3_RW = {
+			Activity = "Rotate",
+			Speed = 550,
+			AngleOutputMap = { { 0, "W" }, { 90, "R"}, { 270, "W" } }
+		},
+		LVMPD_M3_4_RW = {
+			Activity = "Rotate",
+			Speed = 400,
+			AngleOutputMap = { { 0, "W" }, { 90, "R"}, { 270, "W" } }
 		},
 		RearSweep_2 = {
 			Inherit = "RearSweep",
@@ -295,7 +330,7 @@ COMPONENT.Segments = {
 			[2] = "[SweepForward] 1 4 7 10 13 16 19",
 			-- [3] = "[RearSweep] 1 [ProxyTest] 2 3"
 			[3] = "[RearSweep] 1 4 [FixedRear] 7 10 [R] 2 3 5 6 8 9 11 12 [A] 8 9 11 12",
-			[4] = "[RearSweep] POD7"
+			[4] = "[RotateStart] POD1"
 		},
 		Sequences = {
 			TEST = { 4 }
@@ -334,31 +369,93 @@ COMPONENT.Segments = {
 	-- },
 	LVMPD_Lights = {
 		Frames = {
-			[1] = "[R] POD1_Light",
-			[2] = "[R] POD1_Light [A] POD2_Light",
-			[3] = "[R] POD1_Light [A] POD2_Light [Pod4Proxy] POD4_Light",
-			[4] = "[R] POD1_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
-			[5] = "[R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+			-- [1] = "[R] POD1_Light",
+			-- [2] = "[R] POD1_Light [A] POD2_Light",
+			-- [3] = "[R] POD1_Light [A] POD2_Light [Pod4Proxy] POD4_Light",
+			-- [4] = "[R] POD1_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+			-- [5] = "[R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
 			
-			[6] = "[R] POD1_Light POD7_Light [B] POD3_Light POD5_Light [Pod2Proxy] POD2_Light [Pod4Proxy] POD4_Light [Pod6Proxy] POD6_Light",
+			[1] = "[R] POD1_Light",
+			[2] = "[R] POD1_Light POD2_Light",
+			[3] = "[R] POD1_Light POD2_Light POD4_Light",
+			[4] = "[R] POD1_Light POD2_Light POD4_Light POD6_Light",
+			[5] = "[R] POD1_Light POD2_Light POD4_Light POD6_Light POD7_Light",
+
+			[6] = "[R] POD1_Light",
+			[7] = "[R] POD1_Light POD2_Light",
+			[8] = "[R] POD1_Light POD2_Light [OFF] POD3_Light",
+			[9] = "[R] POD1_Light POD2_Light [OFF] POD3_Light [R] POD4_Light",
+			[10] = "[R] POD1_Light POD2_Light [OFF] POD3_Light [R] POD4_Light [OFF] POD5_Light",
+			[11] = "[R] POD1_Light POD2_Light [OFF] POD3_Light [R] POD4_Light [OFF] POD5_Light [R] POD6_Light",
+			[12] = "[R] POD1_Light POD2_Light [OFF] POD3_Light [R] POD4_Light [OFF] POD5_Light [R] POD6_Light POD7_Light",
+			
+			[13] = "[R] POD1_Light POD7_Light [B] POD3_Light POD5_Light [Pod2Proxy] POD2_Light [Pod4Proxy] POD4_Light [Pod6Proxy] POD6_Light",
+			
+			[14] = "[R] POD1_Light POD7_Light [A] POD2_Light POD6_Light [Pod4Proxy] POD4_Light",
+			
+			[15] = "[R] POD1_Light POD2_Light [B] POD3_Light [R] POD4_Light [B] POD5_Light [R] POD6_Light POD7_Light",
+			-- [13] = "[R] POD1_Light POD7_Light POD2_Light POD6_Light POD4_Light [B] POD3_Light POD5_Light "
 			-- [7] = "[R] POD1_Light POD7_Light [B] POD3_Light POD5_Light",
 		},
 		Sequences = {
-			MODE1 = sequence():Add( 1, 2, 3, 4, 5 ):SetRepeating( false ),
-			MODE2 = sequence():Add( 6 ):SetRepeating( false )
+			MODE1 = sequence():Add( 1, 2, 3, 4, 5 ):Hold( 40 ):Add( 14 ):SetRepeating( false ),
+			MODE2 = sequence():Add( 0 ):Hold( 10 ):Add( 6, 7, 8, 9, 10, 11, 12 ):Hold( 20 ):Add( 15 ):Hold( 30 ):Add( 13 ):SetRepeating( false ),
+			MODE3 = sequence():Add( 12 ):Hold( 30 ):Add( 15 ):SetRepeating( false ),
+			MODE4 = sequence():Add( 12 ):Hold( 30 ):Add( 15 ):Hold( 20 ):Add( 13 ):SetRepeating( false ),
 		}
 	},
 	LVMPD_Pods = {
 		Frames = {
-			[1] = "[Point135] POD1 POD2 [Point215] POD6 POD7 [LVMPD_M1_Pod4] POD4",
+			[1] = "[Point135] POD1 POD2 [Point215] POD6 POD7 [RotateStart] POD4",
 			[2] = "[RearSweep] POD1 POD2 POD6 POD7 [LVMPD_M1_Pod4] POD4 [Standby] POD3 POD5",
 			-- Mode 2
 			[3] = "[Standby] POD1 POD2 POD3 POD4 POD5 POD6 POD7",
-			[4] = "[LVMPD_M2_RA] POD2 POD4 POD6 [RotateMedium] POD1 POD7 [RotateFast] POD3 POD5"
+			[4] = "[LVMPD_M2_RA] POD2 POD6 [LVMPD_M2_4_RA] POD4 [RotateMedium] POD1 POD7 [RotateFast] POD3 POD5",
+			-- Mode 3
+			[5] = "[Standby] POD1 POD2 POD3 POD4 POD5 POD6 POD7",
+			[6] = "[LVMPD_M3_RW] POD2 POD6 [LVMPD_M3_4_RW] POD4 [RotateMedium] POD1 POD7 [RotateFast] POD3 POD5",
+			-- Ramp All
+			[7] = "[RotateStart] POD1",
+			[8] = "[RotateStart] POD1 POD2",
+			[9] = "[RotateStart] POD1 POD2 POD3",
+			[10] = "[RotateStart] POD1 POD2 POD3 POD4",
+			[11] = "[RotateStart] POD1 POD2 POD3 POD4 POD5",
+			[12] = "[RotateStart] POD1 POD2 POD3 POD4 POD5 POD6",
+			[13] = "[RotateStart] POD1 POD2 POD3 POD4 POD5 POD6 POD7",
+			-- Ramp Mode 2
+			-- [6] = "[LVMPD_M3_4_RW] POD4 [LVMPD_M3_RW] POD2 POD6 [RotateMedium] POD1 POD7 [RotateFast] POD3 POD5",
+			[14] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1",
+			[15] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6",
+			[16] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6 [RotateFast] POD3",
+			[17] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6 [RotateFast] POD3 [LVMPD_M2_RA] POD4",
+			[18] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6 [RotateFast] POD3 [LVMPD_M2_RA] POD4 [RotateFast] POD5",
+			[19] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6 [RotateFast] POD3 [LVMPD_M2_RA] POD4 [RotateFast] POD5 [LVMPD_M2_RA] POD2",
+			[20] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M2_RA] POD6 [RotateFast] POD3 [LVMPD_M2_RA] POD4 [RotateFast] POD5 [LVMPD_M2_RA] POD2 [RotateMedium] POD7",
+			-- Ramp Mode 3
+			[21] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1",
+			[22] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6",
+			[23] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6 [RotateFast] POD3",
+			[24] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6 [RotateFast] POD3 [LVMPD_M3_RR] POD4",
+			[25] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6 [RotateFast] POD3 [LVMPD_M3_RR] POD4 [RotateFast] POD5",
+			[26] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6 [RotateFast] POD3 [LVMPD_M3_RR] POD4 [RotateFast] POD5 [LVMPD_M3_RR] POD2",
+			[27] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RR] POD6 [RotateFast] POD3 [LVMPD_M3_RR] POD4 [RotateFast] POD5 [LVMPD_M3_RR] POD2 [RotateMedium] POD7",
+
+			-- Ramp Mode 4
+			[28] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1",
+			[29] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6",
+			[30] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6 [RotateFast] POD3",
+			[31] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6 [RotateFast] POD3 [LVMPD_M3_4_RW] POD4",
+			[32] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6 [RotateFast] POD3 [LVMPD_M3_4_RW] POD4 [RotateFast] POD5",
+			[33] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6 [RotateFast] POD3 [LVMPD_M3_4_RW] POD4 [RotateFast] POD5 [LVMPD_M3_RW] POD2",
+			[34] = "[RotateStart] POD2 POD3 POD4 POD5 POD6 POD7 [RotateMedium] POD1 [LVMPD_M3_RW] POD6 [RotateFast] POD3 [LVMPD_M3_4_RW] POD4 [RotateFast] POD5 [LVMPD_M3_RW] POD2 [RotateMedium] POD7",
 		},
 		Sequences = {
-			MODE1 = sequence():Add( 1 ):Hold( 40 ):Add( 2 ):SetRepeating( false ),
-			MODE2 = sequence():Add( 3 ):Hold( 40 ):Add( 4 ):SetRepeating( false )
+			MODE1 = sequence():Add( 1 ):Hold( 30 ):Add( 2 ):SetRepeating( false ),
+			MODE2 = sequence():Add( 3 ):Hold( 20 ):Add( 13 ):Hold( 20 ):Add( 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 19, 19, 20 ):SetRepeating( false ),
+			MODE3 = sequence():Add( 3 ):Hold( 20 ):Add( 13 ):Hold( 20 ):Add( 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27 ):SetRepeating( false ),
+			MODE4 = sequence():Add( 3 ):Hold( 20 ):Add( 13 ):Hold( 20 ):Add( 28, 28, 29, 29, 30, 30, 31, 31, 32, 32, 33, 33, 34 ):SetRepeating( false ),
+			-- MODE3 = sequence():Add( 13 ):Hold( 10 ):Add( 4 ):SetRepeating( false ),
+			-- MODE4 = sequence():Add( 13 ):Hold( 10 ):Add( 6 ):SetRepeating( false ),
 		}
 	},
 	SignalMaster = {
@@ -386,7 +483,8 @@ COMPONENT.Segments = {
 			[1] = "37 38"
 		},
 		Sequences = {
-			ALL = { 1 }
+			ALL = { 1 },
+			FLASH = { 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, }
 		}
 	},
 	ForwardHotFeet = {
@@ -394,7 +492,24 @@ COMPONENT.Segments = {
 			[1] = "39 40"
 		},
 		Sequences = {
-			ALL = { 1 }
+			ALL = { 1 },
+			FLASH = { 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, }
+		}
+	}
+}
+
+COMPONENT.InputPriorities = {
+	["Virtual.Warning+Siren"] = 43
+}
+
+COMPONENT.VirtualOutputs = {
+	["Virtual.Warning+Siren"] = {
+		{
+			Mode = "MODE3",
+			Conditions = {
+				["Emergency.Siren"] = { "T1", "T2", "T3", "T4", "AH", "MA"},
+				["Emergency.Warning"] = { "MODE3" }
+			}
 		}
 	}
 }
@@ -410,17 +525,23 @@ COMPONENT.Patterns = {
 			SignalMaster = "WARN1",
 		},
 		["MODE2"] = {
-			-- LVMPD = "MODE2",
-			-- Test = "TEST",
 			SignalMaster = "WARN2",
 			LVMPD_Lights = "MODE2",
 			LVMPD_Pods = "MODE2",
 		},
 		["MODE3"] = {
-			-- LVMPD = "MODE3",
+			SignalMaster = "WARN2",
+			LVMPD_Lights = "MODE3",
+			LVMPD_Pods = "MODE3",
 			SignalMaster = "WARN4",
-			AlleyHotFeet = "ALL",
-			ForwardHotFeet = "ALL",
+		}
+	},
+	["Virtual.Warning+Siren"] = {
+		["MODE3"] = {
+			LVMPD_Lights = "MODE4",
+			LVMPD_Pods = "MODE4",
+			AlleyHotFeet = "FLASH",
+			ForwardHotFeet = "FLASH",
 		}
 	}
 }

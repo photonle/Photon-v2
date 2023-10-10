@@ -45,28 +45,30 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[ON] 1 2 3"
+COMPONENT.ColorMap = "[ON] 1 2 3 4 5 6"
 
 COMPONENT.Lights = {
 	[1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
 	[2] = { "Speaker", "emv/sirens/federal sig ss/emv_yelp.wav" },
 	[3] = { "Speaker", "emv/sirens/federal sig ss/emv_priority.wav" },
+	[4] = { "Speaker", "emv/sirens/federal sig ss/emv_hilo.wav" },
+	[5] = { "Speaker", "emv/sirens/federal sig ss/emv_horn.wav" },
+	[6] = { "Speaker", "emv/sirens/federal sig ss/emv_manual.wav" },
 }
 
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	Siren = {
-		Frames = {
-			[1] = "1",
-			[2] = "2",
-			[3] = "3",
-		},
+		Frames = { "1", "2", "3", "4", "5", "6" },
 		Sequences = {
 			["WAIL"] = { 1 },
 			["YELP"] = { 2 },
 			["PRIORITY"] = { 3 },
-			["DEMO"] = sequence():Add(3):Do(16):Add(1):Do(16)
+			["HILO"] = { 4 },
+			["AIRHORN"] = { 5 },
+			["MANUAL"] = { 6 },
+			-- ["DEMO"] = sequence():Add(3):Do(16):Add(1):Do(16)
 		}
 	}
 }
@@ -76,6 +78,11 @@ COMPONENT.Patterns = { -- Inputs
 		["T1"] = { Siren = "WAIL" },
 		["T2"] = { Siren = "YELP" },
 		["T3"] = { Siren = "PRIORITY" },
-		["DEMO"] = { Siren = "DEMO" }
+		["T4"] = { Siren = "HILO" },
+		-- ["DEMO"] = { Siren = "DEMO" }
+	},
+	["Emergency.SirenOverride"] = {
+		["AIR"] = { Siren = "AIRHORN" },
+		["MAN"] = { Siren = "MANUAL" },
 	}
 }

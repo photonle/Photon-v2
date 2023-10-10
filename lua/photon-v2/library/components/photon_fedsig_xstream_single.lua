@@ -87,9 +87,9 @@ COMPONENT.Patterns = {
 			Light = "FLASH"
 		}
 	},
-	["Virtual.Siren"] = {
-		["T1"] = {
-			Light = "ON"
-		}
-	}
+	-- ["Virtual.Siren"] = {
+	-- 	["T1"] = {
+	-- 		Light = "ON"
+	-- 	}
+	-- }
 }

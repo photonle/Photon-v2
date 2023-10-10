@@ -33,6 +33,7 @@ local emergencyConfigs = {
 		Name = "Federal Signal SSP",
 		Default = { Sound = "photon/controllers/fedsig_ssp_chirp.wav" },
 		Release = false,
+		Momentary = true
 	},
 }
 
@@ -218,7 +219,7 @@ local normalVehicleConfigs = {
 ENT.Interactions = {
 	---@type table<string, PhotonControllerSound>
 	Sounds = {
-		Controller = emergencyConfigs["code3_z3"],
+		Controller = emergencyConfigs["fedsig_ssp"],
 		Click = normalVehicleConfigs["default"]
 	},
 }
@@ -238,11 +239,11 @@ local soundConfigMeta = {
 	__index = {
 		-- Sound played as soon as button is pressed
 		Press = true,
-		-- Sounds played when the button is pressed and held (one second by default)
+		-- Sounds played when the button is "momentary," e.g. manual and horn
 		Momentary = true,
 		-- Sounds played when any specified button is released
 		Release = true,
-		-- Sounds played when the button is "momentary," e.g. manual and horn
+		-- Sounds played when the button is pressed and held (one second by default)
 		Hold = true
 	}
 }
@@ -267,6 +268,8 @@ end
 function ENT:UserCommandSound( action, press, name )
 	-- if true then return end
 	local class = self.Interactions.Sounds[action.Sound]
+	press = action.Press or press
+	
 	local sound = class[press]
 
 	if ( sound and isstring( sound ) ) then

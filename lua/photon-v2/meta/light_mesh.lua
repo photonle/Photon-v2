@@ -182,7 +182,7 @@ end
 
 -- Internal
 function Light:Activate()
-	PhotonLight.Activate( self )
+	if not PhotonLight.Activate( self ) then return end
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true

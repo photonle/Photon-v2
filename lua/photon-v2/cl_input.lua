@@ -188,6 +188,28 @@ local prototypeInput = {
 			{ Action = "SOUND", Sound = "Controller" }
 		}
 	},
+	[KEY_T] = {
+		Name = "Airhorn",
+		OnPress = {
+			{ Action = "SOUND", Sound = "Controller" },
+			{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "AIR" }
+		},
+		OnRelease = {
+			{ Action = "SOUND", Sound = "Controller", Press = "Momentary" },
+			{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "OFF" }
+		}
+	},
+	[KEY_Y] = {
+		Name = "Manual",
+		OnPress = {
+			{ Action = "SOUND", Sound = "Controller" },
+			{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "MAN" }
+		},
+		OnRelease = {
+			{ Action = "SOUND", Sound = "Controller", Press = "Momentary" },
+			{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "OFF" }
+		}
+	},
 	[KEY_H] = {
 		Name = "Lights",
 		OnPress = {
@@ -251,6 +273,14 @@ local prototypeInput = {
 			{ Action = "SOUND", Sound = "Controller" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T3" },
 			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T3", Modifiers = { KEY_RALT } },
+		},
+		OnRelease = { { Action = "SOUND", Sound = "Controller" }, }
+	},
+	[KEY_4] = {
+		OnPress = {
+			{ Action = "SOUND", Sound = "Controller" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T4" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T4", Modifiers = { KEY_RALT } },
 		},
 		OnRelease = { { Action = "SOUND", Sound = "Controller" }, }
 	}

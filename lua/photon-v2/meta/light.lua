@@ -7,7 +7,9 @@ local printf = Photon2.Debug.PrintF
 ---@class PhotonLight
 ---@field Parent Entity
 ---@field Class string
+---@field Disabled boolean
 ---@field Deactivate boolean When `true`, marks the light to be activated on the next frame.
+---@field DeactivationState? string
 ---@field IsActivated boolean
 ---@field States table
 ---@field Id integer
@@ -15,6 +17,8 @@ local printf = Photon2.Debug.PrintF
 ---@field Inputs table
 ---@field SortedInputs table
 ---@field BoneParent number|string Model bone to attach the light to (if supported).
+---@field RequiredBodyGroups table<number | string, number | table<number>>
+---@field private HasBodyGroupRequirements boolean
 local Light = exmeta.New()
 
 ---@param id integer
@@ -29,11 +33,61 @@ function Light:Initialize( id, parent )
 		SortedInputs = {}
 	}
 	if ( isstring( self.BoneParent ) ) then
+		
 		self.BoneParent = parent:LookUpBoneOrError( self.BoneParent )
 	end
+
 	return setmetatable( light, { __index = self } )
 end
 
+function Light:CheckBodyGroupRequirements()
+	if ( self.HasBodyGroupRequirements == nil ) then
+		if ( istable( self.RequiredBodyGroups ) ) then
+			self.HasBodyGroupRequirements = true
+			local metaTable = getmetatable( self.RequiredBodyGroups ) or {}
+			if ( not metaTable.Processed ) then
+				for bodyGroupName, selection in pairs( self.RequiredBodyGroups ) do
+					
+					local index = bodyGroupName
+
+					if ( isstring( bodyGroupName ) ) then
+						
+						index = self.Parent:FindBodygroupByName( bodyGroupName --[[@as string]] )
+						if ( index == -1 ) then
+							print(tostring(self.Parent))
+							ErrorNoHaltWithStack( "Body group name [" .. tostring( bodyGroupName ) .. "] not found in model [" .. 
+							tostring( self.Parent:GetModel() ) .. "]" ) 
+						end
+						
+						self.RequiredBodyGroups[bodyGroupName] = nil
+						
+					end
+
+					local newSelectionTable = {}
+					
+					for i=1, #selection do
+						newSelectionTable[selection[i]] = true
+					end
+					
+					self.RequiredBodyGroups[index] = newSelectionTable
+				end
+				metaTable.Processed = true
+				setmetatable( self.RequiredBodyGroups, metaTable )
+			end
+		else
+			self.HasBodyGroupRequirements = false
+		end
+	end
+
+	if ( not self.HasBodyGroupRequirements ) then return true end
+	
+	for index, bodyGroups in pairs( self.RequiredBodyGroups ) do
+		
+		if ( not bodyGroups[self.Parent:GetBodygroup( index )] ) then return false end
+	end
+	
+	return true
+end
 
 ---@param state PhotonLightState
 function Light:OnStateChange( state ) end
@@ -101,7 +155,11 @@ function Light:UpdateState()
 
 	-- Set light to auto-deactivate when it has no more inputs
 	if (#self.SortedInputs < 1) then
-		self.Deactivate = true
+		if ( self.DeactivationState ) then
+			self:OnStateChange( self.States[self.DeactivationState] )
+		else
+			self.Deactivate = true
+		end
 	else
 		self:Activate()
 	end
@@ -127,7 +185,17 @@ end
 
 -- Marks the light as "activated" to enable rendering optimizations
 -- and add to applicable rendering queues.
-function Light:Activate() end
+function Light:Activate() 
+	if ( self.HasBodyGroupRequirements or ( self.HasBodyGroupRequirements == nil ) ) then
+		if ( self:CheckBodyGroupRequirements() ) then
+			self.Disabled = false
+		else
+			self.Disabled = true
+			return false
+		end
+	end
+	return true
+end
 
 
 -- Forces light deactivation. Should only be called once

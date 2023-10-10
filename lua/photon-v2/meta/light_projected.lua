@@ -56,7 +56,7 @@ Light.States = {
 		Color = PhotonColor( 0, 0, 255 )
 	},
 	["A"] = {
-		Color = PhotonColor( 255, 220, 0 )
+		Color = PhotonColor( 255, 180, 0 )
 	}
 }
 
@@ -141,7 +141,7 @@ function Light:OnStateChange( state )
 end
 
 function Light:Activate()
-	PhotonLight.Activate( self )
+	if not PhotonLight.Activate( self ) then return end
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true

@@ -8,22 +8,23 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLightBone : PhotonLight
----@field Value number
----@field BoneId number
----@field Bone string
----@field Activity PhotonBoneLightActivity
----@field Axis number | string
----@field Smooth number Smoothing factor when reaching target value (only applies to sweep and static)
----@field Direction number -1 or +1
----@field Speed number Controls how fast rotation is.
----@field Target number Required for static and sweep modes.
----@field SweepStart number Angle the sweep should start at.
----@field SweepEnd number Angle the sweep should end at.
----@field SweepPause number Pause duration while sweeping.
----@field AngleOutputMap table<integer, table<number, any>>
----@field AddSpeed number Constant number to add speed by. Can be used to intentionally "drift" lights that are otherwise set to the same speed. 
----@field private InTransit boolean
----@field private PauseTime number
+---@field private Value? number
+---@field BoneId? number
+---@field Bone? string
+---@field Activity? PhotonBoneLightActivity
+---@field Axis? number | string
+---@field Smooth? number Smoothing factor when reaching target value (only applies to sweep and static)
+---@field Direction? number -1 or +1
+---@field DeactivateOnTarget? boolean If the light should deactivate upon reaching its target.
+---@field Speed? number Controls how fast rotation is.
+---@field Target? number Required for static and sweep modes.
+---@field SweepStart? number Angle the sweep should start at.
+---@field SweepEnd? number Angle the sweep should end at.
+---@field SweepPause? number Pause duration while sweeping.
+---@field AngleOutputMap? table<integer, table<number, any>>
+---@field AddSpeed? number Constant number to add speed by. Can be used to intentionally "drift" lights that are otherwise set to the same speed. 
+---@field private InTransit? boolean
+---@field private PauseTime? number
 local Element = exmeta.New()
 
 -- Rotation behaviors...
@@ -94,6 +95,7 @@ function Element:OnStateChange( state )
 	self.SweepEnd = state.SweepEnd
 	self.SweepPause = state.SweepPause
 	self.AngleOutputMap = state.AngleOutputMap
+	self.DeactivateOnTarget = state.DeactivateOnTarget
 
 	self.UpdateCurrentActivity = self["UpdateActivity" .. self.Activity]
 
@@ -107,7 +109,7 @@ function Element:OnStateChange( state )
 end
 
 function Element:Activate()
-	PhotonLight.Activate( self )
+	if not PhotonLight.Activate( self ) then return end
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true
@@ -136,15 +138,32 @@ function Element:UpdateActivityRotate()
 end
 
 function Element:ReachedTargetAngle( newAngle, oldAngle, target, direction )
+	-- if ( target == 0 ) then target = 0.00001 end
+	-- print( target )
+	local isZero = ( target == 0)
 	local crossedThreshold = ( newAngle < 0 ) or ( newAngle > 360 )
+	
+	
+	-- local nAng = newAngle
+
 	newAngle = newAngle % 360
 	if ( newAngle < 0 ) then newAngle = 360 + newAngle end
 	
+	-- if ( isZero and crossedThreshold ) then
+	-- 	if ( isZero ) then print( "ZERO [" .. tostring( math.Round(oldAngle, 2) ) .. "] => [" .. tostring( math.Round(nAng, 2) ) .. "] => " .. tostring( math.Round( newAngle, 2 )) ) end
+	-- end
+
+
 	if ( direction > 0 ) then
+		-- local didCross = crossedThreshold
+		-- local oldLessThanTarg = 
+
 		if 
 			( ( crossedThreshold ) and ( oldAngle < target ) and ( newAngle < target ) )
-			or ( ( newAngle >= target ) and ( oldAngle < target ) ) 
+			or ( ( crossedThreshold ) and ( oldAngle > target ) and ( newAngle > target ) )
+			or ( ( newAngle >= target ) and ( oldAngle < target ) )
 		then
+			-- if ( isZero ) then print("STOP") end
 			newAngle = target
 		end
 	else
@@ -186,6 +205,10 @@ function Element:UpdateActivityFixed()
 		local newValue = (self.Value + (( ( self.Speed + self.AddSpeed ) * FrameTime() ) * self.Direction))
 		self:SetValue( self:ReachedTargetAngle( newValue, self.Value, self.Target, self.Direction ) )
 		if ( self.Value == self.Target ) then self.InTransit = false end
+	else
+		if ( self.DeactivateOnTarget ) then
+			self.Deactivate = true
+		end
 	end
 	return self.Value
 end
