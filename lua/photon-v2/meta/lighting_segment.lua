@@ -410,13 +410,18 @@ end
 
 function Segment:CalculatePriorityChannel( inputState )
 	-- print("Calculating priority input...")
+	
 	-- PrintTable( inputState )
 	local topScore = -1000
 	local result
+	-- print("============== SEGMENT INPUT STATE ================")
+	-- PrintTable( inputState )
+
 	for channel, mode in pairs( inputState ) do
+		-- printf( "\tChecking channel [%s]", channel )
 		if (mode == "OFF") then continue end
 		if ( self.InputPriorities[channel] ) then
-			-- printf( "\tChecking channel [%s]", channel )
+			
 			-- TODO: find alternative to string concatination
 			if ( ( self.InputPriorities[channel] > topScore ) and self:AcceptsChannelMode( channel .. ":" .. inputState[channel] ) ) then
 				topScore = self.InputPriorities[channel]

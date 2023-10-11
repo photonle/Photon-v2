@@ -54,9 +54,7 @@ function Light:CheckBodyGroupRequirements()
 						
 						index = self.Parent:FindBodygroupByName( bodyGroupName --[[@as string]] )
 						if ( index == -1 ) then
-							print(tostring(self.Parent))
-							ErrorNoHaltWithStack( "Body group name [" .. tostring( bodyGroupName ) .. "] not found in model [" .. 
-							tostring( self.Parent:GetModel() ) .. "]" ) 
+							ErrorNoHaltWithStack( "Body group name [" .. tostring( bodyGroupName ) .. "] not found in model [" .. tostring( self.Parent:GetModel() ) .. "]" ) 
 						end
 						
 						self.RequiredBodyGroups[bodyGroupName] = nil
@@ -102,6 +100,7 @@ function Light:SortInputs()
 end
 
 function Light:AddInput( sequenceId, priority )
+
 	local isNew = true
 
 	if ( self.Inputs[sequenceId] ) then isNew = false end
@@ -120,6 +119,7 @@ function Light:AddInput( sequenceId, priority )
 end
 
 function Light:SetInput( sequenceId, stateId )
+	-- error("deprecated")
 	self.Inputs[sequenceId].State = stateId
 end
 
@@ -132,6 +132,7 @@ end
 function Light:UpdateState()
 	-- If a light state is not being updated, verify that component supports
 	-- the input channel.
+
 	local state = "PASS"
 	-- print("Current inputs: " .. tostring(#self.SortedInputs))
 	for i=1, #self.SortedInputs do

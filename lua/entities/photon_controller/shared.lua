@@ -156,6 +156,7 @@ function ENT:SetupChannels()
 	local channelList = {}
 	-- Flatten channel tree
 	for category, channels in pairs(self.ChannelTree) do
+		-- TODO: draw from input priorities instead?
 		for _, channel in pairs( channels ) do
 			-- channelList[#channelList+1] = string.format("%s.%s", category, channel)
 			channelList[string.format("%s.%s", category, channel)] = "OFF"

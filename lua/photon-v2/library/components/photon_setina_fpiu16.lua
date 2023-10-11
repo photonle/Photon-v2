@@ -44,6 +44,7 @@ COMPONENT.Segments = {
 			[2] = "[B] 2",
 			[3] = "[W] 1",
 			[4] = "[W] 2",
+			[5] = "[W] 1 2"
 		},
 		Sequences = {
 			ALL = { 1 },
@@ -51,7 +52,8 @@ COMPONENT.Segments = {
 					:Blink( 1, 4 ):Hold( 2 )
 					:Blink( 2, 4 ):Hold( 2 )
 					:Blink( 3, 4 ):Hold( 2 )
-					:Blink( 4, 4 ):Hold( 2 )
+					:Blink( 4, 4 ):Hold( 2 ),
+			ILLUM = { 5 }
 			-- FLASH = sequence():Alternate( 1, 2, 8 ):Alternate( 3, 4, 8 )
 		}
 	},
@@ -72,5 +74,8 @@ COMPONENT.Patterns = {
 	["Emergency.Warning"] = {
 		["MODE2"] = { Upper = "FLASH", Side = "FLASH" },
 		["MODE3"] = { Upper = "FLASH", Side = "FLASH" },
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = { Upper = "ILLUM" }
 	}
 }

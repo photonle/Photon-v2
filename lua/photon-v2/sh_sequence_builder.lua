@@ -28,7 +28,7 @@ function Photon2.SequenceBuilder:ToLua()
 	for i=1, #self do
 		result = result .. tostring( self[i] )
 		if (i < #self) then
-			result = result .. ","
+			result = result .. ", "
 		end
 	end
 	result = result .. " }"
@@ -36,7 +36,7 @@ function Photon2.SequenceBuilder:ToLua()
 end
 
 function Photon2.SequenceBuilder:ToClipboard()
-	SetClipboardText( self:ToLua() )
+	if ( CLIENT ) then SetClipboardText( self:ToLua() ) end
 	return self
 end
 
@@ -46,6 +46,16 @@ function Photon2.SequenceBuilder:Append( sequence )
 	for i=1, #sequence do
 		self[#self+1] = sequence[i]
 	end
+	return self
+end
+
+-- (Internal) Replaces the previous block with the given sequence.
+function Photon2.SequenceBuilder:OverwriteLast( sequence )
+	local startIndex = #self - #self._previous
+	for i=1, #sequence do
+		self[startIndex + i] = sequence[i]
+	end
+	self._previous = sequence
 	return self
 end
 
@@ -174,6 +184,32 @@ function Photon2.SequenceBuilder:Do( times )
 		self:Append( self._previous )
 	end
 	return self
+end
+
+-- Extends each frame from the previous _block_ by the amount specified. Value of `1` or less has no effect. (Example: `{ 1, 2, 3 }:Stretch( 2 )` becomes `{ 1, 1, 2, 2, 3, 3 }`)
+function Photon2.SequenceBuilder:Stretch( amount )
+	local result = {}
+	for i=1, #self._previous do
+		for j=1, amount do
+			result[#result+1] = self._previous[i]
+		end
+	end
+	return self:OverwriteLast( result )
+end
+
+-- Adds all consecutive frame numbers between `startFrame` and `endFrame`. (Example: `:Sequential( 1, 5 )` becomes `{ 1, 2, 3, 4, 5 }`). Frame sequence will be done in reverse if `endFrame` is lower than `startFrame`.
+function Photon2.SequenceBuilder:Sequential( startFrame, endFrame )
+	local result = {}
+	if ( startFrame < endFrame ) then
+		for i=startFrame, endFrame do
+			result[#result+1] = i
+		end
+	else
+		for i=endFrame, startFrame, -1 do
+			result[#result+1] = i
+		end
+	end
+	return self:Append( result )
 end
 
 setmetatable( Photon2.SequenceBuilder, {

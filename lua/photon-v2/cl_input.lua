@@ -8,6 +8,11 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	TargetController = false
 }
 
+local mouseKeys = { 
+	[MOUSE_LEFT] = true, 
+	[MOUSE_RIGHT] = true
+}
+
 local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
 
@@ -120,8 +125,14 @@ function Photon2.ClientInput.ValidateActions( actions, key, press )
 
 end
 
+local pressedKeys ={}
+
 function Photon2.ClientInput.OnPress( key )
+	-- OCTOBER INPUT DEMO 
+		pressedKeys[#pressedKeys+1] = key
+	--
 	if ( not Photon2.ClientInput.Listening ) then return end
+	if ( mouseKeys[key] and vgui.CursorVisible() ) then return end
 	-- print("OnPress:" .. tostring( input.GetKeyName(key) ) )
 	if ( Photon2.ClientInput.Active[key] ) then
 		Photon2.ClientInput.KeysPressed[key] = RealTime()
@@ -131,7 +142,11 @@ end
 hook.Add( "Photon2:KeyPressed", "Photon2.ClientInput:OnPress", Photon2.ClientInput.OnPress )
 
 function Photon2.ClientInput.OnRelease( key )
+	-- OCTOBER INPUT DEMO 
+		table.RemoveByValue( pressedKeys, key )
+	--
 	if ( not Photon2.ClientInput.Listening ) then return end
+	if ( mouseKeys[key] and vgui.CursorVisible() ) then return end
 	-- print("OnRelease:" .. tostring( input.GetKeyName(key) ) )
 	if ( Photon2.ClientInput.KeysPressed[key] ) then
 		Photon2.ClientInput.KeysPressed[key] = nil
@@ -156,6 +171,12 @@ function Photon2.ClientInput.ScanPressed()
 	end
 end
 hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
+
+--[[
+		==== ILLUM ====
+		misc: hold for flood, release for takedown?
+--]]
+
 
 local prototypeInput = {
 	[KEY_F] = {
@@ -188,7 +209,7 @@ local prototypeInput = {
 			{ Action = "SOUND", Sound = "Controller" }
 		}
 	},
-	[KEY_T] = {
+	[MOUSE_LEFT] = {
 		Name = "Airhorn",
 		OnPress = {
 			{ Action = "SOUND", Sound = "Controller" },
@@ -199,7 +220,7 @@ local prototypeInput = {
 			{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "OFF" }
 		}
 	},
-	[KEY_Y] = {
+	[MOUSE_RIGHT] = {
 		Name = "Manual",
 		OnPress = {
 			{ Action = "SOUND", Sound = "Controller" },
@@ -229,6 +250,13 @@ local prototypeInput = {
 			{ Action = "SOUND", Sound = "Click" },
 			{ Action = "TOGGLE", Channel = "Vehicle.Signal", Value = "LEFT" },
 			{ Action = "TOGGLE", Channel = "Vehicle.Signal", Value = "HAZARD", Modifiers = { KEY_RIGHT } },
+			
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RCONTROL } },
+			{ Action = "TOGGLE", Channel = "Emergency.Directional", Value = "LEFT", Modifiers = { KEY_RCONTROL } },
+			{ Action = "TOGGLE", Channel = "Emergency.Directional", Value = "CENOUT", Modifiers = { KEY_RCONTROL, KEY_RIGHT } },
+			
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+			{ Action = "TOGGLE", Channel = "Emergency.SceneLeft", Value = "ON", Modifiers = { KEY_RSHIFT } },
 		},
 		OnRelease = {
 			{ Action = "SOUND", Sound = "Click" },
@@ -240,12 +268,41 @@ local prototypeInput = {
 			{ Action = "SOUND", Sound = "Click" },
 			{ Action = "TOGGLE", Channel = "Vehicle.Signal", Value = "RIGHT" },
 			{ Action = "TOGGLE", Channel = "Vehicle.Signal", Value = "HAZARD", Modifiers = { KEY_LEFT } },
+			
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RCONTROL } },
+			{ Action = "TOGGLE", Channel = "Emergency.Directional", Value = "RIGHT", Modifiers = { KEY_RCONTROL } },
+			{ Action = "TOGGLE", Channel = "Emergency.Directional", Value = "CENOUT", Modifiers = { KEY_RCONTROL, KEY_LEFT } },
+
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+			{ Action = "TOGGLE", Channel = "Emergency.SceneRight", Value = "ON", Modifiers = { KEY_RSHIFT } },
 		},
 		OnRelease = { { Action = "SOUND", Sound = "Click" }, }
+	},
+	[KEY_UP] = {
+		Name = "Illumination",
+		OnPress = {
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+			{ Action = "TOGGLE", Channel = "Emergency.SceneForward", Value = "ON", Modifiers = { KEY_RSHIFT } },
+		},
+		OnRelease = {
+			-- { Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+		},
+		OnHold = {
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+			{ Action = "SET", Channel = "Emergency.SceneForward", Value = "OFF", Modifiers = { KEY_RSHIFT } },
+		}
 	},
 	[KEY_DOWN] = {
 		OnPress = {
 			{ Action = "SOUND", Sound = "Click" },
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RCONTROL } },
+			{ Action = "TOGGLE", Channel = "Emergency.Directional", Value = "OFF", Modifiers = { KEY_RCONTROL } },
+			
+			{ Action = "SOUND", Sound = "Controller", Modifiers = { KEY_RSHIFT } },
+			{ Action = "SET", Channel = "Emergency.SceneLeft", Value = "OFF", Modifiers = { KEY_RSHIFT } },
+			{ Action = "SET", Channel = "Emergency.SceneRight", Value = "OFF", Modifiers = { KEY_RSHIFT } },
+			{ Action = "SET", Channel = "Emergency.SceneForward", Value = "OFF", Modifiers = { KEY_RSHIFT } },
+			
 		},
 		OnRelease = {
 			{ Action = "SOUND", Sound = "Click" },
@@ -337,3 +394,24 @@ Photon2.ClientInput.Active = prototypeInput
 
 		-----
 --]]
+
+-- surface.CreateFont( "PH2Demo", {
+-- 	font = "Roboto Light",
+-- 	size = 96,
+-- 	weight = 100
+-- } )
+
+-- hook.Add( "HUDPaint", "Photon2:KeyDemo", function()
+-- 	local pressedKeysString = ""
+-- 	for i=1, #pressedKeys do
+-- 		pressedKeysString = pressedKeysString .. input.GetKeyName(pressedKeys[i])
+-- 		if ( i < #pressedKeys ) then
+-- 			pressedKeysString = pressedKeysString .. " + "
+-- 		end
+
+-- 	end
+-- 	for k, v in ipairs( pressedKeys ) do
+
+-- 	end
+-- 	draw.DrawText( pressedKeysString, "PH2Demo", ScrW() * 0.5, ScrH() * 0.75, color_white, TEXT_ALIGN_CENTER )
+-- end)

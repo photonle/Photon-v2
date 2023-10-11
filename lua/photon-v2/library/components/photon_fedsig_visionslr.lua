@@ -76,11 +76,11 @@ COMPONENT.LightStates = {
 			Speed = 350,
 			Direction = 1
 		},
-		Point90 = {
+		Point0 ={
 			Activity = "Fixed",
-			Target = 360,
-			Speed = 200,
-			Direction = -1
+			Target = 0,
+			Speed = 350,
+			Direction = 1
 		},
 		Point215 = {
 			Activity = "Fixed",
@@ -97,6 +97,18 @@ COMPONENT.LightStates = {
 		Point180 = {
 			Activity = "Fixed",
 			Target = 180,
+			Speed = 200,
+			Direction = -1
+		},
+		Point270 = {
+			Activity = "Fixed",
+			Target = 270,
+			Speed = 200,
+			Direction = -1
+		},
+		Point90 = {
+			Activity = "Fixed",
+			Target = 90,
 			Speed = 200,
 			Direction = -1
 		},
@@ -468,7 +480,30 @@ COMPONENT.Segments = {
 			[6] = "26 28",
 			[7] = "27 29",
 			[8] = "28",
-			[9] = "29"
+			[9] = "29",
+			-- L
+			[10] = "29",
+			[11] = "29 27",
+			[12] = "29 27 25",
+			[13] = "29 27 25 23",
+			[14] = "29 27 25 23 22",
+			[15] = "29 27 25 23 22 24 ",
+			[16] = "29 27 25 23 22 24 26",
+			[17] = "29 27 25 23 22 24 26 28",
+			-- R
+			[18] = "28",
+			[19] = "28 26",
+			[20] = "28 26 24",
+			[21] = "28 26 24 22",
+			[22] = "28 26 24 22 23",
+			[23] = "28 26 24 22 23 25",
+			[24] = "28 26 24 22 23 25 27",
+			[25] = "28 26 24 22 23 25 27 29",
+			-- CO
+			[26] = "22 23",
+			[27] = "24 22 23 25",
+			[28] = "26 24 22 23 25 27",
+			[29] = "28 26 24 22 23 25 27 29",
 		},
 		Sequences = {
 			ALL = { 1 },
@@ -476,11 +511,14 @@ COMPONENT.Segments = {
 			WARN2 = sequence():Alternate( 6, 7, 8 ),
 			WARN3 = sequence():Alternate( 4, 5, 8 ),
 			WARN4 = sequence():Alternate( 2, 3, 8 ),
+			LEFT = sequence():Sequential( 10, 17 ):Stretch( 4 ):Hold( 8 ):Add( 0 ):Hold( 4 ),
+			RIGHT = sequence():Sequential( 18, 25 ):Stretch( 4 ):Hold( 8 ):Add( 0 ):Hold( 4 ),
+			CENOUT = sequence():Sequential( 26, 29 ):Stretch( 8 ):Hold( 8 ):Add( 0 ):Hold( 4 )
 		}
 	},
 	AlleyHotFeet = {
 		Frames = {
-			[1] = "37 38"
+			[1] = "37 38",
 		},
 		Sequences = {
 			ALL = { 1 },
@@ -495,11 +533,48 @@ COMPONENT.Segments = {
 			ALL = { 1 },
 			FLASH = { 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 1, }
 		}
+	},
+	SceneLeft = {
+		Frames = {
+			[1] = "[W] POD2_Light POD4_Light 37 [Point270] POD2 POD4"
+		},
+		Sequences = {
+			SCENE_LEFT = { 1 }
+		}
+	},
+	SceneRight = {
+		Frames = {
+			[1] = "[W] POD6_Light POD4_Light 38 [Point90] POD6 POD4"
+		},
+		Sequences = {
+			SCENE_RIGHT = { 1 }
+		}
+	},
+	SceneForward = {
+		Frames = {
+			[1] = "[W] POD4_Light POD6_Light POD2_Light 39 40 [Point0] POD4 POD2 POD6"
+		},
+		Sequences = {
+			SCENE_FORWARD = { 1 }
+		}
+	},
+	Pod4 = {
+		Frames = {
+			[1] = "[W] POD4_Light [Point0] POD4"
+		},
+		Sequences = {
+			SCENE_FORWARD = { 1 },
+		}
 	}
 }
 
 COMPONENT.InputPriorities = {
-	["Virtual.Warning+Siren"] = 43
+	["Virtual.Warning+Siren"] = 43,
+	["Virtual.SceneLeft+Forward"] = 142,
+	["Virtual.SceneRight+Forward"] = 141,
+	["Emergency.SceneLeft"] = 140,
+	["Emergency.SceneRight"] = 130,
+	["Emergency.SceneForward"] = 120,
 }
 
 COMPONENT.VirtualOutputs = {
@@ -509,6 +584,24 @@ COMPONENT.VirtualOutputs = {
 			Conditions = {
 				["Emergency.Siren"] = { "T1", "T2", "T3", "T4", "AH", "MA"},
 				["Emergency.Warning"] = { "MODE3" }
+			}
+		}
+	},
+	["Virtual.SceneLeft+Forward"] = {
+		{
+			Mode = "ON",
+			Conditions = {
+				["Emergency.SceneForward"] = { "ON" },
+				["Emergency.SceneLeft"] = { "ON" },
+			}
+		}
+	},
+	["Virtual.SceneRight+Forward"] = {
+		{
+			Mode = "ON",
+			Conditions = {
+				["Emergency.SceneForward"] = { "ON" },
+				["Emergency.SceneRight"] = { "ON" },
 			}
 		}
 	}
@@ -536,6 +629,20 @@ COMPONENT.Patterns = {
 			SignalMaster = "WARN4",
 		}
 	},
+	["Emergency.Directional"] = {
+		["LEFT"] = { SignalMaster = "LEFT" },
+		["RIGHT"] = { SignalMaster = "RIGHT" },
+		["CENOUT"] = { SignalMaster = "CENOUT" },
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = { SceneLeft = "SCENE_LEFT" }
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = { SceneRight = "SCENE_RIGHT" }
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = { SceneForward = "SCENE_FORWARD" }
+	},
 	["Virtual.Warning+Siren"] = {
 		["MODE3"] = {
 			LVMPD_Lights = "MODE4",
@@ -543,5 +650,7 @@ COMPONENT.Patterns = {
 			AlleyHotFeet = "FLASH",
 			ForwardHotFeet = "FLASH",
 		}
-	}
+	},
+	["Virtual.SceneLeft+Forward"] = { ["ON"] = { Pod4 = "SCENE_FORWARD" } },
+	["Virtual.SceneRight+Forward"] = { ["ON"] = { Pod4 = "SCENE_FORWARD" } },
 }

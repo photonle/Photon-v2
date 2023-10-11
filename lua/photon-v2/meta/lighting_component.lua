@@ -405,8 +405,9 @@ function Component:ApplyModeUpdate()
 
 
 	-- Virtual outputs
-	-- local virtualOutputs = {}
+	local virtualOutputs = {}
 	for outputChannel, outputModes in pairs( self.VirtualOutputs or {} ) do
+		-- print("Virtual Outputs ==========================================")
 		-- print("\tChecking output channel [" .. tostring( outputChannel ) .. "]")
 		local modeResult = "OFF"
 		for i=1, #outputModes do
@@ -429,9 +430,9 @@ function Component:ApplyModeUpdate()
 			end
 			-- if ( modeResult ~= "OFF" ) then break end
 		end
-		-- print("\t\tVirtual Outputs table:")
-		-- virtualOutputs[outputChannel] = modeResult
+		virtualOutputs[outputChannel] = modeResult
 		self.CurrentModes[outputChannel] = modeResult
+		
 	end
 
 	for name, segment in pairs( self.Segments ) do
@@ -439,6 +440,11 @@ function Component:ApplyModeUpdate()
 	end
 	-- self:UpdateSegmentLightControl()
 	self:FrameTick()
+	-- print("\t\tVirtual Outputs table:")
+	-- PrintTable( virtualOutputs )
+	-- print("\t\tInput table:")
+	-- PrintTable( self.CurrentModes )
+	-- print("=======================================================")
 end
 
 function Component:SetChannelMode( channel, new, old )
