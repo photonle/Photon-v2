@@ -298,3 +298,36 @@ hook.Add( "PlayerBindPress", "Photon2.UI:F3CursorRelease", function( ply, bind, 
 		end
 	end
 end)
+
+local hudMaterial = Material("photon/ui/hud")
+
+local hudRT = GetRenderTargetEx( "Photon2:HUD" .. CurTime(), 512, 512, 
+RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, 32768 + 2048 + 1, 4, IMAGE_FORMAT_RGBA8888 )
+
+local hudMaterial2 = Material("photon/ui/hud.png")
+-- local hudRTId = 
+local lastUpdate = 0
+
+local function drawPhoton2Hud()
+
+end
+
+hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
+	if true then return end
+	hudMaterial:SetTexture( "$basetexture", hudRT )
+	if ( CurTime() >= (lastUpdate + 1) ) then
+		-- render.PushRenderTarget( hudMaterial2:GetTexture("$basetexture") )
+		render.PushRenderTarget( hudRT )
+			render.OverrideAlphaWriteEnable( true, true)
+			render.Clear( 0, 255, 0, 128, false, false )
+			surface.SetDrawColor( 0, 255, 0, 255 )
+			surface.DrawRect( 64, 64, 512, 512 )
+		render.PopRenderTarget()
+		lastUpdate = CurTime()
+	end
+	-- local texId = surface.GetTextureID(hudRT:GetName())
+	surface.SetDrawColor(255,255,255,255)
+	surface.SetMaterial(hudMaterial)
+	-- surface.SetTexture()
+	surface.DrawTexturedRect(0,  0, 512, 512)
+end)

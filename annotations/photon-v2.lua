@@ -158,6 +158,24 @@ PhotonBlendColor = PhotonBlendColor
 ---@field MoveType MOVETYPE
 ---@field OnServer boolean -- (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
 
+---@class PhotonClientInputEvents
+---@field OnPress? table<PhotonClientInputAction>
+---@field OnRelease? table<PhotonClientInputAction>
+---@field OnHold? table<PhotonClientInputAction>
+
+---@class PhotonClientInputCommand : PhotonClientInputEvents
+---@field Name string Unique command name.
+---@field Title string Title of the command.
+---@field Description string Description of what the command does.
+
+---@class PhotonClientInputAction
+---@field Action string
+---@field Value? string | table<string>
+---@field Channel? string
+---@field Modifiers? table<any>
+
+
+
 ---@class RGB
 ---@field r number Red
 ---@field g number Green

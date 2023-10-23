@@ -167,9 +167,12 @@ end
 
 function ENT:SetChannelMode( channel, state )
 
+	local oldState = self:GetNW2String("Photon2:CS:" .. channel, "OFF" )
+
 	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
 
 	if CLIENT then
+		self:OnChannelModeChanged( channel, state, oldState )
 		Photon2.cl_Network.SetControllerChannelState( self, channel, state )
 	end
 
@@ -193,6 +196,7 @@ end
 ENT.UserCommands = {
 	["OFF_TOGGLE"] 		= "UserCommandOffToggle",
 	["ON_TOGGLE"] 		= "UserCommandOnToggle",
+	["OFF_WITH"]		= "UserCommandOffWith",
 	["SET"] 			= "UserCommandSet",
 	["TOGGLE"] 			= "UserCommandToggle",
 	["CYCLE"] 			= "UserCommandCycle",
@@ -302,6 +306,13 @@ function ENT:UserCommandOffToggle( action )
 	if ( currentMode == "OFF" ) then
 		self:SetChannelMode( action.Channel, action.Value )
 	else
+		self:SetChannelMode( action.Channel, "OFF" )
+	end
+end
+
+function ENT:UserCommandOffWith( action )
+	-- Turns Channel OFF if the channel defined in Value is OFF
+	if ( self.CurrentModes[action.Value] ) == "OFF" then
 		self:SetChannelMode( action.Channel, "OFF" )
 	end
 end
