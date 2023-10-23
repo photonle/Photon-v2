@@ -24,6 +24,6 @@ COMPONENT.ElementStates = {
 	
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 
 }

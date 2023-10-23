@@ -43,7 +43,7 @@ VEHICLE.Selections = {
 								}
 							}
 						},
-						Inputs = {
+						InputActions = {
 							["Emergency.Warning"] = {
 								["MODE1"] = { Reverse_Flasher = "FLASH" },
 								["MODE2"] = { Reverse_Flasher = "FLASH" },
@@ -181,7 +181,7 @@ VEHICLE.Selections = {
 						},
 						ColorMap = "[B] 1",
 						Phase = "A",
-						Inputs = {
+						InputActions = {
 							["Emergency.Warning"] = {
 								["MODE1"] = { Light = "FLASH1" },
 								["MODE2"] = { Light = "FLASH1" },

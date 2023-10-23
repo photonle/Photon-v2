@@ -70,7 +70,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE2"] = { Upper = "FLASH", Side = "FLASH" },
 		["MODE3"] = { Upper = "FLASH", Side = "FLASH" },

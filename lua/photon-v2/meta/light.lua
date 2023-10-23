@@ -14,8 +14,8 @@ local printf = Photon2.Debug.PrintF
 ---@field States table
 ---@field Id integer
 ---@field CurrentStateId string
----@field Inputs table
----@field SortedInputs table
+---@field InputActions table
+---@field SortedInputActions table
 ---@field BoneParent number|string Model bone to attach the light to (if supported).
 ---@field RequiredBodyGroups table<number | string, number | table<number>>
 ---@field private HasBodyGroupRequirements boolean
@@ -29,8 +29,8 @@ function Light:Initialize( id, parent )
 		Id = id,
 		Class = self.Class,
 		Parent = parent,
-		Inputs = {},
-		SortedInputs = {}
+		InputActions = {},
+		SortedInputActions = {}
 	}
 	if ( isstring( self.BoneParent ) ) then
 		
@@ -92,9 +92,9 @@ function Light:OnStateChange( state ) end
 
 local debugPrint = false
 
-function Light:SortInputs()
-	table.SortByMember( self.SortedInputs, "Priority", false )
-	for k, v in ipairs(self.SortedInputs) do
+function Light:SortInputActions()
+	table.SortByMember( self.SortedInputActions, "Priority", false )
+	for k, v in ipairs(self.SortedInputActions) do
 		v.Order = k
 	end
 end
@@ -103,30 +103,30 @@ function Light:AddInput( sequenceId, priority )
 
 	local isNew = true
 
-	if ( self.Inputs[sequenceId] ) then isNew = false end
+	if ( self.InputActions[sequenceId] ) then isNew = false end
 
-	self.Inputs[sequenceId] = self.Inputs[sequenceId] or {}
+	self.InputActions[sequenceId] = self.InputActions[sequenceId] or {}
 
-	self.Inputs[sequenceId].Sequence = sequenceId
-	self.Inputs[sequenceId].Priority = priority
-	self.Inputs[sequenceId].State = "PASS"
+	self.InputActions[sequenceId].Sequence = sequenceId
+	self.InputActions[sequenceId].Priority = priority
+	self.InputActions[sequenceId].State = "PASS"
 
 	if ( isNew ) then
-		self.SortedInputs[#self.SortedInputs+1] = self.Inputs[sequenceId]
+		self.SortedInputActions[#self.SortedInputActions+1] = self.InputActions[sequenceId]
 	end
 
-	self:SortInputs()
+	self:SortInputActions()
 end
 
 function Light:SetInput( sequenceId, stateId )
 	-- error("deprecated")
-	self.Inputs[sequenceId].State = stateId
+	self.InputActions[sequenceId].State = stateId
 end
 
 function Light:RemoveInput( sequenceId )
-	table.remove( self.SortedInputs, self.Inputs[sequenceId].Order )
-	self.Inputs[sequenceId] = nil
-	self:SortInputs()
+	table.remove( self.SortedInputActions, self.InputActions[sequenceId].Order )
+	self.InputActions[sequenceId] = nil
+	self:SortInputActions()
 end
 
 function Light:UpdateState()
@@ -134,10 +134,10 @@ function Light:UpdateState()
 	-- the input channel.
 
 	local state = "PASS"
-	-- print("Current inputs: " .. tostring(#self.SortedInputs))
-	for i=1, #self.SortedInputs do
-		if (self.SortedInputs[i].State ~= "PASS") then
-			state = self.SortedInputs[i].State
+	-- print("Current inputs: " .. tostring(#self.SortedInputActions))
+	for i=1, #self.SortedInputActions do
+		if (self.SortedInputActions[i].State ~= "PASS") then
+			state = self.SortedInputActions[i].State
 			break
 		end
 	end
@@ -155,7 +155,7 @@ function Light:UpdateState()
 	end
 
 	-- Set light to auto-deactivate when it has no more inputs
-	if (#self.SortedInputs < 1) then
+	if (#self.SortedInputActions < 1) then
 		if ( self.DeactivationState ) then
 			self:OnStateChange( self.States[self.DeactivationState] )
 		else

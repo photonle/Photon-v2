@@ -4571,7 +4571,7 @@ function string.EndsWith(str,endVal) end
 -- Splits a string up wherever it finds the given separator.  This is an alias of string.Split and the reverse operation of string.Implode.
 ---@param separator string The string will be separated wherever this sequence is found.
 ---@param str string The string to split up.
----@param use_patterns boolean Set this to true if your separator is a Patterns.
+---@param use_patterns boolean Set this to true if your separator is a Inputs.
 ---@return table
 function string.Explode(separator,str,use_patterns) end
 
@@ -4603,9 +4603,9 @@ function string.GetExtensionFromFilename(file) end
 function string.GetFileFromFilename(pathString) end
 
 -- Returns the path only from a file's path.
----@param Inputstring string String to get path from.
+---@param InputActionstring string String to get path from.
 ---@return string
-function string.GetPathFromFilename(Inputstring) end
+function string.GetPathFromFilename(InputActionstring) end
 
 -- You really should just use table.concat.  Joins the values of a table together to form a string.  This is the reverse of string.Explode and is functionally identical to table.concat, but with less features.
 ---@param separator string The separator to insert between each piece.
@@ -4666,10 +4666,10 @@ function string.Right(str,num) end
 function string.SetChar(InputString,Index,ReplacementChar) end
 
 -- Splits the string into a table of strings, separated by the second argument.  This is an alias of string.Explode.
----@param Inputstring string String to split
+---@param InputActionstring string String to split
 ---@param Separator string Character(s) to split with.
 ---@return table
-function string.Split(Inputstring,Separator) end
+function string.Split(InputActionstring,Separator) end
 
 -- Returns whether or not the first string starts with the second.
 ---@param inputStr string String to check.
@@ -4684,14 +4684,14 @@ function string.StartsWith(inputStr,start) end
 function string.StartWith(inputStr,start) end
 
 -- Removes the extension of a path.
----@param Inputstring string The path to change.
+---@param InputActionstring string The path to change.
 ---@return string
-function string.StripExtension(Inputstring) end
+function string.StripExtension(InputActionstring) end
 
 -- Fetches a Color type from a string.
----@param Inputstring string The string to convert from.
+---@param InputActionstring string The string to convert from.
 ---@return table
-function string.ToColor(Inputstring) end
+function string.ToColor(InputActionstring) end
 
 -- Returns given time in "MM:SS" format.
 ---@param time number Time in seconds
@@ -4709,10 +4709,10 @@ function string.ToMinutesSecondsMilliseconds(time) end
 function string.ToTable(str) end
 
 -- Removes leading and trailing matches of a string.
----@param Inputstring string The string to trim.
+---@param InputActionstring string The string to trim.
 ---@param Char? string String to match - can be multiple characters. Matches spaces by default.
 ---@return string
-function string.Trim(Inputstring,Char) end
+function string.Trim(InputActionstring,Char) end
 
 -- Removes leading spaces/characters from a string.
 ---@param str string String to trim

@@ -75,7 +75,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Undercover = "FLASH1"

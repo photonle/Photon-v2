@@ -210,7 +210,7 @@ COMPONENT.Segments = {
 -- Alternate(1,2,4):Do(3)
 -- Flash(1,2,3):Do(3)
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	-- ["Emergency.Auxiliary"] = {
 	-- 	["LEFT"] = { 
 	-- 		-- All = "STEADY",
@@ -247,7 +247,7 @@ COMPONENT.Patterns = {
 			PatternConditionals = {
 				?????
 			},
-			Patterns = {
+			Inputs = {
 				["Emergency.Warning:STAGE_1"] = "ALT"
 			},
 		]]

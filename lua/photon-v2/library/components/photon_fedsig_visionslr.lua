@@ -607,7 +607,7 @@ COMPONENT.VirtualOutputs = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["OFF"] = {
 			Pods = "OFF"

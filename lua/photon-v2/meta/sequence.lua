@@ -24,7 +24,7 @@ Sequence.RestartFrame = 1
 --[[ *************************************************
 
 	New sequence object needs to be created for each 
-	reference in COMPONENT.Patterns and assigned 
+	reference in COMPONENT.Inputs and assigned 
 	a unique sequence identifier.
 
 	Required to:

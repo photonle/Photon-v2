@@ -55,7 +55,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			-- Full = "COLOR_ALT"

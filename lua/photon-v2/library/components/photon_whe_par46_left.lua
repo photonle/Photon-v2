@@ -62,7 +62,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Illuminate"] = {
 		["SPOT"] = {
 			Light = "ON",

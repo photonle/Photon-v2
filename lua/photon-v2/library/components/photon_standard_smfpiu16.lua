@@ -278,7 +278,7 @@ COMPONENT.Segments = {
 }
 
 --TODO: verify that sequences exist on compilation
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			-- Headlights = "HEADLIGHTS",

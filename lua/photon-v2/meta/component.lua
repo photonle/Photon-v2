@@ -13,8 +13,8 @@ local printf = Photon2.Debug.PrintF
 ---@field Name string
 ---@field InputPriorities table<string, integer>
 ---@field CurrentModes table<string, string>
--- TODO: rename .Inputs to .InputActions?
----@field Inputs table<string, string[]>
+-- TODO: rename .InputActions to .InputActions?
+---@field InputActions table<string, string[]>
 local Component = exmeta.New()
 
 function Component.New( name, data, base )

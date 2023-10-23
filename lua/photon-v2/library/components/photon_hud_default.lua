@@ -24,6 +24,6 @@ COMPONENT.Segments = {
 
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	
 }

@@ -83,10 +83,10 @@ function PANEL:Init()
 
 	function controllerSelector:OnSelect( index, value, data )
 		this.ScrollPanel:DeleteChannels()
-		local validInputs = data:GetChannelModeTree()
+		local validInputActions = data:GetChannelModeTree()
 		this.CurrentController = data
 		for channel, mode in pairs( data.CurrentModes ) do
-			lastMode = this:AddModeSelection( channel, validInputs[channel] or { mode }, mode )
+			lastMode = this:AddModeSelection( channel, validInputActions[channel] or { mode }, mode )
 		end
 	end
 

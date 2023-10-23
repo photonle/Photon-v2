@@ -73,7 +73,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = { -- Inputs
+COMPONENT.Inputs = { -- InputActions
 	["Emergency.Siren"] = {
 		["T1"] = { Siren = "WAIL" },
 		["T2"] = { Siren = "YELP" },

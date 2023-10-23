@@ -110,7 +110,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Lights table
 ---@field LightGroups table
 ---@field Segments table
----@field Patterns table
+---@field Inputs table
 ---@field ColorMap table<integer, string[]> | string
 ---@field SubMaterials table<integer, string>
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.

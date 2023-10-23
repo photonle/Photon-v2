@@ -16,14 +16,14 @@ local printf = Photon2.Debug.PrintF
 ---@field Sequences table<string, PhotonSequence>
 ---@field Component PhotonLightingComponent
 -- [string] = Pattern Name
----@field Patterns table<string, string> Key = Input Channel, Value = Associated sequence
----@field Inputs table<string, { Sequence: string, Priority: number, Rank: number }>
+---@field Inputs table<string, string> Key = Input Channel, Value = Associated sequence
+---@field InputActions table<string, { Sequence: string, Priority: number, Rank: number }>
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonLight, string>>
 ---@field Lights table Points to Component.Elements
 local Segment = exmeta.New()
 
-Segment.Patterns = {}
+Segment.Inputs = {}
 Segment.InputPriorities = {}
 Segment.Count = 0
 Segment.FrameDuration = 0.64
@@ -42,8 +42,8 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		Elements = {},
 		Sequences = {},
 		Frames = {},
-		Patterns = {},
 		Inputs = {},
+		InputActions = {},
 		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } )
 	}
 
@@ -267,7 +267,7 @@ function Segment:Initialize( componentInstance )
 		ColorMap = componentInstance.ColorMap,
 		Sequences = {},
 		InitializedFrames = {},
-		Inputs = {}
+		InputActions = {}
 	}
 	
 	setmetatable( segment, { __index = self } )
@@ -303,7 +303,7 @@ function Segment:Initialize( componentInstance )
 	-- end
 
 	-- Setup inputs (new/revised sequences)
-	for channelMode, sequenceData in pairs( self.Inputs ) do
+	for channelMode, sequenceData in pairs( self.InputActions ) do
 		-- printf( "Initializing input sequence from channel mode [%s]", channelMode )
 		if ( not self.Sequences[sequenceData.Sequence] ) then
 			error( "Sequence [" .. tostring( sequenceData.Sequence ) .."] does not exist." )
@@ -365,7 +365,7 @@ end
 -- 	if true then return end
 -- 	if (not self.IsActive) then return end
 
--- 	local map = self.Patterns
+-- 	local map = self.Inputs
 -- 	local sequence
 
 -- 	for i = 1, #map[self.ActivePattern] do
@@ -395,14 +395,14 @@ function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
 	-- if (isstring(sequence)) then
 	-- 	sequence = self.Sequences[sequence]
 	-- end
-	self.Inputs[channelMode] = { Sequence = sequenceName, Rank = rank, Priority = priorityScore }
-	self.Patterns[channelMode] = sequenceName --[[@as string]]
+	self.InputActions[channelMode] = { Sequence = sequenceName, Rank = rank, Priority = priorityScore }
+	self.Inputs[channelMode] = sequenceName --[[@as string]]
 end
 
 function Segment:AcceptsChannelMode( channelMode )
-	local exists = self.Patterns[channelMode] ~= nil
+	local exists = self.Inputs[channelMode] ~= nil
 	-- print("Checking if segment[" .. self.Name .. "] accepts channel mode [" .. channelMode .. "]. Result: [" .. tostring( exists ) .."]" )
-	-- PrintTable( self.Patterns )
+	-- PrintTable( self.Inputs )
 	-- return true
 	return exists
 end
@@ -502,16 +502,16 @@ end
 
 function Segment:GetCurrentSequence()
 	-- printf("Attemping to get current sequence. The .ActivePattern is [%s]", self.ActivePattern)
-	-- printf("self.Patterns[self.ActivePattern] = [%s]", self.Patterns[self.ActivePattern])
+	-- printf("self.Inputs[self.ActivePattern] = [%s]", self.Inputs[self.ActivePattern])
 	-- PrintTable(self.Sequences)
-	-- print("Sequence exists: " .. tostring(not (self.Sequences[self.Patterns[self.ActivePattern]] == nil)))
-	return self.Sequences[self.Patterns[self.ActivePattern]]
+	-- print("Sequence exists: " .. tostring(not (self.Sequences[self.Inputs[self.ActivePattern]] == nil)))
+	return self.Sequences[self.Inputs[self.ActivePattern]]
 end
 
 
 -- function Segment:ActivateSequences()
 -- 	---@type PhotonSequence[]
--- 	local sequences = self.Patterns[self.ActivePattern]
+-- 	local sequences = self.Inputs[self.ActivePattern]
 -- 	for i = 1, #sequences do
 -- 		sequences[i]:Activate()
 -- 	end
@@ -520,7 +520,7 @@ end
 
 -- function Segment:DeactivateSequences()
 -- 	---@type PhotonSequence[]
--- 	local sequences = self.Patterns[self.ActivePattern]
+-- 	local sequences = self.Inputs[self.ActivePattern]
 -- 	for i = 1, #sequences do
 -- 		sequences[i]:Deactivate()
 -- 	end
@@ -541,7 +541,7 @@ end
 -- 	end
 
 -- 	for i = 1, #modes do
--- 		self.Patterns[channel .. "." .. mode] = pattern
+-- 		self.Inputs[channel .. "." .. mode] = pattern
 -- 	end
 
 -- 	return self

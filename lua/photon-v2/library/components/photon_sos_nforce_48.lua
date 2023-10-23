@@ -64,7 +64,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			All = "STEADY"

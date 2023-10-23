@@ -78,7 +78,7 @@ COMPONENT.VirtualOutputs = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Light = "FLASH"

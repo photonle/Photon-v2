@@ -246,7 +246,7 @@ COMPONENT.Segments = {
 }
 
 -- Concept
-COMPONENT.CompoundInputs = {
+COMPONENT.CompoundInputActions = {
 	-- [{"Emergency.Warning", "Vehicle.Brake"}] = {
 	-- 	[{"MODE1", "BRAKE"}], [{}] = {
 	-- 		LightbarBrake = "ER_BRAKE"
@@ -254,7 +254,7 @@ COMPONENT.CompoundInputs = {
 	-- }
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		[{}] = {},
 		["MODE1"] = {

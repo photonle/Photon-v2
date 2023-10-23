@@ -22,7 +22,7 @@ COMPONENT.SubMaterials = {
 }
 
 COMPONENT.Segments = {}
-COMPONENT.Patterns = {}
+COMPONENT.Inputs = {}
 
 COMPONENT.Segments = {
 	MPDC = {
@@ -37,7 +37,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Marker"] = {
 		["CRUISE"] = {
 			-- All = UNSET,
@@ -52,4 +52,4 @@ COMPONENT.Patterns = {
 	}
 }
 
--- COMPONENT.Patterns = {}
+-- COMPONENT.Inputs = {}

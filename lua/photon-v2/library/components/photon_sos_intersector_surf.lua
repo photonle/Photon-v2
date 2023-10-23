@@ -101,7 +101,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Intersector = "FLASH1"

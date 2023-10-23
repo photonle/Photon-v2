@@ -21,7 +21,7 @@ function Speaker.New( name, data, base )
 		Children = {},
 		Model = data.Model,
 		Sounds = data.Sounds,
-		Inputs = {},
+		InputActions = {},
 	}
 
 	setmetatable( component, { __index = PhotonAuralComponent } )

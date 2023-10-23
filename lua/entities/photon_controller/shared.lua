@@ -84,7 +84,7 @@ function ENT:GetChannelModeTree()
 
 	for _, componentType in pairs( componentTables ) do
 		for k, v in pairs( self[componentType] ) do
-			for channel, modes in pairs( v.Inputs ) do
+			for channel, modes in pairs( v.InputActions ) do
 				cache[channel] = cache[channel] or {
 					OFF = true
 				}

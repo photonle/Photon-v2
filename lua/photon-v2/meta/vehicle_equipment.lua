@@ -119,7 +119,7 @@ end
 
 
 -- TODO: WORK IN PROGRESS
-local overrideableProperties = { "ColorMap", "Phase", "Segments", "Patterns", "LightGroups", "ElementStates" }
+local overrideableProperties = { "ColorMap", "Phase", "Segments", "Inputs", "LightGroups", "ElementStates" }
 
 -- Builds components as new inherited variants for each equipment entry
 function Equipment.BuildComponents( equipmentTable, key, vehicleId )
@@ -133,7 +133,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			Phase = entry.Phase,
 			Generated = true,
 			Segments = entry.Segments,
-			Patterns = entry.Inputs or entry.Patterns,
+			Inputs = entry.InputActions or entry.Inputs,
 			LightGroups = entry.LightGroups,
 			ElementStates = entry.ElementStates
 		}

@@ -35,7 +35,7 @@ COMPONENT.Segments = {
 	}
 }
 
-COMPONENT.Patterns = {
+COMPONENT.Inputs = {
 	["Emergency.Marker"] = {
 		["CRUISE"] = {
 			All = UNSET,

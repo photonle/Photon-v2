@@ -18,9 +18,9 @@ local printf = Photon2.Debug.PrintF
 ---@field ActiveSequences table<PhotonSequence, boolean>
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
 ---@field ColorMap table<integer, string[]>
----@field Inputs table<string, string[]>
+---@field InputActions table<string, string[]>
 ---@field LightGroups table<string, integer[]>
----@field UseControllerModes boolean If true, the component will use its controller's CurrentModes table. If false, it will manage its own (required for Virtual Inputs).
+---@field UseControllerModes boolean If true, the component will use its controller's CurrentModes table. If false, it will manage its own (required for Virtual InputActions).
 ---@field Phase string
 local Component = exmeta.New()
 
@@ -74,8 +74,8 @@ function Component.New( name, data, base )
 		Model = data.Model,
 		Elements = {},
 		Segments = {},
-		Patterns = {},
 		Inputs = {},
+		InputActions = {},
 		LightGroups = data.LightGroups,
 		SubMaterials = data.SubMaterials,
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
@@ -240,7 +240,7 @@ function Component.New( name, data, base )
 	end
 
 	--[[
-			Setup Virtual Inputs
+			Setup Virtual InputActions
 	--]]
 
 	if ( istable( data.VirtualOutputs ) ) then
@@ -258,12 +258,12 @@ function Component.New( name, data, base )
 	end	
 
 	--[[
-			Compile Patterns
+			Compile Inputs
 	--]]
 
-	for channelName, channel in pairs( data.Patterns or {} ) do
+	for channelName, channel in pairs( data.Inputs or {} ) do
 		-- Build input interface channels
-		component.Inputs[channelName] = {}
+		component.InputActions[channelName] = {}
 		
 		-- local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
 		local priorityScore = component.InputPriorities[channelName]
@@ -279,7 +279,7 @@ function Component.New( name, data, base )
 
 			-- Build input interface modes
 			if ( istable( sequences ) and ( next(sequences) ~= nil) ) then
-				component.Inputs[channelName][#component.Inputs[channelName] + 1] = modeName
+				component.InputActions[channelName][#component.InputActions[channelName] + 1] = modeName
 			end
 			-- print("----------------------------")
 			-- PrintTable( channel )
@@ -331,8 +331,8 @@ function Component.New( name, data, base )
 
 				rank = rank + 1
 				
-				-- print("Segment Inputs =======================")
-				-- PrintTable( segment.Inputs )
+				-- print("Segment InputActions =======================")
+				-- PrintTable( segment.InputActions )
 				-- print("========================================")
 			end
 
@@ -346,8 +346,8 @@ function Component.New( name, data, base )
 	--]]
 	setmetatable( component, { __index = PhotonLightingComponent } )
 
-	-- print("Component.Patterns ====================================")
-	-- 	PrintTable( component.Patterns )
+	-- print("Component.Inputs ====================================")
+	-- 	PrintTable( component.Inputs )
 	-- print("=======================================================")
 
 	return component
