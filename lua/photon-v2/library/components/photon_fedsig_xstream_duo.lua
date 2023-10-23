@@ -20,7 +20,7 @@ COMPONENT.Lights = {
 
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	
 }
 

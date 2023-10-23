@@ -37,7 +37,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["2D"] = {
 		["R0.5"] = {
 			Inherit = "R",

@@ -11,7 +11,7 @@ COMPONENT.PrintName = "1996 Ford Crown Victoria"
 
 COMPONENT.IsVirtual = true
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 
 }
 
@@ -50,7 +50,7 @@ COMPONENT.Templates = {
 local amber = { r = 255, g = 200, b = 0 }
 
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["Sub"] = {
 		-- ["Glow"] = { Material = "sentry/96cvpi/glow_on" },
 		-- ["Amber"] = { Material = "sentry/96cvpi/glow_on_orange" },

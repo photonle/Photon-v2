@@ -33,7 +33,7 @@ COMPONENT.Lights = {
 
 COMPONENT.ColorMap = "[R] 1 3 [B] 2 4"
 
-COMPONENT.LightStates = {}
+COMPONENT.ElementStates = {}
 
 local sequence = Photon2.SequenceBuilder.New
 

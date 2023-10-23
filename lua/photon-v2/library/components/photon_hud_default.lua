@@ -16,7 +16,7 @@ COMPONENT.Templates = {
 
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 
 }
 

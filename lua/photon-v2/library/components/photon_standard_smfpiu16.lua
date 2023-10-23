@@ -46,7 +46,7 @@ COMPONENT.Templates = {
 }
 
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["2D"] = {
 
 	},

@@ -146,7 +146,7 @@ function Light:UpdateState()
 	if (state ~= self.CurrentStateId) then
 		self.CurrentStateId = state
 		if ( not self.States[state] ) then
-			error( "StateProxy [" .. tostring( state ) .."] is not defined on child light [" .. tostring( self.Id ) .. "]. Verify that you have all necessary light states configured (COMPONENT.LightStates)."  )
+			error( "StateProxy [" .. tostring( state ) .."] is not defined on child light [" .. tostring( self.Id ) .. "]. Verify that you have all necessary light states configured (COMPONENT.ElementStates)."  )
 		end
 		self.StateProxy = self.States[state].Proxy
 		self.CurrentStateProxyId = nil

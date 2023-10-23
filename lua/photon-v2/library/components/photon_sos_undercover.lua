@@ -44,7 +44,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.LightStates = {}
+COMPONENT.ElementStates = {}
 
 COMPONENT.Lights = {
 	[1] = { "LED", Indexes = { 2 } },

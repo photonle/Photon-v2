@@ -197,7 +197,7 @@ COMPONENT.Materials = {
 	}
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["2D"] = {
 		["TD"] = {
 			Inherit = "R",

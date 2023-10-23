@@ -105,10 +105,10 @@ function Component.New( name, data, base )
 	--]]
 
 	local lightStates = {}
-	for lightClassName, states in pairs( data.LightStates or {} ) do
+	for lightClassName, states in pairs( data.ElementStates or {} ) do
 		local lightClass = PhotonLight.FindClass( lightClassName )
 		local lightStateClass = PhotonLightState.FindClass( lightClassName )
-		-- Use actual COMPONENT.LightStates table to get around load/dependency order issues.
+		-- Use actual COMPONENT.ElementStates table to get around load/dependency order issues.
 
 		-- Set __index to the base class's Light.States table.
 		lightStates[lightClassName] = setmetatable( states, { __index = lightClass.States })
@@ -156,7 +156,7 @@ function Component.New( name, data, base )
 				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", templateName ) )
 			end
 
-			-- Set the metatable __index of each template's States to the COMPONENT.LightStates
+			-- Set the metatable __index of each template's States to the COMPONENT.ElementStates
 
 			--
 			-- Process Template's Light States
@@ -164,7 +164,7 @@ function Component.New( name, data, base )
 
 			local lightStateClass = PhotonLightState.FindClass( lightClassName )
 			
-			-- set the "parent" table to either COMPONENT.LightStates[class] or the default states
+			-- set the "parent" table to either COMPONENT.ElementStates[class] or the default states
 			local parentStatesTable = lightStates[lightClassName] or PhotonLight.FindClass( lightClassName ).States
 			local templateStates = setmetatable( templateData.States or {}, { __index = parentStatesTable } )
 			

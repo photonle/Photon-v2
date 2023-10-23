@@ -29,7 +29,7 @@ COMPONENT.Lights = {
 	[1] = { "Light", Vector( 0.55, 0, -0.05 ), Angle( 0, -90, 0 ) }
 }
 
-COMPONENT.LightStates = {}
+COMPONENT.ElementStates = {}
 
 COMPONENT.ColorMap = "[R] 1"
 

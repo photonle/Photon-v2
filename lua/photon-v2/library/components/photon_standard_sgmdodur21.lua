@@ -22,7 +22,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["Sub"] = {
 		["OFF"] = { Material = nil },
 		["DRL"] = {

@@ -29,7 +29,7 @@ end
 
 ---@param name string Name of the light state.
 ---@param data PhotonLightState Input data table of the light state.
----@param collection? table<string, PhotonLightState> Light state table to use for inheritance (typically Component.LightStates).
+---@param collection? table<string, PhotonLightState> Light state table to use for inheritance (typically Component.ElementStates).
 function State.New( self, name, data, collection )
 	local state = data
 	state.Name = name

@@ -44,7 +44,7 @@ COMPONENT.SubMaterials = {
 	[10] = "photon/common/matte_dark",
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["2D"] = {
 		["B0.5"] = {
 			Inherit = "B",

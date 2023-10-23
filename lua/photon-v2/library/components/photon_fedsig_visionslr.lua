@@ -61,7 +61,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["Bone"] = {
 		Deactivate = {
 			Activity = "Fixed",

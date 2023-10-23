@@ -26,7 +26,7 @@ local blue = { r = 0, g = 255, b = 255 }
 local red = { r = 255, g = 64, b = 0 }
 local amber = { r = 255, g = 100, b = 0 }
 
-COMPONENT.LightStates = {
+COMPONENT.ElementStates = {
 	["Mesh"] = {
 		["OFF"] = { Intensity = 0, IntensityTransitions = true },
 		["~SW"] = { Inherit = "SW", IntensityTransitions = true },
