@@ -68,7 +68,7 @@ ENT.ChannelTree = {
         "Signal",
         "Brake",
         "Transmission",
-        "Lights",
+        "Elements",
         "HighBeam"
     }
 }

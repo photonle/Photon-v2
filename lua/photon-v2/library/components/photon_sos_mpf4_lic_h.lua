@@ -34,7 +34,7 @@ COMPONENT.Templates = {
 
 COMPONENT.ColorMap = "[R] 1 [B] 2"
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Full", Vector(0.5,0,0), Angle(0, -90, 0), BoneParent = 0 },
 	[2] = { "Full", Vector(0.5, 0,0), Angle(0, -90, 0), BoneParent = 1 }
 }
@@ -56,7 +56,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			-- Full = "COLOR_ALT"
 			Full = "COLOR_ALT"

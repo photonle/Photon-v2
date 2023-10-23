@@ -16,7 +16,7 @@ COMPONENT.Templates = {
 
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 
 }
 

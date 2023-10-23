@@ -42,7 +42,7 @@ COMPONENT.Templates = {
 
 local mult56 = 0.8
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Primary", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -54, 0 ), Width = 7 },
 	[2] = { "Primary", Vector( 11.3, -2.3, 1.85 ), Angle( 0, 180 + 54, 0 ), Width = 7 },
 

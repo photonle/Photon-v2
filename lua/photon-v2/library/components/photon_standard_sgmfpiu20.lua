@@ -239,7 +239,7 @@ COMPONENT.LightGroups = {
 	["Fwd_R"] = { 14, 16, 18, 20 }
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "TailLights", Vector( -38, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
 	[2] = { "TailSubMat", Indexes = { 17 } },
 	[3] = { "TailLightEdge", Vector( -41.7, -119.5, 51.5 ), Angle( 0, 180-81, 0 ) },
@@ -443,7 +443,7 @@ COMPONENT.Segments = {
 
 --TODO: verify that sequences exist on compilation
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			Headlights = "HEADLIGHTS",
 			Marker = "ON",

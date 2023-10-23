@@ -172,7 +172,7 @@ function Light:UpdateProxyState()
 	local proxyTarget, proxyState
 	
 	if ( self.StateProxy.Type == "FROM_LIGHT" ) then
-		proxyTarget = self.Parent.Lights
+		proxyTarget = self.Parent.Elements
 	end
 	
 	if ( not proxyTarget ) then error( "StateProxy lookup failed. Verify 'Type' is supported and that the 'Target' is valid." ) end
@@ -223,5 +223,5 @@ end
 
 function Light:GetProxy( id )
 	local proxy = self.Proxies[id]
-	return self.Parent--[[@as PhotonLightingComponent]].Lights[proxy[1]][proxy[2]]
+	return self.Parent--[[@as PhotonLightingComponent]].Elements[proxy[1]][proxy[2]]
 end

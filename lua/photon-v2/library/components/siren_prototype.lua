@@ -47,7 +47,7 @@ COMPONENT.Templates = {
 
 COMPONENT.ColorMap = "[ON] 1 2 3 4 5 6"
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
 	[2] = { "Speaker", "emv/sirens/federal sig ss/emv_yelp.wav" },
 	[3] = { "Speaker", "emv/sirens/federal sig ss/emv_priority.wav" },

@@ -19,7 +19,7 @@ Photon2.DefaultChannelTree = {
         "Signal",
         "Brake",
         "Transmission",
-        "Lights",
+        "Elements",
         "HighBeam"
     }
 }

@@ -45,7 +45,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "SubMaterial", Indexes = { 12 } }, -- DRL R
 	[2] = { "SubMaterial", Indexes = { 13 } }, -- DRL L
 	
@@ -153,7 +153,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			["DRL_R"] = "ON",
 			["DRL_L"] = "ON",

@@ -102,7 +102,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Half", Vector( 6.29, 1.24, 0.36 ), Angle( 0, -90, 0 ) },
 	[2] = { "Half", Vector( 6.29, -1.24, 0.36 ), Angle( 0, -90, 0 ) },
 

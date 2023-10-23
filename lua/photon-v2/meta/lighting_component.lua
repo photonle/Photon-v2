@@ -72,7 +72,7 @@ function Component.New( name, data, base )
 		Descendants = {},
 		Children = {},
 		Model = data.Model,
-		Lights = {},
+		Elements = {},
 		Segments = {},
 		Patterns = {},
 		Inputs = {},
@@ -193,7 +193,7 @@ function Component.New( name, data, base )
 	--]]
 
 	-- print("Compiling lights...")
-	for id, light in pairs( data.Lights or {} ) do
+	for id, light in pairs( data.Elements or {} ) do
 		-- printf( "\t\tLight ID: %s", id )
 		-- TODO: Process { Set = "x" } scripting
 
@@ -227,7 +227,7 @@ function Component.New( name, data, base )
 
 		-- Additional data passed to light constructor for the light
 		-- class to process.
-		component.Lights[id] = lightClass.New( light, template ) --[[@as PhotonLight]]
+		component.Elements[id] = lightClass.New( light, template ) --[[@as PhotonLight]]
 	end
 
 
@@ -375,13 +375,13 @@ function Component:Initialize( ent, controller )
 		component.CurrentModes = table.Copy( controller.CurrentModes )
 	end
 
-	component.Lights = {}
+	component.Elements = {}
 	component.Segments = {}
 	component.ActiveSequences = {}
 
 	-- Process light table
-	for key, light in pairs(self.Lights) do
-		component.Lights[key] = light:Initialize( key, component.Entity )
+	for key, light in pairs(self.Elements) do
+		component.Elements[key] = light:Initialize( key, component.Entity )
 	end
 
 	-- Process segments
@@ -394,7 +394,7 @@ end
 
 
 function Component:OnScaleChange( newScale, oldScale )
-	for key, light in pairs(self.Lights) do
+	for key, light in pairs(self.Elements) do
 		if (light.SetLightScale) then
 			light:SetLightScale( newScale )
 		end
@@ -486,8 +486,8 @@ function Component:FrameTick()
 		segment:IncrementFrame( self.PhotonController.Frame )
 	end
 
-	for i=1, #self.Lights do
-		self.Lights[i]:UpdateState()
+	for i=1, #self.Elements do
+		self.Elements[i]:UpdateState()
 	end
 end
 
@@ -495,8 +495,8 @@ function Component:RemoveVirtual()
 	if ( not self.IsVirtual ) then
 		error("Cannot call Component:VirtualRemove() on non-virtual components.")
 	end
-	for i=1, #self.Lights do
-		self.Lights[i]:DeactivateNow()
+	for i=1, #self.Elements do
+		self.Elements[i]:DeactivateNow()
 	end
 end
 

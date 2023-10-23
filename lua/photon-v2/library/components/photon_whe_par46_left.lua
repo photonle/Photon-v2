@@ -33,7 +33,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
 	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
 	[3] = { "LightHead", BoneId = 4, Axis = 'y' },

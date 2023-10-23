@@ -46,7 +46,7 @@ COMPONENT.Templates = {
 
 COMPONENT.ColorMap = "[R] 1 [B] 2"
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Main", Vector( -7.7, 6.6, -0.2 ), Angle( 0, 0, 0 ) },
 	[2] = { "Main", Vector( 7.7, 6.6, -0.2 ), Angle( 0, 0, 0 ) },
 }

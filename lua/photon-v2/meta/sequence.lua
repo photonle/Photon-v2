@@ -55,7 +55,7 @@ function Sequence:Initialize( name, segment, priorityScore, rank )
 		Rank = rank or 0
 	}
 
-	local lights = segment.Lights
+	local lights = segment.Elements
 
 	for i=1, #self.UsedLightsByIndex do
 		instance.UsedLights[#instance.UsedLights+1] = lights[self.UsedLightsByIndex[i]]

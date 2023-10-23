@@ -271,7 +271,7 @@ COMPONENT.LightGroups = {
 	["POD4"] = { 19 },
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Pod", BoneId = 8, Axis = "y", Speed = 600 },
 	[2] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 8 },
 	[3] = { "PodEmissive", Vector( -3.99, 23.03, 1.29 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },

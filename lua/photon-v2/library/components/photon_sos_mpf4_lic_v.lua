@@ -15,7 +15,7 @@ COMPONENT.Model = "models/sentry/props/soundofffascia_plate_vertical.mdl"
 
 COMPONENT.Templates = {}
 
-COMPONENT.Lights = {}
+COMPONENT.Elements = {}
 
 COMPONENT.Segments = {}
 

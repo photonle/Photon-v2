@@ -85,7 +85,7 @@ COMPONENT.LightGroups = {
 	["Fwd_R"] = { }
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "SubMat", Indexes = { 11 } },
 	[2] = { "ModelMesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "models/supermighty/2016_fpiu/tail_left" },
 	
@@ -279,7 +279,7 @@ COMPONENT.Segments = {
 
 --TODO: verify that sequences exist on compilation
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			-- Headlights = "HEADLIGHTS",
 			Marker = "ON",

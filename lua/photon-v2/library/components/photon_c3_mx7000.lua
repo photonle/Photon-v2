@@ -69,7 +69,7 @@ COMPONENT.ColorMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 3
 
 local fov = 180
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Rotator", BoneId = 2, Axis = "z", Speed = 700 },
 	[2] = { "Rotator", BoneId = 3, Axis = "z", Speed = 710 },
 	[3] = { "Rotator", BoneId = 4, Axis = "z", Speed = 440 },

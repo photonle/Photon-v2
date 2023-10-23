@@ -25,7 +25,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0.55, 0, -0.05 ), Angle( 0, -90, 0 ) }
 }
 

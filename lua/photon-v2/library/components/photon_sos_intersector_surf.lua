@@ -62,7 +62,7 @@ COMPONENT.Templates = {
 
 COMPONENT.ElementStates = {}
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "LEDs", Indexes = { 1 } },
 	[2] = { "LED_Main", Vector( 0, 0.75, 0.02 ), Angle( 0, 0, 0 ) },
 	[3] = { "LED", Vector( 0.64, 0.44, 0.02 ), Angle( 0, -60, 0 ) },

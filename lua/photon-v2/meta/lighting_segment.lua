@@ -20,7 +20,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Inputs table<string, { Sequence: string, Priority: number, Rank: number }>
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonLight, string>>
----@field Lights table Points to Component.Lights
+---@field Lights table Points to Component.Elements
 local Segment = exmeta.New()
 
 Segment.Patterns = {}
@@ -39,7 +39,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 	---@type PhotonLightingSegment
 	local segment = {
 		Name = name,
-		Lights = {},
+		Elements = {},
 		Sequences = {},
 		Frames = {},
 		Patterns = {},
@@ -263,7 +263,7 @@ function Segment:Initialize( componentInstance )
 		CurrentPriorityScore = 0,
 		Component = componentInstance,
 		CurrentModes = componentInstance.CurrentModes,
-		Lights = componentInstance.Lights,
+		Elements = componentInstance.Elements,
 		ColorMap = componentInstance.ColorMap,
 		Sequences = {},
 		InitializedFrames = {},
@@ -286,12 +286,12 @@ function Segment:Initialize( componentInstance )
 					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
 				end
 			end
-			if (not segment.Component.Lights[lightId]) then
+			if (not segment.Component.Elements[lightId]) then
 				error("Light ID [" .. tostring(lightId) .. "] could not be found.")
 			end
 			-- TODO: error handling -- this breaks if the frame 
 			-- references a non-existent light
-			frame[segment.Component.Lights[lightId]] = stateId
+			frame[segment.Component.Elements[lightId]] = stateId
 		end
 	end
 
@@ -371,7 +371,7 @@ end
 -- 	for i = 1, #map[self.ActivePattern] do
 -- 		---@type PhotonSequence
 -- 		sequence = map[i]
--- 		local lights = self.Lights
+-- 		local lights = self.Elements
 -- 		-- map[i] is a PhotonSequence class
 -- 		for lightId, state in pairs( sequence[sequence.CurrentFrame] ) do
 -- 			lights[lightId]:SetState( state, self.CurrentPriorityScore )
@@ -478,7 +478,7 @@ end
 
 function Segment:ResetSegment()
 	-- print("Resetting segment...")
-	local lights = self.Lights
+	local lights = self.Elements
 	for lightId, state in pairs(self.Frames[0]) do
 		lights[lightId]:SetState( state )
 	end

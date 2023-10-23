@@ -52,7 +52,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	-- [ 1] = { "Main", Vector(0, 6.11, 0), Angle(0, 0, -90) },
 	-- [ 2] = { "Main", Vector(-6.58, 6.11, 0), Angle(0, 0, -90) },
 	-- [ 3] = { "Main", Vector(6.58, 6.11, 0), Angle(0, 0, -90) },
@@ -220,7 +220,7 @@ COMPONENT.Patterns = {
 	-- 		Inner = "Rotate" 
 	-- 	}
 	-- },
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			All = "SLOW"
 			-- All = "PATTERN_1",

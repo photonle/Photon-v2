@@ -34,7 +34,7 @@ COMPONENT.Templates = {
 
 COMPONENT.ColorMap = "[R] 1"
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) }
 }
 
@@ -50,7 +50,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Patterns = {
-	["Vehicle.Lights"] = {
+	["Vehicle.Elements"] = {
 		["HEADLIGHTS"] = {
 			Full = "STEADY"
 			-- All = "STEADY"

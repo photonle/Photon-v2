@@ -23,7 +23,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.Lights = {
+COMPONENT.Elements = {
 	[1] = { "Impaxx", Vector( 10.8, 1.3, 17.13 ), Angle( 0, 180, 0 ) },
 	[2] = { "Impaxx", Vector( -10.8, 1.3, 17.13 ), Angle( 0, 180, 0 ) },
 
