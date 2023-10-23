@@ -1,4 +1,85 @@
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
+if SERVER then return end
+
+
+function meshMaterialTesting()
+	local modelTarget = "models/tdmcars/emergency/for_crownvic.mdl"
+	
+	local csent = ClientsideModel( modelTarget )
+	csent:SetPos( Vector(0,0,0) )
+	csent:Spawn()
+
+	PrintTable(csent:GetMaterials())
+
+	local result = {}
+	for i=0, 127 do
+		result[i] = csent:GetSubMaterial( i )
+	end
+	csent:Remove()
+
+	PrintTable( result )
+end
+
+-- meshMaterialTesting()
+
+function triangleTest()
+	local modelTarget = "models/sentry/96cvpi.mdl"
+	local meshMat = "sentry/96cvpi/lights2"
+	local meshResult = Photon2.MeshCache.GetMesh( modelTarget, meshMat )
+
+	local triangles = Photon2.MeshCache.Cache[modelTarget][meshMat][1].Triangles
+	print( "TRIANGLE LENGTH: " .. tostring( #triangles ) )
+	local avg = Vector()
+	PrintTable( triangles[1] )
+	for i=1, #triangles do
+		avg = avg + triangles[i].pos
+	end
+	avg.x = avg.x / #triangles
+	avg.y = avg.y / #triangles
+	avg.z = avg.z / #triangles
+	print( "Average: " .. tostring( avg ) )
+end
+
+-- Function to calculate the center point of a set of vectors based on their bounding box
+function findCenter(vectors)
+	if #vectors == 0 then
+	  return nil, "No vectors provided"
+	end
+  
+	-- Initialize min and max coordinates
+	local minX, maxX = vectors[1].pos.x, vectors[1].pos.x
+	local minY, maxY = vectors[1].pos.y, vectors[1].pos.y
+	local minZ, maxZ = vectors[1].pos.z, vectors[1].pos.z
+  
+	-- Loop through each vector to find min and max for each coordinate
+	for i, triangle in ipairs(vectors) do
+		local vector = triangle.pos
+	  if vector.x < minX then minX = vector.x end
+	  if vector.x > maxX then maxX = vector.x end
+  
+	  if vector.y < minY then minY = vector.y end
+	  if vector.y > maxY then maxY = vector.y end
+  
+	  if vector.z < minZ then minZ = vector.z end
+	  if vector.z > maxZ then maxZ = vector.z end
+	end
+  
+	-- Calculate the center point of the bounding box
+	local centerX = (minX + maxX) / 2
+	local centerY = (minY + maxY) / 2
+	local centerZ = (minZ + maxZ) / 2
+  
+	return {x = centerX, y = centerY, z = centerZ}
+  end
+  
+
+--   local center = findCenter(triangles)
+  
+--   if center then
+-- 	print("Center:", "x:", math.Round(center.x, 3), "y:", math.Round(center.y, 3), "z:", math.Round(center.z, 3) )
+--   else
+-- 	print("No center point could be calculated.")
+--   end
 
 -- Global Reinhard tone mapping
 function reinhardToneMapping(color)
@@ -40,7 +121,7 @@ end
 local hdrColor = {1, 0, 0}  -- Red color with brightness > 1 to simulate an HDR value
 local resultColor = toneMapAndBoost(hdrColor, 10)  -- This will tone map and then boost the green based on the brightness
 
-PrintTable( resultColor )
+-- PrintTable( resultColor )
 
 -- for _,ply in pairs(player.GetAll()) do
 -- 	ply:SetViewOffsetDucked(Vector(0,0,28))

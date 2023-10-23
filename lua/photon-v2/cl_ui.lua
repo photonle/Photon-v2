@@ -301,8 +301,10 @@ end)
 
 local hudMaterial = Material("photon/ui/hud")
 
-local hudRT = GetRenderTargetEx( "Photon2:HUD" .. CurTime(), 512, 512, 
-RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, 32768 + 2048 + 1, 4, IMAGE_FORMAT_RGBA8888 )
+local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512, 
+0, MATERIAL_RT_DEPTH_NONE, 32768 + 2048 + 4 + 8 + 1, 0, IMAGE_FORMAT_RGBA8888 )
+
+local hudRT2 = GetRenderTarget( "Photon2HUD", 512, 512 )
 
 local hudMaterial2 = Material("photon/ui/hud.png")
 -- local hudRTId = 
@@ -312,16 +314,50 @@ local function drawPhoton2Hud()
 
 end
 
+
+surface.CreateFont( "Photon2.UI:UI14", {
+	font = "Roboto Bold",
+	size = 14,
+	weight =700
+} );
+
+surface.CreateFont( "Photon2.UI:UI12", {
+	font = "Roboto Bold",
+	size = 13
+} );
+
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	if true then return end
 	hudMaterial:SetTexture( "$basetexture", hudRT )
 	if ( CurTime() >= (lastUpdate + 1) ) then
 		-- render.PushRenderTarget( hudMaterial2:GetTexture("$basetexture") )
 		render.PushRenderTarget( hudRT )
+		-- needs to be scaled down by 16px for some unknown reason
+		render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
+		-- render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
+		cam.Start2D()
 			render.OverrideAlphaWriteEnable( true, true)
-			render.Clear( 0, 255, 0, 128, false, false )
-			surface.SetDrawColor( 0, 255, 0, 255 )
-			surface.DrawRect( 64, 64, 512, 512 )
+			render.Clear( 0, 0, 0, 64, false, false )
+
+			local w = 150
+			local h = 64
+			local padding = 4
+
+			local x = ScrW() - w - padding
+			local y = 256
+
+			-- Warning Light Panel
+
+			-- background
+			draw.RoundedBox( 4, x, y, w, h, Color( 48, 48, 48, 210 ) )
+			-- mode 1 indicator
+			local indicatorSpacing = 6
+			draw.RoundedBox( 2, x + 8, y + 8, 26, 12, Color( 0, 0, 0, 255 ) )
+			draw.RoundedBox( 2, x + 8, y + 8 + 12 + indicatorSpacing, 26, 12, Color( 0, 0, 0, 255 ) )
+			draw.RoundedBox( 2, x + 8, y + 8 + 12 + indicatorSpacing + 12 + indicatorSpacing, 26, 12, Color( 0, 0, 0, 255 ) )
+
+			draw.DrawText( "MODE 3", "Photon2.UI:UI14", x + 40, y + 8, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT )
+		cam.End2D()
 		render.PopRenderTarget()
 		lastUpdate = CurTime()
 	end
@@ -329,5 +365,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	surface.SetDrawColor(255,255,255,255)
 	surface.SetMaterial(hudMaterial)
 	-- surface.SetTexture()
-	surface.DrawTexturedRect(0,  0, 512, 512)
+	-- cam.Start2D()
+	surface.DrawTexturedRect(0,  0, 496, 496)
+	-- cam.End2D()
 end)

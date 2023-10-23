@@ -4731,8 +4731,8 @@ function string.TrimRight(str,char) end
 surface = {}
 -- Creates a new font.  To prevent the font from displaying incorrectly when using the `outline` setting, set `antialias` to false. This will ensure the text properly fills out the entire outline.  Be sure to check the Default_Fonts first! Those fonts can be used without using this function.  See Also: Finding the Font Name.  Due to the static nature of fonts, do **NOT** create the font more than once. You should only be creating them once, it is recommended to create them at the top of your script. Do not use this function within GM:HUDPaint or any other hook!  Define fonts that you will actually use, as fonts are very taxing on performance and will cause crashes! Do not create fonts for every size.
 ---@param fontName string The new font name.
----@param fontData table The font properties. See the Structures/FontData.
-function surface.CreateFont(fontName,fontData) end
+---@param fontData FontCreationData The font properties. See the Structures/FontData.
+function surface.CreateFont(fontName, fontData) end
 
 -- Alias of Global.DisableClipping so use that instead.  Enables or disables the clipping used by the VGUI that limits the drawing operations to a panels bounds.  Identical to Global.DisableClipping. See also Panel:NoClipping.
 ---@param disable boolean True to disable, false to enable the clipping

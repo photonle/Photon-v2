@@ -203,3 +203,18 @@ function istable( object ) end
 ---@field Momentary? PhotonControllerSoundFile | boolean
 ---@field Release? PhotonControllerSoundFile | boolean
 ---@field Hold? PhotonControllerSoundFile | boolean
+
+---@class FontCreationData
+---@field font string
+---@field size number
+---@field weight? number
+---@field extended? boolean
+---@field blursize? number
+---@field scanlines? boolean
+---@field underline? boolean
+---@field italic? boolean
+---@field strikeout? boolean
+---@field rotary? boolean
+---@field shadow? boolean
+---@field additive? boolean
+---@field outline? boolean
