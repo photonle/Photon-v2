@@ -1,5 +1,6 @@
 Photon2.UI = Photon2.UI or {
-	CursorReleased = false
+	CursorReleased = false,
+	HUD = {}
 }
 
 function Photon2.UI.ReloadMenubar()
@@ -308,64 +309,355 @@ local hudRT2 = GetRenderTarget( "Photon2HUD", 512, 512 )
 
 local hudMaterial2 = Material("photon/ui/hud.png")
 -- local hudRTId = 
+local illumRearOff = Material("photon/ui/hud_icon_illum_rear_off.png")
+local illumLeftOff = Material("photon/ui/hud_icon_illum_left_off.png")
+local illumRightOff = Material("photon/ui/hud_icon_illum_right_off.png")
+local illumFrontOff = Material("photon/ui/hud_icon_illum_front_off.png")
+local illumRearOn = Material("photon/ui/hud_icon_illum_rear_on.png")
+local illumLeftOn = Material("photon/ui/hud_icon_illum_left_on.png")
+local illumRightOn = Material("photon/ui/hud_icon_illum_right_on.png")
+local illumFrontOn = Material("photon/ui/hud_icon_illum_front_on.png")
+local illumFlood = Material("photon/ui/hud_icon_illum_flood.png")
+
+local vehicleIcon = Material("photon/ui/hud_veh_icon.png")
+
+local wailIcon = Material("photon/ui/hud_icon_wail.png")
+local yelpIcon = Material("photon/ui/hud_icon_yelp.png")
+local hiloIcon = Material("photon/ui/hud_icon_hilo.png")
+local pcallIcon = Material("photon/ui/hud_icon_pcall.png")
+local toneIcon = Material("photon/ui/hud_icon_tone.png")
+local boltIcon = Material("photon/ui/hud_icon_bolt.png")
+local speakerIcon = Material("photon/ui/hud_icon_speaker.png")
+local hornIcon = Material("photon/ui/hud_icon_horn.png")
+local manualIcon = Material("photon/ui/hud_icon_manual.png")
+
 local lastUpdate = 0
 
-local function drawPhoton2Hud()
+local cornerRadius = 4
+
+surface.CreateFont( "Photon2.UI:Medium", {
+	font = "Roboto Bold",
+	size = 14,
+	weight = 700
+} );
+
+surface.CreateFont( "Photon2.UI:Small", {
+	font = "Roboto Bold",
+	size = 12,
+	weight = 100
+} );
+
+surface.CreateFont( "Photon2.UI:ExtraSmall", {
+	font = "Roboto Bold",
+	size = 10,
+	weight = 100
+} );
+
+local icons = {
+	wail = Material("photon/ui/hud_icon_wail.png"),
+	yelp =  Material("photon/ui/hud_icon_yelp.png"),
+	hilo =  Material("photon/ui/hud_icon_hilo.png"),
+	pcall =  Material("photon/ui/hud_icon_pcall.png"),
+	tone =  Material("photon/ui/hud_icon_tone.png"),
+	bolt =  Material("photon/ui/hud_icon_bolt.png"),
+	speaker =  Material("photon/ui/hud_icon_speaker.png"),
+	horn =  Material("photon/ui/hud_icon_horn.png"),
+	manual =  Material("photon/ui/hud_icon_manual.png"),
+	siren =  Material("photon/ui/hud_icon_siren.png"),
+}
+
+
+local smartSirenIndicator = {
+	Channel = "Emergency.Siren",
+	Markers = { "T1", "T2", "T3", "T4" },
+	MarkerMap= { ["T1"] = 1, ["T2"] = 2, ["T3"] = 3, ["T4"] = 4 },
+	Map = {
+		["T1"] = { Label = "WAIL", Icon = "wail" },
+		["T2"] = { Label = "YELP", Icon = "yelp" },
+		["T3"] = { Label = "PRTY", Icon = "bolt" },
+		["T4"] = { Label = "HILO", Icon = "hilo" },
+		["AIR"] = { Label = "AIR", Icon = "horn" },
+		["MAN"] = { Label = "MAN", Icon = "manual" },
+		["OFF"] = { Label = "STBY", Icon = "siren"}
+	}
+}
+
+local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
+local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
+
+local white = Color( 255, 255, 255 )
+
+local dimColor = Color( 255, 255, 255, 96 )
+local inactiveColor = Color( 0, 0, 0, 128 )
+
+local HUD = Photon2.UI.HUD
+
+local stageIndicators = {
+	[1] = { 48, 0 },
+	[2] = { 21, 6 },
+	[3] = { 12, 6 },
+	[4] = { 8, 5 },
+	[5] = { 7, 3 },
+}
+
+function HUD.LightsIndicator( x, y, width, height, gap, count )
+	for i=1, count do
+		draw.RoundedBox( 0, x + ( ( i - 1 ) * ( width + gap ) ), y, width, height, inactiveColor )
+	end
+end
+
+function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, secLabel, secCount, secSelected )
+	draw.RoundedBox( cornerRadius, x, y, width, 64, Color( 64, 64, 64, 200 ) )
+	draw.DrawText( priLabel, "Photon2.UI:Medium", x + 40, y + 8, white )
+	draw.DrawText( secLabel, "Photon2.UI:Medium", x + 40, y + 42, white )
+
+	local stageDimensions = stageIndicators[priCount]
+	local drawColor = white
+	for i=1, priCount do
+		if ( i <= priSelected ) then
+			drawColor = white
+		else
+			drawColor = inactiveColor
+		end
+		draw.RoundedBox( 2, x + 8, y + 8 + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
+	end
+
+	HUD.LightsIndicator( x + 40, y + 31, 11, 2, 2, 8 )
+
+	surface.SetMaterial( ellipseInactive )
+	surface.SetDrawColor( dimColor )
+
+	secSelected = ( secCount + 1 ) - secSelected
+
+	for i=1, secCount do
+		if ( i == secSelected ) then
+			surface.SetMaterial( ellipseActive )
+			surface.SetDrawColor( white )
+		end
+
+		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 46, 8, 8 )
+
+		if ( i == secSelected ) then
+			surface.SetMaterial( ellipseInactive)
+			surface.SetDrawColor( dimColor )
+		end
+	end
+end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param height integer
+---@param columns integer
+---@param columnWidth integer
+---@param functions table<table<string, boolean>>
+function HUD.FunctionsIndicator( x, y, width, height, columns, columnWidth, functions )
+	
+	draw.RoundedBox( cornerRadius, x, y, width, height, Color( 64, 64, 64, 200 ) )
+	
+	local row = 1
+	local column = 1
+
+	surface.SetDrawColor( 255, 255, 255, 255 )
+	local textColor = white	
+	for i=1, #functions do
+		
+		if ( functions[i][2] ) then
+			surface.SetMaterial( ellipseActive )
+			surface.SetDrawColor( white )
+			textColor = white
+		else
+			surface.SetMaterial( ellipseInactive )
+			surface.SetDrawColor( dimColor )
+			textColor = dimColor
+		end
+
+		surface.DrawTexturedRect(
+			x + 8 + ( ( column - 1 ) * columnWidth ),
+			y + 11 + ( ( row - 1 ) * 18 ),
+			8,
+			8
+		)
+
+		draw.DrawText( 
+			functions[i][1], 
+			"Photon2.UI:Small",
+			x + 20 + ( ( column - 1 ) * columnWidth ),
+			y + 9 + ( ( row - 1 ) * 18 ),
+			textColor
+		)
+
+		column = column + 1
+		if ( column > columns ) then
+			row = row + 1
+			column = 1
+		end
+
+	end
+
+end
+
+---@param x integer
+---@param y integer
+---@param icon IMaterial
+---@param frontOn boolean
+---@param floodOn boolean
+---@param rightOn boolean
+---@param backOn boolean
+---@param leftOn boolean
+function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, backOn, leftOn )
+	draw.RoundedBox( cornerRadius, x, y, 52, 48, Color( 64, 64, 64, 200 ) )
+	
+	local drawAsActive = false
+	
+	if ( frontOn or floodOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetMaterial( illumFrontOn )
+	else
+		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetMaterial( illumFrontOff )
+	end
+	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
+
+	if ( floodOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( 255, 255, 255, 255 )
+	else
+		surface.SetDrawColor( 0, 0, 0, 128 )
+	end
+	surface.SetMaterial( illumFlood )
+	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
+
+	if ( rightOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetMaterial( illumRightOn )
+	else
+		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetMaterial( illumRightOff )
+	end
+	surface.DrawTexturedRect( x + 27, y - 3, 25, 52 )
+
+	if ( backOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetMaterial( illumRearOn )
+	else
+		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetMaterial( illumRearOff )
+	end
+	surface.DrawTexturedRect( x - 4, y + 28, 56, 21 )
+
+	if ( leftOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetMaterial( illumLeftOn )
+	else
+		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetMaterial( illumLeftOff )
+	end
+	surface.DrawTexturedRect( x-5, y - 3, 30, 52 )
+
+	surface.SetMaterial( icon )
+	if ( drawAsActive ) then
+		surface.SetDrawColor( 255, 255, 255, 255 )
+	else
+		surface.SetDrawColor( 255, 255, 255, 64 )
+	end
+	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
+end
+
+---@param x integer
+---@param y integer
+---@param width integer
+---@param icon IMaterial
+---@param label string
+---@param count integer
+---@param selected integer
+function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected )
+	draw.RoundedBox( cornerRadius, x, y, width, 32, Color( 16, 16, 16, 200 ) )
+	
+	surface.SetDrawColor( 255, 255, 255, 255 )
+	surface.SetMaterial( icon )
+	surface.DrawTexturedRect( x + 9, y + 4, 24, 24 )
+
+	draw.DrawText( label, "Photon2.UI:Medium", x + 40, y + 9, white )
+
+	surface.SetMaterial( ellipseInactive )
+
+	selected = ( count + 1 ) - selected
+
+	surface.SetDrawColor( dimColor )
+
+	for i=1, count do
+		if ( i == selected ) then
+			surface.SetMaterial( ellipseActive )
+			surface.SetDrawColor( white )
+		end
+
+		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 12, 8, 8 )
+
+		if ( i == selected ) then
+			surface.SetMaterial( ellipseInactive)
+			surface.SetDrawColor( dimColor )
+		end
+	end
 
 end
 
 
-surface.CreateFont( "Photon2.UI:UI14", {
-	font = "Roboto Bold",
-	size = 14,
-	weight =700
-} );
 
-surface.CreateFont( "Photon2.UI:UI12", {
-	font = "Roboto Bold",
-	size = 13
-} );
+local drawIcon = icons["siren"]
 
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
-	if true then return end
+	-- if true then return end
+	local target = Photon2.ClientInput.TargetController
+
+	if ( not target ) then return end
+
 	hudMaterial:SetTexture( "$basetexture", hudRT )
-	if ( CurTime() >= (lastUpdate + 1) ) then
-		-- render.PushRenderTarget( hudMaterial2:GetTexture("$basetexture") )
+	if ( CurTime() >= (lastUpdate + 0.1) ) then
 		render.PushRenderTarget( hudRT )
 		-- needs to be scaled down by 16px for some unknown reason
 		render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
-		-- render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
 		cam.Start2D()
 			render.OverrideAlphaWriteEnable( true, true)
-			render.Clear( 0, 0, 0, 64, false, false )
+			render.Clear( 0, 0, 0, 0, false, false )
 
-			local w = 150
-			local h = 64
-			local padding = 4
+			HUD.LightStageIndicator( ScrW() - 150 - 4, 256, 150, "MODE 1", 3, 1, "LEFT", 3, 1 )
 
-			local x = ScrW() - w - padding
-			local y = 256
 
-			-- Warning Light Panel
+			-- Siren 1 Indicator
+			local sirenDisplay, sirenSelection
+			if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
+				sirenDisplay = smartSirenIndicator.Map[target.CurrentModes["Emergency.SirenOverride"]]
+				sirenSelection = -1
+			else
+				sirenDisplay = smartSirenIndicator.Map[target.CurrentModes["Emergency.Siren"]]
+				sirenSelection = smartSirenIndicator.MarkerMap[target.CurrentModes["Emergency.Siren"]] or -1
+			end
+			HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, icons[sirenDisplay.Icon], sirenDisplay.Label, #smartSirenIndicator.Markers, sirenSelection )
 
-			-- background
-			draw.RoundedBox( 4, x, y, w, h, Color( 48, 48, 48, 210 ) )
-			-- mode 1 indicator
-			local indicatorSpacing = 6
-			draw.RoundedBox( 2, x + 8, y + 8, 26, 12, Color( 0, 0, 0, 255 ) )
-			draw.RoundedBox( 2, x + 8, y + 8 + 12 + indicatorSpacing, 26, 12, Color( 0, 0, 0, 255 ) )
-			draw.RoundedBox( 2, x + 8, y + 8 + 12 + indicatorSpacing + 12 + indicatorSpacing, 26, 12, Color( 0, 0, 0, 255 ) )
 
-			draw.DrawText( "MODE 3", "Photon2.UI:UI14", x + 40, y + 8, Color( 255, 255, 255 ), TEXT_ALIGN_LEFT )
+			HUD.FunctionsIndicator( ScrW() - 150 - 4, 356, 96, 48, 2, 44, {
+				{ "AUX", false },
+				{ "CUT", false },
+				{ "MRK", true },
+				{ "BLK", false }
+			} )
+
+			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, 356, vehicleIcon, 
+			false, false, false, false, false )
+
+			draw.DrawText( "v2.0.0 (PREVIEW)", "Photon2.UI:ExtraSmall", ScrW() - 4, 406, white, TEXT_ALIGN_RIGHT )
+			draw.DrawText( "DO NOT REDISTRIBUTE", "Photon2.UI:ExtraSmall", ScrW() - 4, 418, white, TEXT_ALIGN_RIGHT )
+
 		cam.End2D()
 		render.PopRenderTarget()
 		lastUpdate = CurTime()
 	end
-	-- local texId = surface.GetTextureID(hudRT:GetName())
 	surface.SetDrawColor(255,255,255,255)
 	surface.SetMaterial(hudMaterial)
-	-- surface.SetTexture()
-	-- cam.Start2D()
-	surface.DrawTexturedRect(0,  0, 496, 496)
-	-- cam.End2D()
+	surface.DrawTexturedRect(ScrW() - 528, ScrH() - 516, 496, 496)
 end)

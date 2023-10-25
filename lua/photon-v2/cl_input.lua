@@ -352,10 +352,10 @@ Photon2.ClientInput.RegisterCommand({
 	Name = "default.toggle_warning_lights",
 	Title = "Toggle Warning Lights", 
 	Category = "Emergency Lighting",
-	Description = "When warning lights are off, turns them on to MODE3. When warning lights are on (any mode), turns them off.",
+	Description = "When warning lights are off, turns them on to MODE2. When warning lights are on (any mode), turns them off.",
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE2" },
 		{ Action = "OFF_WITH", Channel = "Emergency.Siren", Value = "Emergency.Warning" }
 	},
 	OnRelease = {
@@ -704,7 +704,7 @@ Photon2.ClientInput.RegisterCommand({
 	Description = "Activates warning lights (MODE3) and toggles the siren (T1).",
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "ON_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" },
+		{ Action = "SET", Channel = "Emergency.Warning", Value = "MODE3" },
 		{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
 	},
 	OnRelease = {

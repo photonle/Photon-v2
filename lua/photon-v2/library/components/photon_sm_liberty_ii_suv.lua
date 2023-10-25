@@ -256,7 +256,6 @@ COMPONENT.CompoundInputActions = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		[{}] = {},
 		["MODE1"] = {
 			All = "MODE1"
 		},

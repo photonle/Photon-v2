@@ -1,6 +1,9 @@
 # Photon 2
  Photon 2 for Garry's Mod
 
+# Known Issues
+* Siren elements break when leaving the controller's PVS and a playing siren continues indefinitely.
+
 # Major Changes
 
 # Simulate Modern Controller Features
