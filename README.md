@@ -1,10 +1,57 @@
 # Photon 2
  Photon 2 for Garry's Mod
 
+# Internal Testers
+Thanks for testing. Photon 2 is about 70% ready. Please expect some major instability and know concepts could change significantly.
+
+When getting a feel for Photon 2, I'd recommend just using the Las Vegas FPIU. It's the most recent demonstrator vehicle and is by far the most complete.
+
+## Rules and Conditions
+1. Goes without saying, but don't share the code or files with anyone. A leaked pre-release of Photon 2 harms our ability maintain interest, updates, and confidence in the addon.
+2. You are free to publicly show off your Photon 2 projects in #wayo, #showcase, etc.
+
+# Default Key Binds
+* F: Toggle warning lights (MODE2)
+* R: Toggle siren, activate warning lights (MODE3)
+* L ALT: Cycle through warning lights modes (MODE1, MODE2, MODE3)
+* M: Toggle marker/cruise lights.
+* 1-4: Toggle siren tones T1-T4
+* H: Quick press toggles headlights. Long press toggles parking lights.
+
+* Arrow LEFT: Toggle left turn signal.
+* Arrow RIGHT: Toggle right turn signal.
+* Arrow UP: Toggle hazard lights.
+* Arrow DOWN: All turn signals off.
+
+* RCtrl + Arrow LEFT: Toggle traffic advisor left.
+* RCtrl + Arrow RIGHT: Toggle traffic advisor right.
+* RCtrl + Arrow UP: Toggle traffic advisor center-out.
+* RCtrl + Arrow DOWN: Turn directional/traffic advisor off.
+
+* RShift + Arrow LEFT: Toggle left scene lighting.
+* RShift + Arrow RIGHT: Toggle right scene lighting.
+* RShift + Arrow UP: Toggle forward scene lighting.
+* RShift + Arrow DOWN: Turn all scene lighting off.
+
+* MOUSE1: Airhorn (momentary).
+* MOUSE2: Manual siren (momentary).
+
+While there is currently no UI or in-game process for setting up binds, you can get an idea how they work and modify it yourself by looking at /photon-v2/cl_input.lua
+
 # Known Issues
-* Siren elements break when leaving the controller's PVS and a playing siren continues indefinitely.
+There's a massive list of issues and to-do items that remain in Photon 2. While I'm fully aware of a number of them, don't hesitate to report problems you run into.
+
+* Sirens break when leaving the controller's PVS and active sirens will play indefinitely. Although I know the reason, I'm still working on a solution and haven't been able to address it yet. In the mean time, use the `stopsound` command to forcefully kill lingering sirens (I've it bound to my mouse for well over a decade).
+
+* Projected textures are rendered even when they're invisible. This can cause a pretty major performance hit and it isn't obvious that it's happening. 
+
+* Lights can be dim-looking, washed out, or weird looking. Light appearance is a major work-in-progress and I don't intend to focus on it until much later.
+
+* This readme file is full of incomplete thoughts and information.
 
 # Major Changes
+
+...WORK IN PROGRESS...
 
 # All New Components Platform
 ## A History
@@ -63,9 +110,6 @@ Current features include:
 * Support for adding new Library files that are loaded and usable immediately while in-game.
 * Instant equipment updates when saving a file. No more needing to delete and respawn a vehicle for every component you add.
 
-## User Interfaces
-Photon 2 is being designed with future UI implementations in mind, however it is not currently a major focus. For now, focus is being made on improving the code-first experience (as it is var more versatile and less time-consuming to modify).
-
 # Advanced Development Changes
 
 ## Object Orientation
@@ -75,23 +119,6 @@ Photon 2 makes heavy use of metatables and custom inheritance to mimic tradition
 Photon 2 is now documented using EmmyLua annotations. This provides intellisense, code validation (i.e. Lint), and static typing. 
 
 When using VSCode, use Sumneko's Lua package to enable the annotation functionality. While it unfortunately cannot be used with any GLua plugins, I have generated annotation files scraped from the Garry's Mod Wiki (https://github.com/NullEnt1ty/gmod-wiki-scraper) as a stop-gap measure.
-
-### Identifier Naming Conventions
-* Prefix all _string_ identifiers with `Photon2:` (hooks, timers, network strings, etc.)
-
-## Files
-### Domain
-Use sv_, sh_, and cl_ to designate domains. Aside from that, dashes should be used instead of underscores. (TODO)
-The only Lua file in `lua/autorun` is the shared initialization file called `photon-v2_init.lua`. This file will automatically do `AddCSLuaFile()` on all client and shared files in `lua/photon-v2`. Moving code files out of `autorun` is important to control load order (more below) and enables the creation and execution of any new Lua files without restarting the game.
-
-To ensure code initializes in the correct order (and avoid an aborted setup), a corresponding `include()` call should be inserted manually so you can confirm it's below any dependencies.
-
-The integrity of this should also be maintained by _never_ redundantly declaring a major table more than once (e.g. doing `Photon2 = Photon2 or {}` anywhere except in `autorun/photon-v2_init.lua`).
-
-## Internal Structure
-All core addon functions and properties should be made under the global `Photon2` table.
-
-Sub-tables of the `Photon2` table should be made for major code sub-components when appropriate. Major sub-components should use an `sv_` or `cl_` prefix to enhance clarity on what domain something should be running in. For example, using `Photon2.cl_Network = {}` in `cl_net.lua` and `Photon2.sv_Network = {}` for `sv_net.lua`.
 
 ## Compatibility
 While Photon 2 was intended to re-use many aspects of Photon LE for compatability, major changes in the addon architecture and a closer review of Photon LE's code eventually ruled this out. Photon 2 has been written from the ground-up and actually has very, very little in common with Photon LE.

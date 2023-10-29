@@ -1,37 +1,16 @@
 --[[
-
                                             
 	_____ _____ _____ _____ _____ _____    ___ 
 	|  _  |  |  |     |_   _|     |   | |  |_  |
 	|   __|     |  |  | | | |  |  | | | |  |  _|
 	|__|  |__|__|_____| |_| |_____|_|___|  |___|
-	
 
 
-	A D V A N C E D   E M E R G E N C Y  S Y S T E M S   P L A T F O R M
+	A D V A N C E D   E M E R G E N C Y   S Y S T E M S   P L A T F O R M
 
 
 	P R O J E C T   S T A R T   D A T E :   F E B R U A R Y   1 4 T H ,   2 0 2 3
-	
 	B A S E D   O N   P H O T O N .   P R O J E C T   S T A R T :   S E P T E M B E R   2 0 1 3
-
-
-	C O R E   D E V E L O P E R S
-		- Alex Smith (schmal)
-		- Sentry
-		- Mighty
-		- DoctorInternet
-		- Crator
-		- GermanMan
-
-
-	S U P P O R T   V O L U N T E E R S   &   T E S T E R S
-		- T B D
-
-
-
-	
-	D E D I C A T E D   T O   A L L   F I R S T   R E S P O N D E R S
 
 	Photon v2 Initialization
 --]]
@@ -41,6 +20,7 @@ print( "Initializing Photon 2..." )
 ---@type table
 Photon2 = Photon2 or {}
 
+Photon2.Version = "2.0.0 (PREVIEW)"
 
 --[[
 	Compatability

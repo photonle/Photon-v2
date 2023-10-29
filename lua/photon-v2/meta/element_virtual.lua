@@ -10,7 +10,8 @@ local Element = exmeta.New()
 Element.Class = "Virtual"
 
 Element.States = {
-
+	["OFF"] = {},
+	["ON"] = {}
 }
 
 function Element:Initialize( id, parent )
@@ -18,3 +19,14 @@ function Element:Initialize( id, parent )
 	return self
 end
 
+function Element.NewTemplate( data )
+	return setmetatable( data, { __index = PhotonElementVirtual }) 
+end
+
+function Element.OnFileLoad()
+	for key, value in pairs( Element.States ) do
+		Element.States[key] = PhotonElementVirtualState:New( key, value, Element.States )
+	end
+end
+
+Element.OnFileLoad()

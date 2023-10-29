@@ -747,7 +747,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	if ( not target ) then return end
 
 	hudMaterial:SetTexture( "$basetexture", hudRT )
-	if ( CurTime() >= (lastUpdate + 0.1) ) then
+	if ( CurTime() >= (lastUpdate + 0.05) ) then
 		render.PushRenderTarget( hudRT )
 		-- needs to be scaled down by 16px for some unknown reason
 		render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
@@ -818,7 +818,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			target.CurrentModes["Emergency.SceneRear"] ~= "OFF", 
 			target.CurrentModes["Emergency.SceneLeft"] ~= "OFF" )
 
-			draw.DrawText( "PHOTON v2.0.0 (PREVIEW)", "Photon2.UI:ExtraSmall", ScrW() - 4, 406, white, TEXT_ALIGN_RIGHT )
+			draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:ExtraSmall", ScrW() - 4, 406, white, TEXT_ALIGN_RIGHT )
 			draw.DrawText( "DO NOT REDISTRIBUTE", "Photon2.UI:ExtraSmall", ScrW() - 4, 418, white, TEXT_ALIGN_RIGHT )
 
 		cam.End2D()
