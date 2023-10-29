@@ -13,7 +13,9 @@ COMPONENT.PrintName = [[Photon 2 HUD]]
 COMPONENT.IsVirtual = true
 
 COMPONENT.Templates = {
-
+	-- ["Virtual"] = {
+	-- 	["Default"] = {}
+	-- }
 }
 
 COMPONENT.ElementStates = {

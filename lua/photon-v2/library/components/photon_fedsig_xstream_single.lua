@@ -87,6 +87,11 @@ COMPONENT.Inputs = {
 			Light = "FLASH"
 		}
 	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			Light = "ON"
+		}
+	}
 	-- ["Virtual.Siren"] = {
 	-- 	["T1"] = {
 	-- 		Light = "ON"

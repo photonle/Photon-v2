@@ -179,7 +179,7 @@ VEHICLE.Selections = {
 							["Mount"] = 2,
 							["Shroud"] = 1
 						},
-						ColorMap = "[B] 1",
+						ColorMap = "[R] 1",
 						Phase = "A",
 						InputActions = {
 							["Emergency.Warning"] = {
@@ -194,7 +194,7 @@ VEHICLE.Selections = {
 						Position = Vector( 12, -103.2, 75.5 ),
 						Angles = Angle( 0, -90 + 10, 0 ),
 						Phase = "B",
-						ColorMap = "[R] 1"
+						ColorMap = "[B] 1"
 					}
 				}
 			}

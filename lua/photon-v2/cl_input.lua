@@ -292,6 +292,9 @@ local prototypeInput = {
 		[KEY_H] = { 
 			{ Command = "default.vehicle_lights" } 
 		},
+		[KEY_M] = {
+			{ Command = "default.toggle_cruise" }
+		},
 		[KEY_LEFT] = {
 			{ Command = "default.left_signal" },
 			{ Command = "default.scene_left", Modifiers = { KEY_RSHIFT } },
@@ -706,6 +709,20 @@ Photon2.ClientInput.RegisterCommand({
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "SET", Channel = "Emergency.Warning", Value = "MODE3" },
 		{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller" }
+	}
+})
+
+Photon2.ClientInput.RegisterCommand({
+	Name = "default.toggle_cruise",
+	Title = "Toggle Cruise Lights",
+	Category = "Lights",
+	Description = "Toggles cruise/marker lights ON or OFF.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "TOGGLE", Channel = "Emergency.Marker", Value = "ON" },
 	},
 	OnRelease = {
 		{ Action = "SOUND", Sound = "Controller" }

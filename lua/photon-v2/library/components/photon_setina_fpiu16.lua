@@ -44,7 +44,8 @@ COMPONENT.Segments = {
 			[2] = "[B] 2",
 			[3] = "[W] 1",
 			[4] = "[W] 2",
-			[5] = "[W] 1 2"
+			[5] = "[W] 1 2",
+			[6] = "[R] 1 [B] 2",
 		},
 		Sequences = {
 			ALL = { 1 },
@@ -53,7 +54,8 @@ COMPONENT.Segments = {
 					:Blink( 2, 4 ):Hold( 2 )
 					:Blink( 3, 4 ):Hold( 2 )
 					:Blink( 4, 4 ):Hold( 2 ),
-			ILLUM = { 5 }
+			ILLUM = { 5 },
+			STEADY = { 6 }
 			-- FLASH = sequence():Alternate( 1, 2, 8 ):Alternate( 3, 4, 8 )
 		}
 	},
@@ -61,11 +63,13 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "[R] 3 4",
 			[2] = "[B] 3 4",
+			[3] = "[R] 3 [B] 4",
 		},
 		Sequences = {
 			FLASH = sequence()
 			:TripleFlash( 1, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 )
-			:TripleFlash( 2, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 )
+			:TripleFlash( 2, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 ),
+			STEADY = { 3 }
 		}
 	}
 }
@@ -77,5 +81,11 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.SceneForward"] = {
 		["ON"] = { Upper = "ILLUM" }
+	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			Upper = "STEADY",
+			Side = "STEADY"
+		}
 	}
 }
