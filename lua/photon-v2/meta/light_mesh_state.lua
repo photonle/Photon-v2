@@ -1,16 +1,16 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightMeshState"
-BASE = "PhotonLightState"
+NAME = "PhotonElementMeshState"
+BASE = "PhotonElementState"
 
----@class PhotonLightMeshState : PhotonLightState
+---@class PhotonElementMeshState : PhotonElementState
 ---@field DrawColor? PhotonBlendColor 
 ---@field BloomColor? PhotonBlendColor
 ---@field Intensity? number
 ---@field IntensityTransitions? boolean
 local State = exmeta.New()
 
----@return PhotonLightMeshState
+---@return PhotonElementMeshState
 function State.New( self, name, data, collection )
-	return PhotonLightState.New( PhotonLightMeshState, name, data, collection ) --[[@as PhotonLightMeshState]]
+	return PhotonElementState.New( PhotonElementMeshState, name, data, collection ) --[[@as PhotonElementMeshState]]
 end

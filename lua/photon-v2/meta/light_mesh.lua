@@ -1,13 +1,13 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightMesh"
-BASE = "PhotonLight"
+NAME = "PhotonElementMesh"
+BASE = "PhotonElement"
 
 local manager = Photon2.RenderLightMesh
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLightMesh : PhotonLight
+---@class PhotonElementMesh : PhotonElement
 ---@field Model string Name of model that contains the mesh.
 ---@field MeshName? string Mesh name (model sub-material).
 ---@field MeshSubIndex? number Model's mesh sub-index (default = `1`).
@@ -30,7 +30,7 @@ local printf = Photon2.Debug.PrintF
 ---@field EnableBloom? boolean Whether or not the mesh should be drawn during the bloom pass.
 ---@field DrawMaterial? string | IMaterial Material to use when drawing the mesh.
 ---@field BloomMaterial? string | IMaterial Material to use 
----@field States? table<string, PhotonLightMeshState>
+---@field States? table<string, PhotonElementMeshState>
 ---@field BoneParent? integer
 local Light = exmeta.New()
 
@@ -122,7 +122,7 @@ function Light.New( light, template )
 		end
 	end
 	
-	setmetatable( light, { __index = (template or PhotonLightMesh ) } )
+	setmetatable( light, { __index = (template or PhotonElementMesh ) } )
 
 	-- error("new light?")
 	-- Convert material names into IMaterial objects
@@ -142,19 +142,19 @@ end
 function Light.OnFileLoad()
 	-- Setup light states...
 	for key, value in pairs( Light.States ) do
-		Light.States[key] = PhotonLightMeshState:New( key, value, Light.States )
+		Light.States[key] = PhotonElementMeshState:New( key, value, Light.States )
 	end
 end
 
 function Light.NewTemplate( data )
-	return setmetatable( data, { __index = PhotonLightMesh })
+	return setmetatable( data, { __index = PhotonElementMesh })
 end
 
 function Light:Initialize( id, parentEntity )
-	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightMesh]]
+	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementMesh]]
 	self.Matrix = Matrix()
-	self.DrawColor = PhotonLightColor()
-	self.BloomColor = PhotonLightColor()
+	self.DrawColor = PhotonElementColor()
+	self.BloomColor = PhotonElementColor()
 	if ( isnumber( self.Scale ) ) then self.Scale = Vector( self.Scale, self.Scale, self.Scale ) end
 	
 	-- Fix for bizarre scaling bug in 64-bit game
@@ -182,7 +182,7 @@ end
 
 -- Internal
 function Light:Activate()
-	if not PhotonLight.Activate( self ) then return end
+	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true

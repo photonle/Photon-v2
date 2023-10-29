@@ -1,5 +1,5 @@
 Photon2.RenderLight2D = Photon2.RenderLight2D or {
-	---@type PhotonLight2D[]
+	---@type PhotonElement2D[]
 	Active = {},
 }
 
@@ -13,7 +13,7 @@ local drawLights = GetConVar("ph2_draw_light2d")
 
 local render = render
 
----@param color PhotonLightColor
+---@param color PhotonElementColor
 local function invertColor( color )
 	return color
 	-- return { r = 0, g = 255, b = 512, a = 512 }
@@ -53,7 +53,7 @@ function Photon2.RenderLight2D.DrawDebug()
 	local activeLights = this.Active
 	-- line/dev testing
 	for i=1, #activeLights do
-		light = activeLights[i] --[[@as PhotonLight2D]]
+		light = activeLights[i] --[[@as PhotonElement2D]]
 		if (light.ShouldDraw) then
 		-- local angles = light.Matrix:GetAngles()
 		-- local position = light.Matrix:GetTranslation()
@@ -93,7 +93,7 @@ local drawQuadSprite 	= true
 function Photon2.RenderLight2D.DrawBloom()
 	local activeLights = this.Active
 	for i=1, #activeLights do
-		light = activeLights[i] --[[@as PhotonLight2D]]
+		light = activeLights[i] --[[@as PhotonElement2D]]
 		if ( light.Shape and drawShape ) then
 			render.SetMaterial( light.Shape )
 			-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
@@ -139,7 +139,7 @@ function Photon2.RenderLight2D.Render()
 		-- Draw glow effect sprites
 		if (drawGlow) then
 			for i=1, #activeLights do
-				light = activeLights[i] --[[@as PhotonLight2D]]
+				light = activeLights[i] --[[@as PhotonElement2D]]
 				if ( not light or not light.ShouldDraw or not light.DrawLightPoints ) then continue end
 				
 				if (drawSubtractive) then
@@ -168,7 +168,7 @@ function Photon2.RenderLight2D.Render()
 
 		for i=1, #activeLights do
 
-			light = activeLights[i] --[[@as PhotonLight2D]]
+			light = activeLights[i] --[[@as PhotonElement2D]]
 
 			if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" ) then continue end
 

@@ -1,10 +1,10 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLight"
+NAME = "PhotonElement"
 
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLight
+---@class PhotonElement
 ---@field Parent Entity
 ---@field Class string
 ---@field Disabled boolean
@@ -23,7 +23,7 @@ local Light = exmeta.New()
 
 ---@param id integer
 ---@param parent Entity
----@return PhotonLight
+---@return PhotonElement
 function Light:Initialize( id, parent )
 	local light = {
 		Id = id,
@@ -87,7 +87,7 @@ function Light:CheckBodyGroupRequirements()
 	return true
 end
 
----@param state PhotonLightState
+---@param state PhotonElementState
 function Light:OnStateChange( state ) end
 
 local debugPrint = false
@@ -207,12 +207,12 @@ function Light:PrintTable()
 	PrintTable(self)
 end
 
--- Finds and returns the corresponding PhotonLight class
+-- Finds and returns the corresponding PhotonElement class
 -- or throws a traceable error.
 ---@param className string
----@return PhotonLight
+---@return PhotonElement
 function Light.FindClass( className )
-	local lightClass = _G["PhotonLight" .. tostring( className )]
+	local lightClass = _G["PhotonElement" .. tostring( className )]
 
 	if ( not lightClass ) then
 		error(string.format( "Light class [%s] could not be found.", className ) )
@@ -223,5 +223,5 @@ end
 
 function Light:GetProxy( id )
 	local proxy = self.Proxies[id]
-	return self.Parent--[[@as PhotonLightingComponent]].Elements[proxy[1]][proxy[2]]
+	return self.Parent--[[@as PhotonElementingComponent]].Elements[proxy[1]][proxy[2]]
 end

@@ -47,9 +47,9 @@ end
 -- 	end
 -- 	print(string.format("Setting up component [%s]", id))
 -- 	if (data.Component) then
--- 		---@type PhotonLightingComponent
+-- 		---@type PhotonElementingComponent
 -- 		local component = Photon2.Index.Components[data.Component]
--- 		local ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
+-- 		local ent = component:CreateClientside( self ) --[[@as PhotonElementingComponent]]
 -- 		ent:SetMoveType( MOVETYPE_NONE )
 -- 		ent:SetParent( self:GetComponentParent() )
 -- 		component:SetPropertiesFromEquipment( data )

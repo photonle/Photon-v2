@@ -1,8 +1,8 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightSoundState"
-BASE = "PhotonLightState"
----@class PhotonLightSoundState : PhotonLightState
+NAME = "PhotonElementSoundState"
+BASE = "PhotonElementState"
+---@class PhotonElementSoundState : PhotonElementState
 ---@field Volume number
 ---@field Play boolean
 ---@field Mute boolean
@@ -12,5 +12,5 @@ BASE = "PhotonLightState"
 local State = exmeta.New()
 
 function State.New( self, name, data, collection )
-	return PhotonLightState.New( PhotonLightSoundState, name, data, collection )
+	return PhotonElementState.New( PhotonElementSoundState, name, data, collection )
 end

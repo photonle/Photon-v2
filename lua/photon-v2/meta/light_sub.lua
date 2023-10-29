@@ -1,21 +1,21 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightSub"
-BASE = "PhotonLight"
+NAME = "PhotonElementSub"
+BASE = "PhotonElement"
 
----@class PhotonLightSub : PhotonLight
+---@class PhotonElementSub : PhotonElement
 ---@field Indexes integer[]
----@field States table<string, PhotonLightSubState>
+---@field States table<string, PhotonElementSubState>
 local Light = exmeta.New()
 
 Light.Class="Sub"
 
 ---@param data table
----@param template? PhotonLightSub
----@return PhotonLightSub
+---@param template? PhotonElementSub
+---@return PhotonElementSub
 function Light.New( data, template )
 	local light = data
-	setmetatable( light, { __index = ( template or PhotonLightSub ) } )
+	setmetatable( light, { __index = ( template or PhotonElementSub ) } )
 	return light
 end
 
@@ -26,13 +26,13 @@ Light.States = {
 }
 
 function Light.NewTemplate( data )
-	return setmetatable( data, { __index = PhotonLightSub })
+	return setmetatable( data, { __index = PhotonElementSub })
 end
 
 
 function Light:Initialize( id, parentEntity )
-	---@type PhotonLightSub
-	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightSub]]
+	---@type PhotonElementSub
+	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementSub]]
 	return self
 end
 
@@ -45,7 +45,7 @@ end
 
 
 function Light:Activate()
-	if not PhotonLight.Activate( self ) then return end
+	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true

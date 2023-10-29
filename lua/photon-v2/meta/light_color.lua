@@ -1,9 +1,9 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightColor"
+NAME = "PhotonElementColor"
 
 
----@class PhotonLightColor
+---@class PhotonElementColor
 ---@field r number Current value of red channel.
 ---@field g number Current value of green channel.
 ---@field b number Current value of blue channel.
@@ -112,7 +112,7 @@ function LightColor:GetVector()
 	return result
 end
 
----@param data PhotonLightColor
+---@param data PhotonElementColor
 function LightColor:__call( data )
 	data = data or {}
 	return setmetatable( {

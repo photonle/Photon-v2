@@ -1,18 +1,18 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightingComponent"
+NAME = "PhotonElementingComponent"
 BASE = "PhotonBaseEntity"
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLightingComponent : PhotonBaseEntity
+---@class PhotonElementingComponent : PhotonBaseEntity
 ---@field Name string
 ---@field Ancestors table<string, boolean>
 ---@field Descendants table<string, boolean>
 ---@field Children table<string, boolean>
----@field Lights table<integer, PhotonLight>
----@field Segments table<string, PhotonLightingSegment>
+---@field Lights table<integer, PhotonElement>
+---@field Segments table<string, PhotonElementingSegment>
 ---@field InputPriorities table<string, integer>
 ---@field CurrentModes table<string, string>
 ---@field ActiveSequences table<PhotonSequence, boolean>
@@ -28,7 +28,7 @@ local Builder = Photon2.ComponentBuilder
 local Util = Photon2.Util
 
 Component.UseControllerModes = true
-Component.IsPhotonLightingComponent = true
+Component.IsPhotonElementingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 --[[
@@ -41,7 +41,7 @@ local dumpLibraryData = false
 ---@param name string
 ---@param data PhotonLibraryComponent
 ---@param base string Deprecated
----@return PhotonLightingComponent
+---@return PhotonElementingComponent
 function Component.New( name, data, base )
 
 	data = table.Copy( data )
@@ -64,7 +64,7 @@ function Component.New( name, data, base )
 		print("_______________________________________")
 	end
 
-	---@type PhotonLightingComponent
+	---@type PhotonElementingComponent
 	local component = {
 		Name = name,
 		Phase = data.Phase,
@@ -106,8 +106,8 @@ function Component.New( name, data, base )
 
 	local lightStates = {}
 	for lightClassName, states in pairs( data.ElementStates or {} ) do
-		local lightClass = PhotonLight.FindClass( lightClassName )
-		local lightStateClass = PhotonLightState.FindClass( lightClassName )
+		local lightClass = PhotonElement.FindClass( lightClassName )
+		local lightStateClass = PhotonElementState.FindClass( lightClassName )
 		-- Use actual COMPONENT.ElementStates table to get around load/dependency order issues.
 
 		-- Set __index to the base class's Light.States table.
@@ -140,11 +140,11 @@ function Component.New( name, data, base )
 	for lightClassName, templates in pairs( data.Templates or {} ) do
 		-- printf( "\t\tLight class %s templates...", lightClassName )
 
-		local lightClass = _G["PhotonLight" .. lightClassName]
+		local lightClass = _G["PhotonElement" .. lightClassName]
 
 		-- Verify light class exists/is supported
 		if ( not lightClass ) then
-			error(string.format("Unrecognized light class [%s]. Global table [PhotonLight%s] is nil.", lightClassName, lightClassName))
+			error(string.format("Unrecognized light class [%s]. Global table [PhotonElement%s] is nil.", lightClassName, lightClassName))
 		end
 
 		-- Iterate through each template in the light class
@@ -162,10 +162,10 @@ function Component.New( name, data, base )
 			-- Process Template's Light States
 			--
 
-			local lightStateClass = PhotonLightState.FindClass( lightClassName )
+			local lightStateClass = PhotonElementState.FindClass( lightClassName )
 			
 			-- set the "parent" table to either COMPONENT.ElementStates[class] or the default states
-			local parentStatesTable = lightStates[lightClassName] or PhotonLight.FindClass( lightClassName ).States
+			local parentStatesTable = lightStates[lightClassName] or PhotonElement.FindClass( lightClassName ).States
 			local templateStates = setmetatable( templateData.States or {}, { __index = parentStatesTable } )
 			
 			for stateId, state in pairs( templateStates ) do
@@ -212,8 +212,8 @@ function Component.New( name, data, base )
 		end
 
 		-- Process light states
-		local lightClass = PhotonLight.FindClass( template.Class )
-		local lightStateClass = PhotonLightState.FindClass( template.Class )
+		local lightClass = PhotonElement.FindClass( template.Class )
+		local lightStateClass = PhotonElementState.FindClass( template.Class )
 		if ( istable( light.States ) ) then
 			setmetatable( light.States, { __index = template.States } )
 			for stateId, state in pairs( light.States ) do
@@ -227,7 +227,7 @@ function Component.New( name, data, base )
 
 		-- Additional data passed to light constructor for the light
 		-- class to process.
-		component.Elements[id] = lightClass.New( light, template ) --[[@as PhotonLight]]
+		component.Elements[id] = lightClass.New( light, template ) --[[@as PhotonElement]]
 	end
 
 
@@ -236,7 +236,7 @@ function Component.New( name, data, base )
 	--]]
 
 	for segmentName, segmentData in pairs( data.Segments or {} ) do
-		component.Segments[segmentName] = PhotonLightingSegment.New( segmentName, segmentData, data.LightGroups, component.InputPriorities )
+		component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.LightGroups, component.InputPriorities )
 	end
 
 	--[[
@@ -265,7 +265,7 @@ function Component.New( name, data, base )
 		-- Build input interface channels
 		component.InputActions[channelName] = {}
 		
-		-- local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
+		-- local priorityScore = PhotonElementingComponent.DefaultInputPriorities[channelName]
 		local priorityScore = component.InputPriorities[channelName]
 	
 		if ( not priorityScore ) then
@@ -344,7 +344,7 @@ function Component.New( name, data, base )
 	--[[
 			Finalize and set meta-table
 	--]]
-	setmetatable( component, { __index = PhotonLightingComponent } )
+	setmetatable( component, { __index = PhotonElementingComponent } )
 
 	-- print("Component.Inputs ====================================")
 	-- 	PrintTable( component.Inputs )
@@ -362,12 +362,12 @@ end
 -- to a Photon Controller and component entity.
 ---@param ent photon_entity
 ---@param controller PhotonController
----@return PhotonLightingComponent
+---@return PhotonElementingComponent
 function Component:Initialize( ent, controller )
 	-- Calls the base constructor but passes LightingComponent as "self"
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
-	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonElementingComponent]]
 
 	if ( self.UseControllerModes ) then
 		component.CurrentModes = controller.CurrentModes

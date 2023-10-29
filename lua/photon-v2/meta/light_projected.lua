@@ -1,14 +1,14 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightProjected"
-BASE = "PhotonLight"
+NAME = "PhotonElementProjected"
+BASE = "PhotonElement"
 
 local manager = Photon2.RenderLightProjected
 local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLightProjected: PhotonLight
+---@class PhotonElementProjected: PhotonElement
 ---@field ProjectedTexture? ProjectedTexture
 ---@field LocalPosition? Vector
 ---@field LocalAngles? Angle
@@ -81,7 +81,7 @@ Light.IntensityFOVFloor = 0.66
 Light.IntensityDistanceFactor = 1.5
 
 function Light.NewTemplate( data )
-	return setmetatable( data, { __index = PhotonLightProjected } )
+	return setmetatable( data, { __index = PhotonElementProjected } )
 end
 
 function Light.New( light, template )
@@ -98,7 +98,7 @@ function Light.New( light, template )
 		light.LocalAngles = Angle()
 	end
 
-	setmetatable( light, { __index = ( template or PhotonLightProjected )})
+	setmetatable( light, { __index = ( template or PhotonElementProjected )})
 	
 	light.Matrix = Matrix()
 	light.Matrix:SetAngles( light.Rotation )
@@ -109,15 +109,15 @@ function Light.New( light, template )
 end
 
 function Light:Initialize( id, parentEntity )
-	---@type PhotonLightProjected
-	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightProjected]]
+	---@type PhotonElementProjected
+	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementProjected]]
 	self.Matrix = Matrix()
 	self.HorizontalFOV = self.HorizontalFOV or self.FOV
 	self.VerticalFOV = self.VerticalFOV or self.FOV
 	return self
 end
 
----@param state PhotonLightProjectedState
+---@param state PhotonElementProjectedState
 function Light:OnStateChange( state )
 
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
@@ -141,7 +141,7 @@ function Light:OnStateChange( state )
 end
 
 function Light:Activate()
-	if not PhotonLight.Activate( self ) then return end
+	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true
@@ -215,7 +215,7 @@ end
 
 function Light.OnLoad()
 	for key, value in pairs( Light.States ) do
-		Light.States[key] = PhotonLightProjectedState:New( key, value, Light.States )
+		Light.States[key] = PhotonElementProjectedState:New( key, value, Light.States )
 	end
 end
 

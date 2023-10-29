@@ -1,11 +1,11 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightingSegment"
+NAME = "PhotonElementingSegment"
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLightingSegment
+---@class PhotonElementingSegment
 ---@field Name string
 ---@field ActivePattern string Name of the current active pattern.
 ---@field IsActive boolean Whether the segment is active.
@@ -14,12 +14,12 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentModes table<string, string> Key = Channel, Value = mode
 ---@field InputPriorities table<string, integer>
 ---@field Sequences table<string, PhotonSequence>
----@field Component PhotonLightingComponent
+---@field Component PhotonElementingComponent
 -- [string] = Pattern Name
 ---@field Inputs table<string, string> Key = Input Channel, Value = Associated sequence
 ---@field InputActions table<string, { Sequence: string, Priority: number, Rank: number }>
 ---@field Frames table<integer, table> 
----@field InitializedFrames table<integer, table<PhotonLight, string>>
+---@field InitializedFrames table<integer, table<PhotonElement, string>>
 ---@field Lights table Points to Component.Elements
 local Segment = exmeta.New()
 
@@ -33,10 +33,10 @@ Segment.LastFrameTime = 0
 -- On compile
 ---@param segmentData any
 ---@param lightGroups table<string, integer[]>
----@return PhotonLightingSegment
+---@return PhotonElementingSegment
 function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 
-	---@type PhotonLightingSegment
+	---@type PhotonElementingSegment
 	local segment = {
 		Name = name,
 		Elements = {},
@@ -47,7 +47,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } )
 	}
 
-	setmetatable( segment, { __index = PhotonLightingSegment } )
+	setmetatable( segment, { __index = PhotonElementingSegment } )
 
 	local function flattenFrame( frame )
 		local result = {}
@@ -253,10 +253,10 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 end
 
 -- On instance creation
----@param componentInstance PhotonLightingComponent
----@return PhotonLightingSegment
+---@param componentInstance PhotonElementingComponent
+---@return PhotonElementingSegment
 function Segment:Initialize( componentInstance )
-	---@type PhotonLightingSegment
+	---@type PhotonElementingSegment
 	local segment = {
 		LastFrameTime = 0,
 		IsActive = false,
@@ -528,7 +528,7 @@ end
 
 -- ---@param channel string Channel Name
 -- ---@param ... string Channel Modes
--- ---@return PhotonLightingSegment
+-- ---@return PhotonElementingSegment
 -- function Segment:OnInput( channel, ... )
 -- 	local modes = table.pack(...)
 -- 	local pattern = PhotonSequenceCollection.New( self )

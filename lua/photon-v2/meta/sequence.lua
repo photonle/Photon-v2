@@ -4,13 +4,13 @@ NAME = "PhotonSequence"
 --- Frames are stored in the numerical indexes of the table.
 ---@class PhotonSequence
 ---@field Name string
----@field Segment PhotonLightingSegment
+---@field Segment PhotonElementingSegment
 ---@field CurrentFrame integer Currently active frame of the sequence.
 ---@field IsRepeating boolean
 ---@field RestartFrame integer
 ---@field FramesByIndex integer[]
 ---@field UsedLightsByIndex table<integer, boolean>
----@field UsedLights PhotonLight[]
+---@field UsedLights PhotonElement[]
 ---@field Rank number Sequence's rank in an input pattern.
 ---@field PriorityScore number
 local Sequence = exmeta.New()
@@ -42,7 +42,7 @@ Sequence.RestartFrame = 1
 
 
 -- Returns initialized Sequence for a spawned component.
----@param segment PhotonLightingSegment
+---@param segment PhotonElementingSegment
 ---@return PhotonSequence
 function Sequence:Initialize( name, segment, priorityScore, rank )
 	---@type PhotonSequence
@@ -74,7 +74,7 @@ end
 -- Returns new Sequence for compiled component.
 ---@param name string
 ---@param frameSequence integer[]
----@param segment PhotonLightingSegment
+---@param segment PhotonElementingSegment
 ---@param data? table
 ---@return PhotonSequence
 function Sequence.New( name, frameSequence, segment, data )

@@ -3,11 +3,11 @@
 
 if (true) then return end
 
----@type PhotonLight
-PhotonLight = PhotonLight
+---@type PhotonElement
+PhotonElement = PhotonElement
 
----@type PhotonLightState
-PhotonLightState = PhotonLightState
+---@type PhotonElementState
+PhotonElementState = PhotonElementState
 
 ---@type PhotonSequence
 PhotonSequence = PhotonSequence
@@ -15,14 +15,14 @@ PhotonSequence = PhotonSequence
 ---@type PhotonSequenceCollection
 PhotonSequenceCollection = PhotonSequenceCollection
 
----@type PhotonLightingSegment
-PhotonLightingSegment = PhotonLightingSegment
+---@type PhotonElementingSegment
+PhotonElementingSegment = PhotonElementingSegment
 
 ---@type PhotonSequenceFrame
 PhotonSequenceFrame = PhotonSequenceFrame
 
----@type PhotonLightingComponent
-PhotonLightingComponent = PhotonLightingComponent
+---@type PhotonElementingComponent
+PhotonElementingComponent = PhotonElementingComponent
 
 ---@type PhotonBaseEntity
 PhotonBaseEntity = PhotonBaseEntity
@@ -33,26 +33,26 @@ PhotonVehicle = PhotonVehicle
 ---@type PhotonVehicleEquipmentManager
 PhotonVehicleEquipmentManager = PhotonVehicleEquipmentManager
 
----@type PhotonLightColor
-PhotonLightColor = PhotonLightColor
+---@type PhotonElementColor
+PhotonElementColor = PhotonElementColor
 
----@type PhotonLight2D
-PhotonLight2D = PhotonLight2D
+---@type PhotonElement2D
+PhotonElement2D = PhotonElement2D
 
----@type PhotonLight2DState
-PhotonLight2DState = PhotonLight2DState
+---@type PhotonElement2DState
+PhotonElement2DState = PhotonElement2DState
 
----@type PhotonLightSub
-PhotonLightSub = PhotonLightSub
+---@type PhotonElementSub
+PhotonElementSub = PhotonElementSub
 
----@type PhotonLightSubState
-PhotonLightSubState = PhotonLightSubState
+---@type PhotonElementSubState
+PhotonElementSubState = PhotonElementSubState
 
----@type PhotonLightMesh
-PhotonLightMesh = PhotonLightMesh
+---@type PhotonElementMesh
+PhotonElementMesh = PhotonElementMesh
 
----@type PhotonLightMeshState
-PhotonLightMeshState = PhotonLightMeshState
+---@type PhotonElementMeshState
+PhotonElementMeshState = PhotonElementMeshState
 
 ---@type PhotonDynamicMaterial
 PhotonDynamicMaterial = PhotonDynamicMaterial
@@ -63,23 +63,23 @@ PhotonComponent = PhotonComponent
 ---@type PhotonAuralComponent
 PhotonAuralComponent = PhotonAuralComponent
 
----@type PhotonLightSound
-PhotonLightSound = PhotonLightSound
+---@type PhotonElementSound
+PhotonElementSound = PhotonElementSound
 
----@type PhotonLightSoundState
-PhotonLightSoundState = PhotonLightSoundState
+---@type PhotonElementSoundState
+PhotonElementSoundState = PhotonElementSoundState
 
----@type PhotonLightProjected
-PhotonLightProjected = PhotonLightProjected
+---@type PhotonElementProjected
+PhotonElementProjected = PhotonElementProjected
 
----@type PhotonLightProjectedState
-PhotonLightProjectedState = PhotonLightProjectedState
+---@type PhotonElementProjectedState
+PhotonElementProjectedState = PhotonElementProjectedState
 
----@type PhotonLightBone
-PhotonLightBone = PhotonLightBone
+---@type PhotonElementBone
+PhotonElementBone = PhotonElementBone
 
----@type PhotonLightBoneState
-PhotonLightBoneState = PhotonLightBoneState
+---@type PhotonElementBoneState
+PhotonElementBoneState = PhotonElementBoneState
 
 ---@type PhotonBlendColor
 PhotonBlendColor = PhotonBlendColor
@@ -92,7 +92,7 @@ PhotonBlendColor = PhotonBlendColor
 ---| '"Off"' # Stops all motion and holds position.
 
 ---@class Photon2.Index
----@field Components PhotonLightingComponent[] Components index.
+---@field Components PhotonElementingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
 ---@field Profiles Photon2.Index.Profiles
 
@@ -106,7 +106,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Credits table<string, string>
 ---@field PrintName string
 ---@field Model string
----@field Templates { Bone?: table<string, PhotonLightBone>, Mesh?: table<string, PhotonLightMesh>, Sprite?: table<string, PhotonLight2D>, Projected?: table<string, PhotonLightProjected>,  }
+---@field Templates { Bone?: table<string, PhotonElementBone>, Mesh?: table<string, PhotonElementMesh>, Sprite?: table<string, PhotonElement2D>, Projected?: table<string, PhotonElementProjected>,  }
 ---@field Lights table
 ---@field LightGroups table
 ---@field Segments table

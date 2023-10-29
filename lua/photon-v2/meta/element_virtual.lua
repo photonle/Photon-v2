@@ -1,9 +1,9 @@
 if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonElementVirtual"
-BASE = "PhotonLight"
+BASE = "PhotonElement"
 
----@class PhotonElementVirtual : PhotonLight
+---@class PhotonElementVirtual : PhotonElement
 
 local Element = exmeta.New()
 
@@ -14,7 +14,7 @@ Element.States = {
 }
 
 function Element:Initialize( id, parent )
-	self = PhotonLight.Initialize( self, id, parent ) --[[@as PhotonElementVirtual]]
+	self = PhotonElement.Initialize( self, id, parent ) --[[@as PhotonElementVirtual]]
 	return self
 end
 

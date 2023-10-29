@@ -1,13 +1,13 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightBone"
-BASE = "PhotonLight"
+NAME = "PhotonElementBone"
+BASE = "PhotonElement"
 
 local manager = Photon2.RenderLightBone
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLightBone : PhotonLight
+---@class PhotonElementBone : PhotonElement
 ---@field private Value? number
 ---@field BoneId? number
 ---@field Bone? string
@@ -66,22 +66,22 @@ Element.States = {
 }
 
 function Element.NewTemplate( data )
-	return setmetatable( data, { __index = PhotonLightBone } )
+	return setmetatable( data, { __index = PhotonElementBone } )
 end
 
 function Element.New( element, template )
-	setmetatable( element, { __index = ( template or PhotonLightBone ) } )
+	setmetatable( element, { __index = ( template or PhotonElementBone ) } )
 
 	return element
 end
 
 function Element:Initialize( id, parentEntity )
-	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLightBone]]
+	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementBone]]
 	if ( isstring( self.Bone ) ) then self.Bone = parentEntity:LookUpBoneOrError( self.Bone ) end
 	return self
 end
 
----@param state PhotonLightBoneState
+---@param state PhotonElementBoneState
 function Element:OnStateChange( state )
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
 		self:Activate()
@@ -109,7 +109,7 @@ function Element:OnStateChange( state )
 end
 
 function Element:Activate()
-	if not PhotonLight.Activate( self ) then return end
+	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true
@@ -289,7 +289,7 @@ end
 
 function Element.OnLoad()
 	for key, value in pairs( Element.States ) do
-		Element.States[key] = PhotonLightBoneState:New( key, value, Element.States )
+		Element.States[key] = PhotonElementBoneState:New( key, value, Element.States )
 	end
 end
 

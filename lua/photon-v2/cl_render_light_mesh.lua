@@ -1,5 +1,5 @@
 Photon2.RenderLightMesh = Photon2.RenderLightMesh or {
-	---@type PhotonLightMesh[]
+	---@type PhotonElementMesh[]
 	Active = {},
 }
 

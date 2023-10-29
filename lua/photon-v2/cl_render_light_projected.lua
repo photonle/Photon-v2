@@ -1,5 +1,5 @@
 Photon2.RenderLightProjected = Photon2.RenderLightProjected or {
-	---@type PhotonLightProjected
+	---@type PhotonElementProjected
 	Active = {}
 }
 
@@ -32,7 +32,7 @@ function Photon2.RenderLightProjected.DrawDebug()
 	local light
 	cam.Start3D()
 		for i=1, #activeLights do 
-			light = activeLights[i] --[[@as PhotonLightProjected]]
+			light = activeLights[i] --[[@as PhotonElementProjected]]
 			local angles = light.Angles
 			local position = light.Position
 			render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))

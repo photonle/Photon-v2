@@ -3,12 +3,12 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonSequenceCollection"
 ---@class PhotonSequenceCollection Stores numerical array of sequence string names.
 ---@field parentSequence PhotonSequenceCollection 
----@field Segment PhotonLightingSegment
+---@field Segment PhotonElementingSegment
 ---@field Priority integer Current priority score.
 local SequenceCollection = exmeta.New()
 
 
----@param parentSegment PhotonLightingSegment
+---@param parentSegment PhotonElementingSegment
 ---@return PhotonSequenceCollection
 function SequenceCollection.New( parentSegment )
 	---@type PhotonSequenceCollection

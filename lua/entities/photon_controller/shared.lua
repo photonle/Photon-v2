@@ -1,6 +1,6 @@
 ---@class PhotonController : Entity
 ---@field ComponentParent Entity
----@field Components table<string, PhotonLightingComponent>
+---@field Components table<string, PhotonElementingComponent>
 ---@field ComponentArray PhotonBaseEntity[]
 ---@field CurrentProfile PhotonVehicle
 ---@field GetLinkedToVehicle fun(): boolean
@@ -526,7 +526,7 @@ function ENT:SetupComponent( id )
 	end
 	print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
-	---@type PhotonLightingComponent
+	---@type PhotonElementingComponent
 	local component = Photon2.Index.Components[data.Component]
 
 	local ent
@@ -534,8 +534,8 @@ function ENT:SetupComponent( id )
 	if (SERVER and data.OnServer) then
 		-- TODO: serverside spawn code
 	elseif (CLIENT and (not data.OnServer)) then
-		---@type PhotonLightingComponent
-		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
+		---@type PhotonElementingComponent
+		ent = component:CreateClientside( self ) --[[@as PhotonElementingComponent]]
 		-- component.Setup( component )
 	else
 		return

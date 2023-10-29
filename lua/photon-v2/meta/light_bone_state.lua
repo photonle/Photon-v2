@@ -1,9 +1,9 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightBoneState"
-BASE = "PhotonLightState"
+NAME = "PhotonElementBoneState"
+BASE = "PhotonElementState"
 
----@class PhotonLightBoneState : PhotonLightState
+---@class PhotonElementBoneState : PhotonElementState
 ---@field Activity PhotonBoneLightActivity
 ---@field Smooth number
 ---@field Direction number
@@ -15,5 +15,5 @@ BASE = "PhotonLightState"
 local State = exmeta.New()
 
 function State:New( name, data, collection )
-	return PhotonLightState.New( PhotonLightBoneState, name, data, collection )
+	return PhotonElementState.New( PhotonElementBoneState, name, data, collection )
 end

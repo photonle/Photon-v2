@@ -1,9 +1,9 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightSound"
-BASE = "PhotonLight"
+NAME = "PhotonElementSound"
+BASE = "PhotonElement"
 
----@class PhotonLightSound : PhotonLight
+---@class PhotonElementSound : PhotonElement
 ---@field Sound CSoundPatch
 ---@field Volume number Volume of the sound.
 ---@field Level number The distance the sound is heard.
@@ -24,7 +24,7 @@ function Sound.New( sound, template )
 	if ( isstring( sound[2] ) ) then
 		sound.File = sound[2]
 	end
-	setmetatable( sound, { __index = ( template or PhotonLightSound ) } )
+	setmetatable( sound, { __index = ( template or PhotonElementSound ) } )
 	return sound
 end
 
@@ -44,16 +44,16 @@ Sound.States = {
 }
 
 function Sound.NewTemplate( data )
-	return setmetatable( data, { __index = PhotonLightSound })
+	return setmetatable( data, { __index = PhotonElementSound })
 end
 
 function Sound:Initialize( id, parentEntity )
-	---@type PhotonLightSound
-	self = PhotonLight.Initialize( self, id, parentEntity )
+	---@type PhotonElementSound
+	self = PhotonElement.Initialize( self, id, parentEntity )
 	return self
 end
 
----@param state PhotonLightSoundState
+---@param state PhotonElementSoundState
 function Sound:OnStateChange( state )
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
 		self:Activate()
@@ -135,7 +135,7 @@ end
 
 function Sound.OnLoad()
 	for key, value in pairs( Sound.States ) do
-		Sound.States[key] = PhotonLightSoundState:New( key, value, Sound.States )
+		Sound.States[key] = PhotonElementSoundState:New( key, value, Sound.States )
 	end
 end
 

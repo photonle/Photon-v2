@@ -1,12 +1,12 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLightSubState"
-BASE = "PhotonLightState"
+NAME = "PhotonElementSubState"
+BASE = "PhotonElementState"
 
----@class PhotonLightSubState : PhotonLightState
+---@class PhotonElementSubState : PhotonElementState
 ---@field Material string Material to apply.
 local State = exmeta.New()
 
 function State.New( self, name, data, collection )
-	return PhotonLightState.New( PhotonLightSubState, name, data, collection )
+	return PhotonElementState.New( PhotonElementSubState, name, data, collection )
 end

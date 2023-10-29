@@ -1,14 +1,14 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonLight2D"
-BASE = "PhotonLight"
+NAME = "PhotonElement2D"
+BASE = "PhotonElement"
 
 local manager = Photon2.RenderLight2D
 local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonLight2D : PhotonLight
+---@class PhotonElement2D : PhotonElement
 ---@field PixVisHandle pixelvis_handle_t Internal property.
 ---@field VisibilityRadius number (Default = `1`) The radius number used for the PixelVisible calculation.
 ---@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
@@ -28,12 +28,12 @@ local printf = Photon2.Debug.PrintF
 ---@field Height number Height of the light source.
 ---@field Ratio number Horizontal size ratio of glow effect. Numbers > 1 will stretch, numbers < 1 will compact.
 ---@field Scale number Scale of glow effect and apparent brightness. Does not affect the light source.
----@field SourceFillColor PhotonLightColor
----@field SourceDetailColor PhotonLightColor
----@field GlowColor PhotonLightColor
----@field ShapeGlowColor PhotonLightColor
----@field SubtractiveMid PhotonLightColor
----@field SourceIntensity PhotonLightColor
+---@field SourceFillColor PhotonElementColor
+---@field SourceDetailColor PhotonElementColor
+---@field GlowColor PhotonElementColor
+---@field ShapeGlowColor PhotonElementColor
+---@field SubtractiveMid PhotonElementColor
+---@field SourceIntensity PhotonElementColor
 ---@field BlendColor RGB
 ---@field ShouldDraw boolean
 ---@field Matrix VMatrix
@@ -219,7 +219,7 @@ Light.States = {
 }
 function Light.OnLoad()
 	for k, v in pairs( Light.States ) do
-		Light.States[k] = PhotonLight2DState:New( k, v, Light.States )
+		Light.States[k] = PhotonElement2DState:New( k, v, Light.States )
 	end
 end
 
@@ -249,19 +249,19 @@ Light.ScalableProperties = {
 --]]
 
 ---@param parentEntity Entity
----@return PhotonLight2D
+---@return PhotonElement2D
 function Light:Initialize( id, parentEntity )
-	self = PhotonLight.Initialize( self, id, parentEntity ) --[[@as PhotonLight2D]]
+	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElement2D]]
 	self.Matrix = Matrix()
 	self.ViewNormal = Vector()
 	self.EffectPosition = Vector()
-	self.SourceDetailColor = PhotonLightColor( { AddIntensity = 0.5 } )
-	self.SourceFillColor = PhotonLightColor()
-	self.GlowColor = PhotonLightColor( { Inverted = false } )
-	self.InnerGlowColor = PhotonLightColor()
-	self.ShapeGlowColor = PhotonLightColor()
-	self.SubtractiveMid = PhotonLightColor( { Inverted = false } )
-	self.SourceIntensity = PhotonLightColor()
+	self.SourceDetailColor = PhotonElementColor( { AddIntensity = 0.5 } )
+	self.SourceFillColor = PhotonElementColor()
+	self.GlowColor = PhotonElementColor( { Inverted = false } )
+	self.InnerGlowColor = PhotonElementColor()
+	self.ShapeGlowColor = PhotonElementColor()
+	self.SubtractiveMid = PhotonElementColor( { Inverted = false } )
+	self.SourceIntensity = PhotonElementColor()
 
 	-- Adjust to component's scale
 	local scale = parentEntity:GetModelScale()
@@ -325,10 +325,10 @@ end
 		COMPILE
 --]]
 ---@param data table Data input table.
----@return PhotonLight2D
+---@return PhotonElement2D
 function Light.NewTemplate( data )
-	---@type PhotonLight2D
-	local light = setmetatable( data, { __index = PhotonLight2D } )
+	---@type PhotonElement2D
+	local light = setmetatable( data, { __index = PhotonElement2D } )
 
 	light.Top 		= Vector(  data.Width * 0.5,  data.Height * 0.5, 0 )
 	light.Right 	= Vector( -data.Width * 0.5,  data.Height * 0.5, 0 )
@@ -344,8 +344,8 @@ function Light.NewTemplate( data )
 	return light
 end
 
----@param light PhotonLight2D Data input table.
----@param template? PhotonLight2D Light template.
+---@param light PhotonElement2D Data input table.
+---@param template? PhotonElement2D Light template.
 function Light.New( light, template )
 	if ( not light.LocalPosition and isvector( light[2] ) ) then
 		light.LocalPosition = light[2]
@@ -362,7 +362,7 @@ function Light.New( light, template )
 	-- print("==== light =====")
 	-- PrintTable(light)
 
-	setmetatable( light, { __index = ( template or PhotonLight2D ) } )
+	setmetatable( light, { __index = ( template or PhotonElement2D ) } )
 
 	light.Matrix = Matrix()
 	light.Matrix:SetAngles( light.Rotation )
@@ -377,7 +377,7 @@ end
 
 
 function Light:Activate()
-	if not PhotonLight.Activate( self ) then return end
+	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true
