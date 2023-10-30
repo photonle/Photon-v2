@@ -73,6 +73,22 @@ COMPONENT.Segments = {
 	}
 }
 
+COMPONENT.InputPriorities = {
+	["Virtual.SirenOverride"] = 52
+}
+
+COMPONENT.VirtualOutputs = {
+	["Virtual.SirenOverride"] = {
+		{
+			Mode = "MANOVRD",
+			Conditions = {
+				["Emergency.Siren"] = { "T1", "T2", "T4" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		}
+	}
+}
+
 COMPONENT.Inputs = { -- InputActions
 	["Emergency.Siren"] = {
 		["T1"] = { Siren = "WAIL" },
@@ -84,5 +100,8 @@ COMPONENT.Inputs = { -- InputActions
 	["Emergency.SirenOverride"] = {
 		["AIR"] = { Siren = "AIRHORN" },
 		["MAN"] = { Siren = "MANUAL" },
+	},
+	["Virtual.SirenOverride"] = {
+		["MANOVRD"] = { Siren = "PRIORITY" }
 	}
 }

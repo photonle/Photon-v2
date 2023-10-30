@@ -25,6 +25,19 @@ VEHICLE.SubMaterials = {
 
 VEHICLE.Selections = {
 	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				VirtualComponents = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Vehicle Lighting",
 		Options = {
 			{

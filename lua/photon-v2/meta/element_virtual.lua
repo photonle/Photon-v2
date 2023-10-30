@@ -19,6 +19,11 @@ function Element:Initialize( id, parent )
 	return self
 end
 
+function Element.New( element, template )
+	setmetatable( element, { __index = ( template or PhotonElementVirtual )})
+	return element
+end
+
 function Element.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonElementVirtual }) 
 end

@@ -18,7 +18,8 @@ Sound.Class = "Sound"
 
 Sound.Volume = 1
 Sound.Pitch = 100
-Sound.Level = 120
+Sound.Level = 85
+Sound.DSP = 118
 Sound.Muted = false
 function Sound.New( sound, template )
 	if ( isstring( sound[2] ) ) then
@@ -71,6 +72,7 @@ function Sound:Sync()
 	self:SetPitch( self.Pitch, 0 )
 	self:SetMute( self.Muted )
 	self:SetPlay( self.Playing )
+	self:SetDSP( self.DSP )
 end
 
 function Sound:Activate()
