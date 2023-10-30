@@ -6,6 +6,7 @@ include("sh_functions.lua")
 include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
 include("sh_schema.lua")
+include("sh_vcmod.lua")
 
 ---@return PhotonColor
 function PhotonColor( r, g, b, a )
