@@ -35,6 +35,11 @@ Vehicle.ControllerType = "photon_controller"
 function Vehicle.New( data )
 	local Equipment = PhotonVehicleEquipmentManager
 
+	if ( istable(data.Equipment) and ( not data.EquipmentSelections ) ) then
+		data.EquipmentSelections = data.Equipment
+		data.Equipment = nil
+	end
+
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
@@ -59,20 +64,20 @@ function Vehicle.New( data )
 	local loadedParents = Equipment.GetTemplate()
 
 	-- Handle each entry in equipment
-	if (data.Selections) then
+	if (data.EquipmentSelections) then
 
-		vehicle.Selections = {}
+		vehicle.EquipmentSelections = {}
 
 		-- Loop through each category
-		for categoryIndex, category in pairs(data.Selections) do
-			vehicle.Selections[categoryIndex] = 
+		for categoryIndex, category in pairs(data.EquipmentSelections) do
+			vehicle.EquipmentSelections[categoryIndex] = 
 			{
 				Category = category.Category,
 				Index = categoryIndex, 
 				Options = {},
 				Map = {}
 			}
-			local currentCategory = vehicle.Selections[categoryIndex]
+			local currentCategory = vehicle.EquipmentSelections[categoryIndex]
 			local map = currentCategory.Map
 			-- Loop through each option
 			for optionIndex, option in pairs(category.Options) do
@@ -111,30 +116,6 @@ function Vehicle.New( data )
 							end
 						end
 
-						-- if ( variant.Components ) then
-						-- 	Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
-						-- end
-						
-						-- if ( variant.VirtualComponents ) then
-						-- 	Equipment.ProcessTable( variant.VirtualComponents, currentVariant.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
-						-- end
-
-						-- if ( variant.UIComponents ) then
-						-- 	Equipment.ProcessTable( variant.UIComponents, currentVariant.UIComponents, vehicle.Equipment.UIComponents, nameTable.UIComponents, pendingNamesQueue.UIComponents )
-						-- end
-
-						-- if ( variant.Props ) then
-						-- 	Equipment.ProcessTable( variant.Props, currentVariant.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
-						-- end
-
-						-- if ( variant.BodyGroups ) then
-						-- 	Equipment.ProcessTable( variant.BodyGroups, currentVariant.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
-						-- end
-
-						-- if ( variant.SubMaterials ) then
-						-- 	Equipment.ProcessTable( variant.SubMaterials, currentVariant.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
-						-- end
-
 						map[selection] = currentVariant
 					end
 				else
@@ -155,30 +136,6 @@ function Vehicle.New( data )
 							)
 						end
 					end
-
-					-- if ( option.Components ) then
-					-- 	Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
-					-- end
-
-					-- if ( option.VirtualComponents ) then
-					-- 	Equipment.ProcessTable( option.VirtualComponents, currentOption.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
-					-- end
-
-					-- if ( option.UIComponents ) then
-					-- 	Equipment.ProcessTable( option.UIComponents, currentOption.UIComponents, vehicle.Equipment.UIComponents, nameTable.UIComponents, pendingNamesQueue.UIComponents )
-					-- end
-
-					-- if ( option.Props ) then
-					-- 	Equipment.ProcessTable( option.Props, currentOption.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
-					-- end
-					
-					-- if ( option.BodyGroups ) then
-					-- 	Equipment.ProcessTable( option.BodyGroups, currentOption.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
-					-- end
-
-					-- if ( option.SubMaterials ) then
-					-- 	Equipment.ProcessTable( option.SubMaterials, currentOption.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
-					-- end
 
 					map[currentOption.Selection] = currentOption
 				end

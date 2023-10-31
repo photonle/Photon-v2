@@ -23,7 +23,7 @@ VEHICLE.SubMaterials = {
 	[28] = "photon/common/blank",
 }
 
-VEHICLE.Selections = {
+VEHICLE.Equipment = {
 	{
 		Category = "HUD",
 		Options = {

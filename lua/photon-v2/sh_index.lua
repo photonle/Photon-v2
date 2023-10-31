@@ -230,8 +230,8 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 	if (isReload) then
 		currentEquipmentSignature = buildEquipmentSignature( current.Equipment )
 		-- Build Selections signature of current table
-		if (current.Selections) then
-			currentSelectionsSignature = buildSelectionSignature( current.Selections )
+		if (current.EquipmentSelections) then
+			currentSelectionsSignature = buildSelectionSignature( current.EquipmentSelections )
 			print("currentSelectionSignature: " .. tostring(currentSelectionsSignature))
 		end
 		
@@ -254,8 +254,8 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		-- Build new Selections signature
 		-- (any modifications of the Selections tree needs to require a hard reload)
 		if (currentSelectionsSignature) then
-			if ( newVehicle.Selections ) then
-				newSelectionsSignature = buildSelectionSignature( newVehicle.Selections )
+			if ( newVehicle.EquipmentSelections ) then
+				newSelectionsSignature = buildSelectionSignature( newVehicle.EquipmentSelections )
 				print("newSelectionSignature: " .. tostring(currentSelectionsSignature))
 				
 				if (newSelectionsSignature ~= currentSelectionsSignature) then
@@ -264,7 +264,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 			else
 				hardSet = true
 			end
-		elseif ((newVehicle.Selections) and (not currentSelectionsSignature)) then
+		elseif ((newVehicle.EquipmentSelections) and (not currentSelectionsSignature)) then
 			hardSet = true
 		end
 

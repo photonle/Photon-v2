@@ -25,7 +25,7 @@ VEHICLE.SubMaterials = {
 	-- [17] = livery.Name,
 }
 
-VEHICLE.Selections = {
+VEHICLE.Equipment = {
 	{
 		Category = "Standard",
 		Options = {

@@ -432,7 +432,7 @@ end
 function ENT:GetCurrentEquipment()
 	local result
 	local optionEquipment
-	local selections = self.CurrentProfile.Selections
+	local selections = self.CurrentProfile.EquipmentSelections
 	if (istable(selections) and (#selections > 0)) then
 		result = {}
 		for i = 1, #selections do
@@ -658,7 +658,7 @@ function ENT:SetupProfile( name, isReload )
 	
 	self.Equipment = profile.Equipment
 
-	if ( not profile.Selections ) then
+	if ( not profile.EquipmentSelections ) then
 		-- Setup normal components
 		for id, equipment in pairs( self.Equipment.Components ) do
 			self:SetupComponent( id )
@@ -729,10 +729,10 @@ end
 
 function ENT:SetupSelections()
 	local profile = self.CurrentProfile
-	if (profile.Selections) then
+	if (profile.EquipmentSelections) then
 		-- TODO: is this reseting the current equipment configuration on each save?
 		self.CurrentSelections = {}
-		for categoryIndex, category in pairs(profile.Selections) do
+		for categoryIndex, category in pairs(profile.EquipmentSelections) do
 			self.CurrentSelections[categoryIndex] = 1
 			self:OnSelectionChanged( categoryIndex, 1 )
 		end
@@ -792,8 +792,8 @@ end
 function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
 	-- print("Controller:OnSelectionChanged() - Selections:")
-	-- PrintTable( self.CurrentProfile.Selections )
-	local category = self.CurrentProfile.Selections[categoryIndex].Map
+	-- PrintTable( self.CurrentProfile.EquipmentSelections )
+	local category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
 	if ( istable(category[self.CurrentSelections[categoryIndex]]) ) then 
 		self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
 	end

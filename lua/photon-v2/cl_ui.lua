@@ -98,7 +98,7 @@ properties.Add("photon2_equipment", {
 	MenuOpen = function(self, option, ent)
 		local controller = ent:GetPhotonController()
 		local currentSelections = controller.CurrentSelections
-		local selections = controller:GetProfile().Selections
+		local selections = controller:GetProfile().EquipmentSelections
 		-- Required so child elements can be applied
 		local subMenu = option:AddSubMenu()
 		for i, category in ipairs( selections ) do

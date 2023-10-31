@@ -38,7 +38,7 @@ VEHICLE.SubMaterials = {
 }
 
 -- Category -> Option (-> Variant)
-VEHICLE.Selections = {
+VEHICLE.Equipment = {
 	{
 		Category = "License Plate",
 		Options = {

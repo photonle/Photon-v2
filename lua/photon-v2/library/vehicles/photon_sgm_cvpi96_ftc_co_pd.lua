@@ -21,7 +21,7 @@ VEHICLE.SubMaterials = {
 	[6] = fcpd.Name,
 }
 
-VEHICLE.Selections = {
+VEHICLE.Equipment = {
 	{
 		Category = "Lighting",
 		Options = {
