@@ -223,5 +223,5 @@ end
 
 function Light:GetProxy( id )
 	local proxy = self.Proxies[id]
-	return self.Parent--[[@as PhotonElementingComponent]].Elements[proxy[1]][proxy[2]]
+	return self.Parent--[[@as PhotonLightingComponent]].Elements[proxy[1]][proxy[2]]
 end

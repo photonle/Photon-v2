@@ -1,6 +1,6 @@
 ---@class PhotonController : Entity
 ---@field ComponentParent Entity
----@field Components table<string, PhotonElementingComponent>
+---@field Components table<string, PhotonLightingComponent>
 ---@field ComponentArray PhotonBaseEntity[]
 ---@field CurrentProfile PhotonVehicle
 ---@field GetLinkedToVehicle fun(): boolean
@@ -124,17 +124,20 @@ function ENT:InitializeShared()
 	self.Components = {}
 	self.VirtualComponents = {}
 	self.Props = {}
+	self.UIComponents = {}
 
 	self.ComponentArray = {}
 	self.VirtualComponentArray = {}
 	self.PropArray = {}
+	self.UIComponentArray = {}
 
 	self.Equipment = {
 		Components = {},
 		Props = {},
 		BodyGroups = {},
 		SubMaterials = {},
-		VirtualComponents ={}
+		VirtualComponents = {},
+		UIComponents = {}
 	}
 
 	--self.CurrentConfiguration = {}
@@ -526,7 +529,7 @@ function ENT:SetupComponent( id )
 	end
 	print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
-	---@type PhotonElementingComponent
+	---@type PhotonLightingComponent
 	local component = Photon2.Index.Components[data.Component]
 
 	local ent
@@ -534,8 +537,8 @@ function ENT:SetupComponent( id )
 	if (SERVER and data.OnServer) then
 		-- TODO: serverside spawn code
 	elseif (CLIENT and (not data.OnServer)) then
-		---@type PhotonElementingComponent
-		ent = component:CreateClientside( self ) --[[@as PhotonElementingComponent]]
+		---@type PhotonLightingComponent
+		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
 		-- component.Setup( component )
 	else
 		return

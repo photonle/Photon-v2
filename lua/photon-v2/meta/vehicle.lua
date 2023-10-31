@@ -98,25 +98,42 @@ function Vehicle.New( data )
 						
 						local currentVariant = currentOption.Variants[variantIndex]
 						
-						if ( variant.Components ) then
-							Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+						-- Automatically iterate through each type of Equipment and process
+						for key, value in pairs( vehicle.Equipment ) do
+							if ( variant[key] ) then
+								Equipment.ProcessTable( 
+									variant[key], 
+									currentVariant[key], 
+									vehicle.Equipment[key], 
+									nameTable[key], 
+									pendingNamesQueue[key] )
+
+							end
 						end
+
+						-- if ( variant.Components ) then
+						-- 	Equipment.ProcessTable( variant.Components, currentVariant.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+						-- end
 						
-						if ( variant.VirtualComponents ) then
-							Equipment.ProcessTable( variant.VirtualComponents, currentVariant.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
-						end
+						-- if ( variant.VirtualComponents ) then
+						-- 	Equipment.ProcessTable( variant.VirtualComponents, currentVariant.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
+						-- end
 
-						if ( variant.Props ) then
-							Equipment.ProcessTable( variant.Props, currentVariant.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
-						end
+						-- if ( variant.UIComponents ) then
+						-- 	Equipment.ProcessTable( variant.UIComponents, currentVariant.UIComponents, vehicle.Equipment.UIComponents, nameTable.UIComponents, pendingNamesQueue.UIComponents )
+						-- end
 
-						if ( variant.BodyGroups ) then
-							Equipment.ProcessTable( variant.BodyGroups, currentVariant.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
-						end
+						-- if ( variant.Props ) then
+						-- 	Equipment.ProcessTable( variant.Props, currentVariant.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
+						-- end
 
-						if ( variant.SubMaterials ) then
-							Equipment.ProcessTable( variant.SubMaterials, currentVariant.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
-						end
+						-- if ( variant.BodyGroups ) then
+						-- 	Equipment.ProcessTable( variant.BodyGroups, currentVariant.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
+						-- end
+
+						-- if ( variant.SubMaterials ) then
+						-- 	Equipment.ProcessTable( variant.SubMaterials, currentVariant.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
+						-- end
 
 						map[selection] = currentVariant
 					end
@@ -126,25 +143,42 @@ function Vehicle.New( data )
 					Equipment.ApplyTemplate( currentOption )
 					currentOption.Selection = #map + 1
 
-					if ( option.Components ) then
-						Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+					-- Automatically iterate through each type of Equipment and process
+					for key, value in pairs( vehicle.Equipment ) do
+						if ( option[key] ) then
+							Equipment.ProcessTable( 
+								option[key], 
+								currentOption[key], 
+								vehicle.Equipment[key], 
+								nameTable[key], 
+								pendingNamesQueue[key] 
+							)
+						end
 					end
 
-					if ( option.VirtualComponents ) then
-						Equipment.ProcessTable( option.VirtualComponents, currentOption.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
-					end
+					-- if ( option.Components ) then
+					-- 	Equipment.ProcessTable( option.Components, currentOption.Components, vehicle.Equipment.Components, nameTable.Components, pendingNamesQueue.Components )
+					-- end
 
-					if ( option.Props ) then
-						Equipment.ProcessTable( option.Props, currentOption.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
-					end
+					-- if ( option.VirtualComponents ) then
+					-- 	Equipment.ProcessTable( option.VirtualComponents, currentOption.VirtualComponents, vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, pendingNamesQueue.VirtualComponents )
+					-- end
+
+					-- if ( option.UIComponents ) then
+					-- 	Equipment.ProcessTable( option.UIComponents, currentOption.UIComponents, vehicle.Equipment.UIComponents, nameTable.UIComponents, pendingNamesQueue.UIComponents )
+					-- end
+
+					-- if ( option.Props ) then
+					-- 	Equipment.ProcessTable( option.Props, currentOption.Props, vehicle.Equipment.Props, nameTable.Props, pendingNamesQueue.Props )
+					-- end
 					
-					if ( option.BodyGroups ) then
-						Equipment.ProcessTable( option.BodyGroups, currentOption.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
-					end
+					-- if ( option.BodyGroups ) then
+					-- 	Equipment.ProcessTable( option.BodyGroups, currentOption.BodyGroups, vehicle.Equipment.BodyGroups, nameTable.BodyGroups, pendingNamesQueue.BodyGroups )
+					-- end
 
-					if ( option.SubMaterials ) then
-						Equipment.ProcessTable( option.SubMaterials, currentOption.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
-					end
+					-- if ( option.SubMaterials ) then
+					-- 	Equipment.ProcessTable( option.SubMaterials, currentOption.SubMaterials, vehicle.Equipment.SubMaterials, nameTable.SubMaterials, pendingNamesQueue.SubMaterials )
+					-- end
 
 					map[currentOption.Selection] = currentOption
 				end
@@ -153,17 +187,28 @@ function Vehicle.New( data )
 		
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.Components, nameTable.Components )
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.VirtualComponents, nameTable.VirtualComponents )
+		Equipment.ResolveNamesFromQueue( pendingNamesQueue.UIComponents, nameTable.UIComponents )
 
 	end
 
-	Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
-	Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
-	Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
-	Equipment.ProcessInheritance( vehicle.Equipment.BodyGroups, nameTable.BodyGroups, loadedParents.BodyGroups )
-	Equipment.ProcessInheritance( vehicle.Equipment.SubMaterials, nameTable.SubMaterials, loadedParents.SubMaterials )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.UIComponents, nameTable.UIComponents, loadedParents.UIComponents )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.BodyGroups, nameTable.BodyGroups, loadedParents.BodyGroups )
+	-- Equipment.ProcessInheritance( vehicle.Equipment.SubMaterials, nameTable.SubMaterials, loadedParents.SubMaterials )
+
+	for key, value in pairs( vehicle.Equipment ) do
+		Equipment.ProcessInheritance(
+			vehicle.Equipment[key],
+			nameTable[key],
+			loadedParents[key]
+		)
+	end
 
 	Equipment.BuildComponents( vehicle.Equipment, "Components", data.ID )
 	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.ID )
+	Equipment.BuildComponents( vehicle.Equipment, "UIComponents", data.ID )
 
 	local vehicleListId = "photon2:".. data.ID --[[@as string]]
 
@@ -214,5 +259,5 @@ end
 
 -- Development function for change detection
 function Vehicle.BuildEquipmentSignature()
-	
+	--- ?????
 end

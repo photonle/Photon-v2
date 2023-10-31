@@ -30,7 +30,7 @@ function Speaker.New( name, data, base )
 end
 
 function Speaker:Initialize( ent, controller )
-	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonElementingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 	component.CurrentModes = controller.CurrentModes -- TODO: set this in PhotonBaseEntity?
 	return component
 end

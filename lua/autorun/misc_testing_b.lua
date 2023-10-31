@@ -1,6 +1,7 @@
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 if SERVER then return end
 
+print( '\46\46' )
 
 function meshMaterialTesting()
 	local modelTarget = "models/tdmcars/emergency/for_crownvic.mdl"

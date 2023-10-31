@@ -21,8 +21,8 @@ PhotonElementingSegment = PhotonElementingSegment
 ---@type PhotonSequenceFrame
 PhotonSequenceFrame = PhotonSequenceFrame
 
----@type PhotonElementingComponent
-PhotonElementingComponent = PhotonElementingComponent
+---@type PhotonLightingComponent
+PhotonLightingComponent = PhotonLightingComponent
 
 ---@type PhotonBaseEntity
 PhotonBaseEntity = PhotonBaseEntity
@@ -92,7 +92,7 @@ PhotonBlendColor = PhotonBlendColor
 ---| '"Off"' # Stops all motion and holds position.
 
 ---@class Photon2.Index
----@field Components PhotonElementingComponent[] Components index.
+---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
 ---@field Profiles Photon2.Index.Profiles
 

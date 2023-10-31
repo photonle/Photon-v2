@@ -1,12 +1,12 @@
 if (exmeta.ReloadFile()) then return end
 
-NAME = "PhotonElementingComponent"
+NAME = "PhotonLightingComponent"
 BASE = "PhotonBaseEntity"
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElementingComponent : PhotonBaseEntity
+---@class PhotonLightingComponent : PhotonBaseEntity
 ---@field Name string
 ---@field Ancestors table<string, boolean>
 ---@field Descendants table<string, boolean>
@@ -28,7 +28,7 @@ local Builder = Photon2.ComponentBuilder
 local Util = Photon2.Util
 
 Component.UseControllerModes = true
-Component.IsPhotonElementingComponent = true
+Component.IsPhotonLightingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 --[[
@@ -41,7 +41,7 @@ local dumpLibraryData = false
 ---@param name string
 ---@param data PhotonLibraryComponent
 ---@param base string Deprecated
----@return PhotonElementingComponent
+---@return PhotonLightingComponent
 function Component.New( name, data, base )
 
 	data = table.Copy( data )
@@ -64,9 +64,13 @@ function Component.New( name, data, base )
 		print("_______________________________________")
 	end
 
-	---@type PhotonElementingComponent
+	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
+		PrintName = data.PrintName or name,
+		Authors = data.Authors,
+		Category = data.Category,
+		Credits = data.Credits,
 		Phase = data.Phase,
 		Ancestors = ancestors,
 		Descendants = {},
@@ -265,7 +269,7 @@ function Component.New( name, data, base )
 		-- Build input interface channels
 		component.InputActions[channelName] = {}
 		
-		-- local priorityScore = PhotonElementingComponent.DefaultInputPriorities[channelName]
+		-- local priorityScore = PhotonLightingComponent.DefaultInputPriorities[channelName]
 		local priorityScore = component.InputPriorities[channelName]
 	
 		if ( not priorityScore ) then
@@ -344,7 +348,7 @@ function Component.New( name, data, base )
 	--[[
 			Finalize and set meta-table
 	--]]
-	setmetatable( component, { __index = PhotonElementingComponent } )
+	setmetatable( component, { __index = PhotonLightingComponent } )
 
 	-- print("Component.Inputs ====================================")
 	-- 	PrintTable( component.Inputs )
@@ -362,12 +366,12 @@ end
 -- to a Photon Controller and component entity.
 ---@param ent photon_entity
 ---@param controller PhotonController
----@return PhotonElementingComponent
+---@return PhotonLightingComponent
 function Component:Initialize( ent, controller )
 	-- Calls the base constructor but passes LightingComponent as "self"
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
-	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonElementingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 
 	if ( self.UseControllerModes ) then
 		component.CurrentModes = controller.CurrentModes

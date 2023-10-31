@@ -468,13 +468,18 @@ local stageIndicators = {
 	[5] = { 7, 3 },
 }
 
-function HUD.LightsIndicator( x, y, width, height, gap, count )
-	for i=1, count do
-		draw.RoundedBox( 0, x + ( ( i - 1 ) * ( width + gap ) ), y, width, height, inactiveColor )
+local stateColors = {
+	["OFF"] = inactiveColor,
+	["ON"] = white
+}
+
+function HUD.LightsIndicator( x, y, width, height, gap, elements )
+	for i, element in pairs( elements ) do
+		draw.RoundedBox( 0, x + ( ( i - 1 ) * ( width + gap ) ), y, width, height, stateColors[element.CurrentStateId] )
 	end
 end
 
-function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, priStyle, secLabel, secCount, secSelected, secStyle )
+function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, priStyle, secLabel, secCount, secSelected, secStyle, indicatorComponent )
 	local priLabelColor = white
 	local secLabelColor = white
 	local secIndicatorColor = dimColor
@@ -510,7 +515,9 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 		draw.RoundedBox( 2, x + 8, y + 8 + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
 	end
 
-	HUD.LightsIndicator( x + 40, y + 31, 11, 3, 2, 8 )
+	if ( indicatorComponent ) then
+		HUD.LightsIndicator( x + 40, y + 31, 11, 3, 2, indicatorComponent.Elements )
+	end
 
 	surface.SetMaterial( ellipseInactive )
 	surface.SetDrawColor( secIndicatorColor )
@@ -743,11 +750,28 @@ local drawIcon = icons["siren"]
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
+	local indicatorComponent
 
 	if ( not target ) then return end
 
 	hudMaterial:SetTexture( "$basetexture", hudRT )
 	if ( CurTime() >= (lastUpdate + 0.05) ) then
+
+		for k, v in pairs( target.VirtualComponents ) do
+			if ( v.PrintName == "Photon 2 HUD" ) then
+				indicatorComponent = v
+				break
+				-- for j, w in pairs( v.Elements ) do
+				-- 	print( tostring(j), w.CurrentStateId)
+				-- end
+				-- ErrorNoHalt("get fucked")
+			else
+				-- ErrorNoHalt( v.PrintName )
+				-- PrintTable( v )
+				-- print( v.Id )
+			end
+		end
+
 		render.PushRenderTarget( hudRT )
 		-- needs to be scaled down by 16px for some unknown reason
 		render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
@@ -771,7 +795,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				lightStateIndicator.Secondary[secMode].Label, 
 				#lightStateIndicator.SecondaryArray, 
 				lightStateIndicator.SecondaryMap[secMode] or 0,
-				secStyle
+				secStyle,
+				indicatorComponent
 			)
 
 
@@ -780,7 +805,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			local indicatorMode = 0
 			if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
 				sirenDisplay = smartSirenIndicator.Display[target.CurrentModes["Emergency.SirenOverride"]]
-				sirenSelection = -1
+				sirenSelection = smartSirenIndicator.DisplayMap[target.CurrentModes["Emergency.Siren"]] or -1
+				-- sirenSelection = -1
 				indicatorMode = 2
 			else
 				sirenDisplay = smartSirenIndicator.Display[target.CurrentModes["Emergency.Siren"]]

@@ -83,10 +83,10 @@ function Photon2.Index.ProcessComponentLibrary()
 		local name = loadOrder[i]
 		local component = library.Components[name]
 		if (not component.Base) then
-			-- debug.setmetatable( component, { __index = PhotonElementingComponent } )
+			-- debug.setmetatable( component, { __index = PhotonLightingComponent } )
 			Photon2.CompileComponent( name, component )
 
-			-- exmeta.SetMetaTable(component, PhotonElementingComponent)
+			-- exmeta.SetMetaTable(component, PhotonLightingComponent)
 		else
 			if ( not library.Components[component.Base] ) then
 				error("Attempted to inherit from [" .. tostring( component.Base ) .."], which could not found.")
@@ -113,7 +113,7 @@ function Photon2.CompileComponent( name, inputComponent )
 		base = library.Components[inputComponent.Base]
 	end
 
-	local component = PhotonElementingComponent.New( name, inputComponent, base )
+	local component = PhotonLightingComponent.New( name, inputComponent, base )
 	component.CompileTime = RealTime()
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)

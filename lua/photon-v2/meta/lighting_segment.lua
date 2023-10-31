@@ -14,7 +14,7 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentModes table<string, string> Key = Channel, Value = mode
 ---@field InputPriorities table<string, integer>
 ---@field Sequences table<string, PhotonSequence>
----@field Component PhotonElementingComponent
+---@field Component PhotonLightingComponent
 -- [string] = Pattern Name
 ---@field Inputs table<string, string> Key = Input Channel, Value = Associated sequence
 ---@field InputActions table<string, { Sequence: string, Priority: number, Rank: number }>
@@ -253,7 +253,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 end
 
 -- On instance creation
----@param componentInstance PhotonElementingComponent
+---@param componentInstance PhotonLightingComponent
 ---@return PhotonElementingSegment
 function Segment:Initialize( componentInstance )
 	---@type PhotonElementingSegment

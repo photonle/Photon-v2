@@ -20,7 +20,7 @@ print( "Initializing Photon 2..." )
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.1 (PREVIEW)"
+Photon2.Version = "2.0.2 (PREVIEW)"
 
 --[[
 	Compatability

@@ -10,6 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field Hud
 local Equipment = exmeta.New()
 
 function Equipment.New( name, option )
@@ -23,7 +24,8 @@ function Equipment.GetTemplate()
 		Props = {},
 		BodyGroups = {},
 		SubMaterials = {},
-		VirtualComponents = {}
+		VirtualComponents = {},
+		UIComponents = {}
 	}
 end
 

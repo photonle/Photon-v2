@@ -28,7 +28,7 @@ local bloomBlurY = bloomBlur
 
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
-
+	render.TurnOnToneMapping()
 	local scene = render.GetRenderTarget()
 	render.CopyRenderTargetToTexture( storeRenderTarget )
 
@@ -109,6 +109,7 @@ end
 
 function Photon2.RenderBloom.DrawAdditive()
 	
+	render.TurnOnToneMapping()
 
 	additiveMaterial:SetTexture( "$basetexture", storeRT )
 	render.SetMaterial( additiveMaterial )
