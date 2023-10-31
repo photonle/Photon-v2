@@ -757,8 +757,9 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	hudMaterial:SetTexture( "$basetexture", hudRT )
 	if ( CurTime() >= (lastUpdate + 0.05) ) then
 
-		for k, v in pairs( target.VirtualComponents ) do
+		for k, v in pairs( target.UIComponents ) do
 			if ( v.PrintName == "Photon 2 HUD" ) then
+				-- indicatorComponent = nil
 				indicatorComponent = v
 				break
 				-- for j, w in pairs( v.Elements ) do

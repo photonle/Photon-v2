@@ -378,6 +378,7 @@ end
 function ENT:SoftEquipmentReload()
 	print("Controller is executing SOFT reload...")
 	local profile = self:GetProfile()
+	-- TODO: don't virtual and UI components need to be included here?
 	for id, component in pairs(self.Components) do
 		component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
 	end
@@ -445,6 +446,19 @@ function ENT:GetCurrentEquipment()
 	return result or self.Equipment
 end
 
+function ENT:SetupUIComponent( id )
+	local data = self.Equipment.UIComponents[id] --[[@as PhotonVehicleEquipment]]
+	printf("Setting up UI component [%s]", id)
+	if ( not data ) then
+		error(string.format("Unable to locate equipment UI component ID [%s]", id))
+		return
+	end
+
+	local component = Photon2.Index.Components[data.Component]
+	local uiEnt = component:CreateOn( self, self )
+	self.UIComponents[id] = uiEnt
+	uiEnt:ApplyModeUpdate()
+end
 
 ---@param id string
 function ENT:SetupVirtualComponent( id )
@@ -568,6 +582,9 @@ function ENT:RemoveAllComponents()
 	for id, virtualComponent in pairs( self.VirtualComponents ) do
 		self:RemoveEquipmentVirtualComponentByIndex( id )
 	end
+	for id, uiComponent in pairs( self.UIComponents ) do
+		self:RemoveEquipmentUIComponentByIndex( id )
+	end
 end
 
 function ENT:RemoveAllProps()
@@ -592,6 +609,14 @@ function ENT:RemoveEquipmentVirtualComponentByIndex( index )
 	self.VirtualComponents[index] = nil
 end
 
+function ENT:RemoveEquipmentUIComponentByIndex( index )
+	printf("Controller is removing UI component equipment ID [%s]", index)
+	if ( self.UIComponents[index] ) then
+		self.UIComponents[index]:RemoveVirtual()
+	end
+	self.UIComponents[index] = nil
+end
+
 function ENT:RemoveEquipmentPropByIndex( index )
 	printf("Controller is removing virtual component equipment ID [%s]", index)
 	if ( self.Props[index] ) then
@@ -609,6 +634,10 @@ function ENT:AddEquipment( equipmentTable )
 	local virtualComponents = equipmentTable.VirtualComponents
 	for i=1, #virtualComponents do
 		self:SetupVirtualComponent( virtualComponents[i] )
+	end
+	local uiComponents = equipmentTable.UIComponents
+	for i=1, #uiComponents do
+		self:SetupUIComponent( uiComponents[i] )
 	end
 	local props = equipmentTable.Props
 	for i=1, #props do
@@ -632,6 +661,9 @@ function ENT:RemoveEquipment( equipmentTable )
 	end
 	for i=1, #equipmentTable.VirtualComponents do
 		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
+	end
+	for i=1, #equipmentTable.UIComponents do
+		self:RemoveEquipmentUIComponentByIndex(equipmentTable.UIComponents[i])
 	end
 	for i=1, #equipmentTable.Props do
 		self:RemoveEquipmentPropByIndex(equipmentTable.Props[i])
@@ -666,6 +698,10 @@ function ENT:SetupProfile( name, isReload )
 		-- Setup virtual components
 		for id, equipment in pairs( self.Equipment.VirtualComponents ) do
 			self:SetupVirtualComponent( id )
+		end
+		-- Setup UI components
+		for id, equipment in pairs( self.Equipment.UIComponents ) do
+			self:SetupUIComponent( id )
 		end
 		-- Setup props
 		for id, prop in pairs( self.Equipment.Props ) do
@@ -714,6 +750,15 @@ function ENT:SetupComponentArrays()
 	end
 	for id, component in pairs( self.VirtualComponents ) do
 		virtualComponentArray[#virtualComponentArray+1] = component
+	end
+
+	-- Setup UI components array
+	local uiComponentArray = self.UIComponentArray
+	for i=1, #uiComponentArray do
+		uiComponentArray[i] = nil
+	end
+	for id, component in pairs( self.UIComponents ) do
+		uiComponentArray[#uiComponentArray+1] = component
 	end
 
 	-- Setup props
@@ -784,6 +829,10 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 		-- component:ApplyModeUpdate()
 		virtualComponent:SetChannelMode( channel, newState, oldState )
 	end
+	for id, uiComponent in pairs( self.UIComponents ) do
+		-- component:ApplyModeUpdate()
+		uiComponent:SetChannelMode( channel, newState, oldState )
+	end
 end
 
 
@@ -839,6 +888,14 @@ function ENT:OnComponentReloaded( componentId )
 		if ( component.Ancestors[componentId] ) then
 			self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
 			self:SetupVirtualComponent( equipmentId )
+			matched = true
+		end
+	end
+	-- Reload UI components
+	for equipmentId, component in pairs( self.UIComponents ) do
+		if ( component.Ancestors[componentId] ) then
+			self:RemoveEquipmentUIComponentByIndex( equipmentId )
+			self:SetupUIComponent( equipmentId )
 			matched = true
 		end
 	end

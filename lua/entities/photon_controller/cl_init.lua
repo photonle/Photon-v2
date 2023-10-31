@@ -85,6 +85,9 @@ function ENT:Think()
 			for i=1, #self.VirtualComponentArray do
 				self.VirtualComponentArray[i]:FrameTick()
 			end
+			for i=1, #self.UIComponentArray do
+				self.UIComponentArray[i]:FrameTick()
+			end
 		end
 	end
 	-- for id, component in pairs(self.Components) do

@@ -124,7 +124,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Author string The author of this _Photon_ vehicle profile.
 ---@field IsEquipmentConfigurable boolean (Internal) Whether the equipment is user-configurable or static. This is determined automatically by the `.Equipment {}` table structure.
 -- ---@field Equipment PhotonVehicleEquipment[]
----@field Selections PhotonVehicleSelectionCategory[]
+---@field EquipmentSelections PhotonVehicleSelectionCategory[]
 ---@field Equipment PhotonVehicleSelectionCategory[]
 
 
@@ -134,6 +134,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field BodyGroups table
 ---@field SubMaterials table
 ---@field VirtualComponents table
+---@field UIComponents table
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.

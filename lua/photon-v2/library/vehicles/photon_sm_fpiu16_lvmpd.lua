@@ -29,7 +29,12 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				VirtualComponents = {
+				-- VirtualComponents = {
+				-- 	{
+				-- 		Component = "photon_hud_default"
+				-- 	}
+				-- },
+				UIComponents = {
 					{
 						Component = "photon_hud_default"
 					}
