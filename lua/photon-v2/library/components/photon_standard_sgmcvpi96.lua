@@ -172,17 +172,9 @@ COMPONENT.Segments = {
 			DIM = { 2 },
 		}
 	},
-	["Tail_L"] = {
+	["Tail"] = {
 		Frames = {
-			[1] = "17 21"
-		},
-		Sequences = {
-			ON = { 1 }
-		}
-	},
-	["Tail_R"] = {
-		Frames = {
-			[1] = "18 22"
+			[1] = "[~RD] 17 18 21 22"
 		},
 		Sequences = {
 			ON = { 1 }
@@ -193,11 +185,11 @@ COMPONENT.Segments = {
 			[0] = "[~OFF] 15 21",
 			[1] = "15 21",
 			[2] = "[~RD] 21",
-			-- [3] = "[PASS] 15 21"
+			[3] = "[PASS] 15 21"
 		},
 		Sequences = {
 			ON = { 1 },
-			SIGNAL = sequence():Alternate( 1, 0, 12 ),
+			SIGNAL = sequence():Alternate( 1, 3, 12 ),
 			DIM = { 2 }
 		}
 	},
@@ -205,11 +197,12 @@ COMPONENT.Segments = {
 		Frames = {
 			[0] = "[~OFF] 16 22",
 			[1] = "16 22",
-			[2] = "[~RD] 22"
+			[2] = "[~RD] 22",
+			[3] = "[PASS] 16 22",
 		},
 		Sequences = {
 			ON = { 1 },
-			SIGNAL = sequence():Alternate( 1, 0, 12 ),
+			SIGNAL = sequence():Alternate( 1, 3, 12 ),
 			DIM = { 2 }
 		}
 	},
@@ -233,28 +226,6 @@ COMPONENT.Segments = {
 			REVERSE = { 1 }
 		}
 	},
-	["Brake_L"] = {
-		Frames = {
-			[0] = "[~OFF] 17",
-			[1] = "17",
-			[2] = "[~RD] 17",
-		},
-		Sequences = {
-			ON = { 1 },
-			DIM = { 2 }
-		}
-	},
-	["Brake_R"] = {
-		Frames = {
-			[0] = "[~OFF] 18",
-			[1] = "18",
-			[2] = "[~RD] 18",
-		},
-		Sequences = {
-			ON = { 1 },
-			DIM = { 2 }
-		}
-	},
 	["Brake"] = {
 		Frames = {
 			[1] = "17 18 23"
@@ -269,32 +240,21 @@ COMPONENT.Inputs = {
 	["Vehicle.Lights"] = {
 		["ON"] = {
 			Headlights = "ON",
-			Tail_L = "ON",
-			Tail_R = "ON",
+			Tail = "ON",
 			Marker_L = "ON",
 			Marker_R = "ON",
 			Brake = "ON",
-			-- HighBeams = "WIGWAG"
-
-			-- Signal_L = "ON",
-			-- Signal_R = "ON",
 		},
 		["HEADLIGHTS"] = {
 			Marker_L = "DIM",
 			Marker_R = "DIM",
 			Headlights = "ON",
-			Signal_L = "DIM",
-			Signal_R = "DIM",
-			Brake_L = "DIM",
-			Brake_R = "DIM",
+			Tail = "ON",
 		},
 		["PARKING"] = {
 			Marker_L = "DIM",
 			Marker_R = "DIM",
-			Brake_L = "DIM",
-			Brake_R = "DIM",
-			Signal_L = "DIM",
-			Signal_R = "DIM",
+			Tail = "ON",
 		}
 	},
 	["Emergency.Warning"] = {
