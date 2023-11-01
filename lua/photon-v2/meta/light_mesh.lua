@@ -278,7 +278,7 @@ function Light:DoPreRender()
 
 			end
 
-			local ang = (self:GetProxy("R") + 180) % 360
+			local ang = (self:GetProxy("R")) % 360
 			-- local shift = 
 
 			-- print("Ang: " .. math.Round(ang) .. " Min: " .. tostring( min ) .. " Max: " .. tostring( max ) )
