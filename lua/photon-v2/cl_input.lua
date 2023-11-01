@@ -411,10 +411,10 @@ Photon2.ClientInput.RegisterCommand({
 
 	Description = "Quick press toggles headlights. Press and hold to toggle parking lights.",
 	OnPress = { { Action = "SOUND", Sound = "Click" } },
-	OnRelease = { { Action = "TOGGLE", Channel = "Vehicle.Elements", Value = "HEADLIGHTS" } },
+	OnRelease = { { Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "HEADLIGHTS" } },
 	OnHold = {
 		{ Action = "SOUND", Sound = "Click" },
-		{ Action = "TOGGLE", Channel = "Vehicle.Elements", Value = "PARKING" }
+		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "PARKING" }
 	}
 })
 

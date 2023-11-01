@@ -25,30 +25,15 @@ COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"
 
 COMPONENT.Templates = {
 	["Sound"] = {
-		Speaker = {
-			States = {
-				["ON-90"] = { Pitch = 97, Play = true, Mute = false },
-				["ON+5"] = { Pitch = 101, Play = true, Mute = false },
-				["ON+10"] = { Pitch = 102, Play = true, Mute = false },
-				["ON+15"] = { Pitch = 103, Play = true, Mute = false },
-				["ON+20"] = { Pitch = 104, Play = true, Mute = false },
-				["ON+25"] = { Pitch = 105, Play = true, Mute = false },
-				["ON+30"] = { Pitch = 106, Play = true, Mute = false },
-				["ON-5"] = { Pitch = 107, Play = true, Mute = false },
-				["ON-10"] = { Pitch = 108, Play = true, Mute = false },
-				["ON-15"] = { Pitch = 109, Play = true, Mute = false },
-				["ON-20"] = { Pitch = 110, Play = true, Mute = false },
-				["ON-25"] = { Pitch = 111, Play = true, Mute = false },
-				["ON-30"] = { Pitch = 112, Play = true, Mute = false },
-			}
-		}
+		Speaker = {}
 	}
 }
 
 COMPONENT.ColorMap = " [HORN] 5 [ON] 1 2 3 4 5 6"
 
 COMPONENT.Elements = {
-	[1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
+	[1] = { "Speaker", "photon/sirens/fedsig_tmd/wail.wav" },
+	-- [1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
 	[2] = { "Speaker", "emv/sirens/federal sig ss/emv_yelp.wav" },
 	[3] = { "Speaker", "emv/sirens/federal sig ss/emv_priority.wav" },
 	[4] = { "Speaker", "emv/sirens/federal sig ss/emv_hilo.wav" },

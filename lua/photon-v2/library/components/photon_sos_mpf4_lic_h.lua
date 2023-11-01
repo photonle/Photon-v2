@@ -56,7 +56,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Inputs = {
-	["Vehicle.Elements"] = {
+	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
 			-- Full = "COLOR_ALT"
 			Full = "COLOR_ALT"

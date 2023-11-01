@@ -23,8 +23,8 @@ COMPONENT.Templates = {
 		["Model"] = {
 			Model = "models/schmal/sgmcvpi96_lights.mdl",
 			Scale = 1.001,
-			IntensityGainFactor = 2,
-			IntensityLossFactor = 2
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 5
 		}
 	},
 	["2D"] = {
@@ -192,7 +192,8 @@ COMPONENT.Segments = {
 		Frames = {
 			[0] = "[~OFF] 15 21",
 			[1] = "15 21",
-			[2] = "[~RD] 21"
+			[2] = "[~RD] 21",
+			-- [3] = "[PASS] 15 21"
 		},
 		Sequences = {
 			ON = { 1 },
@@ -265,7 +266,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Inputs = {
-	["Vehicle.Elements"] = {
+	["Vehicle.Lights"] = {
 		["ON"] = {
 			Headlights = "ON",
 			Tail_L = "ON",

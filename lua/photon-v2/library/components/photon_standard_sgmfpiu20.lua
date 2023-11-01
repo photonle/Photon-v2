@@ -443,7 +443,7 @@ COMPONENT.Segments = {
 
 --TODO: verify that sequences exist on compilation
 COMPONENT.Inputs = {
-	["Vehicle.Elements"] = {
+	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
 			Headlights = "HEADLIGHTS",
 			Marker = "ON",

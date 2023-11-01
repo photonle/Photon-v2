@@ -8,7 +8,7 @@ When getting a feel for Photon 2, I'd recommend just using the Las Vegas FPIU. I
 
 ## Rules and Conditions
 1. Goes without saying, but don't share the code or files with anyone. A leaked pre-release of Photon 2 harms our ability maintain interest, updates, and confidence in the addon.
-2. You are free to publicly show off your Photon 2 projects in #wayo, #showcase, etc.
+2. You are free to publicly show off your Photon 2 projects in #waywo, #showcase, etc.
 
 # Default Key Binds
 * F: Toggle warning lights (MODE2)

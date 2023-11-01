@@ -220,7 +220,7 @@ COMPONENT.Inputs = {
 	-- 		Inner = "Rotate" 
 	-- 	}
 	-- },
-	["Vehicle.Elements"] = {
+	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
 			All = "SLOW"
 			-- All = "PATTERN_1",

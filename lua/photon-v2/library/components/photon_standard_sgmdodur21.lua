@@ -153,7 +153,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Inputs = {
-	["Vehicle.Elements"] = {
+	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
 			["DRL_R"] = "ON",
 			["DRL_L"] = "ON",
