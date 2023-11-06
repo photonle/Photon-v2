@@ -94,11 +94,14 @@ PhotonBlendColor = PhotonBlendColor
 ---@class Photon2.Index
 ---@field Components PhotonLightingComponent[] Components index.
 ---@field Vehicles PhotonVehicle[] Vehicles index.
----@field Profiles Photon2.Index.Profiles
+---@field Profiles Photon2.Index.Profiles 
+---@field Sirens table<string, PhotonSiren>
+---@field Tones table<string, table>
 
 ---@class Photon2.Index.Profiles
 ---@field Map {}
 ---@field Vehicles table<string, string>
+---@field Sirens table<string, PhotonSiren>
 
 ---@class PhotonLibraryComponent
 ---@field Author string Component author's name.
@@ -127,6 +130,20 @@ PhotonBlendColor = PhotonBlendColor
 ---@field EquipmentSelections PhotonVehicleSelectionCategory[]
 ---@field Equipment PhotonVehicleSelectionCategory[]
 
+---@class PhotonLibrarySiren
+---@field Name string Unique name of siren set entry.
+---@field Make string Siren manufacturer.
+---@field Model string Siren model.
+---@field Variant? string Optional variant descriptor.
+---@field Author string Creator of the siren entry.
+---@field Tones table<string, PhotonSirenTone>
+
+---@class PhotonSirenTone
+---@field Label string Display name of the tone.
+---@field Sound string Sound file of the tone.
+---@field Icon string Optional tone icon name, if applicable.
+
+---@class PhotonSiren : PhotonLibrarySiren
 
 ---@class PhotonEquipmentTable
 ---@field Components table

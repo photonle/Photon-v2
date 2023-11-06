@@ -8,6 +8,7 @@ local COMPONENT = Photon2.LibraryComponent()
 		COMPONENT.Sounds = ...
 --]]
 
+-- COMPONENT.Class = "Siren"
 
 COMPONENT.Author = "Photon"
 
@@ -32,10 +33,11 @@ COMPONENT.Templates = {
 COMPONENT.ColorMap = " [HORN] 5 [ON] 1 2 3 4 5 6"
 
 COMPONENT.Elements = {
-	[1] = { "Speaker", "photon/sirens/fedsig_tmd/wail.wav" },
+	[1] = { "Speaker", Tone = "fedsig_touchmaster_delta/wail" },
+	-- [1] = { "Speaker", "photon/sirens/fedsig_tmd/wail.wav" },
 	-- [1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
-	[2] = { "Speaker", "emv/sirens/federal sig ss/emv_yelp.wav" },
-	[3] = { "Speaker", "emv/sirens/federal sig ss/emv_priority.wav" },
+	[2] = { "Speaker", Tone = "fedsig_touchmaster_delta/yelp" },
+	[3] = { "Speaker", Tone = "fedsig_touchmaster_delta/scan" },
 	[4] = { "Speaker", "emv/sirens/federal sig ss/emv_hilo.wav" },
 	[5] = { "Speaker", "emv/sirens/federal sig ss/emv_horn.wav" },
 	[6] = { "Speaker", "emv/sirens/federal sig ss/emv_manual.wav" },
@@ -47,12 +49,12 @@ COMPONENT.Segments = {
 	Siren = {
 		Frames = { "1", "2", "3", "4", "5", "6" },
 		Sequences = {
-			["WAIL"] = { 1 },
-			["YELP"] = { 2 },
-			["PRIORITY"] = { 3 },
-			["HILO"] = { 4 },
-			["AIRHORN"] = { 5 },
-			["MANUAL"] = { 6 },
+			["T1"] = { 1 },
+			["T2"] = { 2 },
+			["T3"] = { 3 },
+			["T4"] = { 4 },
+			["AIR"] = { 5 },
+			["MAN"] = { 6 },
 			-- ["DEMO"] = sequence():Add(3):Do(16):Add(1):Do(16)
 		}
 	}
@@ -76,17 +78,17 @@ COMPONENT.VirtualOutputs = {
 
 COMPONENT.Inputs = { -- InputActions
 	["Emergency.Siren"] = {
-		["T1"] = { Siren = "WAIL" },
-		["T2"] = { Siren = "YELP" },
-		["T3"] = { Siren = "PRIORITY" },
-		["T4"] = { Siren = "HILO" },
+		["T1"] = { Siren = "T1" },
+		["T2"] = { Siren = "T2" },
+		["T3"] = { Siren = "T3" },
+		["T4"] = { Siren = "T4" },
 		-- ["DEMO"] = { Siren = "DEMO" }
 	},
 	["Emergency.SirenOverride"] = {
-		["AIR"] = { Siren = "AIRHORN" },
-		["MAN"] = { Siren = "MANUAL" },
+		["AIR"] = { Siren = "AIR" },
+		["MAN"] = { Siren = "MAN" },
 	},
 	["Virtual.SirenOverride"] = {
-		["MANOVRD"] = { Siren = "PRIORITY" }
+		["MANOVRD"] = { Siren = "T3" }
 	}
 }

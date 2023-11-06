@@ -12,6 +12,7 @@ BASE = "PhotonElement"
 ---@field Playing boolean
 ---@field Muted boolean
 ---@field Pitch number
+---@field Tone? string (Optional) Name of library siren tone.
 local Sound = exmeta.New()
 
 Sound.Class = "Sound"
@@ -61,7 +62,13 @@ end
 function Sound:Initialize( id, parentEntity )
 	---@type PhotonElementSound
 	self = PhotonElement.Initialize( self, id, parentEntity )
+	if ( self.Tone ) then self:SetTone( self.Tone ) end
 	return self
+end
+
+function Sound:SetTone( tone )
+	local data = Photon2.GetSirenTone( tone )
+	self.File = data.Sound
 end
 
 ---@param state PhotonElementSoundState

@@ -15,6 +15,15 @@ VEHICLE.Author		= "Schmal"
 
 VEHICLE.Equipment = {}
 
+VEHICLE.Siren = {
+	[1] = {
+		T1 = "fedsig_touchmaster_delta/wail",
+		T2 = "fedsig_touchmaster_delta/yelp",
+		T3 = "fedsig_smartsiren/priority",
+		AIR = "fedsig_touchmaster_delta/airhorn",
+		MAN = "fedsig_touchmaster_delta/manual",
+	}
+}
 
 local bpd = PhotonDynamicMaterial.Generate("schmal_fpiu20_bpd", { "VertexLitGeneric",
 	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/bou_co_pd.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),

@@ -1,14 +1,15 @@
-Photon2.Sirens.Add( "fedsig_td",
+Photon2.RegisterSiren(
 	{
+		Name = "fedsig_touchmaster_delta",
 		Make = "Federal Signal",
 		Model = "Touchmaster Delta",
 		Author = "Schmal",
-		Tones = {
-			["T1"] = { Label = "WAIL", Sound = "photon/sirens/fedsig_td/wail.wav" },
-			["T2"] = { Label = "YELP", Sound = "photon/sirens/fedsig_td/yelp.wav" },
-			["T3"] = { Label = "SCAN", Sound = "photon/sirens/fedsig_td/scan.wav" },
-			["AIR"] = { Label = "SCAN", Sound = "photon/sirens/fedsig_td/airhorn.wav" },
-			["MAN"] = { Label = "MAN", Sound = "photon/sirens/fedsig_td/manual.wav" },
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/fedsig_td/wail.wav", 	Tone = "T1" },
+			["YELP"] = { Sound = "photon/sirens/fedsig_td/yelp.wav", 	Tone = "T2" },
+			["SCAN"] = { Sound = "photon/sirens/fedsig_td/scan.wav", 	Tone = "T3" },
+			["AIR"]  = { Sound = "photon/sirens/fedsig_td/airhorn.wav", Tone = "AIR" },
+			["MAN"]  = { Sound = "photon/sirens/fedsig_td/manual.wav", 	Tone = "MAN" },
 		}
 	}
 )

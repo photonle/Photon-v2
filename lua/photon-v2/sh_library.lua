@@ -2,7 +2,9 @@ Photon2.Library = Photon2.Library or {
 	Components = {},
 	-- Stores copies of raw components 
 	ComponentsGraph = {},
-	Vehicles = {}
+	Vehicles = {},
+	---@type table<string, PhotonLibrarySiren>
+	Sirens = {}
 }
 
 local library = Photon2.Library
@@ -11,8 +13,10 @@ local Util = Photon2.Util
 
 local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
+local sirensRoot = "photon-v2/library/sirens/"
 
-local print = Photon2.Debug.PrintF
+local printf = Photon2.Debug.PrintF
+local print = Photon2.Debug.Print
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -93,8 +97,8 @@ function Photon2.LoadVehicleFile( filePath, isReload )
 	PHOTON2_LIBRARY_VEHICLE.ID = name
 	library.Vehicles[name] = PHOTON2_LIBRARY_VEHICLE
 	PHOTON2_LIBRARY_VEHICLE = nil
-	print("END of LoadVehicleFile() filepath: %s", filePath)
-	print("\tname: %s", name)
+	printf("END of LoadVehicleFile() filepath: %s", filePath)
+	printf("\tname: %s", name)
 	Photon2.Index.CompileVehicle( name, library.Vehicles[name], isReload )
 end
 
@@ -184,8 +188,32 @@ function Photon2.ReloadVehicleFile()
 	return false
 end
 
+function Photon2.LoadSirenFile( filePath, isReload )
+	Photon2.Debug.Print( "Loading siren file: " .. filePath )
+	Photon2._acceptFileReload = false
+	include( filePath )
+	Photon2._acceptFileReload = true
+end
+
+function Photon2.RegisterSiren( siren )
+	Photon2.Library.Sirens[siren.Name] = siren
+	Photon2.Index.CompileSiren( Photon2.Library.Sirens[siren.Name] )
+end
+
+function Photon2.LoadSirenLibrary()
+	print( "LoadSirenLibrary() called." )
+	folderPath = folderPath or ""
+	local search = sirensRoot .. folderPath
+	local files, folders = file.Find( search .. "*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		Photon2.LoadSirenFile( search .. fil )
+	end
+	hook.Call( "Photon2.LoadSirenLibrary" )
+end
+
+
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
+	Photon2.LoadSirenLibrary()
 	Photon2.LoadComponentLibrary()
-	Photon2.Debug.Print("about to execute LoadVehicleLibrary()")
 	Photon2.LoadVehicleLibrary()
 end)

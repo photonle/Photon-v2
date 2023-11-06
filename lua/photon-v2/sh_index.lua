@@ -2,10 +2,16 @@
 Photon2.Index = Photon2.Index or {
 	Components = {},
 	Vehicles = {},
+	Sirens = {},
+	Tones = {},
 	Profiles = {
 		Map = {},
 		-- For entities that :IsVehicle() and have .VehicleName defined.
 		Vehicles = {}
+	},
+	ComponentClasses = {
+		["Default"] = "PhotonLightingComponent",
+		["Siren"] = "PhotonSirenComponent"
 	}
 }
 
@@ -113,7 +119,11 @@ function Photon2.CompileComponent( name, inputComponent )
 		base = library.Components[inputComponent.Base]
 	end
 
-	local component = PhotonLightingComponent.New( name, inputComponent, base )
+	local className = inputComponent.Class or "Default"
+	local class = Photon2.Index.ComponentClasses[className]
+
+	local component = _G[class].New( name, inputComponent, base )
+	-- local component = PhotonLightingComponent.New( name, inputComponent, base )
 	component.CompileTime = RealTime()
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)
@@ -287,3 +297,49 @@ end
 hook.Add("Photon2.VehicleCompiled", "Photon2:OnVehicleCompiled", function(name, vehicle)
 	print("Vehicle compiled (%s)", name)
 end)
+
+
+function index.CompileSiren( siren )
+	if ( not isstring( siren.Name ) ) then 
+		ErrorNoHaltWithStack( "Siren Name must be defined and must be a string. Received: " .. tostring( siren.Name ) )
+		return nil
+	end
+
+	local result = table.Copy(siren)
+	local buildTones = false
+
+	if ( not result.Tones ) then
+		result.Tones = {}
+		buildTones = true
+	end
+
+	for name, sound in pairs( result.Sounds ) do
+		sound.Name = name
+		sound.Siren = result.Name
+		if ( not sound.Label ) then
+			sound.Label = name
+		end
+		if ( buildTones ) then
+			if ( sound.Tone ) then
+				result.Tones[sound.Tone] = sound
+			end
+		end
+		local id = string.lower( result.Name .. "/" .. sound.Name )
+		Photon2.Index.Tones[id] = sound
+	end
+
+	Photon2.Index.Sirens[result.Name] = result
+	
+	printf( "Compiling siren [%s] and adding to index.", result.Name )
+	return Photon2.Index.Sirens[result.Name]
+end
+
+function index.ProcessSirenLibrary()
+	for name, data in pairs ( library.Sirens ) do
+		index.CompileSiren( data )
+	end
+end
+
+function Photon2.GetSirenTone( name )
+	return Photon2.Index.Tones[name]
+end

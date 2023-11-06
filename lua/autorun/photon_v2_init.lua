@@ -38,7 +38,8 @@ include("photon-v2/sh_debug.lua")
 
 local libraries = {
 	"components",
-	"vehicles"
+	"vehicles",
+	"sirens"
 }
 
 local function autoInclude( fol )
