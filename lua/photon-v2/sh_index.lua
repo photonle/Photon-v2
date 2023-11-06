@@ -1,4 +1,3 @@
----@type Photon2.Index
 Photon2.Index = Photon2.Index or {
 	Components = {},
 	Vehicles = {},
@@ -294,6 +293,9 @@ function index.CompileSiren( siren )
 	end
 
 	local result = table.Copy(siren)
+	
+	result.Sounds = result.Sounds or {}
+
 	local buildTones = false
 
 	if ( not result.Tones ) then
@@ -308,8 +310,8 @@ function index.CompileSiren( siren )
 			sound.Label = name
 		end
 		if ( buildTones ) then
-			if ( sound.Tone ) then
-				result.Tones[sound.Tone] = sound
+			if ( sound.Default ) then
+				result.Tones[sound.Default] = sound
 			end
 		end
 		local id = string.lower( result.Name .. "/" .. sound.Name )

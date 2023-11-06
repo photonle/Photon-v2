@@ -40,6 +40,36 @@ function Vehicle.New( data )
 		data.Equipment = nil
 	end
 
+	local sirenConfig = nil
+
+	-- Setup/build siren slots
+	if ( istable( data.Siren ) and ( #data.Siren > 0 ) ) then
+		sirenConfig = {}
+		for i, siren in pairs( data.Siren ) do
+			if ( istable( siren ) ) then
+				local sirenId = string.format( "%s[%s]", data.ID, i )
+
+				local tones = {}
+				
+				for toneId, tone in pairs( siren ) do
+					tones[toneId] = Photon2.GetSirenTone( tone )
+				end
+
+				Photon2.RegisterSiren({
+					Name = sirenId,
+					Make = "(Custom)",
+					Model = string.format( "%s [%s]", data.Title, i ),
+					Author = data.Author,
+					Tones = tones
+				})
+
+				sirenConfig[i] = sirenId
+			else
+				sirenConfig[i] = siren
+			end
+		end
+	end
+
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
@@ -55,7 +85,8 @@ function Vehicle.New( data )
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
-		SubMaterials 		= data.SubMaterials
+		SubMaterials 		= data.SubMaterials,
+		Siren				= sirenConfig
 	}
 
 

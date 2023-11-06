@@ -20,9 +20,12 @@ VEHICLE.Siren = {
 		T1 = "fedsig_touchmaster_delta/wail",
 		T2 = "fedsig_touchmaster_delta/yelp",
 		T3 = "fedsig_smartsiren/priority",
+		T4 = "fedsig_touchmaster_delta/scan",
 		AIR = "fedsig_touchmaster_delta/airhorn",
 		MAN = "fedsig_touchmaster_delta/manual",
-	}
+	},
+	-- [1] = "fedsig_touchmaster_delta",
+	[2] = "fedsig_smartsiren"
 }
 
 local bpd = PhotonDynamicMaterial.Generate("schmal_fpiu20_bpd", { "VertexLitGeneric",
@@ -220,6 +223,8 @@ VEHICLE.Equipment = {
 						Position = Vector(-11, 125, 35),
 						Angles = Angle(1.5, -90, 0),
 						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 1
 					},
 					-- {
 					-- 	Component = "siren_prototype",

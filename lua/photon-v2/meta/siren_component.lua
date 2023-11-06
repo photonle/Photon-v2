@@ -7,7 +7,7 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonSirenComponent : PhotonLightingComponent
-
+---@field Siren number | string
 local Component = exmeta.New()
 
 ---@param ent photon_entity
@@ -17,7 +17,16 @@ function Component:Initialize( ent, controller )
 	-- Calls the base constructor but passes LightingComponent as "self"
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
-	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonSirenComponent]]
+
+	if ( component.Siren ) then
+		if ( isnumber( component.Siren ) ) then
+			local sirenName = controller.CurrentProfile.Siren[component.Siren]
+			-- print(" ************ SIREN NAME ************\n")
+			-- ErrorNoHaltWithStack( sirenName)
+			component.Siren = sirenName
+		end
+	end
 
 	if ( self.UseControllerModes ) then
 		component.CurrentModes = controller.CurrentModes

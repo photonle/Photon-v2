@@ -6,9 +6,19 @@ Thanks for testing. Photon 2 is about 70% ready. Please expect some major instab
 
 When getting a feel for Photon 2, I'd recommend just using the Las Vegas FPIU. It's the most recent demonstrator vehicle and is by far the most complete.
 
+You'll likely notice some things are considerably more labor-intensive (i.e. requires verbose code) to do than they were in Photon LE. While the underlying logic won't change, many aspects will eventually have macro-like wrappers/helper functions available to simplify content creation (while preserving the ability to significantly change default behavior when needed).
+
 ## Rules and Conditions
 1. Goes without saying, but don't share the code or files with anyone. A leaked pre-release of Photon 2 harms our ability maintain interest, updates, and confidence in the addon.
 2. You are free to publicly show off your Photon 2 projects in #waywo, #showcase, etc.
+
+## Setting Up
+I highly recommend using the GitHub desktop appliction so you can easily re-sync the repository with each update. Simply setup the repo inside garrysmod/addons. It's the same as Photon LE.
+
+## Updates
+Most the major work happens on my weekends, which is usually Sunday through Wednesday morning. Pushes generally fall within this window. (If I'm busy there may not be any updates for two weeks.)
+
+Version numbering began at v2.0.0 with the launch of internal testing. When I decide to increment the version is completely arbitrary, but I try to do it when there are breaking changes so it's easier to track.
 
 # Default Key Binds
 * F: Toggle warning lights (MODE2)
@@ -150,3 +160,22 @@ While Photon 2 was intended to re-use many aspects of Photon LE for compatabilit
 Luckily, the actual data used to define legacy Photon components and vehicles is generally usable enough for automatic compatability to be viable.
 
 Due to the presently fluid nature of Photon 2, compatability functionality has not yet been implemented but remains a late-stage priority.
+
+## Operations
+For those interested, this is an overview of how Photon works internally.
+
+### Library 
+The Photon 2 library is an internal table that stores and tracks (mostly) raw table data from user-made content, such as vehicles, components, and sirens.
+
+#### Vehicle Equipment
+Each component added in a vehicle's equipment table generates a child component, derived from an original Library entry. This allows for developers to directly manipulate almost all aspects of components within a vehicle file, rather than needing to manually create an entirely new component file.
+
+### Index
+Every object stored in the `Library` is "compiled," and the result is then loaded into the `Index`. Generally speaking, this process converts the raw data into a more complex, verbose and inter-linked data structure that Photon 2 interacts with internally. 
+
+It also adds logic/functions to the objects (as opposed to simply data).
+
+### Instances
+Instances are objects that have been "spawned" into the game. They are directly derived from objects in the Index, but now manage their own state and interact with the world. 
+ 
+Instances are created and destroyed as users enter and exit a Photon Controller's PVS.

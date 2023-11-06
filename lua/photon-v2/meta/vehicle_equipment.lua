@@ -129,6 +129,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 	for key, entry in pairs( equipmentTable[key] ) do
 		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
 		---@type PhotonLibraryComponent
+
 		local component = {
 			Base = entry.Component,
 			ColorMap = entry.ColorMap,
