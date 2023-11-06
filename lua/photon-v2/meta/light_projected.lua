@@ -108,9 +108,9 @@ function Light.New( light, template )
 	return light
 end
 
-function Light:Initialize( id, parentEntity )
+function Light:Initialize( id, component )
 	---@type PhotonElementProjected
-	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementProjected]]
+	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementProjected]]
 	self.Matrix = Matrix()
 	self.HorizontalFOV = self.HorizontalFOV or self.FOV
 	self.VerticalFOV = self.VerticalFOV or self.FOV

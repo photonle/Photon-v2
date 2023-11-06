@@ -8,10 +8,6 @@ Photon2.Index = Photon2.Index or {
 		Map = {},
 		-- For entities that :IsVehicle() and have .VehicleName defined.
 		Vehicles = {}
-	},
-	ComponentClasses = {
-		["Default"] = "PhotonLightingComponent",
-		["Siren"] = "PhotonSirenComponent"
 	}
 }
 
@@ -112,18 +108,10 @@ end
 ---@return PhotonComponent
 function Photon2.CompileComponent( name, inputComponent )
 	print("Compiling component [" .. name .. "]")
-	
-	local base
 
-	if ( isstring( inputComponent.Base ) ) then
-		base = library.Components[inputComponent.Base]
-	end
 
-	local className = inputComponent.Class or "Default"
-	local class = Photon2.Index.ComponentClasses[className]
-
-	local component = _G[class].New( name, inputComponent, base )
-	-- local component = PhotonLightingComponent.New( name, inputComponent, base )
+	-- local component = _G[class].New( name, inputComponent, class )
+	local component = PhotonLightingComponent.New( name, inputComponent )
 	component.CompileTime = RealTime()
 	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
 		table.Merge(Photon2.Index.Components[name], component)

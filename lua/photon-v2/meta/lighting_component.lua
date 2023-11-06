@@ -31,6 +31,11 @@ Component.UseControllerModes = true
 Component.IsPhotonLightingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
+Component.ClassMap = {
+	Default = "PhotonLightingComponent",
+	Siren = "PhotonSirenComponent"
+}
+
 --[[
 		COMPILATION
 --]]
@@ -40,9 +45,10 @@ local dumpLibraryData = false
 -- [Internal] Compile a Library Component to store in the Index.
 ---@param name string
 ---@param data PhotonLibraryComponent
----@param base string Deprecated
 ---@return PhotonLightingComponent
-function Component.New( name, data, base )
+function Component.New( name, data )
+	
+
 
 	data = table.Copy( data )
 
@@ -69,6 +75,7 @@ function Component.New( name, data, base )
 		Name = name,
 		PrintName = data.PrintName or name,
 		Authors = data.Authors,
+		Class = data.Class or "Default",
 		Category = data.Category,
 		Credits = data.Credits,
 		Phase = data.Phase,
@@ -84,6 +91,13 @@ function Component.New( name, data, base )
 		SubMaterials = data.SubMaterials,
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
 	}
+
+	for key, value in pairs( data ) do
+		if ( component[key] == nil ) then
+			component[key] = value
+		end
+	end
+
 
 	-- if ( not component.InputPriorities ) then
 	-- 	error( "Component.InputPriorities was not set.")
@@ -345,10 +359,16 @@ function Component.New( name, data, base )
 		end
 	end
 
+	local class = PhotonLightingComponent.ClassMap[component.Class]
+	if ( not class ) then error("Unsupported component class [" .. tostring( component.Class ) .. "]") end
+	
+	if isstring( class ) then class = _G[class] end
+
+
 	--[[
 			Finalize and set meta-table
 	--]]
-	setmetatable( component, { __index = PhotonLightingComponent } )
+	setmetatable( component, { __index = class } )
 
 	-- print("Component.Inputs ====================================")
 	-- 	PrintTable( component.Inputs )
@@ -385,7 +405,7 @@ function Component:Initialize( ent, controller )
 
 	-- Process light table
 	for key, light in pairs(self.Elements) do
-		component.Elements[key] = light:Initialize( key, component.Entity )
+		component.Elements[key] = light:Initialize( key, component )
 	end
 
 	-- Process segments

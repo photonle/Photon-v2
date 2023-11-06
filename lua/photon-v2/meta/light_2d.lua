@@ -250,8 +250,9 @@ Light.ScalableProperties = {
 
 ---@param parentEntity Entity
 ---@return PhotonElement2D
-function Light:Initialize( id, parentEntity )
-	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElement2D]]
+function Light:Initialize( id, component )
+	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElement2D]]
+	local parentEntity = component.Entity
 	self.Matrix = Matrix()
 	self.ViewNormal = Vector()
 	self.EffectPosition = Vector()

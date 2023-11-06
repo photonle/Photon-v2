@@ -8,7 +8,7 @@ local COMPONENT = Photon2.LibraryComponent()
 		COMPONENT.Sounds = ...
 --]]
 
--- COMPONENT.Class = "Siren"
+COMPONENT.Class = "Siren"
 
 COMPONENT.Author = "Photon"
 
@@ -17,6 +17,8 @@ COMPONENT.Credits = {
 	Code = "Schmal",
 	Audio = "Schmal/Federal Signal",
 }
+
+COMPONENT.Siren = "fedsig_touchmaster_delta"
 
 COMPONENT.Category = "Siren"
 
@@ -33,14 +35,14 @@ COMPONENT.Templates = {
 COMPONENT.ColorMap = " [HORN] 5 [ON] 1 2 3 4 5 6"
 
 COMPONENT.Elements = {
-	[1] = { "Speaker", Tone = "fedsig_touchmaster_delta/wail" },
+	[1] = { "Speaker", Tone = "T1" },
 	-- [1] = { "Speaker", "photon/sirens/fedsig_tmd/wail.wav" },
 	-- [1] = { "Speaker", "emv/sirens/federal sig ss/emv_wail.wav" },
-	[2] = { "Speaker", Tone = "fedsig_touchmaster_delta/yelp" },
-	[3] = { "Speaker", Tone = "fedsig_touchmaster_delta/scan" },
-	[4] = { "Speaker", "emv/sirens/federal sig ss/emv_hilo.wav" },
-	[5] = { "Speaker", "emv/sirens/federal sig ss/emv_horn.wav" },
-	[6] = { "Speaker", "emv/sirens/federal sig ss/emv_manual.wav" },
+	[2] = { "Speaker", Tone = "T2" },
+	[3] = { "Speaker", Tone = "T3" },
+	[4] = { "Speaker", Tone = "T4" },
+	[5] = { "Speaker", Tone = "AIR" },
+	[6] = { "Speaker", Tone = "MAN" },
 }
 
 local sequence = Photon2.SequenceBuilder.New

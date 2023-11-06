@@ -150,8 +150,9 @@ function Light.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonElementMesh })
 end
 
-function Light:Initialize( id, parentEntity )
-	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementMesh]]
+function Light:Initialize( id, component )
+	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementMesh]]
+	local parentEntity = component.Entity
 	self.Matrix = Matrix()
 	self.DrawColor = PhotonElementColor()
 	self.BloomColor = PhotonElementColor()

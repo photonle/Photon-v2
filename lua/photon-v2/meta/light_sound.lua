@@ -59,16 +59,26 @@ function Sound.NewTemplate( data )
 	return setmetatable( data, { __index = PhotonElementSound })
 end
 
-function Sound:Initialize( id, parentEntity )
+function Sound:Initialize( id, component )
 	---@type PhotonElementSound
-	self = PhotonElement.Initialize( self, id, parentEntity )
+	self = PhotonElement.Initialize( self, id, component )
 	if ( self.Tone ) then self:SetTone( self.Tone ) end
 	return self
 end
 
 function Sound:SetTone( tone )
-	local data = Photon2.GetSirenTone( tone )
-	self.File = data.Sound
+	if ( self.Component.Siren ) then
+		local siren = Photon2.Index.Sirens[self.Component.Siren]
+		local data = siren.Tones[tone]
+		if ( data ) then
+			self.File = data.Sound
+		end
+	else
+		ErrorNoHalt("Component does not have .Siren defined.")
+	end
+	-- local data = Photon2.GetSirenTone( tone )
+
+	-- self.File = data.Sound
 end
 
 ---@param state PhotonElementSoundState
@@ -102,9 +112,11 @@ function Sound:Activate()
 	self.Deactivate = false
 	if (self.IsActivated) then return end
 	self.IsActivated = true
-	if ( not self.Sound ) then
-		self.Sound = CreateSound( self.Parent, self.File )
-		self:Sync()
+	if ( self.File ) then
+		if ( not self.Sound ) then
+			self.Sound = CreateSound( self.Parent, self.File )
+			self:Sync()
+		end
 	end
 end
 
@@ -152,6 +164,7 @@ function Sound:SetPlay( play )
 	if ( play ) then
 		self.Playing = true
 		if ( self.Sound and self.Sound:IsPlaying() ) then return end
+		if ( not self.File ) then return end
 		self.Sound:PlayEx( self.Volume, self.Pitch )
 		return
 	else

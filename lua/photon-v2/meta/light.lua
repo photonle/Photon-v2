@@ -6,6 +6,7 @@ local printf = Photon2.Debug.PrintF
 
 ---@class PhotonElement
 ---@field Parent Entity
+---@field Component PhotonLightingComponent
 ---@field Class string
 ---@field Disabled boolean
 ---@field Deactivate boolean When `true`, marks the light to be activated on the next frame.
@@ -24,11 +25,12 @@ local Light = exmeta.New()
 ---@param id integer
 ---@param parent Entity
 ---@return PhotonElement
-function Light:Initialize( id, parent )
+function Light:Initialize( id, component )
 	local light = {
 		Id = id,
 		Class = self.Class,
-		Parent = parent,
+		Component = component,
+		Parent = component.Entity,
 		InputActions = {},
 		SortedInputActions = {}
 	}

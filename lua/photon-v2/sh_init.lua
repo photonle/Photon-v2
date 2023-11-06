@@ -52,6 +52,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/lighting_segment.lua")
 	exmeta.LoadFile("photon-v2/meta/sequence.lua")
 	exmeta.LoadFile("photon-v2/meta/sequence_collection.lua")
+	exmeta.LoadFile("photon-v2/meta/siren_component.lua")
 
 	exmeta.LoadFile("photon-v2/meta/vehicle_equipment.lua")
 	exmeta.LoadFile("photon-v2/meta/vehicle.lua")

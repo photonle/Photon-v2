@@ -75,8 +75,9 @@ function Element.New( element, template )
 	return element
 end
 
-function Element:Initialize( id, parentEntity )
-	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementBone]]
+function Element:Initialize( id, component )
+	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementBone]]
+	local parentEntity = component.Entity
 	if ( isstring( self.Bone ) ) then self.Bone = parentEntity:LookUpBoneOrError( self.Bone ) end
 	return self
 end

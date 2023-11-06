@@ -30,9 +30,9 @@ function Light.NewTemplate( data )
 end
 
 
-function Light:Initialize( id, parentEntity )
+function Light:Initialize( id, component )
 	---@type PhotonElementSub
-	self = PhotonElement.Initialize( self, id, parentEntity ) --[[@as PhotonElementSub]]
+	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementSub]]
 	return self
 end
 
