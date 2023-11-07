@@ -954,3 +954,8 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 		self:UpdateVehicleBraking( false )
 	end
 end
+
+function ENT:GetSirenSelection( number )
+	if ( not self.CurrentProfile.Siren ) then return nil end
+	return self.CurrentProfile.Siren[number]
+end

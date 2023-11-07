@@ -13,6 +13,8 @@ BASE = "PhotonElement"
 ---@field Muted boolean
 ---@field Pitch number
 ---@field Tone? string (Optional) Name of library siren tone.
+---@field ToneData? PhotonSirenTone Set automatically.
+---@field private SoundIdentifier string (Internal)
 local Sound = exmeta.New()
 
 Sound.Class = "Sound"
@@ -25,12 +27,15 @@ Sound.Level = 85
 Sound.DSP = 118
 -- Sound.DSP = 1
 Sound.Muted = false
-function Sound.New( sound, template )
-	if ( isstring( sound[2] ) ) then
-		sound.File = sound[2]
+
+---@param element PhotonElementSound
+---@param template any
+function Sound.New( element, template )
+	if ( isstring( element[2] ) ) then
+		element.File = element[2]
 	end
-	setmetatable( sound, { __index = ( template or PhotonElementSound ) } )
-	return sound
+	setmetatable( element, { __index = ( template or PhotonElementSound ) } )
+	return element
 end
 
 Sound.States = {
@@ -62,6 +67,7 @@ end
 function Sound:Initialize( id, component )
 	---@type PhotonElementSound
 	self = PhotonElement.Initialize( self, id, component )
+	self.SoundIdentifier = "SoundElement[" .. id .. "]"
 	if ( self.Tone ) then self:SetTone( self.Tone ) end
 	return self
 end
@@ -72,6 +78,7 @@ function Sound:SetTone( tone )
 		local data = siren.Tones[tone]
 		if ( data ) then
 			self.File = data.Sound
+			self.ToneData = data
 		end
 	else
 		ErrorNoHalt("Component does not have .Siren defined.")
@@ -166,12 +173,16 @@ function Sound:SetPlay( play )
 		if ( self.Sound and self.Sound:IsPlaying() ) then return end
 		if ( not self.File ) then return end
 		self.Sound:PlayEx( self.Volume, self.Pitch )
+		self.Parent:CallOnRemove( self.SoundIdentifier, function()
+			self:DeactivateNow()
+		end)
 		return
 	else
 		self.Playing = false
 		if ( self.Sound ) then 
 			self.Sound:FadeOut( 0 )
-			self.Sound:Stop() 
+			self.Sound:Stop()
+			self.Parent:RemoveCallOnRemove( self.SoundIdentifier )
 		end
 	end
 	

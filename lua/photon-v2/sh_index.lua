@@ -286,6 +286,14 @@ hook.Add("Photon2.VehicleCompiled", "Photon2:OnVehicleCompiled", function(name, 
 end)
 
 
+local toneNameToNumber = {}
+local toneNumberToName = {}
+
+for i=1, 10 do
+	toneNumberToName[i] = "T" .. tostring(i)
+	toneNameToNumber["T" .. tostring(i)] = i
+end
+
 function index.CompileSiren( siren )
 	if ( not isstring( siren.Name ) ) then 
 		ErrorNoHaltWithStack( "Siren Name must be defined and must be a string. Received: " .. tostring( siren.Name ) )
@@ -309,6 +317,9 @@ function index.CompileSiren( siren )
 		if ( not sound.Label ) then
 			sound.Label = name
 		end
+		if ( not sound.Icon ) then
+			sound.Icon = string.lower( sound.Name )
+		end
 		if ( buildTones ) then
 			if ( sound.Default ) then
 				result.Tones[sound.Default] = sound
@@ -317,6 +328,29 @@ function index.CompileSiren( siren )
 		local id = string.lower( result.Name .. "/" .. sound.Name )
 		Photon2.Index.Tones[id] = sound
 	end
+
+	local numericTones = {}
+	local sortedTones = {}
+
+	for toneName, tone in pairs( result.Tones ) do
+		if ( toneNameToNumber[toneName] ) then
+			numericTones[#numericTones+1] = { toneName, toneNameToNumber[toneName] }
+		end
+	end
+
+	table.SortByMember( numericTones, 2, true )
+
+	for i=1, #numericTones do
+		sortedTones[i] = numericTones[i][1]
+		sortedTones[numericTones[i][1]] = i
+	end
+
+
+	if ( result.Tones.OFF == nil ) then
+		result.Tones.OFF = { Default = "OFF", Name = "OFF", Label = "OFF", Icon = "siren" }
+	end
+
+	result.OrderedTones = sortedTones
 
 	Photon2.Index.Sirens[result.Name] = result
 	

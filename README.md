@@ -20,6 +20,9 @@ Most the major work happens on my weekends, which is usually Sunday through Wedn
 
 Version numbering began at v2.0.0 with the launch of internal testing. When I decide to increment the version is completely arbitrary, but I try to do it when there are breaking changes so it's easier to track.
 
+## Timeline
+I'm still planning on a Workshop release in late December under a "beta" title. It won't have every feature I'm working on, but it should have enough to be usable.
+
 # Default Key Binds
 * F: Toggle warning lights (MODE2)
 * R: Toggle siren, activate warning lights (MODE3)
@@ -153,6 +156,16 @@ Because Photon 2 uses type annotations (see above), variables names are also not
 
 ## Object Orientation
 Photon 2 makes heavy use of metatables and custom inheritance to mimic traditional OOP designs. This makes it far more flexible for Photon asset creators and substantially improves interal operations and debugging.
+
+## Inheritance
+A common theme throughout Photon 2 is the ability to inherit content. Inheritance allows you to create new components and vehicles that are based on existing ones, but without the need to copy and paste entire files. Instead, simply modify the sections you need to tweak and the rest is handled automatically.
+
+### HOWEVER
+When using inheritance functionality, beware of certain quirks that may cause unexpected behavior. Due to how metatable _index tables work, a nil value on a child component will always result in a lookup on its parent table.
+
+Sometimes this is want you want, and sometimes it's not. If you find that a parent value is appearing when you don't want it to, you must manually prevent the particular field/route from being inherited using the global `UNSET` variable.
+
+(See the `photon_siren_secondary` component for an example of this.)
 
 ## Compatibility
 While Photon 2 was intended to re-use many aspects of Photon LE for compatability, major changes in the addon architecture and a closer review of Photon LE's code eventually ruled this out. Photon 2 has been written from the ground-up and actually has very, very little in common with Photon LE.

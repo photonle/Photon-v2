@@ -16,15 +16,15 @@ VEHICLE.Author		= "Schmal"
 VEHICLE.Equipment = {}
 
 VEHICLE.Siren = {
-	[1] = {
-		T1 = "fedsig_touchmaster_delta/wail",
-		T2 = "fedsig_touchmaster_delta/yelp",
-		T3 = "fedsig_smartsiren/priority",
-		T4 = "fedsig_touchmaster_delta/scan",
-		AIR = "fedsig_touchmaster_delta/airhorn",
-		MAN = "fedsig_touchmaster_delta/manual",
-	},
-	-- [1] = "fedsig_touchmaster_delta",
+	-- [1] = {
+	-- 	T1 = "fedsig_touchmaster_delta/wail",
+	-- 	T2 = "fedsig_touchmaster_delta/yelp",
+	-- 	T3 = "fedsig_smartsiren/priority",
+	-- 	T4 = "fedsig_touchmaster_delta/scan",
+	-- 	AIR = "fedsig_touchmaster_delta/airhorn",
+	-- 	MAN = "fedsig_touchmaster_delta/manual",
+	-- },
+	[1] = "fedsig_touchmaster_delta",
 	[2] = "fedsig_smartsiren"
 }
 
@@ -225,6 +225,14 @@ VEHICLE.Equipment = {
 						Scale = 1.4,
 						-- Siren = "fedsig_smartsiren"
 						Siren = 1
+					},
+					{
+						Component = "photon_siren_secondary",
+						Position = Vector(11, 125, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 2
 					},
 					-- {
 					-- 	Component = "siren_prototype",

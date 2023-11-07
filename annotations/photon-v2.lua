@@ -107,17 +107,24 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Author string Component author's name.
 ---@field Base string Base component ID if inheriting from an existing component.
 ---@field Credits table<string, string>
+---@field Class string
+---@field Category string
 ---@field PrintName string
 ---@field Model string
 ---@field Templates { Bone?: table<string, PhotonElementBone>, Mesh?: table<string, PhotonElementMesh>, Sprite?: table<string, PhotonElement2D>, Projected?: table<string, PhotonElementProjected>,  }
----@field Lights table
+---@field Elements table
 ---@field LightGroups table
 ---@field Segments table
 ---@field Inputs table
+---@field InputPriorities table<string, number>
+---@field VirtualOutputs table
 ---@field ColorMap table<integer, string[]> | string
 ---@field SubMaterials table<integer, string>
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.
 ---@field Phase string Pattern variant identifier.
+
+---@class PhotonLibrarySirenComponent : PhotonLibraryComponent
+---@field Siren string Default siren name.
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.
