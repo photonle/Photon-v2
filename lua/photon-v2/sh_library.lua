@@ -4,7 +4,8 @@ Photon2.Library = Photon2.Library or {
 	ComponentsGraph = {},
 	Vehicles = {},
 	---@type table<string, PhotonLibrarySiren>
-	Sirens = {}
+	Sirens = {},
+	InteractionSounds = {}
 }
 
 local library = Photon2.Library
@@ -14,6 +15,7 @@ local Util = Photon2.Util
 local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
 local sirensRoot = "photon-v2/library/sirens/"
+local interactionSoundsRoot = "photon-v2/library/interaction_sounds/"
 
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
@@ -211,9 +213,35 @@ function Photon2.LoadSirenLibrary()
 	hook.Call( "Photon2.LoadSirenLibrary" )
 end
 
+function Photon2.LoadInteractionSoundFile( filePath, isReload )
+	Photon2.Debug.Print( "Loading interaction sound file: " .. filePath )
+	Photon2._acceptFileReload = false
+	include( filePath )
+	Photon2._acceptFileReload = true
+end
+
+function Photon2.RegisterInteractionSound( profile )
+	local library = Photon2.Library.InteractionSounds
+	local class = profile.Class
+	library[class] = library[class] or {}
+	library[class][profile.Name] = profile
+	Photon2.Index.CompileInteractionSound( library[class][profile.Name] )
+end
+
+function Photon2.LoadInteractionSoundLibrary()
+	print( "LoadInteractionSoundLibrary() called." )
+	folderPath = folderPath or ""
+	local search = interactionSoundsRoot .. folderPath
+	local files, folders = file.Find( search .. "*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		Photon2.LoadInteractionSoundFile( search .. fil )
+	end
+	hook.Call( "Photon2.LoadInteractionSoundLibrary" )
+end
 
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadSirenLibrary()
 	Photon2.LoadComponentLibrary()
 	Photon2.LoadVehicleLibrary()
+	Photon2.LoadInteractionSoundLibrary()
 end)

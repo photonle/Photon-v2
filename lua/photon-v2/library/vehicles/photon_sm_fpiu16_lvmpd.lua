@@ -6,6 +6,11 @@ VEHICLE.Vehicle		= "sm16fpiu"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
+VEHICLE.Siren = {
+	-- [1] = "fedsig_smartsiren",
+	[1] = "fedsig_touchmaster_delta",
+}
+
 local livery = PhotonDynamicMaterial.Generate("schmal_fpiu16_lvmpd", { "VertexLitGeneric",
 	["$basetexture"] = Material( "schmal/liveries/sm_fpiu16/lvmpd.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
 	["$bumpmap"] = "photon/common/flat",
@@ -224,15 +229,15 @@ VEHICLE.Equipment = {
 						Position = Vector(-11, 123, 34.4),
 						Angles = Angle(1.5, -90, -180),
 						Scale = 1.4,
-						Siren = "fedsig_smartsiren"
+						Siren = 1
 					},
-					{
-						Component = "siren_prototype",
-						Position = Vector(11, 123, 34.4),
-						Angles = Angle(1.5, -90, -180),
-						Scale = 1.4,
-						Siren = "fedsig_touchmaster_delta"
-					}
+					-- {
+					-- 	Component = "siren_prototype",
+					-- 	Position = Vector(11, 123, 34.4),
+					-- 	Angles = Angle(1.5, -90, -180),
+					-- 	Scale = 1.4,
+					-- 	Siren = "fedsig_touchmaster_delta"
+					-- }
 				}
 			}
 		}

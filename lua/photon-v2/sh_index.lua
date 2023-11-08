@@ -7,7 +7,8 @@ Photon2.Index = Photon2.Index or {
 		Map = {},
 		-- For entities that :IsVehicle() and have .VehicleName defined.
 		Vehicles = {}
-	}
+	},
+	InteractionSounds = {}
 }
 
 --[[
@@ -366,4 +367,45 @@ end
 
 function Photon2.GetSirenTone( name )
 	return Photon2.Index.Tones[name]
+end
+
+local soundFileMeta = {
+	__index = {
+		-- Volume of sound when played
+		Volume = 100,
+		-- Duration of sound file. (Developer note: does not use SoundDuration due to reliability problems.)
+		Duration = 0.1,
+		-- Pitch of the sound when played.
+		Pitch = 100
+	}
+}
+
+local soundConfigMeta = {
+	__index = {
+		-- Sound played as soon as button is pressed
+		Press = true,
+		-- Sounds played when the button is "momentary," e.g. manual and horn
+		Momentary = true,
+		-- Sounds played when any specified button is released
+		Release = true,
+		-- Sounds played when the button is pressed and held (one second by default)
+		Hold = true
+	}
+}
+
+function index.CompileInteractionSound( profile )
+	local sounds = Photon2.Index.InteractionSounds
+	sounds[profile.Class] = sounds[profile.Class] or {}
+	setmetatable( profile, soundConfigMeta )
+	for key, value in pairs( profile ) do
+		if ( istable( value ) and isstring( value.Sound ) ) then
+			setmetatable( value, soundFileMeta )
+		end
+	end
+	sounds[profile.Class][profile.Name] = profile
+	return sounds[profile.Class][profile.Name]
+end
+
+function Photon2.GetInteractionSoundProfile( class, name )
+	return Photon2.Index.InteractionSounds[class][name]
 end

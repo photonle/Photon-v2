@@ -14,29 +14,6 @@
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ENT = ENT
 
-
-local emergencyConfigs = {
-	["code3_z3"] = {
-		Name = "Code 3 Z3S",
-		Default = { 
-			Sound = "photon/controllers/code3_z3s_chirp.wav", 
-			Volume = 100, -- default: 100
-			Duration = 0.1, -- default: 0.1 -- specified to prevent undesired sound overlapping
-			Pitch = 100 -- default: 100
-		},
-		Press = true,
-		Release = false,
-		Momentary = false,
-		Hold = true
-	},
-	["fedsig_ssp"] = {
-		Name = "Federal Signal SSP",
-		Default = { Sound = "photon/controllers/fedsig_ssp_chirp.wav" },
-		Release = false,
-		Momentary = true
-	},
-}
-
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
@@ -148,7 +125,9 @@ function ENT:InitializeShared()
 		hook.Add("Photon2.VehicleCompiled", self, self.OnVehicleCompiled)
 		hook.Add("Photon2:ComponentReloaded", self, self.OnComponentReloaded)
 	end)
-	self:SetInteractionSound( "Controller", emergencyConfigs["fedsig_ssp"] )
+
+	-- self:SetInteractionSound( "Controller", "sos_nergy" )
+	-- self:SetInteractionSound( "Click", "default" )
 end
 
 function ENT:GetOperator()
@@ -207,94 +186,43 @@ ENT.UserCommands = {
 }
 
 
-local normalVehicleConfigs = {
-	["default"] = {
-		Name = "Default",
-		Default = {
-			Sound = "photon/generic/click1.wav",
-			Duration = 0.1
-		},
-		Press = true,
-		Release = true,
-		Momentary = true
-	}
-}
-
-
--- local 
-
--- To be moved into vehicle profile...
 ENT.Interactions = {
-	---@type table<string, PhotonControllerSound>
 	Sounds = {
-		Controller = emergencyConfigs["fedsig_ssp"],
-		Click = normalVehicleConfigs["default"]
-	},
-}
-
-local soundFileMeta = {
-	__index = {
-		-- Volume of sound when played
-		Volume = 100,
-		-- Duration of sound file. (Developer note: does not use SoundDuration due to reliability problems.)
-		Duration = 0.1,
-		-- Pitch of the sound when played.
-		Pitch = 100
+		Controller = "whelen_cencom",
+		Click = "default"
 	}
 }
 
-local soundConfigMeta = {
-	__index = {
-		-- Sound played as soon as button is pressed
-		Press = true,
-		-- Sounds played when the button is "momentary," e.g. manual and horn
-		Momentary = true,
-		-- Sounds played when any specified button is released
-		Release = true,
-		-- Sounds played when the button is pressed and held (one second by default)
-		Hold = true
-	}
-}
 
----@param type string
----@param config table
-function ENT:SetInteractionSound( type, config )
-
-	if ( istable( config ) ) then
-		setmetatable( config, soundConfigMeta )
-		for key, value in pairs( config ) do
-			if ( istable( value ) and isstring( value.Sound ) ) then
-				setmetatable( value, soundFileMeta )
-			end
-		end
-	end
-
-	self.Interactions.Sounds[type] = config
+---@param class string
+---@param profile table
+function ENT:SetInteractionSound( class, name )
+	self.Interactions.Sounds[class] = name
 end
 
 
 function ENT:UserCommandSound( action, press, name )
 	-- if true then return end
-	local class = self.Interactions.Sounds[action.Sound]
+	local sound = Photon2.GetInteractionSoundProfile( action.Sound, self.Interactions.Sounds[action.Sound] )
 	press = action.Press or press
 	
-	local sound = class[press]
+	local subSound = sound[press]
 
-	if ( sound and isstring( sound ) ) then
-		sound = class[sound]
-	elseif ( sound and isbool( sound ) ) then
-		sound = class.Default 
+	if ( subSound and isstring( subSound ) ) then
+		subSound = sound[subSound]
+	elseif ( subSound and isbool( subSound ) ) then
+		subSound = sound.Default 
 	end
 
-	if not sound then return end
+	if not subSound then return end
 
 	-- local sound = self.Interactions.Sounds[action.Sound]
-	local lastPlayed = sound.LastPlayed or 0
+	local lastPlayed = subSound.LastPlayed or 0
 
-	if ( CurTime() < lastPlayed + ( sound.Duration or 0.1 ) ) then return end
+	if ( CurTime() < lastPlayed + ( subSound.Duration or 0.1 ) ) then return end
 
-	self:EmitSound( sound.Sound )
-	sound.LastPlayed = CurTime()
+	self:EmitSound( subSound.Sound, 100, subSound.Pitch, subSound.Volume/100 )
+	subSound.LastPlayed = CurTime()
 end
 
 function ENT:UserCommandOnToggle( action )
@@ -797,7 +725,7 @@ function ENT:OnRemove()
 		props[#props+1] = v
 	end
 	timer.Simple(0, function()
-		if not IsValid( self ) then
+		-- if not IsValid( self ) then
 			for i = 1, #components do
 				if (IsValid(components[i])) then
 					components[i]:Remove()
@@ -808,9 +736,9 @@ function ENT:OnRemove()
 					props[i]:Remove()
 				end
 			end
-		else
-
-		end
+		-- else
+-- 
+		-- end
 	end)
 end
 
