@@ -5,7 +5,9 @@ Photon2.Library = Photon2.Library or {
 	Vehicles = {},
 	---@type table<string, PhotonLibrarySiren>
 	Sirens = {},
-	InteractionSounds = {}
+	InteractionSounds = {},
+	Commands = {},
+	InputConfigurations = {}
 }
 
 local library = Photon2.Library
@@ -16,6 +18,8 @@ local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
 local sirensRoot = "photon-v2/library/sirens/"
 local interactionSoundsRoot = "photon-v2/library/interaction_sounds/"
+local commandsRoot = "photon-v2/library/commands/"
+local inputConfigurationsRoot = "photon-v2/library/input_configurations/"
 
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
@@ -225,7 +229,7 @@ function Photon2.RegisterInteractionSound( profile )
 	local class = profile.Class
 	library[class] = library[class] or {}
 	library[class][profile.Name] = profile
-	Photon2.Index.CompileInteractionSound( library[class][profile.Name] )
+	return Photon2.Index.CompileInteractionSound( library[class][profile.Name] )
 end
 
 function Photon2.LoadInteractionSoundLibrary()
@@ -239,9 +243,53 @@ function Photon2.LoadInteractionSoundLibrary()
 	hook.Call( "Photon2.LoadInteractionSoundLibrary" )
 end
 
+function Photon2.Library.LoadCommandFile( filePath, isReload )
+	Photon2.Debug.Print( "Loading command file: " .. filePath )
+	Photon2._acceptFileReload = false
+	include( filePath )
+	Photon2._acceptFileReload = true
+end
+
+---@param command PhotonClientInputCommand
+function Photon2.RegisterCommand( command )
+	Photon2.Library.Commands[command.Name] = command
+	return Photon2.Index.CompileInputCommand( command )
+end
+
+function Photon2.Library.LoadCommandLibrary()
+	print( "Library.LoadCommandLibrary() called." )
+	folderPath = folderPath or ""
+	local search = commandsRoot .. folderPath
+	local files, folders = file.Find( search .. "*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		Photon2.Library.LoadCommandFile( search .. fil )
+	end
+	hook.Call( "Photon2.LoadCommandLibrary" )
+end
+
+function Photon2.Library.LoadInputConfigurationLibrary()
+	print( "Library.LoadInputConfigurationLibrary() called." )
+	folderPath = folderPath or ""
+	local search = inputConfigurationsRoot .. folderPath
+	local files, folders = file.Find( search .. "*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		include( search .. fil )
+	end
+	hook.Call( "Photon2.LoadInputConfigurationLibrary" )
+end
+
+function Photon2.RegisterInputConfiguration( config )
+	Photon2.Library.InputConfigurations[config.Name] = config
+	return Photon2.Index.CompileInputConfiguration( config )
+end
+
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadSirenLibrary()
 	Photon2.LoadComponentLibrary()
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadInteractionSoundLibrary()
+	Photon2.Library.LoadCommandLibrary()
+	Photon2.Library.LoadInputConfigurationLibrary()
+
+	Photon2.ClientInput.SetActiveConfiguration( "default" )
 end)

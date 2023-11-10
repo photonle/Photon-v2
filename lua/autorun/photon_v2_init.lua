@@ -6,7 +6,7 @@
 	|__|  |__|__|_____| |_| |_____|_|___|  |___|
 
 
-	A D V A N C E D   E M E R G E N C Y   S Y S T E M S   P L A T F O R M
+	E M E R G E N C Y   S Y S T E M S   P L A T F O R M
 
 
 	P R O J E C T   S T A R T   D A T E :   F E B R U A R Y   1 4 T H ,   2 0 2 3

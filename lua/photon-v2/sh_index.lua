@@ -8,7 +8,9 @@ Photon2.Index = Photon2.Index or {
 		-- For entities that :IsVehicle() and have .VehicleName defined.
 		Vehicles = {}
 	},
-	InteractionSounds = {}
+	InteractionSounds = {},
+	InputCommands = {},
+	InputConfigurations = {}
 }
 
 --[[
@@ -408,4 +410,107 @@ end
 
 function Photon2.GetInteractionSoundProfile( class, name )
 	return Photon2.Index.InteractionSounds[class][name]
+end
+
+---@param command PhotonClientInputCommand
+function Photon2.Index.CompileInputCommand( command )
+	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
+		if ( command[activity] ) then
+			for i, action in pairs( command[activity] ) do
+				if ( istable( action.Value ) ) then
+					action.ValueMap = {}
+					for j, value in pairs( action.Value ) do
+						action.ValueMap[value] = j
+					end
+				end
+			end
+		end
+	end
+	Photon2.Index.InputCommands[command.Name] = command
+	return Photon2.Index.InputCommands[command.Name]
+end
+
+---@param commandName string
+function Photon2.GetCommand( commandName )
+	if ( not Photon2.Index.InputCommands[commandName] ) then
+		error( "Client input command [" .. tostring( commandName ) .. "] not found." )
+	end
+	return Photon2.Index.InputCommands[commandName]
+end
+
+function Photon2.Index.CompileInputConfiguration( config )
+
+	local keys = config.Binds
+	local binds = {}
+
+	-- Loads commands into the configuration
+	for key, commands in pairs( keys ) do
+		binds[key] = {}
+		for _, commandEntry in pairs ( commands ) do
+			local command = Photon2.GetCommand( commandEntry.Command )
+			for _, event in pairs( Photon2.ClientInput.KeyActivities ) do
+				if ( command[event] ) then
+					binds[key][event] = binds[key][event] or {}
+
+					binds[key][event][#binds[key][event]+1] = {
+						Action = "META",
+						Value = command.Name
+					}
+
+					for _, action in pairs( command[event] ) do
+						binds[key][event][#binds[key][event]+1] = table.Copy( action )
+						binds[key][event][#binds[key][event]].Modifiers = commandEntry.Modifiers
+					end
+				end
+			end
+		end
+	end
+
+	-- Processes actual command actions and optimize
+	for key, keyConfig in pairs( binds ) do
+		local modifiers = {}
+		local actions = {}
+		for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
+			if ( istable( keyConfig[activity] ) ) then
+				for _, action in pairs( keyConfig[activity] ) do
+					action.ModifierConfig = {}
+					if ( istable( action.Modifiers ) ) then
+						for _, modifierKey in pairs( action.Modifiers ) do
+							modifiers[modifierKey] = true
+							action.ModifierConfig[modifierKey] = true
+						end
+					end
+					actions[#actions+1] = action
+				end
+			end
+		end
+		for i, action in pairs( actions ) do
+			-- Process modifier keys
+			for modifierKey, _ in pairs( modifiers ) do
+				if ( action.ModifierConfig[modifierKey] == nil ) then
+					action.ModifierConfig[modifierKey] = false
+				end
+			end
+			-- Process value mapping
+			if ( istable( action.Value ) ) then
+				action.ValueMap = {}
+				for j, value in pairs( action.Value ) do
+					action.ValueMap[value] = j
+				end
+			end
+		end
+	end
+
+	Photon2.Index.InputConfigurations[config.Name] = {
+		Name = config.Name,
+		Title = config.Title,
+		Author = config.Author,
+		Binds = binds
+	}
+
+	return Photon2.Index.InputConfigurations[config.Name]
+end
+
+function Photon2.GetInputConfiguration( name )
+	return Photon2.Index.InputConfigurations[name]
 end
