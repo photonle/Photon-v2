@@ -7,7 +7,8 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	Listening = false,
 	---@type PhotonController | boolean
 	TargetController = false,
-	KeyActivities = { "OnPress", "OnHold", "OnRelease" }
+	KeyActivities = { "OnPress", "OnHold", "OnRelease" },
+	ProfileMap = { ["#global"] = "default" }
 }
 
 local mouseKeys = { 
@@ -20,10 +21,12 @@ local printf = Photon2.Debug.PrintF
 
 local holdThreshold = 1
 
+---@param controller PhotonController
 function Photon2.ClientInput.SetTargetController( controller )
 	print( "Setting input controller: (" .. tostring( controller ) .. ")" )
 	if IsValid( controller ) then
 		Photon2.ClientInput.TargetController = controller
+		Photon2.ClientInput.SetActiveConfiguration( Photon2.ClientInput.GetProfilePreference( controller:GetProfileName() ) )
 		Photon2.ClientInput.StartListening()
 	else
 		Photon2.ClientInput.TargetController = false
@@ -148,6 +151,33 @@ function Photon2.ClientInput.ScanPressed()
 	end
 end
 hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
+
+function Photon2.ClientInput.LoadPreferencesFile()
+	local prefs = util.JSONToTable( file.Read( "photon_v2/user/profile_input_map.json" ) or "" )
+	Photon2.ClientInput.ProfileMap = prefs or { ["#global"] = "default" }
+end
+
+function Photon2.ClientInput.SavePreferencesFile()
+	file.Write( "photon_v2/user/profile_input_map.json", util.TableToJSON( Photon2.ClientInput.ProfileMap ) )
+end
+
+function Photon2.ClientInput.SetProfilePreference( profileName, configName )
+	Photon2.ClientInput.LoadPreferencesFile()
+	printf( "Setting profile [%s] to use input configuration [%s]", profileName, configName )
+	if ( configName == "default" and profileName ~= "#global" ) then configName = nil end
+	Photon2.ClientInput.ProfileMap[profileName] = configName
+	Photon2.ClientInput.SavePreferencesFile()
+	if ( IsValid( Photon2.ClientInput.TargetController ) ) then
+		Photon2.ClientInput.SetActiveConfiguration( 
+			Photon2.ClientInput.GetProfilePreference( Photon2.ClientInput.TargetController:GetProfileName() ) )
+	end
+end
+
+function Photon2.ClientInput.GetProfilePreference( profileName )
+	return Photon2.ClientInput.ProfileMap[profileName] or Photon2.ClientInput.ProfileMap["#global"]
+end
+
+hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.LoadPreferencesFile )
 
 --[[
 		==== ILLUM ====

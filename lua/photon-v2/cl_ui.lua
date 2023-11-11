@@ -3,6 +3,9 @@ Photon2.UI = Photon2.UI or {
 	HUD = {}
 }
 
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
+
 function Photon2.UI.ReloadMenubar()
 	-- Photon2.Debug.Print("\t" .. tostring(Photon2.UI.MenuBar))
 	if (IsValid(Photon2.UI.MenuBar)) then
@@ -27,7 +30,47 @@ function Photon2.UI.PopulateMenuBar()
 			Photon2.Studio:Initialize()
 		end)
 
-		local debugOption = menu:AddOption( "Debug" )
+		local inputConfigOption = menu:AddOption("Input Configuration")
+		local inputConfigMenu = inputConfigOption:AddSubMenu()
+		inputConfigMenu:SetDeleteSelf( false )
+
+		for name, config in pairs( Photon2.Library.InputConfigurations ) do
+			local opt = inputConfigMenu:AddOption( config.Title )
+			local men = opt:AddSubMenu()
+			men:SetDeleteSelf( false )
+			men:AddOption( "Set for Current Vehicle", function()
+				if ( IsValid(Photon2.ClientInput.TargetController) ) then
+					Photon2.ClientInput.SetProfilePreference( Photon2.ClientInput.TargetController:GetProfileName(), name )
+				else
+					print( "You must be in a vehicle." )
+				end
+			end )
+			men:AddOption( "Set as Default", function()
+				Photon2.ClientInput.SetProfilePreference( "#global", name )
+			end )
+		end
+
+		-- local inputConfigSetDefaultOption = inputConfigMenu:AddOption( "Set Global" )
+		-- local inputConfigSetDefaultMenu = inputConfigSetDefaultOption:AddSubMenu()
+		-- inputConfigSetDefaultMenu:SetDeleteSelf( false )
+
+		-- for name, config in pairs( Photon2.Library.InputConfigurations ) do
+		-- 	inputConfigSetDefaultMenu:AddOption( config.Title, function()
+		-- 		Photon2.ClientInput.SetProfilePreference( "#default", name )
+		-- 	end)
+		-- end
+
+		-- local inputCurrentConfigSetDefaultOption = inputConfigMenu:AddOption( "Set for Current Vehicle" )
+		-- local inputCurrentConfigSetDefaultMenu = inputCurrentConfigSetDefaultOption:AddSubMenu()
+		-- inputCurrentConfigSetDefaultMenu:SetDeleteSelf( false )
+
+		-- for name, config in pairs( Photon2.Library.InputConfigurations ) do
+		-- 	inputCurrentConfigSetDefaultMenu:AddOption( config.Title, function()
+		-- 		-- Photon2.ClientInput.SetProfilePreference( "#default", name )
+		-- 	end)
+		-- end
+
+		local debugOption = menu:AddOption( "Developer" )
 		local debugMenu = debugOption:AddSubMenu()
 		debugMenu:SetDeleteSelf( false )
 
@@ -68,7 +111,7 @@ function Photon2.UI.PopulateMenuBar()
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
 		local drawLight2d = debugMenu:AddCVar( "Draw 2D Lighting", "ph2_draw_light2d", "1", "0" )		
 
-		menu:AddOption( "Refresh Menubar", function()
+		debugMenu:AddOption( "Refresh Menubar", function()
 			Photon2.UI.ReloadMenubar()
 		end)
 

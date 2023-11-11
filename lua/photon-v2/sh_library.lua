@@ -295,10 +295,8 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadComponentLibrary()
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadInteractionSoundLibrary()
-	Photon2.Library.LoadCommandLibrary()
-	
+	Photon2.Library.LoadCommandLibrary()	
 	Photon2.Library.LoadInputConfigurationLibrary()
-
 
 	Photon2.ClientInput.SetActiveConfiguration( "default" )
 end)

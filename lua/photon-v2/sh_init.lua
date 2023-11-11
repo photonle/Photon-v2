@@ -13,6 +13,8 @@ function PhotonColor( r, g, b, a )
 	return _PhotonColor.New( r, g, b, a )
 end
 
+file.CreateDir("photon_v2")
+file.CreateDir("photon_v2/user")
 
 function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/dynamic_material.lua")

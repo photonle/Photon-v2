@@ -160,12 +160,13 @@ function ENT:SetChannelMode( channel, state )
 
 end
 
-
+---@param channel string
+---@return string
 function ENT:GetChannelState( channel )
     return self:GetNW2String( "Photon2:CS:" .. channel, "OFF" )
 end
 
-
+---@return string
 function ENT:GetProfileName()
 	return self:GetNW2String( "Photon2:ProfileName" )
 end

@@ -1,6 +1,6 @@
 Photon2.RegisterInputConfiguration({
 	Name = "default",
-	Title = "Default Input Profile",
+	Title = "Default",
 	Author = "Photon",
 	Binds = {
 		[KEY_F] = { 
@@ -66,7 +66,7 @@ Photon2.RegisterInputConfiguration({
 Photon2.RegisterInputConfiguration({
 	Name = "default_override",
 	Inherit = "default",
-	Title = "Override Test",
+	Title = "Override Test B",
 	Author = "Photon",
 	Binds = {
 		[KEY_M] = {
@@ -78,7 +78,7 @@ Photon2.RegisterInputConfiguration({
 Photon2.RegisterInputConfiguration({
 	Name = "default_c",
 	Inherit = "default_override",
-	Title = "Override Test",
+	Title = "Override Test C",
 	Author = "Photon",
 	Binds = {
 		[KEY_5] = {
