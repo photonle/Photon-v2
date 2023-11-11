@@ -514,3 +514,39 @@ end
 function Photon2.GetInputConfiguration( name )
 	return Photon2.Index.InputConfigurations[name]
 end
+
+-- Compiles a configuration with Library inheritance support
+function Photon2.Index.CompileInputConfigurationFromLibrary( configName )
+	local inheritancePath = nil
+	local config = table.Copy( Photon2.Library.InputConfigurations[configName] )
+	if ( not config ) then 
+		error( "Configuration name [" .. tostring( configName ) .. "] not found.")
+	end
+	local binds = config.Binds
+	if ( config.Inherit ) then
+		local searching = true
+		local currentParent = config.Inherit
+		if ( currentParent ) then
+			inheritancePath = { configName }
+			inheritancePath[#inheritancePath+1] = currentParent
+			while ( searching ) do
+				local nextParent = Photon2.Library.InputConfigurations[currentParent]
+				if ( nextParent and nextParent.Inherit ) then
+					inheritancePath[#inheritancePath+1] = nextParent.Inherit
+					currentParent = nextParent.Inherit
+				else
+					searching = false
+				end
+			end
+			binds = {}
+			for i=#inheritancePath, 1, -1 do
+				local parentConfig = Photon2.Library.InputConfigurations[inheritancePath[i]]
+				for key, commands in pairs( parentConfig.Binds ) do
+					binds[key] = commands
+				end
+			end
+			config.Binds = binds
+		end
+	end
+	return Photon2.Index.CompileInputConfiguration( config )
+end

@@ -7,7 +7,9 @@ Photon2.Library = Photon2.Library or {
 	Sirens = {},
 	InteractionSounds = {},
 	Commands = {},
-	InputConfigurations = {}
+
+	InputConfigurations = {},
+	InputConfigurationsReady = false,
 }
 
 local library = Photon2.Library
@@ -279,8 +281,13 @@ function Photon2.Library.LoadInputConfigurationLibrary()
 end
 
 function Photon2.RegisterInputConfiguration( config )
+	if SERVER then return end
 	Photon2.Library.InputConfigurations[config.Name] = config
-	return Photon2.Index.CompileInputConfiguration( config )
+	if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == config.Name ) ) then
+		Photon2.Index.CompileInputConfigurationFromLibrary( config.Name )
+	else
+		Photon2.Index.InputConfigurations[config.Name] = nil
+	end
 end
 
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
@@ -289,7 +296,9 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadInteractionSoundLibrary()
 	Photon2.Library.LoadCommandLibrary()
+	
 	Photon2.Library.LoadInputConfigurationLibrary()
+
 
 	Photon2.ClientInput.SetActiveConfiguration( "default" )
 end)

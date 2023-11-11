@@ -62,3 +62,29 @@ Photon2.RegisterInputConfiguration({
 		}
 	}
 })
+
+Photon2.RegisterInputConfiguration({
+	Name = "default_override",
+	Inherit = "default",
+	Title = "Override Test",
+	Author = "Photon",
+	Binds = {
+		[KEY_M] = {
+			{ Command = "manual_siren" }
+		}
+	}
+})
+
+Photon2.RegisterInputConfiguration({
+	Name = "default_c",
+	Inherit = "default_override",
+	Title = "Override Test",
+	Author = "Photon",
+	Binds = {
+		[KEY_5] = {
+			{ Command = "toggle_siren_1" }
+		}
+	}
+})
+
+-- Photon2.Index.CompileInputConfigurationFromLibrary( "default_c" )

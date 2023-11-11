@@ -236,7 +236,7 @@ VEHICLE.Equipment = {
 					-- 	Position = Vector(11, 123, 34.4),
 					-- 	Angles = Angle(1.5, -90, -180),
 					-- 	Scale = 1.4,
-					-- 	Siren = "fedsig_touchmaster_delta"
+					-- 	Siren = "fedsig_smartsiren"
 					-- }
 				}
 			}
