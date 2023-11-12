@@ -883,6 +883,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				
 				-- Siren 1 Indicator
 				local sirenDisplay
+				local label = target.CurrentModes["Emergency.Siren"]
+				local icon = icons["speaker"]
 				local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
 				local indicatorMode = 0
 
@@ -900,13 +902,19 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					-- sirenSelection = smartSirenIndicator.DisplayMap[target.CurrentModes["Emergency.Siren"]] or -1
 
 
-					if ( target.CurrentModes["Emergency.Siren"] ~= "OFF" ) then
+					if ( (target.CurrentModes["Emergency.Siren"] ~= "OFF") and (sirenDisplay) ) then
 						indicatorMode = 1
 					end
 				end
+
+				if (sirenDisplay) then
+					icon = icons[sirenDisplay.Icon]
+					label = sirenDisplay.Label
+				end
+
 				HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, 
-					icons[sirenDisplay.Icon], 
-					sirenDisplay.Label, 
+					icon, 
+					label, 
 					#siren1.OrderedTones, 
 					sirenSelection, 
 					indicatorMode 

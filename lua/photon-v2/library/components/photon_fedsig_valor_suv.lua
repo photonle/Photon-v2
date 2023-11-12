@@ -158,10 +158,8 @@ COMPONENT.Segments = {
 		Sequences = {
 			-- ["P26"] = { 1, 1, 1, 0, 0, 0, 0, 1 }
 
-			-- ["P26"] = { 0, 0, 0, 1, 2, 1, 2, 0 },
-			["ON"] = { 1 },
-			["P26"] = { 1 },
-			["PASS"] = { 0, 0, 0, 1, 2, 1, 2, 0 }
+			["P26"] = { 0, 0, 0, 1, 2, 1, 2, 0 },
+			-- ["ON"] = { 1 },
 		}
 	}
 }
@@ -173,14 +171,12 @@ COMPONENT.Inputs = {
 			P26_EDGE = "P26",
 			P26_FRONT = "P26",
 			P26_REAR = "P26",
-			P26_WOR = "ON",
 		},
 		["MODE2"] = {
 			-- All = "MIX"
 			P26_EDGE = "P26",
 			P26_FRONT = "P26",
 			P26_REAR = "P26",
-			P26_WOR = "ON",
 		},
 		["MODE3"] = {
 			-- All = "MIX"
