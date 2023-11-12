@@ -9,7 +9,7 @@ ENT = ENT
 function ENT:Initialize()
 	self:InitializeShared()
 	self:DrawShadow( false )
-	self:SetModel( "models/photon_ex/controllers/fedsig_scsb.mdl" )
+	self:SetModel( "models/schmal/photon_controller.mdl" )
 	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_NONE )

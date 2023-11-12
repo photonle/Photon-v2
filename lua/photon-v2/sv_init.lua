@@ -63,7 +63,7 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	controller:SetParent( vehicle )
 	controller:Initialize()
 	controller:SetLocalPos((Vector(0, 0, 50)))
-	controller:SetLocalAngles(Angle(0, -90, 0))
+	controller:SetLocalAngles(Angle(0, 0, 0))
 
 	controller:SetProfileName( profile )
 
