@@ -22,6 +22,8 @@ local printf = Photon2.Debug.PrintF
 ---@field private HasBodyGroupRequirements boolean
 local Light = exmeta.New()
 
+Light.DeactivationState = "OFF"
+
 ---@param id integer
 ---@param parent Entity
 ---@return PhotonElement
@@ -143,7 +145,7 @@ function Light:UpdateState()
 			break
 		end
 	end
-	if state == "PASS" then state = "OFF" end
+	if state == "PASS" then state = self.DeactivationState end
 	
 	if (state ~= self.CurrentStateId) then
 		self.CurrentStateId = state
@@ -158,7 +160,11 @@ function Light:UpdateState()
 
 	-- Set light to auto-deactivate when it has no more inputs
 	if (#self.SortedInputActions < 1) then
-		if ( self.DeactivationState ) then
+		if ( self.DeactivationState  
+			and ( self.IsActivated ) ) 
+			-- and ( state ~= self.CurrentStateId )
+		then
+			-- ErrorNoHalt("deactivation state:" .. tostring( self.DeactivationState ))
 			self:OnStateChange( self.States[self.DeactivationState] )
 		else
 			self.Deactivate = true

@@ -64,7 +64,7 @@ local black = { r = 0, g = 0, b = 0 }
 Light.States = {
 	["~OFF"] = {
 		Intensity = 0,
-		IntensityTransitions = true,
+		IntensityTransitions = true
 	},
 	["OFF"] = {
 		Intensity = 0,
@@ -251,6 +251,12 @@ function Light:DoPreRender()
 			-- print(state.IntensityLossFactor)
 			if (self.Intensity < self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
+
+				-- Fade out support
+				if ( self.CurrentStateId == self.DeactivationState ) then
+					self.Deactivate = true
+				end
+
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
@@ -304,7 +310,7 @@ end
 
 -- Internal
 function Light:OnStateChange( state )
-	
+
 	self.DrawColor:SetTarget( state.DrawColor )
 	self.BloomColor:SetTarget( state.BloomColor )
 

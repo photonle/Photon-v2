@@ -609,9 +609,6 @@ COMPONENT.VirtualOutputs = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["OFF"] = {
-			Pods = "OFF"
-		},
 		["MODE1"] = {
 			LVMPD_Lights = "MODE1",
 			LVMPD_Pods = "MODE1",

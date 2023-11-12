@@ -189,6 +189,10 @@ function Light:DoPreRender()
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
 			if (self.Intensity < self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
+				-- Fade out support
+				if ( self.CurrentStateId == self.DeactivationState ) then
+					self.Deactivate = true
+				end
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)

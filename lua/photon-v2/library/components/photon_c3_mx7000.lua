@@ -60,7 +60,15 @@ COMPONENT.Templates = {
 			Model = "models/schmal/mx7000_lights.mdl",
 			Scale = 1.001,
 			IntensityGainFactor = 5,
-			IntensityLossFactor = 5
+			IntensityLossFactor = 5,
+			DeactivationState = "~OFF"
+		},
+		Reflector = {
+			Model = "models/schmal/mx7000_lights.mdl",
+			Scale = 1.001,
+			IntensityGainFactor = 5,
+			IntensityLossFactor = 5,
+			DeactivationState = "OFF"
 		}
 	}
 }
@@ -115,29 +123,29 @@ COMPONENT.Elements = {
 	[31] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/l13", DrawMaterial = "photon/lights/halogen_diffuse" },
 	[32] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/l14", DrawMaterial = "photon/lights/halogen_diffuse" },
 
-	[33] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m1", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 105, fov } },
-	[34] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m2", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 295, fov } },
+	[33] = { "Reflector", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m1", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 105, fov } },
+	[34] = { "Reflector", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m2", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 295, fov } },
 	
-	[35] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m3", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 295, fov } },
-	[36] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m4", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 105, fov } },
+	[35] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m3", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 295, fov } },
+	[36] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m4", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 105, fov } },
 	
-	[37] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m5", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 105, fov } },
-	[38] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m6", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 295, fov }  },
+	[37] = { "Reflector", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m5", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 105, fov } },
+	[38] = { "Reflector", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m6", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 295, fov }  },
 	
-	[39] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m7", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 3, "Value" } }, Mirror2 = { 295, fov }  },
-	[40] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m8", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 5, "Value" } }, Mirror2 = { 105, fov }  },
+	[39] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m7", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 3, "Value" } }, Mirror2 = { 295, fov }  },
+	[40] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m8", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 5, "Value" } }, Mirror2 = { 105, fov }  },
 	
-	[41] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m9", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 3, "Value" } }, Mirror2 = { 325, fov } },
-	[42] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m10", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 5, "Value" } }, Mirror2 = { 75, fov } },
+	[41] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m9", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 3, "Value" } }, Mirror2 = { 325, fov } },
+	[42] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m10", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 5, "Value" } }, Mirror2 = { 75, fov } },
 	
-	[43] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m11", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 75, fov } },
-	[44] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m12", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 325, fov }  },
+	[43] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m11", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 75, fov } },
+	[44] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m12", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 325, fov }  },
 	
-	[45] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m13", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 295, fov }  },
-	[46] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m14", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 75, fov } },
+	[45] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m13", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 2, "Value" } }, Mirror2 = { 295, fov }  },
+	[46] = { "Reflector", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/generic/m14", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 4, "Value" } }, Mirror2 = { 75, fov } },
 	
-	[47] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m15", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 75, fov } },
-	[48] = { "Mesh", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m16", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 325, fov } },
+	[47] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m15", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 75, fov } },
+	[48] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m16", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 325, fov } },
 
 }
 

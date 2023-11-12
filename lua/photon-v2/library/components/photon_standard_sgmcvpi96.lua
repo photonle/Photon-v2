@@ -24,7 +24,8 @@ COMPONENT.Templates = {
 			Model = "models/schmal/sgmcvpi96_lights.mdl",
 			Scale = 1.001,
 			IntensityGainFactor = 10,
-			IntensityLossFactor = 5
+			IntensityLossFactor = 5,
+			DeactivationState = "~OFF"
 		}
 	},
 	["2D"] = {
@@ -41,8 +42,8 @@ COMPONENT.Templates = {
 			FOV = 90,
 			NearZ = 1,
 			Brightness = 1,
-			IntensityGainFactor = 2,
-			IntensityLossFactor = 2
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 5,
 		}
 	}
 }

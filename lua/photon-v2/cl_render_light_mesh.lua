@@ -27,6 +27,7 @@ function Photon2.RenderLightMesh.DrawBloom()
 	local activeLights = this.Active
 	for i=1, #activeLights do
 		light = activeLights[i]
+		-- if ( light.CurrentStateId == "OFF" ) then print("light is off") end
 		if ( not light or ( light.CurrentStateId == "OFF" ) ) then continue end
 		cam.PushModelMatrix( light.Matrix, true )
 		render.SetMaterial( light.BloomMaterial --[[@as IMaterial]] )
