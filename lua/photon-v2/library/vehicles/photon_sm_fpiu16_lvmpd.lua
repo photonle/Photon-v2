@@ -7,8 +7,8 @@ VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
 VEHICLE.Siren = {
-	-- [1] = "fedsig_smartsiren",
-	[1] = "fedsig_touchmaster_delta",
+	[1] = "fedsig_smartsiren",
+	-- [1] = "fedsig_touchmaster_delta",
 }
 
 local livery = PhotonDynamicMaterial.Generate("schmal_fpiu16_lvmpd", { "VertexLitGeneric",

@@ -660,6 +660,16 @@ function HUD.FunctionsIndicator( x, y, width, height, columns, columnWidth, func
 
 end
 
+function HUD.VehicleInfo( x, y, w, h, vehicleName, inputConfigName )
+	local backgroundColor = Color( 64, 64, 64, 200 )
+	draw.RoundedBox( cornerRadius, x, y, w, h, backgroundColor )
+
+	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 5, white )
+	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, Color(255,255,255,100) )
+	-- draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 4, white )
+
+end
+
 ---@param x integer
 ---@param y integer
 ---@param icon IMaterial
@@ -795,7 +805,13 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 end
 
-
+local function truncateString( str, maxLength )
+	if #str > maxLength then
+		return string.sub(str, 1, maxLength - 3) .. "..."
+	else
+		return str
+	end
+end
 
 local drawIcon = icons["siren"]
 
@@ -831,6 +847,11 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 		cam.Start2D()
 			render.OverrideAlphaWriteEnable( true, true)
 			render.Clear( 0, 0, 0, 0, false, false )
+
+			HUD.VehicleInfo( ScrW() - 150 - 4, 216, 150, 38, 
+				string.upper(truncateString(Photon2.ClientInput.TargetController:GetProfile().Title, 26 )),
+				string.upper(Photon2.ClientInput.Active.Title)
+			)
 
 			local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
 			local priStyle = 1

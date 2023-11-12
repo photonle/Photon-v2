@@ -206,6 +206,10 @@ hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.Lo
 			   all available modes are utilized as found in the vehicle file or
 			   all its components.
 
+			5. TOGGLE_ON: Set's the channel's mode to the specified value, but only
+			   when the mode is OFF. If the mode is set to a value other than OFF,
+			   no change will be applied.
+
 		Key behaviors:
 			1. OnPress: When the key is pressed down.
 			2. OnRelease: When the key is released.

@@ -390,7 +390,7 @@ function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
 	end
 	
 	-- Create sequence variant with rank and score information
-	local sequenceName = channelMode .. "/" .. sequence
+	local sequenceName = channelMode .. "/" .. self.Name .. "/" .. sequence
 	self.Sequences[sequenceName] = self.Sequences[sequence]
 	-- if (isstring(sequence)) then
 	-- 	sequence = self.Sequences[sequence]

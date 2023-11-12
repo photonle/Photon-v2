@@ -86,5 +86,3 @@ Photon2.RegisterInputConfiguration({
 		}
 	}
 })
-
--- Photon2.Index.CompileInputConfigurationFromLibrary( "default_c" )

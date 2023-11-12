@@ -414,6 +414,7 @@ end
 
 ---@param command PhotonClientInputCommand
 function Photon2.Index.CompileInputCommand( command )
+	if ( SERVER ) then return end
 	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
 		if ( command[activity] ) then
 			for i, action in pairs( command[activity] ) do

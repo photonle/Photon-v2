@@ -50,7 +50,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.Inputs = {
-	["Vehicle.Lights"] = {
+	["Emergency.Warning"] = {
 		["HEADLIGHTS"] = {
 			Full = "STEADY"
 			-- All = "STEADY"

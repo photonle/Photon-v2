@@ -2,16 +2,24 @@ Photon2.RegisterCommand({
 	Name = "controller_button_momentary",
 	Title = "Momentary Controller Button",
 	Description = "Plays controller button sounds as momentary press. Certain controllers will beep when a momentary button is released.",
-	OnPress = { { Action = "SOUND", Value = "Controller" } },
-	OnRelease = { { Action = "SOUND", Value = "Controller", Press = "Momentary" } },
+	OnPress = {
+		{ Action = "SOUND", Value = "Controller" } 
+	},
+	OnRelease = {
+		{ Action = "SOUND", Value = "Controller", Press = "Momentary" } 
+	},
 })
 
 Photon2.RegisterCommand({
 	Name = "controller_button",
 	Title = "Normal Controller Button",
 	Description = "Plays normal controller button sound.",
-	OnPress = { { Action = "SOUND", Value = "Controller" } },
-	OnRelease = { { Action = "SOUND", Value = "Controller" } },
+	OnPress = {
+		{ Action = "SOUND", Value = "Controller" } 
+	},
+	OnRelease = {
+		{ Action = "SOUND", Value = "Controller" } 
+	},
 })
 
 Photon2.RegisterCommand({
@@ -63,21 +71,30 @@ Photon2.RegisterCommand({
 	Title = "Activate Airhorn",
 	Category = "Siren",
 	Description = "Plays airhorn as long as key is pressed.",
-	OnPress = { { Action = "SOUND", Sound = "Controller" }, { Action = "SET", Channel = "Emergency.SirenOverride", Value = "AIR" } },
-	OnRelease = { { Action = "SOUND", Sound = "Controller", Press = "Momentary" }, { Action = "SET", Channel = "Emergency.SirenOverride", Value = "OFF" } },
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" }, 
+		{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "AIR" } 
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller", Press = "Momentary" }, 
+		{ Action = "SET", Channel = "Emergency.SirenOverride", Value = "OFF" } 
+	},
 })
 
 Photon2.RegisterCommand({
 	Name = "vehicle_lights",
 	Title = "Vehicle Headlights/Parking Lights",
 	Category = "Basic Vehicle Lighting",
-
 	Description = "Quick press toggles headlights. Press and hold to toggle parking lights.",
-	OnPress = { { Action = "SOUND", Sound = "Click" } },
-	OnRelease = { { Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "HEADLIGHTS" } },
+	OnPress = { 
+		{ Action = "SOUND", Sound = "Click" } 
+	},
 	OnHold = {
 		{ Action = "SOUND", Sound = "Click" },
 		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "PARKING" }
+	},
+	OnRelease = { 
+		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "HEADLIGHTS" } 
 	}
 })
 
