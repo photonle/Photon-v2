@@ -142,6 +142,11 @@ HOWEVER: as of writing this (October 31st), be advised that this process is stil
 4. Map restart (I'd suggest just using the `retry` console command)
 5. Game restart
 
+## Light/Element Groups
+Use element groups to reference related elements under one user-friendly name instead of always needing to manage multiple index numbers.
+
+Elements can belong to multiple groups and their names can be used when writing sequences.
+
 # Advanced Development Changes
 
 ## Annotations
@@ -179,6 +184,28 @@ For those interested, this is an overview of how Photon works internally.
 
 ### Library 
 The Photon 2 library is an internal table that stores and tracks (mostly) raw table data from user-made content, such as vehicles, components, and sirens.
+
+## Performance
+I've tried to avoid doing too much benchmarking while the addon is still incomplete. From superficial tests so far, performance varies between better to on-par with Photon LE. There are a few avenues I'm aware of to boost performance when I get to it.
+
+Nonetheless, for content creators, here is a quick guide:
+
+### Performance Tips
+#### Lights
+Generally speaking, the fewer the active lights there are, the better performance is going to be. More importantly, however, is the type of light you use. (For non-light elements this doesn't really matter.)
+
+Light performance, from best to worst by type:
+1. Sub-material
+2. Mesh
+3. 2D
+4. Projected
+
+#### Components
+Just as is the case with lights, know that the fewer components there are, the better the performance will be. One complex model is typoically faster than two basic models. In practical terms, this means one model with four Ions (each independently boned) is significantly faster than using four separate Ion components.
+
+It's also worth noting that material parameters and count matter as well. While not noticeable with only a few, the performance boost from simpler models becomes apparent when there are 10 or more of the same model.
+
+This means that complex materials on lightbars are usually fine (as there's usually just one per vehicle), but highly detailed perimeter components will degrade performance.
 
 #### Vehicle Equipment
 Each component added in a vehicle's equipment table generates a child component, derived from an original Library entry. This allows for developers to directly manipulate almost all aspects of components within a vehicle file, rather than needing to manually create an entirely new component file.

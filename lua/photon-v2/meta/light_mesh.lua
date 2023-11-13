@@ -319,6 +319,9 @@ function Light:OnStateChange( state )
 	self.IntensityGainFactor = state.IntensityGainFactor
 	self.IntensityLossFactor = state.IntensityLossFactor
 
+	self.DrawMaterial = state.DrawMaterial
+	self.BloomMaterial = state.BloomMaterial
+
 	if ( state.IntensityTransitions ) then
 
 	elseif ( self.TargetIntensity ~= 1 or (self.TargetIntensity ~= self.Intensity) ) then

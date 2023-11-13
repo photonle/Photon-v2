@@ -146,7 +146,6 @@ COMPONENT.Templates = {
 			Height = 3.2,
 			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_shape.png").MaterialName,
 			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_detail.png").MaterialName,
-			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sgm_fpiu20_marker_bloom.png").MaterialName,
 			Scale = 0.4,
 			LightMatrix = {
 				Vector( .9, 0, 0 ), Vector( -.9, 0, 0 )
@@ -180,10 +179,34 @@ COMPONENT.Templates = {
 		},
 	},
 	["Sub"] = {
-		TailSubMat = {}
+		TailSubMat = {
+			States = {
+				["BRIGHT"] = { 
+					Material = "photon/common/blank"
+				},
+				["DIM"] = { Material = "photon/common/blank" }
+			}
+		}
 	},
 	["Mesh"] = {
-		TailMesh = {}
+		Model = {
+			Model = "models/sentry/20fpiu_new.mdl",
+			States = {
+				["BRIGHT"] = {
+					DrawColor = PhotonColor( 255, 180, 0 ),
+					BloomColor = PhotonColor( 512, 0, 0 ),
+					-- Material = "photon/common/blank",
+					DrawMaterial = "photon/common/glow",
+				},
+				["DIM"] = {
+					DrawColor = PhotonColor( 180, 255, 0 ),
+					BloomColor = PhotonColor( 96, 0, 0 )
+				}
+			}
+		},
+		MeshLights = {
+			Model = "models/schmal/sgmfpiu20_lights.mdl"
+		}
 	}
 }
 
@@ -225,25 +248,30 @@ COMPONENT.ElementStates = {
 		},
 		["TB"] = {
 			Material = "photon/materials/sgm_fpiu20_tail_bright"
+		},
+		["HIDE"] = {
+			Material = "photon/common/blank"
 		}
-	},
-	["Mesh"] = {
-
 	}
 }
 
 COMPONENT.LightGroups = {
-	["Tail_L"] = { 1, 2, 3 },
-	["Tail_R"] = { 4, 5, 6 },
+	["Tail_L"] = { 1, 2 },
+	["Tail_R"] = { 4, 5 },
 	["Fwd_L"] = { 13, 15, 17, 19 },
-	["Fwd_R"] = { 14, 16, 18, 20 }
+	["Fwd_R"] = { 14, 16, 18, 20 },
 }
 
 COMPONENT.Elements = {
-	[1] = { "TailLights", Vector( -38, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
+	-- [1] = { "TailLights", Vector( -38, -121.6, 50.8 ), Angle( 0, 180-25, 0 ) },
+	[1] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 90, 0 ), "sentry/20fpiu_new/tail_l", DrawMaterial = "photon/materials/sgm_fpiu20_tail_bright" },
+
 	[2] = { "TailSubMat", Indexes = { 17 } },
 	[3] = { "TailLightEdge", Vector( -41.7, -119.5, 51.5 ), Angle( 0, 180-81, 0 ) },
-	[4] = { "TailLightsAlt", Vector( 38, -121.6, 50.8 ), Angle( 0, 180+25, 0 ) },
+	
+	[4] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 90, 0 ), "sentry/20fpiu_new/tail_r", DrawMaterial = "photon/materials/sgm_fpiu20_tail_bright" },
+
+	-- [4] = { "TailLightsAlt", Vector( 38, -121.6, 50.8 ), Angle( 0, 180+25, 0 ) },
 	[5] = { "TailSubMat", Indexes = { 19 } },
 	[6] = { "TailLightEdge", Vector( 41.7, -119.5, 51.5 ), Angle( 0, 180+81, 0 ) },
 
@@ -278,6 +306,10 @@ COMPONENT.Elements = {
 	[27] = { "Headlight", Vector( -36.4, 99.5, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
 	[28] = { "Headlight", Vector( 36.4, 99.5, 47.3 ), Angle( 0, 0, 180 ) }, -- high-beam lower
 
+	[29] = { "MeshLights", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl" },
+	[30] = { "MeshLights", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr"},
+	
+	[31] = { "MeshLights", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc" },
 }
 
 COMPONENT.ColorMap = "[R] 1"
@@ -288,7 +320,7 @@ COMPONENT.Segments = {
 	Headlights = {
 		Frames = {
 			-- [0] = "Tail_L:OFF Tail_R:OFF",
-			[1] = "Tail_L:TD Tail_R:TD"
+			[1] = "Tail_L:DIM Tail_R:DIM"
 		},
 		Sequences = {
 			["HEADLIGHTS"] = { 1 },
@@ -298,7 +330,7 @@ COMPONENT.Segments = {
 	Tail_L = {
 		Frames = {
 			[0] = "Tail_L:PASS",
-			[1] = "Tail_L:TB"
+			[1] = "Tail_L:BRIGHT"
 		},
 		Sequences = {
 			["BRAKE"] = { 1 },
@@ -309,7 +341,7 @@ COMPONENT.Segments = {
 	Tail_R = {
 		Frames = {
 			[0] = "Tail_R:PASS",
-			[1] = "Tail_R:TB"
+			[1] = "Tail_R:BRIGHT"
 		},
 		Sequences = {
 			["BRAKE"] = { 1 },
@@ -320,8 +352,8 @@ COMPONENT.Segments = {
 	},
 	Turn_L = {
 		Frames = {
-			[1] = "7:A",
-			[2] = "7:B"
+			[1] = "9:A",
+			[2] = "9:B"
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -332,8 +364,8 @@ COMPONENT.Segments = {
 	},
 	Turn_R = {
 		Frames = {
-			[1] = "8:A",
-			[2] = "8:B",
+			[1] = "10:A",
+			[2] = "10:B",
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -343,21 +375,21 @@ COMPONENT.Segments = {
 		}
 	},
 	Reverse_L = {
-		Frames = { [1] = "9:W", [2] = "9:B" },
+		Frames = { [1] = "7:W", [2] = "7:B" },
 		Sequences = { 
 			["ON"] = { 1 },
 			["FLASH"] = { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 }
 		}
 	},
 	Reverse_R = {
-		Frames = { [1] = "10:W", [2] = "10:B" },
+		Frames = { [1] = "8:W", [2] = "8:B" },
 		Sequences = { 
 			["ON"] = { 1 },
 			["FLASH"] = { 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0 }
 		}
 	},
 	Brake = {
-		Frames = { [1] = "11:R 12:R" },
+		Frames = { [1] = "31:R" },
 		Sequences = {
 			["ON"] = { 1 }
 		}
@@ -435,6 +467,14 @@ COMPONENT.Segments = {
 		Sequences = {
 			["SIGNAL"] = sequence():Alternate( 1, 0, 8 )
 		}
+	},
+	MeshTest = {
+		Frames = {
+			[1] = "29:A 30:A"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
 	}
 	-- Parking_R = {
 
@@ -447,16 +487,17 @@ COMPONENT.Inputs = {
 		["HEADLIGHTS"] = {
 			Headlights = "HEADLIGHTS",
 			Marker = "ON",
-			Parking_L = "ON",
-			Parking_R = "ON",
+			-- Parking_L = "ON",
+			-- Parking_R = "ON",
 			Headlight_L = "ON",
 			Headlight_R = "ON",
+			MeshTest = "ON"
 		},
 		["PARKING"] = {
 			Headlights = "HEADLIGHTS",
 			Marker = "ON",
-			Parking_L = "ON",
-			Parking_R = "ON",
+			-- Parking_L = "ON",
+			-- Parking_R = "ON",
 		}
 	},
 	["Vehicle.HighBeam"] = {
