@@ -9,15 +9,5 @@
 	"$phongboost" 1
 	"$phongfresnelranges" "[1 1 1]"
 	"$nocull" 1
-	"$normalmapalphaenvmapmask" 1
-	"$nodecal" "1"
-	"$colorfix" "{255 255 255}"
-	"Proxies"
-	{
-		"Equals"
-		{
-			srcVar1 $colorfix
-			resultVar	$color
-		}
-	}
+
  }

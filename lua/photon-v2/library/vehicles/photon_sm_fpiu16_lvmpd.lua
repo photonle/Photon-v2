@@ -327,5 +327,21 @@ VEHICLE.Equipment = {
 				}
 			}
 		}
+	},
+	{
+		Category = "Controller",
+		Options = {
+			{
+				Option = "SmartSiren Series B",
+				Components = {
+					{
+						Component = "photon_fedsig_scsb",
+						Position = Vector( 0, 11.2, 75.2 ),
+						Angles = Angle( 115, -90, 0 ),
+						Scale = 1
+					}
+				}
+			}
+		}
 	}
 }

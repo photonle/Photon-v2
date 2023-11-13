@@ -22,7 +22,6 @@ COMPONENT.Templates = {
 		PodEmissive = {
 			Model = "models/schmal/fedsig_visionslr_pod_emis.mdl",
 			DrawMaterial = "schmal/photon/fedsig_visionslr/pod_emis",
-			
 		}
 	},
 	["2D"] = {

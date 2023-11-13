@@ -1,4 +1,17 @@
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
+
+local function sequenceTest()
+	for k, v in pairs( ents.GetAll() ) do
+		if ( v:GetModel() == "models/photon_ex/controllers/fedsig_scsb.mdl" ) then
+			-- v:SetSequence("idle")
+			-- v:SetPoseParameter( "stage_3", 1 )
+			v:SetLayerSequence( 0, 1 )
+			v:SetLayerSequence( 0, 0 )
+			v:SetLayerSequence( 1, 2 )
+			break
+		end
+	end
+end
 if SERVER then return end
 
 function appendTest()

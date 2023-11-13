@@ -189,7 +189,7 @@ ENT.UserCommands = {
 
 ENT.Interactions = {
 	Sounds = {
-		Controller = "whelen_cencom",
+		Controller = "fedsig",
 		Click = "default"
 	}
 }

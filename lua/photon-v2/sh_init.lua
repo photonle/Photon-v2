@@ -31,6 +31,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/light_bone_state.lua")
 	exmeta.LoadFile("photon-v2/meta/light_mesh_state.lua")
 	exmeta.LoadFile("photon-v2/meta/element_dynamiclight_state.lua")
+	exmeta.LoadFile("photon-v2/meta/element_sequence_state.lua")
 	
 	exmeta.LoadFile("photon-v2/meta/light.lua")
 	exmeta.LoadFile("photon-v2/meta/element_virtual.lua")
@@ -40,6 +41,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/light_bone.lua")
 	exmeta.LoadFile("photon-v2/meta/light_mesh.lua")
 	exmeta.LoadFile("photon-v2/meta/element_dynamiclight.lua")
+	exmeta.LoadFile("photon-v2/meta/element_sequence.lua")
 
 	exmeta.LoadFile("photon-v2/meta/light_sub.lua")
 
