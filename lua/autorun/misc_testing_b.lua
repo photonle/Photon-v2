@@ -14,6 +14,21 @@ local function sequenceTest()
 end
 if SERVER then return end
 
+local function calcView( ply, pos, angles, fov )
+	if true then return nil end
+	local veh = ply:GetVehicle()
+	if ( IsValid(veh) ) then
+		return {
+			origin = veh:GetPos() - ( angles:Forward() * 400 ) + ( angles:Up() * 50 ),
+			angles = angles,
+			fov = fov,
+			drawviewer = false
+		}
+	end
+end
+
+hook.Add( "CalcView", "Photon2.Testing:CalcView", calcView)
+
 function appendTest()
 	print( "x" .. 1 )
 end
