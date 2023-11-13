@@ -25,7 +25,8 @@ function Equipment.GetTemplate()
 		BodyGroups = {},
 		SubMaterials = {},
 		VirtualComponents = {},
-		UIComponents = {}
+		UIComponents = {},
+		InteractionSounds = {}
 	}
 end
 

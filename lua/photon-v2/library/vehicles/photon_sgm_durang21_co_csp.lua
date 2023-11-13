@@ -6,7 +6,6 @@ VEHICLE.Vehicle		= "21durango_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Equipment = {}
 
 -- local livery = PhotonDynamicMaterial.Generate("schmal_sgm_durang21_csp", { "VertexLitGeneric",
 -- 	["$basetexture"] = Material( "schmal/liveries/sgm_durang21/co_csp.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
@@ -19,6 +18,11 @@ VEHICLE.Equipment = {}
 -- 	["$nodecal"] = 1
 -- })
 
+-- Works but is superseded by equipment options
+-- VEHICLE.InteractionSounds = {
+-- 	Controller = "whelen_cencom"
+-- }
+
 VEHICLE.SubMaterials = {
 	[17] = "photon/common/blank", -- skin
 	[20] = "photon/common/blank", -- black_chrome
@@ -26,6 +30,35 @@ VEHICLE.SubMaterials = {
 }
 
 VEHICLE.Equipment = {
+	{
+		Category = "Controller Sound",
+		Options = {
+			{
+				Option = "Whelen",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "whelen_cencom" }
+				}
+			},
+			{
+				Option = "Code 3",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "code3_z3s" }
+				}
+			},
+			{
+				Option = "Federal Signal",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "fedsig" }
+				}
+			},
+			{
+				Option = "SoundOff Signal",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "sos_nergy" }
+				}
+			}
+		}
+	},
 	{
 		Category = "Standard",
 		Options = {

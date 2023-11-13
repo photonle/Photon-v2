@@ -86,7 +86,8 @@ function Vehicle.New( data )
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
 		SubMaterials 		= data.SubMaterials,
-		Siren				= sirenConfig
+		Siren				= sirenConfig,
+		InteractionSounds	= data.InteractionSounds
 	}
 
 

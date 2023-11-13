@@ -108,14 +108,7 @@ function ENT:InitializeShared()
 	self.PropArray = {}
 	self.UIComponentArray = {}
 
-	self.Equipment = {
-		Components = {},
-		Props = {},
-		BodyGroups = {},
-		SubMaterials = {},
-		VirtualComponents = {},
-		UIComponents = {}
-	}
+	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
 
 	--self.CurrentConfiguration = {}
 	-- self.EquipmentConfiguration = {}
@@ -463,6 +456,12 @@ function ENT:SetupSubMaterial( id )
 	self:GetParent():SetSubMaterial( index, material )
 end
 
+function ENT:SetupInteractionSound( id )
+	local data = self.Equipment.InteractionSounds[id]
+	printf( "Setting up interaction sound [%s]", id )
+	self:SetInteractionSound( data.Class, data.Profile )
+end
+
 ---@param id string
 function ENT:SetupComponent( id )
 	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
@@ -580,6 +579,10 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #subMaterials do
 		self:SetupSubMaterial( subMaterials[i] )
 	end
+	
+	for i=1, #equipmentTable.InteractionSounds do
+		self:SetupInteractionSound( equipmentTable.InteractionSounds[i] )
+	end
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -607,6 +610,12 @@ function ENT:SetupProfile( name, isReload )
 
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
+
+	if ( istable( profile.InteractionSounds ) ) then
+		for class, name in pairs( profile.InteractionSounds ) do
+			self:SetInteractionSound( class, name )
+		end
+	end
 
 	self.CurrentSelections = nil
 	self.CurrentProfile = profile
@@ -643,6 +652,10 @@ function ENT:SetupProfile( name, isReload )
 		-- Setup sub-materials
 		for id, subMaterialData in pairs( self.Equipment.SubMaterials ) do
 			self:SetupSubMaterial( id )
+		end
+		-- Setup interaction sounds
+		for id, interactionSounds in pairs( self.Equipment.InteractionSounds ) do
+			self:SetupInteractionSound( id )
 		end
 	else
 		self:SetupSelections()

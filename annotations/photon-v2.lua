@@ -160,6 +160,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field SubMaterials table
 ---@field VirtualComponents table
 ---@field UIComponents table
+---@field InteractionSounds table
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.

@@ -139,7 +139,7 @@ COMPONENT.Segments = {
 			[1] = "5:Ridges_White 17:W"
 		 },
 		 Sequences = {
-			["ON"]  = sequence():Alternate( 1, 0, 8 )
+			["ON"]  = { 1 }
 		 }
 	},
 	Reverse_R = {
@@ -147,7 +147,7 @@ COMPONENT.Segments = {
 			[1] = "6:Ridges_White 18:W"
 		 },
 		 Sequences = {
-			["ON"] = sequence():Alternate( 1, 0, 8 )
+			["ON"] = { 1 }
 		 }
 	},
 }
