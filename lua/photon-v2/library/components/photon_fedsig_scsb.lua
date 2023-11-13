@@ -48,7 +48,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[ON] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 [STAGE1] 19 [STAGE2] 20 [STAGE3] 21"
+COMPONENT.StateMap = "[ON] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 [STAGE1] 19 [STAGE2] 20 [STAGE3] 21"
 
 COMPONENT.Elements = {
 	[1] = { "Button", Indexes = { 11 } },

@@ -136,10 +136,10 @@ COMPONENT.Elements = {
 	
 }
 
-COMPONENT.ColorMap = "[R] 2 5 9 10 7 [B] 3 4 8 11 6 [A] 12 [W] 1"
+COMPONENT.StateMap = "[R] 2 5 9 10 7 [B] 3 4 8 11 6 [A] 12 [W] 1"
 
 -- Allows for multiple lights to be treated as one when desired
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["LeftEdge"] = { 5, 7, 9 },
 	["RightEdge"] = { 4, 6, 8 },
 	["Left"] = { 4, 6, 8, 10, 11 },

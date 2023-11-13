@@ -75,7 +75,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["Tail_L"] = { 1, 2, 22 },
 	["Tail_R"] = { 3, 4, 23 },
 	["Brake_L"] = { 5, 6 },
@@ -128,7 +128,7 @@ COMPONENT.Elements = {
 
 }
 
-COMPONENT.ColorMap = "[R] 2 4 6 8 10 15 22 23 [HIDE] 1 3 5 7 9 24 [W] 11 12 18 19 [A] 13 14 20 21 [~SW] 16 17 [W_D] 25"
+COMPONENT.StateMap = "[R] 2 4 6 8 10 15 22 23 [HIDE] 1 3 5 7 9 24 [W] 11 12 18 19 [A] 13 14 20 21 [~SW] 16 17 [W_D] 25"
 
 local sequence = Photon2.SequenceBuilder.New
 

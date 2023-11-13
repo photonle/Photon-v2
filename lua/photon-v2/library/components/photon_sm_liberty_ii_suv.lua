@@ -155,9 +155,9 @@ COMPONENT.Elements = {
 	[34] = { "AlleyIllumination", Vector( 0, -31.65, 0.4 ), Angle( 0, 180, 0 ) },
 }
 
-COMPONENT.ColorMap = "[R] 1 3 7 9 13 15 17 19 21 23 25 27 29 [B] 2 4 8 10 14 16 18 20 22 24 26 28 30 [W] 5 6 11 12 31 32 33 34"
+COMPONENT.StateMap = "[R] 1 3 7 9 13 15 17 19 21 23 25 27 29 [B] 2 4 8 10 14 16 18 20 22 24 26 28 30 [W] 5 6 11 12 31 32 33 34"
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["Left"] = { 1, 3, 7, 9, 13, 15, 17, 19, 21, 23, 25, 27, 29 },
 	["Right"] = { 2, 4, 8, 10, 14, 16, 18, 20, 22, 24, 26, 28, 30 },
 	["L_Corner"] = { 9, 13, 23, 25, 27, 29 },

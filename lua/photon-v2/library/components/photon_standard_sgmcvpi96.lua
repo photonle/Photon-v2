@@ -73,7 +73,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 }
 
 COMPONENT.Elements = {
@@ -119,7 +119,7 @@ COMPONENT.Elements = {
 	[27] = { "HighBeams", Vector( 17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
 }
 
-COMPONENT.ColorMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
+COMPONENT.StateMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
 
 local sequence = Photon2.SequenceBuilder.New
 

@@ -246,7 +246,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["POD1_Light"] = { 2, 3, 30 },
 	-- ["POD1_Light"] = { 2, 3 },
 	["POD1"] = { 1 },
@@ -330,7 +330,7 @@ COMPONENT.Elements = {
 	[40] = { "ForwardHotFeet", Vector( 5.9, -24.76, -1.49 ), Angle( 0, -90, 0 ) },
 }
 
-COMPONENT.ColorMap = "[ROT] 1 4 7 10 13 16 19 [R] 2 3 5 6 8 9 11 12 20 21 30 31 32 33 36 [B] 14 15 17 18 34 35 [A] 22 23 24 25 26 27 28 29 [W] 37 38 39 40"
+COMPONENT.StateMap = "[ROT] 1 4 7 10 13 16 19 [R] 2 3 5 6 8 9 11 12 20 21 30 31 32 33 36 [B] 14 15 17 18 34 35 [A] 22 23 24 25 26 27 28 29 [W] 37 38 39 40"
 
 local sequence = Photon2.SequenceBuilder.New
 

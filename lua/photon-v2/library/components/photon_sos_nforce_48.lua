@@ -44,7 +44,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[R] 1 [B] 2"
+COMPONENT.StateMap = "[R] 1 [B] 2"
 
 COMPONENT.Elements = {
 	[1] = { "Main", Vector( -7.7, 6.6, -0.2 ), Angle( 0, 0, 0 ) },

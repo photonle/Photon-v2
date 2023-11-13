@@ -126,12 +126,12 @@ VEHICLE.Equipment = {
 							forward_hotfeet = 1,
 							alley_hotfeet = 1
 						},
-						-- ColorMap = "[R] 1 4 5 8 9 12 13 16 17 20 21 24 25 28 [B] 2 3 6 7 10 11 14 15 18 19 22 23 26 27"
-						-- ColorMap = "[R]  [B] 2 3 6 7 10 11 14 15 18 19 22 23 26 27"
-						-- ColorMap = "[B] 2 4 10 12 18 20 26 28 5 7 13 15 21 23 [R] 1 3 9 11 17 19 25 27 6 8 14 16 22 24"
-						-- ColorMap = "[B] 2 4 10 12 18 20 26 28 5 7 13 15 21 23 [R] 1 3 9 11 17 19 25 27 6 8 14 16 22 24"
-						-- ColorMap = "[R] 1 2 5 6 9 10 13 14 17 18 21 22 25 26 [B] 3 4 7 8 11 12 15 16 19 20 23 24 27 28"
-						-- ColorMap = "[R] 1 5 9 13 17 21 25 2 6 10 14 18 22 26 [B] 4 8 12 16 20 24 28 3 7 11 15 19 23 27"
+						-- StateMap = "[R] 1 4 5 8 9 12 13 16 17 20 21 24 25 28 [B] 2 3 6 7 10 11 14 15 18 19 22 23 26 27"
+						-- StateMap = "[R]  [B] 2 3 6 7 10 11 14 15 18 19 22 23 26 27"
+						-- StateMap = "[B] 2 4 10 12 18 20 26 28 5 7 13 15 21 23 [R] 1 3 9 11 17 19 25 27 6 8 14 16 22 24"
+						-- StateMap = "[B] 2 4 10 12 18 20 26 28 5 7 13 15 21 23 [R] 1 3 9 11 17 19 25 27 6 8 14 16 22 24"
+						-- StateMap = "[R] 1 2 5 6 9 10 13 14 17 18 21 22 25 26 [B] 3 4 7 8 11 12 15 16 19 20 23 24 27 28"
+						-- StateMap = "[R] 1 5 9 13 17 21 25 2 6 10 14 18 22 26 [B] 4 8 12 16 20 24 28 3 7 11 15 19 23 27"
 					}
 				}
 			}
@@ -239,84 +239,84 @@ VEHICLE.Equipment = {
 					-- 	Position = Vector(11, 125, 35),
 					-- 	Angles = Angle(1.5, -90, 0),
 					-- 	Scale = 1.4,
-					-- 	-- ColorMap = "[ON+5] 1 2 3"
+					-- 	-- StateMap = "[ON+5] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(11, 125, 35),
 					-- 	Angles = Angle(1.5, -90, 0),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-5] 1 2 3"
+					-- 	StateMap = "[ON-5] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(-9, 125, 35),
 					-- 	Angles = Angle(1.5, -90, 180),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON+10] 1 2 3"
+					-- 	StateMap = "[ON+10] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(9, 125, 35),
 					-- 	Angles = Angle(1.5, -90, 180),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-10] 1 2 3"
+					-- 	StateMap = "[ON-10] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(-21, 123, 42),
 					-- 	Angles = Angle(14, -90, 90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON+15] 1 2 3"
+					-- 	StateMap = "[ON+15] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(21, 123, 42),
 					-- 	Angles = Angle(14, -90, -90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-15] 1 2 3"
+					-- 	StateMap = "[ON-15] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(-21, 124.1, 33),
 					-- 	Angles = Angle(3, -90, 90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON+20] 1 2 3"
+					-- 	StateMap = "[ON+20] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(21, 124.1, 33),
 					-- 	Angles = Angle(3, -90, -90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-20] 1 2 3"
+					-- 	StateMap = "[ON-20] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(-21, 124.1, 24),
 					-- 	Angles = Angle(-5, -90, 90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON+25] 1 2 3"
+					-- 	StateMap = "[ON+25] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(21, 124.1, 24),
 					-- 	Angles = Angle(-5, -90, -90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-25] 1 2 3"
+					-- 	StateMap = "[ON-25] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(-20.2, 124.1, 24),
 					-- 	Angles = Angle(-5, -90, -90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON+30] 1 2 3"
+					-- 	StateMap = "[ON+30] 1 2 3"
 					-- },
 					-- {
 					-- 	Component = "siren_prototype",
 					-- 	Position = Vector(20.2, 124.1, 24),
 					-- 	Angles = Angle(-5, -90, 90),
 					-- 	Scale = 1.4,
-					-- 	ColorMap = "[ON-30] 1 2 3"
+					-- 	StateMap = "[ON-30] 1 2 3"
 					-- },
 				}
 			}

@@ -264,7 +264,7 @@ function Segment:Initialize( componentInstance )
 		Component = componentInstance,
 		CurrentModes = componentInstance.CurrentModes,
 		Elements = componentInstance.Elements,
-		ColorMap = componentInstance.ColorMap,
+		StateMap = componentInstance.StateMap,
 		Sequences = {},
 		InitializedFrames = {},
 		InputActions = {}
@@ -278,12 +278,12 @@ function Segment:Initialize( componentInstance )
 		local frame = segment.InitializedFrames[i]
 		for lightId, stateId in pairs(self.Frames[i]) do
 			if ( isnumber( stateId ) ) then
-				if ( not segment.ColorMap[lightId] ) then
-					error( "Light ID [" .. tostring( lightId ) .. "] could not be found in the ColorMap.")
+				if ( not segment.StateMap[lightId] ) then
+					error( "Light ID [" .. tostring( lightId ) .. "] could not be found in the StateMap.")
 				end
-				stateId = segment.ColorMap[lightId][stateId]
+				stateId = segment.StateMap[lightId][stateId]
 				if ( not stateId ) then
-					error(string.format("ColorMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
+					error(string.format("StateMap on Component[%s] Light[%s] does not have Color #%s defined.", componentInstance.Name, lightId, self.Frames[i][lightId]))
 				end
 			end
 			if (not segment.Component.Elements[lightId]) then

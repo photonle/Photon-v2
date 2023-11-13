@@ -255,7 +255,7 @@ COMPONENT.ElementStates = {
 	}
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["Tail_L"] = { 1, 2 },
 	["Tail_R"] = { 4, 5 },
 	["Fwd_L"] = { 13, 15, 17, 19 },
@@ -312,7 +312,7 @@ COMPONENT.Elements = {
 	[31] = { "MeshLights", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc" },
 }
 
-COMPONENT.ColorMap = "[R] 1"
+COMPONENT.StateMap = "[R] 1"
 
 local sequence = Photon2.SequenceBuilder.New
 

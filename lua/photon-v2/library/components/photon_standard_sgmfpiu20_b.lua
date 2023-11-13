@@ -88,7 +88,7 @@ COMPONENT.ElementStates = {
 	["Sub"] = { HIDE = { Material = "photon/common/blank" } }
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["HeadL"] = { 1, 3 },
 	["HeadR"] = { 2, 4 },
 
@@ -130,8 +130,8 @@ COMPONENT.Elements = {
 	[10] = { "MeshExtra", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr" },
 
 	-- Marker Forward
-	[11] = { "Marker", Vector( -43.4, 92.8, 49.3), Angle( -20, 72, 6 ) },
-	[12] = { "Marker", Vector( 43.4, 92.8, 49.3), Angle( 180+20, 180-72, -6 ) },
+	[11] = { "ForwardMarker", Vector( -43.4, 92.8, 49.3), Angle( -20, 72, 6 ) },
+	[12] = { "ForwardMarker", Vector( 43.4, 92.8, 49.3), Angle( 180+20, 180-72, -6 ) },
 
 	-- Signal Rear
 	[13] = { "Turn", Vector( -36.4, -122.6, 52.4 ), Angle( 0, 180-22.5, 0 ) },

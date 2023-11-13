@@ -73,7 +73,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 [~R] 7 9 21 23 35 37 39 41 43 45 [~B] 8 10 22 24 36 38 40 42 44 46 [~A] 25 26 27 28 29 30 31 32"
+COMPONENT.StateMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 [~R] 7 9 21 23 35 37 39 41 43 45 [~B] 8 10 22 24 36 38 40 42 44 46 [~A] 25 26 27 28 29 30 31 32"
 
 local fov = 180
 
@@ -155,7 +155,7 @@ local BoneLightMirror = {
 	FOV = 90
 }
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["RC"] = { 1, 6, 33, 34, 47, 48 }
 }
 

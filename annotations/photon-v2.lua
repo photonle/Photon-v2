@@ -113,12 +113,12 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Model string
 ---@field Templates { Bone?: table<string, PhotonElementBone>, Mesh?: table<string, PhotonElementMesh>, Sprite?: table<string, PhotonElement2D>, Projected?: table<string, PhotonElementProjected>,  }
 ---@field Elements table
----@field LightGroups table
+---@field ElementGroups table
 ---@field Segments table
 ---@field Inputs table
 ---@field InputPriorities table<string, number>
 ---@field VirtualOutputs table
----@field ColorMap table<integer, string[]> | string
+---@field StateMap table<integer, string[]> | string
 ---@field SubMaterials table<integer, string>
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.
 ---@field Phase string Pattern variant identifier.

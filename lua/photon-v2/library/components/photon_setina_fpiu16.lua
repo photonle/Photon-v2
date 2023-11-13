@@ -31,7 +31,7 @@ COMPONENT.Elements = {
 	[4] = { "Impaxx", Vector( -22.31, -0.25, 9.95 ), Angle( 0, 90, 90 ) },
 }
 
-COMPONENT.ColorMap = "[R] 1 3 [B] 2 4"
+COMPONENT.StateMap = "[R] 1 3 [B] 2 4"
 
 COMPONENT.ElementStates = {}
 

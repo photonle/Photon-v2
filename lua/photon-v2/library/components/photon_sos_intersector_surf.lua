@@ -74,11 +74,11 @@ COMPONENT.Elements = {
 
 local sequence = Photon2.SequenceBuilder.New
 
-COMPONENT.LightGroups = {
+COMPONENT.ElementGroups = {
 	["Intersector"] = { 1, 2, 3, 4, 5, 6, 7 }
 }
 
-COMPONENT.ColorMap = "[W] Intersector"
+COMPONENT.StateMap = "[W] Intersector"
 
 COMPONENT.Segments = {
 	Intersector = {

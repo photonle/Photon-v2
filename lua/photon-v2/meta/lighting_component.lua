@@ -17,9 +17,9 @@ local printf = Photon2.Debug.PrintF
 ---@field CurrentModes table<string, string>
 ---@field ActiveSequences table<PhotonSequence, boolean>
 ---@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
----@field ColorMap table<integer, string[]>
+---@field StateMap table<integer, string[]>
 ---@field InputActions table<string, string[]>
----@field LightGroups table<string, integer[]>
+---@field ElementGroups table<string, integer[]>
 ---@field UseControllerModes boolean If true, the component will use its controller's CurrentModes table. If false, it will manage its own (required for Virtual InputActions).
 ---@field Phase string
 local Component = exmeta.New()
@@ -87,7 +87,7 @@ function Component.New( name, data )
 		Segments = {},
 		Inputs = {},
 		InputActions = {},
-		LightGroups = data.LightGroups,
+		ElementGroups = data.ElementGroups,
 		SubMaterials = data.SubMaterials,
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
 	}
@@ -142,11 +142,11 @@ function Component.New( name, data )
 			Compile Color Map
 	--]]
 
-	if ( isstring( data.ColorMap ) ) then
-		-- component.ColorMap = Builder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
-		component.ColorMap = Photon2.ComponentBuilder.ColorMap( data.ColorMap --[[@as string]], data.LightGroups )
-	elseif ( istable( data.ColorMap ) ) then
-		component.ColorMap = data.ColorMap --[[@as table<integer, string[]>]]
+	if ( isstring( data.StateMap ) ) then
+		-- component.StateMap = Builder.StateMap( data.StateMap --[[@as string]], data.ElementGroups )
+		component.StateMap = Photon2.ComponentBuilder.StateMap( data.StateMap --[[@as string]], data.ElementGroups )
+	elseif ( istable( data.StateMap ) ) then
+		component.StateMap = data.StateMap --[[@as table<integer, string[]>]]
 	end
 
 
@@ -254,7 +254,7 @@ function Component.New( name, data )
 	--]]
 
 	for segmentName, segmentData in pairs( data.Segments or {} ) do
-		component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.LightGroups, component.InputPriorities )
+		component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
 	end
 
 	--[[
@@ -524,20 +524,20 @@ function Component:RemoveVirtual()
 	end
 end
 
-function Component:SetColorMap( colorMap )
+function Component:SetStateMap( colorMap )
 	if ( isstring( colorMap ) ) then
-		-- error("Setting string ColorMap: " .. tostring(colorMap))
-		colorMap = Photon2.ComponentBuilder.ColorMap( colorMap --[[@as string]], self.LightGroups )
+		-- error("Setting string StateMap: " .. tostring(colorMap))
+		colorMap = Photon2.ComponentBuilder.StateMap( colorMap --[[@as string]], self.ElementGroups )
 	end
-	self.ColorMap = colorMap
+	self.StateMap = colorMap
 end
 
 Component.Parameters = {}
 
 Component.PropertyFunctionMap = {
-	["ColorMap"] = "SetColorMap"
+	["StateMap"] = "SetStateMap"
 }
 
 Component.PropertiesUpdatedOnSoftUpdate = {
-	["ColorMap"] = true
+	["StateMap"] = true
 }

@@ -32,7 +32,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ColorMap = "[R] 1"
+COMPONENT.StateMap = "[R] 1"
 
 COMPONENT.Elements = {
 	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) }

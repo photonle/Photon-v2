@@ -4,7 +4,7 @@ local string = string
 
 ---@param colorMap string
 ---@param lightGroups table<string, integer[]>
-function Photon2.ComponentBuilder.ColorMap( colorMap, lightGroups )
+function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups )
 	colorMap = string.Replace( colorMap, "\n", " " )
 	colorMap = string.Replace( colorMap, "\t", " " )
 	colorMap = string.Trim( colorMap )
@@ -37,7 +37,7 @@ function Photon2.ComponentBuilder.ColorMap( colorMap, lightGroups )
 			elseif ( asNumber ) then
 				result[asNumber] = current
 			else
-				error( "ColorMap parsing failed. Received: [" .. tostring(colorMap) .. "]" )
+				error( "StateMap parsing failed. Received: [" .. tostring(colorMap) .. "]" )
 			end
 		end
 	end
