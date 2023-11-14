@@ -12,6 +12,12 @@ COMPONENT.PrintName = [[Federal Signal Valor (51")]]
 
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B",
+	[3] = "W"
+}
+
 local s = 1.5
 
 COMPONENT.Templates = {
@@ -86,7 +92,9 @@ COMPONENT.Elements = {
 	[28] = { "Rear", Vector( -8.2, -2.35, 1.85 ), Angle( 0, 90, 0 ) },
 }
 
-COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
+-- COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
+
+COMPONENT.StateMap = "[1/2/3]  3 5 7 9 11 13 15 17 19 21 23 25 27 [2/1/3] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -161,6 +169,16 @@ COMPONENT.Segments = {
 			["P26"] = { 0, 0, 0, 1, 2, 1, 2, 0 },
 			-- ["ON"] = { 1 },
 		}
+	},
+	["Demo"] = {
+		Frames = {
+			[1] = "[1] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28",
+			[2] = "[2] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28",
+		},
+		Sequences = {
+			["1"] = { 1 },
+			["2"] = { 2 }
+		}
 	}
 }
 
@@ -185,6 +203,15 @@ COMPONENT.Inputs = {
 			P26_REAR = "P26",
 			P26_WOR = "P26",
 
-		}
+		},
+		-- ["MODE1"] = {
+		-- 	Demo = "1",
+		-- },
+		-- ["MODE2"] = {
+		-- 	Demo = "2",
+		-- },
+		-- ["MODE3"] = {
+		-- 	Demo = "2",
+		-- }
 	}
 }

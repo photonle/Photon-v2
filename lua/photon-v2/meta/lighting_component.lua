@@ -144,7 +144,7 @@ function Component.New( name, data )
 
 	if ( isstring( data.StateMap ) ) then
 		-- component.StateMap = Builder.StateMap( data.StateMap --[[@as string]], data.ElementGroups )
-		component.StateMap = Photon2.ComponentBuilder.StateMap( data.StateMap --[[@as string]], data.ElementGroups )
+		component.StateMap = Photon2.ComponentBuilder.StateMap( data.StateMap --[[@as string]], data.ElementGroups, data.States )
 	elseif ( istable( data.StateMap ) ) then
 		component.StateMap = data.StateMap --[[@as table<integer, string[]>]]
 	end

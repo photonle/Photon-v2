@@ -177,10 +177,6 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		end
 		
 		local resultFrame = {}
-		
-		print("*****************")
-		PrintTable(inputFrame)
-		print("***************** RESULT:")
 
 		-- Iterate over each light-state in frame
 		for k, v in pairs( inputFrame ) do
@@ -194,8 +190,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 				error("Invalid light-state in frame #" .. tostring(i))
 			end
 		end
-		
-		PrintTable(resultFrame)
+
 		processedFrames[i] = resultFrame
 
 		

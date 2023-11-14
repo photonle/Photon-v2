@@ -148,7 +148,10 @@ In Photon LE, frames written using table pairs that defined a light index and co
 
 In Photon 2, this same frame can be simplified to `"[R] 1 3 [B] 2 4"` using the new frame syntax. The string is parsed in a linear, left-to-right process. The state, defined in brackets (`[R]`), is applied to all element IDs to the right (`1 3`). When the parser reaches another pair of brackets (`[B]`), that new state is then applied to elements to the right of that (`2 4`).
 
+### State Naming
+To distinguish between explicitly-defined states and slots, the rule is simple: strings are states, numbers are slots.
 
+`[R] 1` means element `1` is assigned to state `R`. `[1] 1` means element `1` is assigned the value of slot 1. (For this reason, custom states that have numeric names are not supported.)
 
 ## Compatibility
 While Photon 2 was intended to re-use many aspects of Photon LE for compatability, major changes in the addon architecture and a closer review of Photon LE's code eventually ruled this out. Photon 2 has been written from the ground-up and actually has very, very little in common with Photon LE.

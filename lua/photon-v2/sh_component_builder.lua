@@ -4,7 +4,7 @@ local string = string
 
 ---@param colorMap string
 ---@param lightGroups table<string, integer[]>
-function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups )
+function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups, stateSlots )
 	colorMap = string.Replace( colorMap, "\n", " " )
 	colorMap = string.Replace( colorMap, "\t", " " )
 	colorMap = string.Trim( colorMap )
@@ -14,6 +14,9 @@ function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups )
 
 	local blocks = string.Split( colorMap, " " )
 	
+	-- micro optimization
+	local validatedStateSlot = false
+
 	local result = {}
 
 	local current
@@ -24,6 +27,24 @@ function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups )
 			block = string.sub( block, 2, string.len(block) - 1 )
 			block = string.Replace( block, " ", "" )
 			current = string.Split( block, "/" )
+			
+			for i=1, #current do
+				-- If the provided state is a number, it is assumed that it's a slot.
+				-- (numeric state names aren't supported)
+				local asNumber = tonumber( current[i] )
+				if ( asNumber ) then
+					if ( not validatedStateSlot ) then
+						if ( not istable( stateSlots ) ) then
+							error( "Failed to setup StateMap because StateSlots is invalid. Ensure you have COMPONENT.States = {} configured.")
+						end
+						if ( not stateSlots[asNumber] ) then
+							error( "Failed to setup StateMap because slot [" .. tostring(current[i]) .. "] is not defined in COMPONENT.States.")
+						end
+						validatedStateSlot = true
+					end
+					current[i] = stateSlots[asNumber]
+				end
+			end
 		else
 			local asNumber = tonumber( block )
 			if ( not isnumber( asNumber ) ) then
