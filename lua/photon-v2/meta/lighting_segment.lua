@@ -57,7 +57,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 			if isstring(key) then
 				local group = lightGroups[key]
 				if ( not group ) then
-					error( string.format( "Undefined LightGroup [%s] in segment.", key ) )
+					error( string.format( "Undefined StateGroup [%s] in segment.", key ) )
 				end
 				for _i=1, #group do
 					result[group[_i]] = value
@@ -112,7 +112,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 			if (#lightData == 1) then
 				insert = (tonumber(lightData[1]) or lightData[1])
 				if ( ( insert) and contextState ~= nil ) then
-					insert = { insert, contextState }
+					insert = { insert, tonumber(contextState) or contextState }
 				end
 			else
 				insert = { (tonumber(lightData[1]) or lightData[1]), (tonumber(lightData[2]) or lightData[2]) }
@@ -178,6 +178,10 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		
 		local resultFrame = {}
 		
+		print("*****************")
+		PrintTable(inputFrame)
+		print("***************** RESULT:")
+
 		-- Iterate over each light-state in frame
 		for k, v in pairs( inputFrame ) do
 			if ( isnumber(v) ) then
@@ -191,6 +195,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 			end
 		end
 		
+		PrintTable(resultFrame)
 		processedFrames[i] = resultFrame
 
 		
