@@ -54,8 +54,6 @@ While there is currently no UI or in-game process for setting up binds, you can 
 # Known Issues
 There's a massive list of issues and to-do items that remain in Photon 2. While I'm fully aware of a number of them, don't hesitate to report problems you run into.
 
-* Sirens break when leaving the controller's PVS and active sirens will play indefinitely. Although I know the reason, I'm still working on a solution and haven't been able to address it yet. In the mean time, use the `stopsound` command to forcefully kill lingering sirens (I've it bound to my mouse for well over a decade).
-
 * Projected textures are rendered even when they're invisible. This can cause a pretty major performance hit and it isn't obvious that it's happening. 
 
 * Lights can be dim-looking, washed out, or weird looking. Light appearance is a major work-in-progress and I don't intend to focus on it until much later.
@@ -63,35 +61,6 @@ There's a massive list of issues and to-do items that remain in Photon 2. While 
 * This readme file is full of incomplete thoughts and information.
 
 # Major Changes
-
-...WORK IN PROGRESS...
-
-# All New Components Platform
-## A History
-The components system in Photon LE, while functional, is actually rather hacky in its implementation. From its release in 2014, Photon was only designed for lights that were statically positioned relative to the vehicle. There was no way to functionally separate lightbars and other lights from each other. Rather, every light visible on the vehicle needed to be defined together, and there was no support for changing the equipment or body groups either.
-
-While it was always possible to add different lightbar props, the lights themselves were still only parented to the vehicle. The props, for all intents and purposes, were strictly decorative, and -- more importantly -- could not be moved without also needing to manually move every light that was meant to align with it.
-
-As modeling techniques and vehicle features evolved through early 2015, new emergency vehicle addons were being released with body groups for different lightbars and lighting configurations. To adapt, Photon added support for different body-grouped lighting equipment in early summer. While all lights still needed to be defined in a singular vehicle file, it was made possible for the different sections of lights to be activated or deactivated based on the selected body groups.
-
-With the growing focus on customization, I realized that Photon needed a way to offer attached props that could be swapped out like body groups. But to allow for reuse of lightbars across different vehicles, it needed to also be possible to define light positions and flash patterns for a single lightbar.
-
-The best solution, my 19-year-old self determined, was to simply write a startup process that translated the light positions of each component and injected the resulting lights into the vehicle's monolithic light table. Instead of treating components as the self-contained entities they were meant to represent, their data was simply copied, renamed, and translated into Photon's original vehicle structure with various running indexes to ensure unique naming.
-
-This procedure was further expanded with the launch of the fully-adjustable equipment configurations that accompanied the release of the Ford Police Interceptor Utility in late 2015. Dozens of components (potentially hundreds) were being injected into a central a vehicle file that contained unique specifications for hundreds, if not thousands, of lights.
-
-The results were functional, but the flexibility was constrained. Not only was debugging made more difficult with many potential points of failure, any changes to complex vehicles required each component to be re-translated and re-indexed, a computationally expensive process made slower with each new addition.
-
-To make matters worse, the position translation code was fundementally flawed and mathematically unsound. Certain angles and orientations weren't accounted for correctly, necessitating hacky workarounds for non-normal angle. Other orientations were simply impossible to achieve without causing major issues with light alignment and visibility.
-
-While surface-level improvements were made over the years, this poor underlying architecture has never changed.
-
-## Today
-To avoid the unfixable mess of Photon LE's components, Photon 2 started back at square one. Central to my vision was the concept of independent, reusable, inheritable, flexible and adaptable components. Instead of a rigid behavior pipeline that was hard-coded into core application logic, components were assembled using object-oriented blocks of discrete functions. 
-
-In fact, so much effort was put into this new approach that Photon 2 wasn't capable of even rendering a single light until about three months into the project. Every step prior to that point was in building the foundation.
-
-
 
 # Simulate Modern Controller Features
 Photon 2 supports the advanced and customizable features provided by real-world emergency lighting and siren controllers, such as SoundOff Signal's BluePrint, Whelen's CORE, Federal Signal's Pathfinder, and Code 3's Matrix.
@@ -171,6 +140,15 @@ When using inheritance functionality, beware of certain quirks that may cause un
 Sometimes this is want you want, and sometimes it's not. If you find that a parent value is appearing when you don't want it to, you must manually prevent the particular field/route from being inherited using the global `UNSET` variable.
 
 (See the `photon_siren_secondary` component for an example of this.)
+
+## Frames, StateMaps and State Slots
+One of the more significant creator changes in Photon 2 is the addition of frame strings. Using a very basic script-like syntax, frames can be constructed in a less-verbose and non-Lua manner.
+
+In Photon LE, frames written using table pairs that defined a light index and color, like: `{ { 1, R }, { 2, B }, { 3, R }, { 4, B } }`. This assigned the color red to lights 1 and 3, and the color blue to lights 2 and 4. 
+
+In Photon 2, this same frame can be simplified to `"[R] 1 3 [B] 2 4"` using the new frame syntax. The string is parsed in a linear, left-to-right process. The state, defined in brackets (`[R]`), is applied to all element IDs to the right (`1 3`). When the parser reaches another pair of brackets (`[B]`), that new state is then applied to elements to the right of that (`2 4`).
+
+
 
 ## Compatibility
 While Photon 2 was intended to re-use many aspects of Photon LE for compatability, major changes in the addon architecture and a closer review of Photon LE's code eventually ruled this out. Photon 2 has been written from the ground-up and actually has very, very little in common with Photon LE.

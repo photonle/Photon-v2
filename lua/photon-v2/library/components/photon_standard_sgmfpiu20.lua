@@ -167,7 +167,7 @@ COMPONENT.Elements = {
 	[20] = { "TailSubMaterial", Indexes = { 19 } },
 
 	-- Center Brake
-	[21] = { "MeshExtra", Vector( 0, 0.8, -0.9 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", Scale = 1.012 }
+	[21] = { "MeshExtra", Vector( 0, 1.1, -1 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", Scale = 1.012 }
 }
 
 local sequence = Photon2.SequenceBuilder.New

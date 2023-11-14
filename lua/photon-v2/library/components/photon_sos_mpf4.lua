@@ -13,6 +13,12 @@ COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4"]]
 
 COMPONENT.Model = "models/sentry/props/soundofffascia.mdl"
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B",
+	[3] = "W"
+}
+
 local s = 1.6
 
 COMPONENT.Templates = {
@@ -32,7 +38,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[R/B/W/A] 1"
+COMPONENT.StateMap = ""
 
 COMPONENT.Elements = {
 	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) }
@@ -42,10 +48,16 @@ COMPONENT.Segments = {
 	Full = {
 		Frames = {
 			[1] = "[1] 1",
+			[2] = "[2] 1",
+			[3] = "[3] 1",
 			-- [1] = { { 1, 4 } },
 		},
 		Sequences = {
-			["TEST"] = { 1 }
+			["TEST"] = { 
+				1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+				2, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+				3, 3, 0, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
+			}
 		}
 	}
 }

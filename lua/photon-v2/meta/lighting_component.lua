@@ -139,7 +139,7 @@ function Component.New( name, data )
 
 
 	--[[
-			Compile Color Map
+			Compile State Map
 	--]]
 
 	if ( isstring( data.StateMap ) ) then
@@ -149,6 +149,32 @@ function Component.New( name, data )
 		component.StateMap = data.StateMap --[[@as table<integer, string[]>]]
 	end
 
+	--[[
+			Handle State Map Slots
+	--]]
+
+	-- Check if component is configured to use state slots
+	if ( istable( data.States ) ) then
+		-- Iterate through each element (non-processed)
+		for id, element in pairs( data.Elements ) do
+			-- Use direct reference if the StateMap isn't manually configured
+			if ( not component.StateMap[id] ) then
+				component.StateMap[id] = data.States
+			else
+				local slot
+				-- Iterate through each state slot
+				for slotIndex, stateId in pairs( data.States ) do
+					slot = component.StateMap[id][slotIndex]
+					-- Fill non-defined slots with slots from the component states
+					if ( slot == "" ) or ( slot == nil ) then
+						component.StateMap[id][slotIndex] = stateId
+					else
+						component.StateMap[id][slotIndex] = slot
+					end
+				end
+			end
+		end
+	end
 
 	--[[
 			Compile Light Templates

@@ -122,6 +122,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field SubMaterials table<integer, string>
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.
 ---@field Phase string Pattern variant identifier.
+---@field States table<integer, string> Pre-defined state slots.
 
 ---@class PhotonLibrarySirenComponent : PhotonLibraryComponent
 ---@field Siren string Default siren name.
