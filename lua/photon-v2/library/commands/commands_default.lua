@@ -408,3 +408,18 @@ Photon2.RegisterCommand({
 		{ Action = "SOUND", Sound = "Controller" }
 	}
 })
+
+Photon2.RegisterCommand({
+	Name = "toggle_warning_lights_m3",
+	Title = "Toggle Warning Lights (Mode 3)", 
+	Category = "Emergency Lighting",
+	Description = "When warning lights are off, turns them on to MODE3. When warning lights are on (any mode), turns them off.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE3" },
+		{ Action = "OFF_WITH", Channel = "Emergency.Siren", Value = "Emergency.Warning" }
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller" }
+	}
+})

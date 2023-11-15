@@ -64,25 +64,37 @@ Photon2.RegisterInputConfiguration({
 })
 
 Photon2.RegisterInputConfiguration({
-	Name = "default_override",
+	Name = "m3_override",
 	Inherit = "default",
-	Title = "Override Test B",
+	Title = "Mode 3 Lighting",
 	Author = "Photon",
 	Binds = {
-		[KEY_M] = {
-			{ Command = "manual_siren" }
+		[KEY_F] = {
+			{ Command = "toggle_warning_lights_m3" }
 		}
 	}
 })
 
-Photon2.RegisterInputConfiguration({
-	Name = "default_c",
-	Inherit = "default_override",
-	Title = "Override Test C",
-	Author = "Photon",
-	Binds = {
-		[KEY_5] = {
-			{ Command = "toggle_siren_1" }
-		}
-	}
-})
+-- Photon2.RegisterInputConfiguration({
+-- 	Name = "default_override",
+-- 	Inherit = "default",
+-- 	Title = "Override Test B",
+-- 	Author = "Photon",
+-- 	Binds = {
+-- 		[KEY_M] = {
+-- 			{ Command = "manual_siren" }
+-- 		}
+-- 	}
+-- })
+
+-- Photon2.RegisterInputConfiguration({
+-- 	Name = "default_c",
+-- 	Inherit = "default_override",
+-- 	Title = "Override Test C",
+-- 	Author = "Photon",
+-- 	Binds = {
+-- 		[KEY_5] = {
+-- 			{ Command = "toggle_siren_1" }
+-- 		}
+-- 	}
+-- })
