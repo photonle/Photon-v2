@@ -3,25 +3,78 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementDynamicLight"
 BASE = "PhotonElement"
 
----@class PhotonElementDynamicLight : PhotonElement
+local manager
+if ( CLIENT ) then manager = Photon2.Render.DynamicLighting end
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
+local DynamicLight = DynamicLight
 
+---@class PhotonElementDynamicLight : PhotonElement
+---@field LocalPosition Vector
+---@field LocalAngles Angle
+---@field Position? Vector
+---@field Angles? Angle
+---@field BoneParent? integer
+---@field Brightness number
+---@field Decay number
+---@field DieTime number
+---@field Direction Vector
+---@field InnerAngle number
+---@field OuterAngle number
+---@field MinimumLight number
+---@field World boolean
+---@field Model boolean
+---@field Size number
+---@field Color PhotonColor
+---@field Index number
+---@field Style number
 local Element = exmeta.New()
 
-Element.Class = "Dynamic"
+Element.Class = "DynamicLight"
+
+Element.BoneParent = -1
+Element.Model = true
+Element.World = false
+Element.Decay = 1000000
+Element.DieTime = 0.001
+Element.Brightness = 0
+Element.Size = 100
 
 Element.States = {
-	["OFF"] = {},
-	["ON"] = {}
+	["OFF"] = { 
+		Color = PhotonColor( 0, 0, 0 ) 
+	},
+	["R"] = { 
+		Color = PhotonColor( 255, 0, 0 ),
+	},
+	["B"] = { 
+		Color = PhotonColor( 0, 0, 255 ),
+	},
+	["W"] = { 
+		Color = PhotonColor( 255, 255, 255 ),
+	}
 }
+
+function Element.New( element, template )
+
+	if ( not element.LocalPosition and isvector( element[2] ) ) then
+		element.LocalPosition = element[2]
+	else
+		element.LocalPosition = Vector()
+	end
+
+	if ( not element.LocalAngles and isangle( element[3] ) ) then
+		element.LocalAngles = element[3]
+	end
+
+	setmetatable( element, { __index = ( template or PhotonElementDynamicLight )})
+	return element
+end
 
 function Element:Initialize( id, parent )
 	self = PhotonElement.Initialize( self, id, parent ) --[[@as PhotonElementDynamicLight]]
+	self.Index = manager.GetNextIndex()
 	return self
-end
-
-function Element.New( element, template )
-	setmetatable( element, { __index = ( template or PhotonElementDynamicLight )})
-	return element
 end
 
 function Element.NewTemplate( data )
@@ -35,3 +88,71 @@ function Element.OnFileLoad()
 end
 
 Element.OnFileLoad()
+
+---@param state PhotonElementDynamicLightState
+function Element:OnStateChange( state )
+	self.Color = state.Color
+	self.Brightness = state.Brightness
+	self.Size = state.Size
+end
+
+function Element:Activate()
+	if not PhotonElement.Activate( self ) then return end
+	-- ErrorNoHalt("dlight activate")
+	self.Deactivate = false
+	if ( self.IsActivated ) then return end
+	self.IsActivated = true
+	manager.Active[#manager.Active+1] = self
+end
+
+function Element:DeactivateNow()
+	self.IsActivated = false
+	self.Deactivate = false
+end
+
+local angleZero = Angle( 0, 0, 0 )
+
+function Element:DoPreRender()
+	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
+	if ( not self.IsActivated ) then return end
+
+	self:UpdateProxyState()
+	
+	
+	if ( self.BoneParent < 0 ) then
+		self.Position = self.Parent:LocalToWorld( self.LocalPosition )
+		if ( self.LocalAngles ) then
+			self.Angles = self.Parent:LocalToWorldAngles( self.LocalAngles )
+		end
+	else
+		-- TODO: optimization
+		self.Parent:SetupBones()
+		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
+		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles or angleZero, matrix:GetTranslation(), matrix:GetAngles() )
+	end
+	
+	local dynamicLight = DynamicLight( self.Index, ( self.World == false ) )
+	
+	if ( dynamicLight ) then
+		dynamicLight.pos = self.Position
+		-- if ( self.CurrentStateId == "OFF" ) then return self end
+		dynamicLight.brightness = self.Brightness
+		dynamicLight.decay = self.Decay
+		dynamicLight.minlight = self.MinimumLight
+		dynamicLight.noworld = ( not self.World )
+		dynamicLight.nomodel = ( not self.Model )
+		dynamicLight.size = self.Size
+		dynamicLight.r = self.Color.r
+		dynamicLight.g = self.Color.g
+		dynamicLight.b = self.Color.b
+		dynamicLight.dietime = CurTime() + self.DieTime
+		dynamicLight.style = self.Style
+		if ( isangle(self.Angles) ) then
+			dynamicLight.dir = self.Angles:Normalize()
+			dynamicLight.innerangle = self.InnerAngle
+			dynamicLight.outerangle = self.OuterAngle
+		end
+	end
+
+	return self
+end

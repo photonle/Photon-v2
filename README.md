@@ -56,7 +56,7 @@ There's a massive list of issues and to-do items that remain in Photon 2. While 
 
 * Projected textures are rendered even when they're invisible. This can cause a pretty major performance hit and it isn't obvious that it's happening. 
 
-* Lights can be dim-looking, washed out, or weird looking. Light appearance is a major work-in-progress and I don't intend to focus on it until much later.
+* Lights can be dim-looking, washed out, or weird looking. Light appearance is a major work-in-progress and I don't intend to focus on it until much later. This is most noticeable with mesh lights.
 
 * This readme file is full of incomplete thoughts and information.
 
@@ -165,6 +165,16 @@ For those interested, this is an overview of how Photon works internally.
 
 ### Library 
 The Photon 2 library is an internal table that stores and tracks (mostly) raw table data from user-made content, such as vehicles, components, and sirens.
+
+#### Content Stored in the Library
+1. Custom user commands 
+2. Custom user input configurations
+3. Sirens
+4. Vehicles (referred to as "profiles")
+5. Components
+
+### Index
+The index is similar to the library, but stores processed entries from the library. 
 
 ## Performance
 I've tried to avoid doing too much benchmarking while the addon is still incomplete. From superficial tests so far, performance varies between better to on-par with Photon LE. There are a few avenues I'm aware of to boost performance when I get to it.

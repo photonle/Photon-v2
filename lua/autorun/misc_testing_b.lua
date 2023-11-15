@@ -14,6 +14,35 @@ local function sequenceTest()
 end
 if SERVER then return end
 
+local colorOn = { 255, 255, 255 }
+local colorOff = { 0, 0, 0 }
+
+local function dynamicLightTest()
+	local light = DynamicLight( 5, false )
+	
+	local color = colorOn
+
+	if (math.Round(CurTime())%2) == 0 then
+		color = colorOff
+	end
+
+	if ( light ) then
+		light.pos = LocalPlayer():GetEyeTrace().HitPos
+		light.r = color[1]
+		light.g = color[2]
+		light.b = color[3]
+		light.brightness = 0
+		light.decay = 0
+		light.size = 512
+		light.dietime = CurTime()-1
+	end
+
+
+
+end
+-- hook.Add( "PreRender", "Photon2.DynamicLightTest", dynamicLightTest )
+-- hook.Remove( "PreRender", "Photon2.DynamicLightTest" )
+
 local function calcView( ply, pos, angles, fov )
 	if true then return nil end
 	local veh = ply:GetVehicle()
@@ -27,7 +56,7 @@ local function calcView( ply, pos, angles, fov )
 	end
 end
 
-hook.Add( "CalcView", "Photon2.Testing:CalcView", calcView)
+-- hook.Add( "CalcView", "Photon2.Testing:CalcView", calcView)
 
 function appendTest()
 	print( "x" .. 1 )

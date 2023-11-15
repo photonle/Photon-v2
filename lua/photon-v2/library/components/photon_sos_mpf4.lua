@@ -35,19 +35,26 @@ COMPONENT.Templates = {
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
 			-- LightMatrixScaleMultiplier = 0.6
 		}
+	},
+	["DynamicLight"] = {
+		DLTest = {
+			Brightness = 5,
+			Size = 512
+		}
 	}
 }
 
-COMPONENT.StateMap = ""
+COMPONENT.StateMap = "[R] 1 2"
 
 COMPONENT.Elements = {
-	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) }
+	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) },
+	[2] = { "DLTest", Vector( 0, 0, 0 )}
 }
 
 COMPONENT.Segments = {
 	Full = {
 		Frames = {
-			[1] = "[1] 1",
+			[1] = "2 [1] 1",
 			[2] = "[2] 1",
 			[3] = "[3] 1",
 			-- [1] = { { 1, 4 } },

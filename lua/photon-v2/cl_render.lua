@@ -18,6 +18,20 @@ local mat_Blank 	= Material("photon/common/blank")
 local rt_Store		= GetRenderTarget( "photon2/rt/store/" .. math.Round( CurTime() ), ScrW(), ScrH() )
 local rt_Scene		= nil
 
+-- function Photon2.Render.RunQueue( domain, alternateTable )
+-- 	local activeLights = domain.Active
+-- 	local nextTable = alternateTable
+
+-- 	for i=1, #activeLights do 
+-- 		if ( activeLights[i] ) then
+-- 			nextTable[#nextTable+1] = activeLights[i]:DoPreRender()
+-- 		end
+-- 		activeLights[i] = nil
+-- 	end
+
+-- 	alternateTable = activeLights
+-- 	domain.Active = nextTable
+-- end
 
 function Photon2.Render.Paint2D( id, func, callback)
 	local hookId = "Photon2:Paint2D/" .. tostring(id)
@@ -91,4 +105,57 @@ function Photon2.Render.GenerateBlurredTexture( texture, blurSize, passes )
 		DisableClipping( false )
 	end)
 	return blurredTexture
+end
+
+--[[
+		Dynamic Light Manager
+--]]
+
+Photon2.Render.DynamicLighting = Photon2.Render.DynamicLighting or {
+	Active = {},
+	Index = 800000
+}
+
+local DynamicLighting = Photon2.Render.DynamicLighting
+
+local dynamicLightAlternatveActive = {}
+
+function DynamicLighting.GetNextIndex()
+	DynamicLighting.Index = DynamicLighting.Index + 1
+	return DynamicLighting.Index
+end
+
+function DynamicLighting.Update()
+	local activeLights = DynamicLighting.Active
+	local nextTable = dynamicLightAlternatveActive
+
+	for i=1, #activeLights do 
+		if ( activeLights[i] ) then
+			nextTable[#nextTable+1] = activeLights[i]:DoPreRender()
+		end
+		activeLights[i] = nil
+	end
+
+	dynamicLightAlternatveActive = activeLights
+	DynamicLighting.Active = nextTable
+end
+hook.Add( "PreRender", "Photon2.ElementDynamicLight:Update", DynamicLighting.Update )
+
+function DynamicLighting.DrawDebug()
+	if ( not overlayConVar:GetBool() ) then return end
+
+	local activeLights = DynamicLighting.Active
+	
+	local light
+	cam.Start3D()
+		for i=1, #activeLights do 
+			light = activeLights[i]
+			local angles = light.Angles
+			local position = light.Position
+			render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))
+			render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
+			render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
+			debugoverlay.Text( position, light.Id, 0, false )
+		end
+	cam.End3D()
 end
