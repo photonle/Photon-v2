@@ -853,7 +853,11 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				string.upper(Photon2.ClientInput.Active.Title)
 			)
 
-			local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
+			local priChannel = "Emergency.Warning"
+			local priMode = target.CurrentModes[priChannel]
+
+			local schema = target:GetInputSchema()
+			-- local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
 			local priStyle = 1
 			if ( priMode == "OFF" ) then priStyle = 0 end
 			
@@ -862,9 +866,12 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			if ( secMode == "OFF" ) then secStyle = 0 end
 
 			HUD.LightStageIndicator( ScrW() - 150 - 4, 256, 150, 
-				lightStateIndicator.Primary[priMode].Label, 
-				#lightStateIndicator.PrimaryArray, 
-				lightStateIndicator.PrimaryMap[priMode] or 0,
+				-- lightStateIndicator.Primary[priMode].Label, 
+				schema[priChannel][priMode].Label, 
+				-- #lightStateIndicator.PrimaryArray, 
+				#schema[priChannel], 
+				-- lightStateIndicator.PrimaryMap[priMode] or 0,
+				schema[priChannel][priMode].Index or 0,
 				priStyle,
 				lightStateIndicator.Secondary[secMode].Label, 
 				#lightStateIndicator.SecondaryArray, 

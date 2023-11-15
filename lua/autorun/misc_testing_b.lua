@@ -14,6 +14,17 @@ local function sequenceTest()
 end
 if SERVER then return end
 
+local tab = {
+	[0] = true,
+	[1] = true,
+	[2] = true
+}
+
+local function tableIndexTest()
+	print(#tab)
+end
+-- tableIndexTest()
+
 local colorOn = { 255, 255, 255 }
 local colorOff = { 0, 0, 0 }
 

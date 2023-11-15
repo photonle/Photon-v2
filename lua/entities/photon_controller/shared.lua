@@ -50,10 +50,88 @@ ENT.ChannelTree = {
     }
 }
 
+local templatePrototype = {
+	["Emergency.Warning"] = {
+		{ Mode = "OFF", Label = "PRIMARY" },
+		{ Mode = "MODE1", Label = "STAGE 1" },
+		{ Mode = "MODE2", Label = "STAGE 2" },
+		{ Mode = "MODE3", Label = "STAGE 3" },
+	},
+	["Emergency.Directional"] = {
+		{ Mode = "OFF", Label = "ADVISOR" },
+		{ Mode = "LEFT", Label = "LEFT" },
+		{ Mode = "CENOUT", Label = "CTR/OUT" },
+		{ Mode = "RIGHT", Label = "RIGHT" }
+	}
+}
 
+function ENT:GenerateInputSchema( template, currentChannelModes )
+	
+	-- local start = SysTime()
+
+	if ( not currentChannelModes ) then
+		local _, modes = self:GetChannelModeTree()
+		currentChannelModes = modes
+	end
+
+	local schema = {}
+	for channel, modes in pairs( template ) do
+		if ( currentChannelModes[channel] ) then
+			schema[channel] = {}
+			local newIndex = 1
+			for index, data in ipairs( modes ) do
+				if ( currentChannelModes[channel][data.Mode] ) then
+					newIndex = #schema[channel] + 1
+					if ( data.Mode == "OFF" ) then newIndex = 0 end
+					if (schema[channel][data.Mode]) then
+						newIndex = schema[channel][data.Mode].Index
+					end
+					schema[channel][newIndex] = {
+						Mode = data.Mode,
+						Label = data.Label or data.Mode,
+						Index = newIndex,
+						Data = data.Data
+					}
+					schema[channel][data.Mode] = schema[channel][newIndex]
+				end
+			end
+		end
+	end
+
+	for channel, modes in pairs( currentChannelModes ) do
+		if ( schema[channel] ) then continue end
+		schema[channel] = {
+			[0] = { Mode = "OFF", Label = channel, Index = 0 }
+		}
+		for mode, _ in SortedPairs( modes ) do
+			if ( mode == "OFF" ) then continue end
+			local index = #schema[channel]+1
+			schema[channel][index] = {
+				Mode = mode,
+				Label = mode,
+				Index = index
+			}
+			schema[channel][mode] = schema[channel][index]
+		end
+	end
+
+	-- local duration = SysTime() - start
+	-- print("Schema calculated in: " .. tostring( duration ) .. " seconds")
+
+	return schema
+end
+
+function ENT:GetInputSchema()
+	if ( not self.CurrentInputSchema ) then
+		self.CurrentInputSchema = self:GenerateInputSchema( templatePrototype )
+	end
+	return self.CurrentInputSchema
+end
 
 -- Returns table of all _utilized_ channels and modes.
 function ENT:GetChannelModeTree()
+
+
 	local cache = {}
 	local result = {}
 
@@ -82,11 +160,18 @@ function ENT:GetChannelModeTree()
 	end
 
 
+	local inputSchema = self:GenerateInputSchema( templatePrototype, cache )
+
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
 	print("\tGetChannelModeTree() -> Result")
 	PrintTable(result)
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
-	return result
+
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	print("\tINPUT SCHEMA() -> Result")
+	PrintTable(inputSchema)
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	return result, cache
 end
 
 function ENT:SetupDataTables()
@@ -608,6 +693,8 @@ function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
 	local profile = Photon2.Index.Vehicles[name]
 
+	self.CurrentInputSchema = nil
+
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
 
@@ -762,6 +849,7 @@ end
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
 	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
+	self.CurrentInputSchema = nil
 	self.CurrentModes[channel] = newState
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()

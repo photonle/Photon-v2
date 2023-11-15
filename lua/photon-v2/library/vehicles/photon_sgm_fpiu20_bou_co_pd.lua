@@ -207,22 +207,25 @@ VEHICLE.Equipment = {
 			}
 		}
 	},
-	-- {
-	-- 	Category = "mpower Test",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "Test",
-	-- 			Components = {
-	-- 				{
-	-- 					Component = "photon_sos_mpf4",
-	-- 					Angles = Angle( 0, 0, 0 ),
-	-- 					Position = Vector( 0, 0, 100 ),
-	-- 					Scale = 2
-	-- 				}
-	-- 			}
-	-- 		}
-	-- 	}
-	-- },
+	{
+		Category = "mpower Test",
+		Options = {
+			{
+				Option = "None"
+			},
+			{
+				Option = "Test",
+				Components = {
+					{
+						Component = "photon_sos_mpf4",
+						Angles = Angle( 0, 0, 0 ),
+						Position = Vector( 0, 0, 100 ),
+						Scale = 2
+					}
+				}
+			}
+		}
+	},
 	{
 		Category = "Siren",
 		Options = {
