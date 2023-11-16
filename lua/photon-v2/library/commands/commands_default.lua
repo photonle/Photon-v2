@@ -29,7 +29,7 @@ Photon2.RegisterCommand({
 	Description = "When warning lights are off, turns them on to MODE2. When warning lights are on (any mode), turns them off.",
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = "MODE2" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Value = 1, Query = "LAST_MINUS" },
 		{ Action = "OFF_WITH", Channel = "Emergency.Siren", Value = "Emergency.Warning" }
 	},
 	OnRelease = {
@@ -47,7 +47,8 @@ Photon2.RegisterCommand({
 	},
 	OnRelease = {
 		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
+		{ Action = "CYCLE", Channel = "Emergency.Warning", Query = "NEXT" }
+		-- { Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
 	},
 })
 
@@ -387,7 +388,7 @@ Photon2.RegisterCommand({
 	Description = "Activates warning lights (MODE3) and toggles the siren (T1).",
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "SET", Channel = "Emergency.Warning", Value = "MODE3" },
+		{ Action = "SET", Channel = "Emergency.Warning", Query = "LAST" },
 		{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
 	},
 	OnRelease = {

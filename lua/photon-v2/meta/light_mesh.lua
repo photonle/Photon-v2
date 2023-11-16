@@ -88,7 +88,7 @@ Light.States = {
 		DrawColor = PhotonColor( 255, 180, 0 ):Blend( amber ):GetBlendColor(),
 	},
 	["W"] = {
-		BloomColor = PhotonColor( 200, 200, 255 ):Blend( white ):GetBlendColor(),
+		BloomColor = PhotonColor( 128, 128, 255 ):Blend( white ):GetBlendColor(),
 		DrawColor = PhotonColor( 255, 255, 255 ):Blend( white ):GetBlendColor(),
 	},
 	["SW"] = {

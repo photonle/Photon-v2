@@ -520,6 +520,14 @@ local stageIndicators = {
 	[5] = { 7, 3 },
 }
 
+local stageIndicatorsSmall = {
+	[1] = { 24, 0, 0 },
+	[2] = { 11, 2, 0 },
+	[3] = { 7, 2, 0 },
+	[4] = { 5, 2, -1 },
+	[5] = { 4, 1, 0 },
+}
+
 local stateColors = {
 	["OFF"] = inactiveColor,
 	["ON"] = white
@@ -564,7 +572,7 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 		else
 			drawColor = inactiveColor
 		end
-		draw.RoundedBox( 2, x + 8, y + 8 + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
+		draw.RoundedBox( 2, x + 8, y + ( 8 ) + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
 	end
 
 	if ( indicatorComponent ) then
@@ -591,6 +599,32 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 	end
 end
 
+function HUD.LightStageIndicatorSingle( x, y, width, label, count, selected, style )
+	local labelColor = white
+	local bgColor = Color( 64, 64, 64, 200 )
+
+	if ( style < 1 ) then
+		bgColor = Color( 64, 64, 64, 100 )
+		labelColor = dimColor
+	end
+
+	draw.RoundedBox( cornerRadius, x, y, width, 40, bgColor )
+	draw.DrawText( label, "Photon2.UI:Medium", x + 40, y + 13, labelColor )
+
+	local stageDimensions = stageIndicatorsSmall[count]
+
+	local drawColor = white
+
+	for i=1, count do
+		if ( i <= selected ) then
+			drawColor = white
+		else
+			drawColor = inactiveColor
+		end
+		draw.RoundedBox( 2, x + 8, y + ( 8  + stageDimensions[3] ) + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
+	end
+
+end
 
 
 ---@param x integer
@@ -848,37 +882,79 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			render.OverrideAlphaWriteEnable( true, true)
 			render.Clear( 0, 0, 0, 0, false, false )
 
-			HUD.VehicleInfo( ScrW() - 150 - 4, 216, 150, 38, 
+			local margin = 2
+			local nextY = 216
+			local nextH = 38
+
+			HUD.VehicleInfo( ScrW() - 150 - 4, nextY, 150, nextH, 
 				string.upper(truncateString(Photon2.ClientInput.TargetController:GetProfile().Title, 26 )),
 				string.upper(Photon2.ClientInput.Active.Title)
 			)
+
+			nextY = ( nextY + nextH + margin )
 
 			local priChannel = "Emergency.Warning"
 			local priMode = target.CurrentModes[priChannel]
 
 			local schema = target:GetInputSchema()
 			-- local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
+			local priData = schema[priChannel][priMode]
+
+			if ( not priData ) then
+				schema[priChannel][priMode] = {
+					Label = priMode
+				}
+			end
+			
 			local priStyle = 1
 			if ( priMode == "OFF" ) then priStyle = 0 end
 			
-			local secMode = target.CurrentModes[lightStateIndicator.SecondaryChannel]
-			local secStyle = 1
-			if ( secMode == "OFF" ) then secStyle = 0 end
+			local showSecondary = false
 
-			HUD.LightStageIndicator( ScrW() - 150 - 4, 256, 150, 
-				-- lightStateIndicator.Primary[priMode].Label, 
-				schema[priChannel][priMode].Label, 
-				-- #lightStateIndicator.PrimaryArray, 
-				#schema[priChannel], 
-				-- lightStateIndicator.PrimaryMap[priMode] or 0,
-				schema[priChannel][priMode].Index or 0,
-				priStyle,
-				lightStateIndicator.Secondary[secMode].Label, 
-				#lightStateIndicator.SecondaryArray, 
-				lightStateIndicator.SecondaryMap[secMode] or 0,
-				secStyle,
-				indicatorComponent
-			)
+			local secChannel = "Emergency.Directional"
+			local secMode = target.CurrentModes[secChannel]
+
+			showSecondary = ( schema[secChannel] ~= nil )
+
+			if ( showSecondary ) then
+				local secStyle = 1
+				if ( secMode == "OFF" ) then secStyle = 0 end
+				secMode = (schema[secChannel] or {})[secMode] or {}
+
+				nextH = 64
+				HUD.LightStageIndicator( ScrW() - 150 - 4, nextY, 150, 
+					-- lightStateIndicator.Primary[priMode].Label, 
+					schema[priChannel][priMode].Label, 
+					-- #lightStateIndicator.PrimaryArray, 
+					#schema[priChannel], 
+					-- lightStateIndicator.PrimaryMap[priMode] or 0,
+					schema[priChannel][priMode].Index or 0,
+					priStyle,
+
+					secMode.Label or "", 
+					#(schema[secChannel] or {}) or 0, 
+					secMode.Index or 0,
+					secStyle,
+					indicatorComponent
+				)
+
+			else
+				nextH = 40
+				HUD.LightStageIndicatorSingle( ScrW() - 150 - 4, nextY, 150,
+					schema[priChannel][priMode].Label, 
+					-- 3, 
+					#schema[priChannel], 
+					schema[priChannel][priMode].Index or 0,
+					priStyle
+				)
+
+			end
+
+			nextY = ( nextY + nextH + margin )
+
+			-- if ( schema[secChannel] )
+
+			
 
 
 			local siren1Name = target:GetSirenSelection(1)
@@ -919,7 +995,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					label = sirenDisplay.Label
 				end
 
-				HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, 
+				nextH = 32
+				HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
 					icon, 
 					label, 
 					#siren1.OrderedTones, 
@@ -933,10 +1010,12 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				-- 	sirenSelection, 
 				-- 	indicatorMode 
 				-- )
+				nextY = ( nextY + nextH + margin )
 			end
 
+			nextH = 48
 			local i = miscFunctionsIndicator.Indicators
-			HUD.FunctionsIndicator( ScrW() - 150 - 4, 356, 96, 48, 2, 44, {
+			HUD.FunctionsIndicator( ScrW() - 150 - 4, nextY, 96, 48, 2, 44, {
 				{
 					i[1].Values[target.CurrentModes[i[1].Channel]].Label,
 					i[1].Values[target.CurrentModes[i[1].Channel]].Style or 1
@@ -955,15 +1034,17 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				},
 			} )
 
-			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, 356, vehicleIcon, 
+			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, nextY, vehicleIcon, 
 			target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
 			target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
 			target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
 			target.CurrentModes["Emergency.SceneRear"] ~= "OFF", 
 			target.CurrentModes["Emergency.SceneLeft"] ~= "OFF" )
 
-			draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:ExtraSmall", ScrW() - 4, 406, white, TEXT_ALIGN_RIGHT )
-			draw.DrawText( "DO NOT REDISTRIBUTE", "Photon2.UI:ExtraSmall", ScrW() - 4, 418, white, TEXT_ALIGN_RIGHT )
+			nextY = ( nextY + nextH + margin )
+
+			draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:ExtraSmall", ScrW() - 4, nextY, white, TEXT_ALIGN_RIGHT )
+			draw.DrawText( "DO NOT REDISTRIBUTE", "Photon2.UI:ExtraSmall", ScrW() - 4, nextY + 11, white, TEXT_ALIGN_RIGHT )
 
 		cam.End2D()
 		render.PopRenderTarget()

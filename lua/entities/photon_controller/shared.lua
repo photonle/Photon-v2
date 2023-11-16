@@ -50,15 +50,17 @@ ENT.ChannelTree = {
     }
 }
 
+ENT.CurrentInputSchema = false
+
 local templatePrototype = {
 	["Emergency.Warning"] = {
-		{ Mode = "OFF", Label = "PRIMARY" },
+		{ Label = "PRIMARY" },
 		{ Mode = "MODE1", Label = "STAGE 1" },
 		{ Mode = "MODE2", Label = "STAGE 2" },
 		{ Mode = "MODE3", Label = "STAGE 3" },
 	},
 	["Emergency.Directional"] = {
-		{ Mode = "OFF", Label = "ADVISOR" },
+		{ Label = "ADVISOR" },
 		{ Mode = "LEFT", Label = "LEFT" },
 		{ Mode = "CENOUT", Label = "CTR/OUT" },
 		{ Mode = "RIGHT", Label = "RIGHT" }
@@ -80,19 +82,20 @@ function ENT:GenerateInputSchema( template, currentChannelModes )
 			schema[channel] = {}
 			local newIndex = 1
 			for index, data in ipairs( modes ) do
-				if ( currentChannelModes[channel][data.Mode] ) then
+				local mode = data.Mode or "OFF"
+				if ( currentChannelModes[channel][mode] ) then
 					newIndex = #schema[channel] + 1
-					if ( data.Mode == "OFF" ) then newIndex = 0 end
-					if (schema[channel][data.Mode]) then
-						newIndex = schema[channel][data.Mode].Index
+					if ( mode == "OFF" ) then newIndex = 0 end
+					if (schema[channel][mode]) then
+						newIndex = schema[channel][mode].Index
 					end
 					schema[channel][newIndex] = {
-						Mode = data.Mode,
-						Label = data.Label or data.Mode,
+						Mode = mode,
+						Label = data.Label or mode,
 						Index = newIndex,
 						Data = data.Data
 					}
-					schema[channel][data.Mode] = schema[channel][newIndex]
+					schema[channel][mode] = schema[channel][newIndex]
 				end
 			end
 		end
@@ -162,15 +165,15 @@ function ENT:GetChannelModeTree()
 
 	local inputSchema = self:GenerateInputSchema( templatePrototype, cache )
 
-	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
-	print("\tGetChannelModeTree() -> Result")
-	PrintTable(result)
-	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	-- print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	-- print("\tGetChannelModeTree() -> Result")
+	-- PrintTable(result)
+	-- print("^^^^^^^^^^^^^^^^^^^^^^^^^")
 
-	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
-	print("\tINPUT SCHEMA() -> Result")
-	PrintTable(inputSchema)
-	print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	-- print("^^^^^^^^^^^^^^^^^^^^^^^^^")
+	-- print("\tINPUT SCHEMA() -> Result")
+	-- PrintTable(inputSchema)
+	-- print("^^^^^^^^^^^^^^^^^^^^^^^^^")
 	return result, cache
 end
 
@@ -262,6 +265,8 @@ ENT.UserCommands = {
 	["TOGGLE"] 			= "UserCommandToggle",
 	["CYCLE"] 			= "UserCommandCycle",
 	["SOUND"]			= "UserCommandSound",
+	["SET_LAST"]		= "UserCommandSetLast",
+	["SET_FIRST"]		= "UserCommandSetFirst",
 }
 
 
@@ -272,6 +277,38 @@ ENT.Interactions = {
 	}
 }
 
+function ENT:QueryModeFromInputSchema( channel, query, param )
+	local schema = self:GetInputSchema()[channel]
+	local currentMode = self.CurrentModes[channel]
+	if ( not schema ) then return nil end
+	local result
+	if ( query == "FIRST" ) then
+		result = schema[1]
+	elseif ( query == "LAST" ) then
+		result = schema[#schema]
+	elseif ( query == "NEXT" ) then
+		local currentIndex = ( schema[currentMode].Index or 0 ) + 1
+		if ( currentIndex > #schema ) then
+			result = schema[1]
+		else
+			result = schema[currentIndex]
+		end
+	elseif ( query == "PREV" ) then
+		local currentIndex = ( schema[currentMode].Index or 0 ) - 1
+		if ( currentIndex < 1 ) then
+			result = schema[#schema]
+		else
+			result = schema[currentIndex]
+		end
+	elseif ( query == "LAST_MINUS" ) then
+		param = tonumber( param ) or 0
+		result = schema[math.clamp( #schema - param, 1, #schema )]
+	elseif ( query == "FIRST_PLUS" ) then
+		param = tonumber( param ) or 0
+		result = schema[math.clamp( 1 + param, 1, #schema )]
+	end
+	return result.Mode
+end
 
 ---@param class string
 ---@param profile table
@@ -307,14 +344,22 @@ end
 function ENT:UserCommandOnToggle( action )
 	local currentMode = self.CurrentModes[action.Channel]
 	if ( currentMode == "OFF" ) then
-		self:SetChannelMode( action.Channel, action.Value )
+		local value = action.Value
+		if ( action.Query ) then 
+			value = self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) 
+		end
+		self:SetChannelMode( action.Channel, value )
 	end
 end
 
 function ENT:UserCommandOffToggle( action )
 	local currentMode = self.CurrentModes[action.Channel]
 	if ( currentMode == "OFF" ) then
-		self:SetChannelMode( action.Channel, action.Value )
+		local value = action.Value
+		if ( action.Query ) then 
+			value = self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) 
+		end
+		self:SetChannelMode( action.Channel, value )
 	else
 		self:SetChannelMode( action.Channel, "OFF" )
 	end
@@ -328,7 +373,11 @@ function ENT:UserCommandOffWith( action )
 end
 
 function ENT:UserCommandSet( action )
-	self:SetChannelMode( action.Channel, action.Value )
+	local value = action.Value
+	if ( action.Query ) then 
+		value = self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) 
+	end
+	self:SetChannelMode( action.Channel, value )
 end
 
 function ENT:UserCommandToggle( action )
@@ -336,11 +385,19 @@ function ENT:UserCommandToggle( action )
 	if ( currentMode == action.Value ) then
 		self:SetChannelMode( action.Channel, "OFF" )
 	else
-		self:SetChannelMode( action.Channel, action.Value )
+		local value = action.Value
+		if ( action.Query ) then 
+			value = self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) 
+		end
+		self:SetChannelMode( action.Channel, value )
 	end
 end
 
 function ENT:UserCommandCycle( action )
+	if ( action.Query ) then
+		self:SetChannelMode( action.Channel, self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) )
+		return
+	end
 	local currentMode = self.CurrentModes[action.Channel]
 	local currentIndex = action.ValueMap[currentMode]
 	if ( currentIndex == nil ) then currentIndex = 0 end
@@ -849,7 +906,6 @@ end
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
 	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
-	self.CurrentInputSchema = nil
 	self.CurrentModes[channel] = newState
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()
@@ -872,6 +928,7 @@ function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
 	-- print("Controller:OnSelectionChanged() - Selections:")
 	-- PrintTable( self.CurrentProfile.EquipmentSelections )
+	self.CurrentInputSchema = nil
 	local category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
 	if ( istable(category[self.CurrentSelections[categoryIndex]]) ) then 
 		self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
