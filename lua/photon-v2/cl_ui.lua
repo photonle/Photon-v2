@@ -924,14 +924,14 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				nextH = 64
 				HUD.LightStageIndicator( ScrW() - 150 - 4, nextY, 150, 
 					-- lightStateIndicator.Primary[priMode].Label, 
-					schema[priChannel][priMode].Label, 
+					schema[priChannel][priMode].Label or priMode, 
 					-- #lightStateIndicator.PrimaryArray, 
 					#schema[priChannel], 
 					-- lightStateIndicator.PrimaryMap[priMode] or 0,
 					schema[priChannel][priMode].Index or 0,
 					priStyle,
 
-					secMode.Label or "", 
+					secMode.Label or target.CurrentModes[secChannel], 
 					#(schema[secChannel] or {}) or 0, 
 					secMode.Index or 0,
 					secStyle,
@@ -1014,32 +1014,51 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			end
 
 			nextH = 48
-			local i = miscFunctionsIndicator.Indicators
-			HUD.FunctionsIndicator( ScrW() - 150 - 4, nextY, 96, 48, 2, 44, {
-				{
-					i[1].Values[target.CurrentModes[i[1].Channel]].Label,
-					i[1].Values[target.CurrentModes[i[1].Channel]].Style or 1
-				},
-				{
-					i[2].Values[target.CurrentModes[i[2].Channel]].Label,
-					i[2].Values[target.CurrentModes[i[2].Channel]].Style or 1
-				},
-				{
-					i[3].Values[target.CurrentModes[i[3].Channel]].Label,
-					i[3].Values[target.CurrentModes[i[3].Channel]].Style or 1
-				},
-				{
-					i[4].Values[target.CurrentModes[i[4].Channel]].Label,
-					i[4].Values[target.CurrentModes[i[4].Channel]].Style or 1
-				},
-			} )
+
+			local template = {
+				{ "Emergency.Auxiliary", "AUX" },
+				{ "Emergency.Cut", "CUT" },
+				{ "Emergency.Marker", "CRZ" },
+				{ "Emergency.Spotlight", "SPT" }
+			}
+
+			local indicators = {}
+
+			local channel, label, style, mode, modeData
+
+			for i=1, #template do
+				channel = template[i][1]
+				label = template[i][2]
+				if ( schema[channel] ) then
+					mode = target.CurrentModes[channel]
+					modeData = schema[channel][mode]
+					style = 0
+					if ( mode and ( mode ~= "OFF" ) ) then
+						style = 1
+						if ( modeData ) then
+							label = modeData.Label
+						else
+							label = mode
+						end
+					end
+					indicators[i] = { label or mode, style }
+				else
+					indicators[i] = { label, 0 }
+				end
+			end
+
+			-- PrintTable(schema[i1])
+
+			HUD.FunctionsIndicator( ScrW() - 150 - 4, nextY, 96, 48, 2, 44, indicators )
+
 
 			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, nextY, vehicleIcon, 
-			target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
-			target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
-			target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
-			target.CurrentModes["Emergency.SceneRear"] ~= "OFF", 
-			target.CurrentModes["Emergency.SceneLeft"] ~= "OFF" )
+				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
+				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
+				target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
+				target.CurrentModes["Emergency.SceneRear"] ~= "OFF", 
+				target.CurrentModes["Emergency.SceneLeft"] ~= "OFF" 
+			)
 
 			nextY = ( nextY + nextH + margin )
 

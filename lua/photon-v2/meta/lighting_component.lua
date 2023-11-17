@@ -336,44 +336,47 @@ function Component.New( name, data )
 					{ Tail, "RIGHT" }
 				end
 			]]--\
-			local rank = 1
+			local rank = 0
 			for segmentName, sequence in pairs ( sequences ) do
 				-- if sequence == "<UNSET>" then continue end
 
-				local sequenceName = patternName .. "/" .. sequence
+				local sequenceName
+
+				if ( isstring( sequence ) ) then
+					sequenceName = sequence
+					rank = rank + 1
+				elseif ( istable( sequence ) ) then
+					sequenceName = sequence[1] or sequence.Name
+					rank = sequence[2] or sequence.Rank or ( rank + 1 )
+				end
+
+
+				-- sequenceName = patternName .. "/" .. sequenceName
 				-- print("Sequence name: " .. sequenceName)
 				local segment = component.Segments[segmentName]
+
 				if (not segment) then
 					error( string.format("Invalid segment: '%s'", segmentName) )
 				end
 
 				-- PHASING
 				local phase = component.Phase
-				
 
-				if (isstring(sequence)) then
-
-					if ( phase ) then
-						local newSequenceName = sequence .. ":" .. phase
-						-- print( "*********** COMPONENT HAS PHASING ***********" )
-						-- print( "Phase: " .. tostring( phase ) )
-						-- print( "New sequence name: " .. tostring( newSequenceName ) )
-						if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
-							-- print( "Phased sequence LOCATED.")
-							sequence = newSequenceName
-						else
-							-- print( "Phase NOT found." )
-						end
+				if ( phase ) then
+					local newSequenceName = sequenceName .. ":" .. phase
+					-- print( "*********** COMPONENT HAS PHASING ***********" )
+					-- print( "Phase: " .. tostring( phase ) )
+					-- print( "New sequence name: " .. tostring( newSequenceName ) )
+					if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
+						-- print( "Phased sequence LOCATED.")
+						sequenceName = newSequenceName
+					else
+						-- print( "Phase NOT found." )
 					end
-
-					segment:AddPattern( patternName, sequence, priorityScore, rank )
-				
-				else
-					-- TODO: advanced pattern assignment
-					error( "Invalid pattern assignment." )
 				end
 
-				rank = rank + 1
+				segment:AddPattern( patternName, sequenceName, priorityScore, rank )
+
 				
 				-- print("Segment InputActions =======================")
 				-- PrintTable( segment.InputActions )

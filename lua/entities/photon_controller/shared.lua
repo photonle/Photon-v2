@@ -64,6 +64,17 @@ local templatePrototype = {
 		{ Mode = "LEFT", Label = "LEFT" },
 		{ Mode = "CENOUT", Label = "CTR/OUT" },
 		{ Mode = "RIGHT", Label = "RIGHT" }
+	},
+	["Emergency.Marker"] = {
+		{ Label = "CRZ" },
+		{ Mode = "CRUISE", Label = "CRZ" }
+	},
+	["Emergency.Auxiliary"] = {
+		{ Label = "AUX" },
+		{ Mode = "AUX1", Label = "AUX1" }
+	},
+	["Emergency.Siren"] = {
+		{ Label = "SIREN" }
 	}
 }
 
@@ -264,9 +275,7 @@ ENT.UserCommands = {
 	["SET"] 			= "UserCommandSet",
 	["TOGGLE"] 			= "UserCommandToggle",
 	["CYCLE"] 			= "UserCommandCycle",
-	["SOUND"]			= "UserCommandSound",
-	["SET_LAST"]		= "UserCommandSetLast",
-	["SET_FIRST"]		= "UserCommandSetFirst",
+	["SOUND"]			= "UserCommandSound"
 }
 
 

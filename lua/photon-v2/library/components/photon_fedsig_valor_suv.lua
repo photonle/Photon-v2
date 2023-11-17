@@ -119,6 +119,14 @@ COMPONENT.Segments = {
 			-- ["MIX"] = { 5, 0, 5, 0, 5, 5, 5, 5, 0, 6, 0, 6, 0, 6, 6, 6, 6 }
 		}
 	},
+	["Cruise"] = {
+		Frames = {
+			[1] = "11 13 15 17 12 14 16 18"
+		},
+		Sequences = {
+			["CRUISE"] = { 1 }
+		}
+	},
 	["P26_EDGE"] = {
 		Frames = {
 			[1] = "9 11 13 15 17 19 10 12 14 16 18 20"
@@ -198,10 +206,11 @@ COMPONENT.Inputs = {
 		},
 		["MODE3"] = {
 			-- All = "MIX"
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-			P26_WOR = "P26",
+			-- P26_WOR = "P26",
+			-- P26_EDGE = "P26",
+			Demo = { "1", Rank = 1 },
+			P26_FRONT = { "P26", Rank = 2 },
+			-- P26_REAR = "P26",
 
 		},
 		-- ["MODE1"] = {
@@ -213,5 +222,10 @@ COMPONENT.Inputs = {
 		-- ["MODE3"] = {
 		-- 	Demo = "2",
 		-- }
+	},
+	["Emergency.Marker"] = {
+		["CRUISE"] = {
+			Cruise = "CRUISE"
+		}
 	}
 }

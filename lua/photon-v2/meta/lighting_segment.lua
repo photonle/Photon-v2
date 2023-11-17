@@ -385,10 +385,7 @@ end
 ---@param conditions? table
 function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
 	-- printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
-	if (istable(conditions)) then
-		-- TODO: conditional
-	end
-	
+
 	-- Create sequence variant with rank and score information
 	local sequenceName = channelMode .. "/" .. self.Name .. "/" .. sequence
 	self.Sequences[sequenceName] = self.Sequences[sequence]
