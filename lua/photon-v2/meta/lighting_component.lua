@@ -336,18 +336,21 @@ function Component.New( name, data )
 					{ Tail, "RIGHT" }
 				end
 			]]--\
-			local rank = 0
+			local rankOrder = 0
 			for segmentName, sequence in pairs ( sequences ) do
 				-- if sequence == "<UNSET>" then continue end
 
 				local sequenceName
+				rankOrder = rankOrder + 1
+
+				local rank = rankOrder
 
 				if ( isstring( sequence ) ) then
 					sequenceName = sequence
-					rank = rank + 1
+					rank = rankOrder
 				elseif ( istable( sequence ) ) then
 					sequenceName = sequence[1] or sequence.Name
-					rank = sequence[2] or sequence.Rank or ( rank + 1 )
+					rank = sequence[2] or sequence.Rank or rankOrder
 				end
 
 
