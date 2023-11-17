@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/sos_observe/observe"
+	"$bumpmap"	"photon/common/flat"
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"0.1"
+	"$rimlight"	"0"
+	"$rimlightexponent"	"0"
+	"$rimlightboost"	"1"
+	"$phongfresnelranges"	"[0.05 1 1]"
+	"$color2"		"{255 255 255}"
+}

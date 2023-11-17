@@ -336,21 +336,21 @@ function Component.New( name, data )
 					{ Tail, "RIGHT" }
 				end
 			]]--\
-			local rankOrder = 0
+			local orderTally = 0
 			for segmentName, sequence in pairs ( sequences ) do
 				-- if sequence == "<UNSET>" then continue end
 
 				local sequenceName
-				rankOrder = rankOrder + 1
+				orderTally = orderTally + 1
 
-				local rank = rankOrder
+				local order = orderTally
 
 				if ( isstring( sequence ) ) then
 					sequenceName = sequence
-					rank = rankOrder
+					order = orderTally
 				elseif ( istable( sequence ) ) then
 					sequenceName = sequence[1] or sequence.Name
-					rank = sequence[2] or sequence.Rank or rankOrder
+					order = sequence[2] or sequence.Order or orderTally
 				end
 
 
@@ -378,7 +378,7 @@ function Component.New( name, data )
 					end
 				end
 
-				segment:AddPattern( patternName, sequenceName, priorityScore, rank )
+				segment:AddPattern( patternName, sequenceName, priorityScore, order )
 
 				
 				-- print("Segment InputActions =======================")
