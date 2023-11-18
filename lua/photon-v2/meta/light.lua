@@ -131,6 +131,7 @@ function Light:RemoveInput( sequenceId )
 	table.remove( self.SortedInputActions, self.InputActions[sequenceId].Order )
 	self.InputActions[sequenceId] = nil
 	self:SortInputActions()
+	-- if ( #self.SortedInputActions < 1 ) then self.Deactivate = true end
 end
 
 function Light:UpdateState()
