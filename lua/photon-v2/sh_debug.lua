@@ -45,4 +45,24 @@ if (CLIENT) then
 		end
 		Photon2.cl_Network.SetControllerSelection( controller, { { tonumber(args[1]), tonumber(args[2]) } } )
 	end)
+
+	concommand.Add( "ph2_debug_dump_entity_info", function( ply, cmd, args )
+		local targ = ply:GetEyeTrace().Entity --[[@as Entity]]
+		if (not IsValid(targ)) then 
+			printf("Target is an invalid entity.")
+			return 
+		end
+		printf( "Model: %s", tostring( targ:GetModel() ) )
+		printf( "Class: %s", tostring( targ:GetClass() ) )
+		if ( IsValid( targ:GetParent() ) ) then
+			printf( "Parent: [%s] (%s)", tostring( targ:GetParent():GetClass() ), tostring( targ:GetParent():GetModel() ) )
+		end
+		local parentString, currentEnt
+		local searching = true
+		while ( searching ) do
+			searching = false
+		end
+	end)
+
+
 end

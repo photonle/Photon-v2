@@ -14,6 +14,7 @@ print("sv_init.lua")
 
 local profiles = Photon2.Index.Profiles
 local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
 
 ---@param ent Entity
 Photon2.OnEntityCreated = function( ent )
@@ -25,12 +26,10 @@ Photon2.OnEntityCreated = function( ent )
 	-- if ( CurTime() > 10000 ) then duration = 2 end
 	timer.Simple(duration, function()
 		if not IsValid( ent ) then return end
-		if (ent:IsVehicle()) then
-			-- Photon2.Debug.Print("@vehiclename: " .. tostring(ent["@vehiclename"]))
-			-- ent:SetKeyValue( "target", "custom vehicle name" )
-			
-			--PrintTable( ent:GetSaveTable(true) )
-			
+		if ( 
+			( ent:IsVehicle() ) or 
+			( Photon2.Index.Profiles.Map[ent:GetClass()] and Photon2.Index.Profiles.Map[ent:GetClass()][ent:GetModel()] )
+		) then
 			Photon2.OnPostVehicleCreated ( ent )
 		end
 	end)
@@ -43,6 +42,7 @@ Photon2.OnPostVehicleCreated = function ( ent )
 	if (not IsValid( ent )) then return end
 	if (not ent.VehicleName) then
 		Photon2.Debug.Print( "A vehicle was just spawned (" .. tostring( ent ) .. ") but no .VehicleName was set." )
+		print("Vehicle parent: " .. tostring( ent:GetParent() ))
 		return
 	end
 	local profile = profiles.Vehicles[ent.VehicleName]

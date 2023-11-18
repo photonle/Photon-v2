@@ -167,6 +167,7 @@ function Light:DeactivateNow()
 end
 
 function Light:DoPreRender()
+	if ( #self.SortedInputActions < 1 ) and ( self.CurrentStateId == "OFF" ) then self.Deactivate = true end
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return end
 
