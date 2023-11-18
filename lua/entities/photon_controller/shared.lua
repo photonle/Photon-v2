@@ -71,7 +71,8 @@ local templatePrototype = {
 	},
 	["Emergency.Auxiliary"] = {
 		{ Label = "AUX" },
-		{ Mode = "AUX1", Label = "AUX1" }
+		{ Mode = "MODE1", Label = "RED" },
+		{ Mode = "MODE2", Label = "WHI" },
 	},
 	["Emergency.Siren"] = {
 		{ Label = "SIREN" }

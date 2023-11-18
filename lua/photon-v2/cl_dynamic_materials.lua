@@ -40,4 +40,6 @@ function Materials.LoadNextInQueue()
 end
 
 hook.Add( "HUDPaint", "Photon2:DynamnicMaterialsInit", Photon2.DynamicMaterials.ProcessQueue )
-hook.Run( "Photon2:ClientMaterialsLoaded" )
+timer.Simple( 3, function() 
+	hook.Run( "Photon2:ClientMaterialsLoaded" )
+end)

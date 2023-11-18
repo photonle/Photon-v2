@@ -234,8 +234,8 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_sos_observe",
-						Position = Vector( 0, -5, 84.5 ),
-						Angles = Angle( 2, 90, 180 ),
+						Position = Vector( 0, -5, 84.8 ),
+						Angles = Angle( 4, 90, 180 ),
 						Scale = 1
 					}
 				}

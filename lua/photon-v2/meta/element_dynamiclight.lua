@@ -148,7 +148,7 @@ function Element:DoPreRender()
 		dynamicLight.dietime = CurTime() + self.DieTime
 		dynamicLight.style = self.Style
 		if ( isangle(self.Angles) ) then
-			dynamicLight.dir = self.Angles:Normalize()
+			dynamicLight.dir = self.Angles:Up()
 			dynamicLight.innerangle = self.InnerAngle
 			dynamicLight.outerangle = self.OuterAngle
 		end

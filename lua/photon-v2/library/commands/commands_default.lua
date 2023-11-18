@@ -424,3 +424,20 @@ Photon2.RegisterCommand({
 		{ Action = "SOUND", Sound = "Controller" }
 	}
 })
+
+Photon2.RegisterCommand({
+	Name = "auxiliary_dual_toggle",
+	Title = "Toggle Auxiliary Lights (Mode 1/Mode 2)",
+	Category = "Emergency Auxiliary",
+	Description = "Quick press toggles MODE1, long press toggles MODE2.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" },
+	},
+	OnHold = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "TOGGLE", Channel = "Emergency.Auxiliary", Value = "MODE2" }
+	},
+	OnRelease = {
+		{ Action = "TOGGLE", Channel = "Emergency.Auxiliary", Value = "MODE1" }
+	}
+})

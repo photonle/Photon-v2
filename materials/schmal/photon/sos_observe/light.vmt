@@ -1,6 +1,6 @@
-"VertexlitGeneric"
+"VertexLitGeneric"
 {
-	"$basetexture" "schmal/photon/sos_observe/observe"
+	"$basetexture" "schmal/photon/sos_observe/light"
 	"$bumpmap"    "photon/common/flat"
 	"$phong" "1" 
 	"$phongboost" "1" 

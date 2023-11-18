@@ -21,6 +21,9 @@ Photon2.RegisterInputConfiguration({
 		[KEY_H] = { 
 			{ Command = "vehicle_lights" } 
 		},
+		[KEY_N] = {
+			{ Command = "auxiliary_dual_toggle" }
+		},
 		[KEY_M] = {
 			{ Command = "toggle_cruise" }
 		},
