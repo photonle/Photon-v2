@@ -36,19 +36,22 @@ end
 -- Photon2.RunVehicleListModification()
 
 function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
-	if ( IsValid( vehicle:GetPhotonController() ) ) then
-		vehicle:GetPhotonController():PlayerEnteredLinkedVehicle( ply, vehicle, role )
+	-- local target = vehicle
+	-- if ( vehicle:IsPhoton2Seat() )
+	if ( IsValid( vehicle:GetPhotonControllerFromAncestor() ) ) then
+		vehicle:GetPhotonControllerFromAncestor():PlayerEnteredLinkedVehicle( ply, vehicle, role )
 	end
 end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
-	if ( IsValid( vehicle:GetPhotonController() ) ) then
-		vehicle:GetPhotonController():PlayerExitedLinkedVehicle( ply, vehicle )
+	if ( IsValid( vehicle:GetPhotonControllerFromAncestor() ) ) then
+		vehicle:GetPhotonControllerFromAncestor():PlayerExitedLinkedVehicle( ply, vehicle )
 	end
 	
 	Photon2.sv_Network.NotifyPlayerInputController( ply, nil )
 
+	-- TODO: needs to account for custom vehicle bases
 	if ( saveSteeringOnExit ) then
 		local steering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
 		local increment = 1
