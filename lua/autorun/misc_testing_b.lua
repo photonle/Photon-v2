@@ -1,3 +1,19 @@
+local Category = "Photon 2 (DEV)"
+
+local V = {
+				Name =	"LVS - 2010 Ford Crown Victoria",
+				Class = "lvs_wheeldrive_cvpi",
+				Category = Category,
+
+				Author = "SentryGunMan",
+				Information = "vroom vroom",
+				Model =	"models/sentry/cvpi_hd.mdl",
+ 
+				KeyValues = {}
+}
+
+list.Set( "Vehicles", "lvs_sgm_cvpi", V )
+
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 
 local function sequenceTest()
