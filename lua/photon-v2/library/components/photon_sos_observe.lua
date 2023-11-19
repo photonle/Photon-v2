@@ -22,7 +22,7 @@ COMPONENT.Templates = {
 			Brightness = 9,
 			Size = 40,
 			InnerAngle = 60,
-			OuterAngle = 90
+			OuterAngle = 90,
 		}
 	},
 	["Sequence"] = {
@@ -54,8 +54,8 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	Switch = {
 		Frames = {
-			[1] = "1:MODE1 2:HIDE 3:W 4:W",
-			[2] = "1:MODE2 2:HIDE 3:R 4:R",
+			[1] = "1:MODE2 2:HIDE 3:W 4:W",
+			[2] = "1:MODE1 2:HIDE 3:R 4:R",
 		},
 		Sequences = {
 			MODE1 = { 1 },

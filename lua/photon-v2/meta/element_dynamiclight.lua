@@ -73,7 +73,7 @@ end
 
 function Element:Initialize( id, parent )
 	self = PhotonElement.Initialize( self, id, parent ) --[[@as PhotonElementDynamicLight]]
-	self.Index = manager.GetNextIndex()
+	if CLIENT then self.Index = manager.GetNextIndex() end
 	return self
 end
 
