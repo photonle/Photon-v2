@@ -185,7 +185,8 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Angles Angle
 ---@field Scale number
 ---@field MoveType MOVETYPE
----@field OnServer boolean -- (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
+---@field OnServer boolean -- NOT IMPLEMENTED! (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
+---@field FollowBone string|integer Attaches to the specified parent bone and sets the positioning relative to the bone.
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>

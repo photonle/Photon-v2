@@ -321,7 +321,7 @@ function ENT:QueryModeFromInputSchema( channel, query, param )
 end
 
 ---@param class string
----@param profile table
+---@param name string
 function ENT:SetInteractionSound( class, name )
 	self.Interactions.Sounds[class] = name
 end

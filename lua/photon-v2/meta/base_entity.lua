@@ -334,7 +334,6 @@ ENT.PropertyFunctionMap = {
 	["SubMaterials"] = "UpdateAndApplySubMaterials",
 	["BodyGroups"] = "UpdateAndApplyBodyGroups",
 	["PoseParameters"] = "UpdateAndApplyPoseParameters",
-	["FollowBone"] = "FollowParentBone",
 	["Bones"] = "UpdateAndApplyStaticBoneData"
 }
 
@@ -361,8 +360,10 @@ function ENT:FollowParentBone( bone )
 		ErrorNoHalt( "Unable to find bone [" .. tostring( bone ) .. "]" )
 		return
 	end
+	
 	self:SetParent( nil )
 	self:FollowBone( parent, boneId )
+	self.FollowingBone = bone
 end
 
 ---@param property string
@@ -378,13 +379,25 @@ end
 ---@param equipment PhotonVehicleEquipment
 ---@param isSoftUpdate? boolean (Default = `false`)
 function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
+	-- These values manipulate entity properties and must not be called
+	-- if Photon is not controlling the actual component entity.
 	if ( self.IsVirtual ) then return end
+	
+	-- Bone following needs to occur before positioning
+	-- to work correctly.
+	if ( equipment.FollowBone ) then
+		if ((not isSoftUpdate) or (self.PropertiesUpdatedOnSoftUpdate["FollowBone"])) then
+			self:FollowParentBone( equipment.FollowBone )
+		end
+	end
+	
 	local map = self.PropertyFunctionMap
 	-- Auto-apply supported properties
 	for property, value in pairs( equipment ) do
 		-- if ( ( map[property] == nil ) ) then
 		-- 	error("Unsupported equipment property [" .. tostring( property) .. "].")
-		-- end
+		-- end\
+
 		if ((map[property] ~= nil) and ((not isSoftUpdate) or (self.PropertiesUpdatedOnSoftUpdate[property]))) then
 			self:SetProperty( property, value )
 		end
