@@ -98,6 +98,9 @@ PhotonBlendColor = PhotonBlendColor
 -- -@field Sirens table<string, PhotonSiren>
 -- -@field Tones table<string, table>
 
+---@class PhotonProfileSchema: table<string, table>
+
+
 ---@class Photon2.Index.Profiles
 ---@field Map {}
 ---@field Vehicles table<string, string>
@@ -138,6 +141,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field EquipmentSelections PhotonVehicleSelectionCategory[]
 ---@field Equipment PhotonVehicleSelectionCategory[]
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
+---@field Schema table<string, table<table>>
 
 ---@class PhotonLibrarySiren
 ---@field Name string Unique name of siren set entry.

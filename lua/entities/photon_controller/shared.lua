@@ -52,33 +52,6 @@ ENT.ChannelTree = {
 
 ENT.CurrentInputSchema = false
 
-local templatePrototype = {
-	["Emergency.Warning"] = {
-		{ Label = "PRIMARY" },
-		{ Mode = "MODE1", Label = "STAGE 1" },
-		{ Mode = "MODE2", Label = "STAGE 2" },
-		{ Mode = "MODE3", Label = "STAGE 3" },
-	},
-	["Emergency.Directional"] = {
-		{ Label = "ADVISOR" },
-		{ Mode = "LEFT", Label = "LEFT" },
-		{ Mode = "CENOUT", Label = "CTR/OUT" },
-		{ Mode = "RIGHT", Label = "RIGHT" }
-	},
-	["Emergency.Marker"] = {
-		{ Label = "CRZ" },
-		{ Mode = "CRUISE", Label = "CRZ" }
-	},
-	["Emergency.Auxiliary"] = {
-		{ Label = "AUX" },
-		{ Mode = "MODE1", Label = "RED" },
-		{ Mode = "MODE2", Label = "WHI" },
-	},
-	["Emergency.Siren"] = {
-		{ Label = "SIREN" }
-	}
-}
-
 function ENT:GenerateInputSchema( template, currentChannelModes )
 	
 	-- local start = SysTime()
@@ -138,7 +111,7 @@ end
 
 function ENT:GetInputSchema()
 	if ( not self.CurrentInputSchema ) then
-		self.CurrentInputSchema = self:GenerateInputSchema( templatePrototype )
+		self.CurrentInputSchema = self:GenerateInputSchema( self.Schema )
 	end
 	return self.CurrentInputSchema
 end
@@ -175,7 +148,7 @@ function ENT:GetChannelModeTree()
 	end
 
 
-	local inputSchema = self:GenerateInputSchema( templatePrototype, cache )
+	-- local inputSchema = self:GenerateInputSchema( templatePrototype, cache )
 
 	-- print("^^^^^^^^^^^^^^^^^^^^^^^^^")
 	-- print("\tGetChannelModeTree() -> Result")
@@ -461,6 +434,7 @@ function ENT:SoftEquipmentReload()
 		prop:SetupSubMaterials()
 		prop:SetupBodyGroups()
 	end
+	self:SetSchema( profile.Schema )
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
 	-- end
@@ -497,7 +471,7 @@ function ENT:OnVehicleCompiled( name, vehicle, hardReload )
 		-- Reapplies previous selections, which is merged with any new ones
 		if ( currentSelections and self.CurrentSelections ) then
 			table.Merge( self.CurrentSelections, currentSelections )
-			self:SyncSelections()
+			self--[[@as sv_PhotonController]]:SyncSelections()
 		end
 	end
 end
@@ -581,7 +555,6 @@ function ENT:SetupProp( id )
 end
 
 ---@param id string
-
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
@@ -758,9 +731,10 @@ end
 ---@param isReload? boolean
 function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
+	---@type PhotonVehicle
 	local profile = Photon2.Index.Vehicles[name]
 
-	self.CurrentInputSchema = nil
+	self:SetSchema( profile.Schema )
 
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
@@ -821,6 +795,11 @@ function ENT:SetupProfile( name, isReload )
 
 end
 
+function ENT:SetSchema( schema )
+	self.Schema = schema
+	self.CurrentInputSchema = nil
+end
+
 function ENT:ApplySubMaterials( subMaterials )
 	for index, materialName in pairs( subMaterials ) do
 		self:GetParent():SetSubMaterial( index, materialName )
@@ -879,7 +858,7 @@ function ENT:SetupSelections()
 		end
 	end
 	if (SERVER) then 
-		self:SyncSelections()
+		self--[[@as sv_PhotonController]]:SyncSelections()
 	end
 end
 

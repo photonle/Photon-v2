@@ -11,20 +11,47 @@ NAME = "PhotonVehicle"
 ---@class PhotonVehicle
 ---@field ID string
 ---@field Title string
----@field ControllerType string
----@field EquipmentMode EquipmentMode
+---@field ControllerType? string Not implemented.
+---@field EquipmentMode? EquipmentMode Not implemented.
 ---@field Target string
 ---@field EntityClass string
 ---@field Model string
----@field New fun(data: PhotonLibraryVehicle): PhotonVehicle
+---@field New? fun(data: PhotonLibraryVehicle): PhotonVehicle Internal.
 ---@field Equipment {}
----@field EquipmentSelections {}
 ---@field SubMaterials table<integer, string>
-local Vehicle = exmeta.New()
+---@field Schema table<string, table<table>>
+local Vehicle = exmeta.New() --[[@as PhotonVehicle]]
 
 Vehicle.SubMaterials = {}
 
 Vehicle.EntityClass = "prop_vehicle_jeep"
+
+Vehicle.Schema = {
+	["Emergency.Warning"] = {
+		{ Label = "PRIMARY" },
+		{ Mode = "MODE1", Label = "STAGE 1" },
+		{ Mode = "MODE2", Label = "STAGE 2" },
+		{ Mode = "MODE3", Label = "STAGE 3" },
+	},
+	["Emergency.Directional"] = {
+		{ Label = "ADVISOR" },
+		{ Mode = "LEFT", Label = "LEFT" },
+		{ Mode = "CENOUT", Label = "CTR/OUT" },
+		{ Mode = "RIGHT", Label = "RIGHT" }
+	},
+	["Emergency.Marker"] = {
+		{ Label = "CRZ" },
+		{ Mode = "CRUISE", Label = "CRZ" }
+	},
+	["Emergency.Auxiliary"] = {
+		{ Label = "AUX" },
+		{ Mode = "MODE1", Label = "RED" },
+		{ Mode = "MODE2", Label = "WHI" },
+	},
+	["Emergency.Siren"] = {
+		{ Label = "SIREN" }
+	}
+}
 
 -- Specifies the actual controller entity class to create when the vehicle is created.
 -- Override if using your own modified controller entity.
@@ -34,6 +61,7 @@ Vehicle.ControllerType = "photon_controller"
 ---@return PhotonVehicle
 function Vehicle.New( data )
 	local Equipment = PhotonVehicleEquipmentManager
+
 
 	if ( istable(data.Equipment) and ( not data.EquipmentSelections ) ) then
 		data.EquipmentSelections = data.Equipment
@@ -70,6 +98,21 @@ function Vehicle.New( data )
 		end
 	end
 
+	local schema
+	-- local defaultSchema = PhotonVehicle.Schema
+	-- Setup schema
+	if ( istable( data.Schema ) ) then
+		schema = {}
+		for channel, modes in pairs( data.Schema ) do
+			schema[channel] = modes
+		end
+		for channel, modes in pairs( PhotonVehicle.Schema ) do
+			schema[channel] = schema[channel] or modes
+		end
+	else
+		schema = PhotonVehicle.Schema
+	end
+
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
@@ -87,7 +130,8 @@ function Vehicle.New( data )
 		Equipment 			= Equipment.GetTemplate(),
 		SubMaterials 		= data.SubMaterials,
 		Siren				= sirenConfig,
-		InteractionSounds	= data.InteractionSounds
+		InteractionSounds	= data.InteractionSounds,
+		Schema 				= schema,
 	}
 
 
@@ -179,13 +223,6 @@ function Vehicle.New( data )
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.UIComponents, nameTable.UIComponents )
 
 	end
-
-	-- Equipment.ProcessInheritance( vehicle.Equipment.Components, nameTable.Components, loadedParents.Components )
-	-- Equipment.ProcessInheritance( vehicle.Equipment.VirtualComponents, nameTable.VirtualComponents, loadedParents.VirtualComponents )
-	-- Equipment.ProcessInheritance( vehicle.Equipment.UIComponents, nameTable.UIComponents, loadedParents.UIComponents )
-	-- Equipment.ProcessInheritance( vehicle.Equipment.Props, nameTable.Props, loadedParents.Props )
-	-- Equipment.ProcessInheritance( vehicle.Equipment.BodyGroups, nameTable.BodyGroups, loadedParents.BodyGroups )
-	-- Equipment.ProcessInheritance( vehicle.Equipment.SubMaterials, nameTable.SubMaterials, loadedParents.SubMaterials )
 
 	for key, value in pairs( vehicle.Equipment ) do
 		Equipment.ProcessInheritance(

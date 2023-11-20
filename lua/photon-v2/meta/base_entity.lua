@@ -363,7 +363,7 @@ function ENT:FollowParentBone( bone )
 	
 	self:SetParent( nil )
 	self:FollowBone( parent, boneId )
-	self.FollowingBone = bone
+	self.FollowingBone = boneId
 end
 
 ---@param property string
@@ -389,6 +389,11 @@ function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 		if ((not isSoftUpdate) or (self.PropertiesUpdatedOnSoftUpdate["FollowBone"])) then
 			self:FollowParentBone( equipment.FollowBone )
 		end
+	elseif ( self.FollowingBone ) then 
+		-- Clears the bone following if it was previously set (for responsive saving).
+		local parent = self:GetParent()
+		self:FollowBone( nil, self.FollowingBone )
+		self:SetParent( parent )
 	end
 	
 	local map = self.PropertyFunctionMap

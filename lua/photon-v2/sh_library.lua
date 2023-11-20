@@ -10,6 +10,8 @@ Photon2.Library = Photon2.Library or {
 
 	InputConfigurations = {},
 	InputConfigurationsReady = false,
+
+	Schemas = {}
 }
 
 local library = Photon2.Library
@@ -22,6 +24,7 @@ local sirensRoot = "photon-v2/library/sirens/"
 local interactionSoundsRoot = "photon-v2/library/interaction_sounds/"
 local commandsRoot = "photon-v2/library/commands/"
 local inputConfigurationsRoot = "photon-v2/library/input_configurations/"
+local schemasRoot = "photon-v2/library/schemas/"
 
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
@@ -290,9 +293,25 @@ function Photon2.RegisterInputConfiguration( config )
 	end
 end
 
+function Photon2.Library.LoadSchemaLibrary()
+	print( "Library.LoadSchemaLibrary() called.")
+	folderPath = folderPath or ""
+	local search = schemasRoot .. folderPath
+	local files, folders = file.Find( search .. "*.lua", "LUA" )
+	for _, fil in pairs( files ) do
+		include( search .. fil )
+	end
+	hook.Call( "Photon2.LoadSchemaLibrary" )
+end
+
+function Photon2.RegisterSchema( schema )
+	Photon2.Library.Schemas[schema.Name] = schema
+end
+
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadSirenLibrary()
 	Photon2.LoadComponentLibrary()
+	Photon2.Library.LoadSchemaLibrary()
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadInteractionSoundLibrary()
 	Photon2.Library.LoadCommandLibrary()	

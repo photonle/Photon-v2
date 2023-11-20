@@ -48,7 +48,8 @@ COMPONENT.Templates = {
 	},
 	["DynamicLight"] = {
 		Dynamic1 = {
-			Brightness = 5
+			Brightness = 50,
+			Size = 512
 		}
 	}
 }
@@ -122,8 +123,6 @@ COMPONENT.Elements = {
 
 	[26] = { "HighBeams", Vector( -17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
 	[27] = { "HighBeams", Vector( 17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
-
-	[28] = { "Dynamic1", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ) }
 }
 
 COMPONENT.StateMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
@@ -241,14 +240,6 @@ COMPONENT.Segments = {
 		Sequences = {
 			ON = { 1 }
 		}
-	},
-	["DLight"] = {
-		Frames = {
-			[1] = "28:W"
-		},
-		Sequences = {
-			ON = { 1 }
-		}
 	}
 }
 
@@ -274,7 +265,7 @@ COMPONENT.Inputs = {
 		}
 	},
 	["Emergency.Warning"] = {
-		["MODE1"] = {
+		["MODE3"] = {
 			HighBeams = "WIGWAG"
 		}
 	},

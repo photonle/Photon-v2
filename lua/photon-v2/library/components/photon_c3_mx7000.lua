@@ -264,6 +264,15 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
+			RearWarning = "FLASH",
+			ArrowStik = "FLASH",
+		},
+		["MODE2"] = {
+			MirrorTesting = "TEST",
+			RearWarning = "FLASH",
+			ArrowStik = "FLASH",
+		},
+		["MODE3"] = {
 			Takedown = "TEST",
 			LowerFront = "INOUT",
 			-- Rotators = "ON",

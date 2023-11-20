@@ -21,6 +21,15 @@ VEHICLE.SubMaterials = {
 	[6] = fcpd.Name,
 }
 
+VEHICLE.Schema = {
+	["Emergency.Warning"] = {
+		{ Label = "PRIMARY" },
+		{ Mode = "MODE1", Label = "ST1" },
+		{ Mode = "MODE2", Label = "ST2" },
+		{ Mode = "MODE3", Label = "ST3" },
+	}
+}
+
 VEHICLE.Equipment = {
 	{
 		Category = "Lighting",
@@ -71,7 +80,8 @@ VEHICLE.Equipment = {
 							["screws_top"] = 1,
 							["screws_bottom"] = 1,
 							["face"] = "face_circular"
-						}
+						},
+						-- FollowBone = "fl_wheel"
 					},
 					{
 						Inherit = "@rear_plate",

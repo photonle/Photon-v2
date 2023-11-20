@@ -20,7 +20,7 @@ print( "Initializing Photon 2..." )
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.10 (PREVIEW)"
+Photon2.Version = "2.0.11 (PREVIEW)"
 
 --[[
 	Compatability
@@ -42,7 +42,8 @@ local libraries = {
 	"sirens",
 	"interaction_sounds",
 	"commands",
-	"input_configurations"
+	"input_configurations",
+	"schemas"
 }
 
 local function autoInclude( fol )
