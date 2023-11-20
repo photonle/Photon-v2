@@ -334,6 +334,7 @@ ENT.PropertyFunctionMap = {
 	["SubMaterials"] = "UpdateAndApplySubMaterials",
 	["BodyGroups"] = "UpdateAndApplyBodyGroups",
 	["PoseParameters"] = "UpdateAndApplyPoseParameters",
+	["FollowBone"] = "FollowParentBone",
 	["Bones"] = "UpdateAndApplyStaticBoneData"
 }
 
@@ -344,8 +345,25 @@ ENT.PropertiesUpdatedOnSoftUpdate = {
 	["SubMaterials"] = true,
 	["BodyGroups"] = true,
 	["PoseParameters"] = true,
+	["FollowBone"] = true,
 	["Bones"] = true
 }
+
+function ENT:FollowParentBone( bone )
+	local boneId
+	local parent = self:GetParent()
+	if ( isstring( bone ) ) then 
+		boneId = parent:LookupBone( bone )
+	elseif ( isnumber( bone ) ) then
+		boneId = bone
+	end
+	if ( not boneId ) then
+		ErrorNoHalt( "Unable to find bone [" .. tostring( bone ) .. "]" )
+		return
+	end
+	self:SetParent( nil )
+	self:FollowBone( parent, boneId )
+end
 
 ---@param property string
 ---@param value any
