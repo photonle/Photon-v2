@@ -96,13 +96,8 @@ function Sound:OnStateChange( state )
 	self.Volume = state.Volume
 	self.Pitch = state.Pitch
 	self.DSP = state.DSP
+	self.Level = state.Level
 	self.Playing = state.Play
-	-- self.Muted = state.Mute
-	-- if ( state.Volume ~= nil ) then self:SetVolume( state.Volume ) end
-	-- if ( state.Pitch ~= nil ) then self:SetPitch( state.Pitch ) end
-	-- if ( state.DSP ~= nil ) then self:SetDSP( state.DSP ) else self:SetDSP( self.DSP ) end
-	-- if ( state.Play ~= nil ) then self:SetPlay( state.Play ) end
-	-- if ( state.Mute ~= nil ) then self:SetMute( state.Mute ) end
 	self:Sync()
 end
 
