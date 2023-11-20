@@ -62,7 +62,7 @@ function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/vehicle.lua")
 end
 
-LoadPhoton2MetaFiles()
+if SERVER then LoadPhoton2MetaFiles() end
 
 if CLIENT then
 	hook.Add("Initialize", "Photon2:Initialize", LoadPhoton2MetaFiles)
