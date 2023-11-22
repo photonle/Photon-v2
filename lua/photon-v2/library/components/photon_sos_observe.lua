@@ -47,7 +47,7 @@ COMPONENT.StateMap = ""
 COMPONENT.Elements = {
 	[1] = { "Sequence" },
 	[2] = { "SubMaterial", Indexes = { 1 } },
-	[3] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "schmal/photon/sos_observe/dome", DrawMaterial = "schmal/photon/sos_observe/light" },
+	[3] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "schmal/photon/sos_observe/dome", DrawMaterial = "schmal/photon/sos_observe/light", BloomMaterial = "schmal/photon/sos_observe/light" },
 	[4] = { "Dynamic", Vector( 0, 0, 1 ), Angle( 0, 0, 0 ) }
 }
 

@@ -169,9 +169,14 @@ function Light:Initialize( id, component )
 		self:SetLightScale( scale )
 	end
 
+	if ( isstring( self.BoneParent ) ) then
+		self.BoneParent = parentEntity:LookupBone( self.BoneParent )
+	end
+
 	if ( not self.Mesh and CLIENT ) then
 		self.Mesh = Photon2.MeshCache.GetMesh( self.Model, self.MeshName, self.MeshSubIndex )
 	end
+
 	return self
 end
 
