@@ -793,6 +793,9 @@ function ENT:SetupProfile( name, isReload )
 
 	self:ApplySubMaterials( profile.SubMaterials )
 
+	if CLIENT then
+		self:ProcessSelectionsString(self:GetSelectionsString())
+	end
 end
 
 function ENT:SetSchema( schema )
@@ -910,6 +913,10 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	end
 end
 
+
+function ENT:GetSelectionsString()
+	return self:GetNW2String( "Photon2:Selections" )
+end
 
 ---@param categoryIndex integer
 ---@param optionIndex integer
