@@ -12,6 +12,7 @@
 ---@field SetVehicleSpeed fun(self: PhotonController, speed: number)
 ---@field SetLinkedToVehicle fun(self: PhotonController, linked: boolean)
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
+---@field AttemptingComponentSetup boolean (Internal) Set to true when controller sets up a component. Used to 
 ENT = ENT
 
 local print = Photon2.Debug.Print
@@ -188,12 +189,18 @@ function ENT:InitializeShared()
 	self:SetupChannels()
 	timer.Simple(0, function()
 		-- Used so the controller will update on a hot-reload.
-		hook.Add("Photon2.VehicleCompiled", self, self.OnVehicleCompiled)
-		hook.Add("Photon2:ComponentReloaded", self, self.OnComponentReloaded)
+		hook.Add( "Photon2.VehicleCompiled", self, self.OnVehicleCompiled )
+		hook.Add( "Photon2:ComponentReloaded", self, self.AttemptComponentReload )
 	end)
 
 	-- self:SetInteractionSound( "Controller", "sos_nergy" )
 	-- self:SetInteractionSound( "Click", "default" )
+end
+
+function ENT:AttemptComponentReload( id )
+	local success, code = pcall( self.OnComponentReloaded, self, id )
+	print( "Reload result: " .. tostring( success ) .. " [" .. tostring( code ) .. "]" )
+	if ( not success ) then self.LastReloadFailed = true end
 end
 
 function ENT:GetOperator()
@@ -589,6 +596,7 @@ end
 
 ---@param id string
 function ENT:SetupComponent( id )
+	self.AttemptingComponentSetup = true
 	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
 	if (not data) then
 		print(string.format("Unable to locate equipment component ID [%s]", id))
@@ -626,6 +634,7 @@ function ENT:SetupComponent( id )
 
 	self.Components[id] = ent
 	ent:ApplyModeUpdate()
+	self.AttemptingComponentSetup = false
 end
 
 function ENT:RemoveAllComponents()
@@ -982,9 +991,15 @@ function ENT:OnComponentReloaded( componentId )
 			matched = true
 		end
 	end
+	
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end
+
+	if ( self.LastReloadFailed ) then
+		self:HardReload()
+	end
+	self.LastReloadFailed = false
 end
 
 function ENT:UpdateVehicleBraking( braking )	

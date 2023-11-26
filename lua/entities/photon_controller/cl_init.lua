@@ -75,6 +75,8 @@ function ENT:Think()
 	end
 
 	if (not self.IsSuspended) then
+		-- print("invalidating bone cache")
+		-- self:GetParent():InvalidateBoneCache()
 		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime()) then
 			self.Frame = self.Frame + 1
 			self.NextFrameTime = RealTime() + self.FrameDuration

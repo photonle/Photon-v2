@@ -121,7 +121,7 @@ end
 function ENT:FindBodyGroupOptionByName( bodyGroup, name )
 	if ( string.len(name) > 0 ) then name = name .. ".smd" end
 	for index, subModel in pairs( self:GetBodyGroups()[bodyGroup+1].submodels ) do
-		print("COMPARING [" .. tostring(name) .. "] to [" .. tostring(subModel) .. "]" )
+		-- print("COMPARING [" .. tostring(name) .. "] to [" .. tostring(subModel) .. "]" )
 		if ( name == subModel ) then return index end
 	end
 	ErrorNoHaltWithStack(string.format("Could not find body group option [%s] in body group index [%s] in model [%s]", name, bodyGroup, self:GetModel() ))
@@ -228,7 +228,7 @@ function ENT:SetupStaticBones()
 				end
 
 				if ( not target ) then
-					ErrorNoHaltWithStack( "Bone name '" .. data.Follow.Attachment .. "' could not be found on parent model: " .. parent:GetModel() )
+					ErrorNoHaltWithStack( "Bone name '" .. tostring(data.Follow.Bone) .. "' could not be found on parent model: " .. parent:GetModel() )
 					type = false
 				end
 			end
@@ -276,8 +276,23 @@ function ENT:UpdateMergedBones()
 	if ( not self.MergedBones ) then return false end
 	-- print("updating merged bones")
 	local parent = self.MergedBones.Parent
+	if ( not IsValid( parent ) ) then return false end
 	if ( self.MergedBones.Bones ) then
-
+		for boneId, data in pairs ( self.MergedBones.Bones ) do
+			local boneMatrix = parent:GetBoneMatrix( boneId )
+			local pos, ang = LocalToWorld( Vector( data.Data.Position ) * parent:GetModelScale(), data.Data.Angles, WorldToLocal( boneMatrix:GetTranslation(), boneMatrix:GetAngles(), self:GetPos(), self:GetAngles() ) )
+			print("updating merged bones-bones")
+			print(tostring(pos))
+			print(tostring(ang))
+			-- if ( boneId > 0 ) then
+				self:SetBonePosition( boneId, vectorZero, angleZero )
+				self:ManipulateBonePosition( boneId, pos )
+				self:ManipulateBoneAngles( boneId, ang )
+			-- else
+			-- 	self:SetLocalPos( pos )
+			-- 	self:SetLocalAngles( ang )
+			-- end
+		end
 	end
 
 	if ( self.MergedBones.Attachments ) then
@@ -364,6 +379,17 @@ function ENT:FollowParentBone( bone )
 	self:SetParent( nil )
 	self:FollowBone( parent, boneId )
 	self.FollowingBone = boneId
+	-- self:SetPredictable( true )
+	-- hook.Add( "Think", self, function()
+	-- 	-- parent:SetupBones()
+	-- 	-- self:SetupBones()
+	-- 	-- local pos, ang = 
+	-- 	-- self:ManipulateBonePosition( 0, parent:GetManipulateBonePosition(boneId) )
+	-- 	-- self:ManipulateBoneAngles( 0, parent:GetManipulateBoneAngles(boneId) )
+	-- 	-- print( "Manipulate: " .. tostring( parent:GetManipulateBoneAngles(boneId)))
+	-- 	-- print( "Matrix: " .. tostring( parent:GetBoneMatrix(boneId):GetAngles()))
+
+	-- end)
 end
 
 ---@param property string
@@ -394,6 +420,8 @@ function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 		local parent = self:GetParent()
 		self:FollowBone( nil, self.FollowingBone )
 		self:SetParent( parent )
+		self:SetPredictable( false )
+		hook.Remove("Think", self)
 	end
 	
 	local map = self.PropertyFunctionMap

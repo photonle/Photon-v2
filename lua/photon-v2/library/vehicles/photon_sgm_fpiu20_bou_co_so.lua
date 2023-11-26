@@ -34,6 +34,30 @@ VEHICLE.SubMaterials = {
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
+		Category = "Controller Sound",
+		Options = {
+			{
+				Option = "SoundOff Signal",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "sos_nergy" }
+				}
+			}
+		}
+	},
+	{
+		Category = "Standard",
+		Options = {
+			{
+				Option = "Vehicle Lighting",
+				VirtualComponents = {
+					{
+						Component = "photon_standard_sgmfpiu20"
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "License Plate",
 		Options = {
 			{
