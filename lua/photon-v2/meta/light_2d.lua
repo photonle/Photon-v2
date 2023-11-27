@@ -206,8 +206,8 @@ Light.States = {
 		SourceDetailColor = PhotonColor(255,255,255):Blend(white):GetBlendColor(), 
 		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(white):GetBlendColor(),
 		GlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
-		InnerGlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Blend(white):GetBlendColor(),
-		ShapeGlowColor = PhotonColor(100*wScale, 100*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		InnerGlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		ShapeGlowColor = PhotonColor(255, 255, 255):Blend(white):GetBlendColor(),
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),

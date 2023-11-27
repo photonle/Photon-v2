@@ -189,12 +189,18 @@ function ENT:InitializeShared()
 	self:SetupChannels()
 	timer.Simple(0, function()
 		-- Used so the controller will update on a hot-reload.
+		if ( not IsValid( self ) ) then return end
 		hook.Add( "Photon2.VehicleCompiled", self, self.OnVehicleCompiled )
 		hook.Add( "Photon2:ComponentReloaded", self, self.AttemptComponentReload )
+		hook.Add( "Photon2.MeshCache:Purge", self, self.HardReload )
 	end)
 
 	-- self:SetInteractionSound( "Controller", "sos_nergy" )
 	-- self:SetInteractionSound( "Click", "default" )
+end
+
+function ENT:OnMeshCachePurge()
+
 end
 
 function ENT:AttemptComponentReload( id )
@@ -906,7 +912,7 @@ end
 ---@param oldState string Old value.
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
-	print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
+	-- print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
 	self.CurrentModes[channel] = newState
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()

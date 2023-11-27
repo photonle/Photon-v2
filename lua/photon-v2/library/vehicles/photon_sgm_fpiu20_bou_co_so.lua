@@ -149,6 +149,26 @@ VEHICLE.Equipment = {
 				Option = "Pushbar",
 				BodyGroups = {
 					{ BodyGroup = "pushbar", Value = 1 }
+				},
+				Components = {
+					{
+						Name = "@pushbar_mpf4",
+						Component = "photon_sos_mpf4",
+						Angles = Angle( 0, 90, 0 ),
+						Position = Vector( -11, 120.5, 50.1 ),
+						Scale = 1,
+						Inputs = {
+							["Emergency.SceneForward"] = {
+								["ON"] = {
+									Light = "W"
+								}
+							}
+						}
+					},
+					{
+						Inherit = "@pushbar_mpf4",
+						Position = Vector( 11, 120.5, 50.1 ),
+					}
 				}
 			},
 			{
@@ -157,6 +177,71 @@ VEHICLE.Equipment = {
 					{ BodyGroup = "pushbar", Value = 0 }
 				}
 			}
+		}
+	},
+	{
+		Category = "Mirror",
+		Options = {
+			{
+				Option = "Intersectors (Surface)",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -45.5, 34.5, 57.3 ),
+						Angles = Angle( 1, 90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 45.5, 34.5, 57.3 ),
+						Angles = Angle( -1, -90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+				}
+			}
+		}
+	},
+	{
+		Category = "Side",
+		Options = {
+			{
+				Option = "Side Lighting",
+				Components = {
+					{
+						Name = "@pushbar_mpf4_side",
+						Component = "photon_sos_mpf4",
+						Angles = Angle( -13, 180+8, 1 ),
+						Position = Vector( -38.7, -95, 64.2 ),
+						Scale = 1,
+						Inputs = {
+							-- ["Emergency.SceneLeft"] = "ON[FULL=W]"
+							["Emergency.SceneLeft"] = {
+								["ON"] = {
+									Light = "W"
+								}
+							}
+						}
+					},
+					{
+						Inherit = "@pushbar_mpf4_side",
+						Angles = Angle( -13, -8, 0 ),
+						Position = Vector( 38.7, -95, 64.2 ),
+						Inputs = {
+							["Emergency.SceneRight"] = {
+								["ON"] = {
+									Light = "W"
+								}
+							}
+						}
+					}
+				}
+			},
 		}
 	},
 	-- },

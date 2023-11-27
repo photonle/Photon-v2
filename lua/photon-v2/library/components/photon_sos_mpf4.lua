@@ -23,38 +23,31 @@ local s = 1.6
 
 COMPONENT.Templates = {
 	["2D"] = {
-		Full = {
+		Light = {
 			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_mpf4_shape.png").MaterialName,
 			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_mpf4_detail.png").MaterialName,
 			Width = 6,
 			Height = 6,
 			Ratio = 1,
-			Scale = 1,
+			Scale = 1.4,
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.1,
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
 			-- LightMatrixScaleMultiplier = 0.6
 		}
-	},
-	["DynamicLight"] = {
-		DLTest = {
-			Brightness = 5,
-			Size = 512
-		}
 	}
 }
 
-COMPONENT.StateMap = "[R] 1 2"
+COMPONENT.StateMap = "[R] 1"
 
 COMPONENT.Elements = {
-	[1] = { "Full", Vector(0.5, 0, 0), Angle(0, -90, 0) },
-	[2] = { "DLTest", Vector( 0, 0, 0 )}
+	[1] = { "Light", Vector(0.5, 0, 0), Angle(0, -90, 0) },
 }
 
 COMPONENT.Segments = {
-	Full = {
+	Light = {
 		Frames = {
-			[1] = "2 [1] 1",
+			[1] = "[1] 1",
 			[2] = "[2] 1",
 			[3] = "[3] 1",
 			[4] = "[W] 1"
@@ -74,13 +67,13 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE3"] = {
-			Full = "TEST"
+			Light = "TEST"
 			-- All = "STEADY"
 		}
 	},
-	["Emergency.SceneForward"] = {
-		["ON"] = {
-			Full = "W"
-		}
-	}
+	-- ["Emergency.SceneForward"] = {
+	-- 	["ON"] = {
+	-- 		Light = "W"
+	-- 	}
+	-- }
 }

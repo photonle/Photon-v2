@@ -14,7 +14,6 @@ local print = Photon2.Debug.PrintF
 
 ENT.DefaultInputPriorities = {
 	["Emergency.Cut"] 				= 160,
-	-- Spotlight
 	["Emergency.Illuminate"]		= 150,
 	["Emergency.SceneForward"] 		= 140,
 	["Emergency.SceneLeft"] 		= 130,

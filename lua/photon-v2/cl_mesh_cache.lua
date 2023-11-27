@@ -4,6 +4,11 @@ Photon2.MeshCache = Photon2.MeshCache or {
 
 local printf = Photon2.Debug.PrintF
 
+function Photon2.MeshCache.ClearCache()
+	Photon2.MeshCache.Cache = {}
+	hook.Run( "Photon2.MeshCache:Purge" )
+end
+
 ---@param model string Model name
 ---@param material string Material name
 ---@param index? number
