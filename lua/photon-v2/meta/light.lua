@@ -36,8 +36,8 @@ function Light:Initialize( id, component )
 		InputActions = {},
 		SortedInputActions = {}
 	}
+	
 	if ( isstring( self.BoneParent ) ) then
-		
 		self.BoneParent = parent:LookUpBoneOrError( self.BoneParent )
 	end
 

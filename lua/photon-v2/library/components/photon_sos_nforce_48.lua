@@ -180,7 +180,7 @@ COMPONENT.VirtualOutputs = {
 		{
 			Mode = "BRAKE",
 			Conditions = {
-				["Emergency.Warning"] = { "MODE1", "MODE2", "MODE3" },
+				["Emergency.Warning"] = { "MODE2", "MODE3" },
 				["Vehicle.Brake"] = { "BRAKE" }
 			}
 		}
@@ -188,6 +188,11 @@ COMPONENT.VirtualOutputs = {
 }
 
 COMPONENT.Inputs = {
+	["Virtual.Warning+Brake"] = {
+		["BRAKE"] = {
+			WACBrake = "BRAKE"
+		}
+	},
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			WACFront = "MODE1",
@@ -204,9 +209,5 @@ COMPONENT.Inputs = {
 	["Emergency.SceneForward"] = {
 		["ON"] = { ForwardIllumination = "FLOOD" }
 	},
-	["Virtual.Warning+Brake"] = {
-		["BRAKE"] = {
-			WACBrake = "BRAKE"
-		}
-	}
+	
 }
