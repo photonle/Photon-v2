@@ -15,6 +15,7 @@ ENT.FrameCountEnabled = true
 ENT.NextFrameTime = 0
 
 
+---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Initialize()
 	self.Frame = 1
 	self.NextFrameTime = RealTime() + self.FrameDuration
@@ -63,6 +64,7 @@ end
 local RealTime = RealTime
 local IsValid = IsValid
 
+---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Think()
 	if (not self.IsSuspended) then
 		if (not IsValid(self:GetParent())) then

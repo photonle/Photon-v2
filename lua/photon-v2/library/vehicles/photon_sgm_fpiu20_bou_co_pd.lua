@@ -90,7 +90,7 @@ VEHICLE.Equipment = {
 				Option = "Pushbar",
 				BodyGroups = {
 					{ BodyGroup = "pushbar", Value = 1 }
-				}
+				},
 			},
 			{
 				Option = "None",

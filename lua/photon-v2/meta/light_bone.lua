@@ -7,24 +7,7 @@ local manager = Photon2.RenderLightBone
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElementBone : PhotonElement
----@field private Value? number
----@field BoneId? number
----@field Bone? string
----@field Activity? PhotonBoneLightActivity
----@field Axis? number | string
----@field Smooth? number Smoothing factor when reaching target value (only applies to sweep and static)
----@field Direction? number -1 or +1
----@field DeactivateOnTarget? boolean If the light should deactivate upon reaching its target.
----@field Speed? number Controls how fast rotation is.
----@field Target? number Required for static and sweep modes.
----@field SweepStart? number Angle the sweep should start at.
----@field SweepEnd? number Angle the sweep should end at.
----@field SweepPause? number Pause duration while sweeping.
----@field AngleOutputMap? table<integer, table<number, any>>
----@field AddSpeed? number Constant number to add speed by. Can be used to intentionally "drift" lights that are otherwise set to the same speed. 
----@field private InTransit? boolean
----@field private PauseTime? number
+---@type PhotonElementBone
 local Element = exmeta.New()
 
 -- Rotation behaviors...
@@ -82,7 +65,7 @@ function Element:Initialize( id, component )
 	return self
 end
 
----@param state PhotonElementBoneState
+---@param state PhotonElementBoneStateProperties
 function Element:OnStateChange( state )
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
 		self:Activate()

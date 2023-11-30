@@ -34,7 +34,7 @@ COMPONENT.Templates = {
 			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
 			Scale = 1,
 			Width = 1.5,
-			Height = 1.5
+			Height = 1.5,
 		}
 	},
 	["Projected"] = {
@@ -49,7 +49,7 @@ COMPONENT.Templates = {
 	["DynamicLight"] = {
 		Dynamic1 = {
 			Brightness = 50,
-			Size = 512
+			Size = 512,
 		}
 	}
 }

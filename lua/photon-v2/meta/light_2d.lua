@@ -8,50 +8,7 @@ local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElement2D : PhotonElement
----@field PixVisHandle pixelvis_handle_t Internal property.
----@field VisibilityRadius number (Default = `1`) The radius number used for the PixelVisible calculation.
----@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
----@field LocalPosition Vector
----@field LocalAngles Angle
----@field Rotation Angle
----@field QuadRotation Angle
----@field AnimationEnabled boolean
----@field IntensityTransitions boolean
----@field Intensity number Light's current (actual) intensity.
----@field TargetIntensity number Light's target intensity.
----@field Position Vector World position of the light. Set and updated automatically.
----@field EffectPosition Vector World position to render the light effects at. Except in special cirumstances, this is equal to Light.Position.
----@field Angles Angle World angles of the light. Set and updated automatically.
----@field Texture string The texture to use for the light source.
----@field Width number Width of the light source.
----@field Height number Height of the light source.
----@field Ratio number Horizontal size ratio of glow effect. Numbers > 1 will stretch, numbers < 1 will compact.
----@field Scale number Scale of glow effect and apparent brightness. Does not affect the light source.
----@field SourceFillColor PhotonElementColor
----@field SourceDetailColor PhotonElementColor
----@field GlowColor PhotonElementColor
----@field ShapeGlowColor PhotonElementColor
----@field SubtractiveMid PhotonElementColor
----@field SourceIntensity PhotonElementColor
----@field BlendColor RGB
----@field ShouldDraw boolean
----@field Matrix VMatrix
----@field ViewNormal Vector
----@field ViewDotRight number
----@field ViewDotUp number
----@field LightMatrixEnabled boolean Internal property. Will set to true if a LightMatrix is defined.
----@field LightMatrix Vector[] Relative position vectors where additional effect sprites for this light should be drawn. Consider using just a BloomMaterial texture before setting up a LightMatrix, as the BloomMaterial can provide similar results with less performance overhead. Do note, however, that a LightMatrix generally still has better performance than using another dedicated Light.
----@field LightMatrixScaleMultiplier number Sets the light scale (perceived brightness) for all the LightMatrix sprites.
----@field WorldLightMatrix Vector[] Internal property. Stores the matrix points' world positions.
----@field MaterialsLoaded boolean If true, material string names should be materials.
----@field BoneParent integer If set, parents the light to the specified bone on the parent entity.
----@field FlipHorizontal boolean When true, texture quads will flip and mirror along the horizontal axis.
----@field FlipVertical boolean When true, texture quads will flip and mirror along the vertical axis.
----@field Persist boolean Forces the light to render when its visibility is zero. Can be used if glow effects cause undesirable bleeding.
----@field InnerSpread number Scale of inner glow effects.
----@field AutoInsetSize number
---@field ComponentScale boolean
+---@type PhotonElement2D
 local Light = exmeta.New()
 
 Light.Class = "2D"
@@ -69,9 +26,6 @@ Light.UseBasicPlacement = true
 Light.InnerSpread = 1
 
 -- Light.ComponentScale = 1
-
-Light.SpreadWidth = 1
-Light.SpreadHeight = 1
 
 Light.ForwardVisibilityOffset = 0
 Light.ForwardBloomOffset = 0
@@ -223,10 +177,6 @@ function Light.OnLoad()
 	end
 end
 
-function Light:Render()
-end
-
-
 -- List of properties that need to be scaled to the parent entity scale
 Light.ScalableProperties = {
 	"LocalPosition", 
@@ -239,17 +189,13 @@ Light.ScalableProperties = {
 	"Scale",
 	"ForwardVisibilityOffset",
 	"ForwardBloomOffset",
-	"LightMatrixScaleMultiplier",
-	"SpreadWidth",
-	"SpreadHeight"
+	"LightMatrixScaleMultiplier"
 }
 
 --[[
 		INITIALIZE
 --]]
 
----@param parentEntity Entity
----@return PhotonElement2D
 function Light:Initialize( id, component )
 	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElement2D]]
 	local parentEntity = component.Entity
@@ -280,18 +226,15 @@ function Light:Initialize( id, component )
 
 	-- Lazy loading of materials.
 
+	---@type PhotonElement2D
 	local baseClass = getmetatable( self ).__index
 
 	if ( isstring( baseClass.Shape ) ) then
-		baseClass.Shape = Material( baseClass.Shape )
+		baseClass.Shape = Material( baseClass.Shape --[[@as string]] )
 	end
 
 	if ( isstring(baseClass.Detail) ) then
-		baseClass.Detail = Material( baseClass.Detail )
-	end
-
-	if ( isstring( baseClass.MaterialBloom ) ) then
-		baseClass.MaterialBloom = Material( baseClass.MaterialBloom )
+		baseClass.Detail = Material( baseClass.Detail --[[@as string]]  )
 	end
 
 	return self
@@ -306,20 +249,12 @@ function Light:SetLightScale( scale )
 		self[properties[i]] = self[properties[i]] * scale
 	end
 	if (self.LightMatrixEnabled) then
-		local lightMatrix = self.LightMatrix
+		local lightMatrix = self.LightMatrix or {}
 		self.LightMatrix = {}
 		for i=1, #lightMatrix do
 			self.LightMatrix[i] = lightMatrix[i] * scale
 		end
 	end
-end
-
--- Internal function. Converts string material names to Material objects.
--- 8/28: ??????? not implemented?
-function Light:LoadMaterials()
-
-
-	self.MaterialsLoaded = true
 end
 
 --[[
@@ -345,8 +280,6 @@ function Light.NewTemplate( data )
 	return light
 end
 
----@param light PhotonElement2D Data input table.
----@param template? PhotonElement2D Light template.
 function Light.New( light, template )
 	if ( not light.LocalPosition and isvector( light[2] ) ) then
 		light.LocalPosition = light[2]
@@ -375,7 +308,6 @@ function Light.New( light, template )
 
 	return light
 end
-
 
 function Light:Activate()
 	if not PhotonElement.Activate( self ) then return end
@@ -413,7 +345,7 @@ function Light:DoPreRender()
 		-- print("BONE PARENT: " .. tostring(self.BoneParent))
 		-- -- TODO: optimization
 		self.Parent:SetupBones()
-		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
+		local matrix = self.Parent:GetBoneMatrix( self.BoneParent --[[@as number]] )
 		-- local bonePosition = matrix:GetTranslation()
 		-- local boneAngles = matrix:GetAngles()
 
@@ -528,12 +460,12 @@ function Light:OnStateChange( state )
 
 	self.BlendColor = state.Blend
 
-	self.SourceFillColor:SetTarget( state.SourceFillColor, self.BlendColor )
-	self.SourceDetailColor:SetTarget( state.SourceDetailColor, self.BlendColor )
-	self.GlowColor:SetTarget( state.GlowColor, self.BlendColor )
-	self.InnerGlowColor:SetTarget( state.InnerGlowColor, self.BlendColor )
-	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor, self.BlendColor )
-	self.SubtractiveMid:SetTarget( state.SubtractiveMid, self.BlendColor )
+	self.SourceFillColor:SetTarget( state.SourceFillColor )
+	self.SourceDetailColor:SetTarget( state.SourceDetailColor )
+	self.GlowColor:SetTarget( state.GlowColor )
+	self.InnerGlowColor:SetTarget( state.InnerGlowColor )
+	self.ShapeGlowColor:SetTarget( state.ShapeGlowColor )
+	self.SubtractiveMid:SetTarget( state.SubtractiveMid )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity

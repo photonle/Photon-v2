@@ -10,6 +10,7 @@ NAME = "PhotonElementState"
 ---@field IntensityLossFactor number (Default = `10`)
 ---@field Inherit string | PhotonElementState
 ---@field Proxy table (Special) Allows the rendered state to be based on an external variable look-up rathern than being directly determined by the frame. Made for the Vision SLR.
+---@field DeactivationState string
 local State = exmeta.New()
 
 State.Intensity = 1

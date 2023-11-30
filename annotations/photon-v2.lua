@@ -114,10 +114,10 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Category string
 ---@field PrintName string
 ---@field Model string
----@field Templates { Bone?: table<string, PhotonElementBone>, Mesh?: table<string, PhotonElementMesh>, Sprite?: table<string, PhotonElement2D>, Projected?: table<string, PhotonElementProjected>,  }
----@field Elements table
----@field ElementGroups table
----@field Segments table
+---@field Templates PhotonLibraryComponentTemplates
+---@field Elements table<number, PhotonElement2D | PhotonElementBone | PhotonElementMesh | PhotonElementProjected | PhotonElementSound | PhotonElementDynamicLight | PhotonElementSub | PhotonElementSequence | PhotonElementVirtual >
+---@field ElementGroups table<string, table<number>>
+---@field Segments table<string, PhotonLibraryComponentSegment>
 ---@field Inputs table
 ---@field InputPriorities table<string, number>
 ---@field VirtualOutputs table
@@ -127,8 +127,23 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Phase string Pattern variant identifier.
 ---@field States table<integer, string> Pre-defined state slots.
 
+---@class PhotonLibraryComponentTemplates
+---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.
+---@field Bone? table<string, PhotonElementBoneParameters> Bone manipulation.
+---@field Mesh? table<string, PhotonElementMesh> 3D mesh-based light.
+---@field Projected? table<string, PhotonElementProjected> Projected texture lighting.
+---@field Sound? table<string, PhotonElementSound> Sound.
+---@field Dynamic? table<string, PhotonElementDynamicLight> Dynamic lighting.
+---@field Sub? table<string, PhotonElementSub> Sub-material.
+---@field Sequence? table<string, PhotonElementSequence> Model sequence.
+---@field Virtual? table<string, PhotonElementVirtual> Virtual element (for UI components).
+
 ---@class PhotonLibrarySirenComponent : PhotonLibraryComponent
 ---@field Siren string Default siren name.
+
+---@class PhotonLibraryComponentSegment
+---@field Frames table<number, string | table>
+---@field Sequences table<string, table<integer, integer>>
 
 ---@class PhotonLibraryVehicle
 ---@field ID string (Internal) Overwritten by the filename. Cannot be set by user.
@@ -138,7 +153,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Author string The author of this _Photon_ vehicle profile.
 ---@field IsEquipmentConfigurable boolean (Internal) Whether the equipment is user-configurable or static. This is determined automatically by the `.Equipment {}` table structure.
 -- ---@field Equipment PhotonVehicleEquipment[]
----@field EquipmentSelections PhotonVehicleSelectionCategory[]
+---@field EquipmentSelections PhotonVehicleSelectionCategory[] Mirror of .Equipment 
 ---@field Equipment PhotonVehicleSelectionCategory[]
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
 ---@field Schema table<string, table<table>>
@@ -159,7 +174,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@class PhotonSiren : PhotonLibrarySiren
 
 ---@class PhotonEquipmentTable
----@field Components table
+---@field Components table<integer, PhotonEquipmentComponentEntry>
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
@@ -171,7 +186,7 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Category string Category name.
 ---@field Options PhotonVehicleSelectionOption[]
 
----@class PhotonVehicleSelectionOption
+---@class PhotonVehicleSelectionOption : PhotonEquipmentTable
 ---@field Option string Selection name.
 ---@field Variants? PhotonVehicleSelectionVariant[]
 
@@ -207,6 +222,12 @@ PhotonBlendColor = PhotonBlendColor
 ---@field Value? string | table<string>
 ---@field Channel? string
 ---@field Modifiers? table<any>
+
+---@class PhotonEquipmentEntry
+---@field Name string
+---@field Inherit string
+
+---@class PhotonEquipmentComponentEntry : PhotonEquipmentEntry, PhotonLibraryComponent
 
 
 
@@ -252,3 +273,8 @@ function istable( object ) end
 ---@field shadow? boolean
 ---@field additive? boolean
 ---@field outline? boolean
+
+---@class PhotonElementPositionalProperties
+---@field Position? Vector Local position of element (relative to parent entity or bone).
+---@field Angles? Angle Local angles of element (relative to parent entity or bone).
+---@field BoneParent? string|integer Parents light to bone.

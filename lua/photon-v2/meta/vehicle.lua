@@ -18,6 +18,7 @@ NAME = "PhotonVehicle"
 ---@field Model string
 ---@field New? fun(data: PhotonLibraryVehicle): PhotonVehicle Internal.
 ---@field Equipment {}
+---@field EquipmentSelections? {}
 ---@field SubMaterials table<integer, string>
 ---@field Schema table<string, table<table>>
 local Vehicle = exmeta.New() --[[@as PhotonVehicle]]

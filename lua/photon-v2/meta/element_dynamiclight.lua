@@ -10,24 +10,24 @@ local printf = Photon2.Debug.PrintF
 local DynamicLight = DynamicLight
 
 ---@class PhotonElementDynamicLight : PhotonElement
----@field LocalPosition Vector
----@field LocalAngles Angle
+---@field LocalPosition? Vector
+---@field LocalAngles? Angle
 ---@field Position? Vector
 ---@field Angles? Angle
 ---@field BoneParent? integer
----@field Brightness number
----@field Decay number
----@field DieTime number
----@field Direction Vector
----@field InnerAngle number
----@field OuterAngle number
----@field MinimumLight number
----@field World boolean
----@field Model boolean
----@field Size number
----@field Color PhotonColor
----@field Index number
----@field Style number
+---@field Brightness? number
+---@field Decay? number
+---@field DieTime? number
+---@field Direction? Vector
+---@field InnerAngle? number
+---@field OuterAngle? number
+---@field MinimumLight? number
+---@field World? boolean
+---@field Model? boolean
+---@field Size? number
+---@field Color? PhotonColor
+---@field Index? number
+---@field Style? number
 local Element = exmeta.New()
 
 Element.Class = "DynamicLight"

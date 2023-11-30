@@ -5,27 +5,34 @@ NAME = "PhotonElement"
 local printf = Photon2.Debug.PrintF
 
 ---@class PhotonElement
----@field Parent Entity
----@field Component PhotonLightingComponent
----@field Class string
----@field Disabled boolean
----@field Deactivate boolean When `true`, marks the light to be activated on the next frame.
----@field DeactivationState? string
----@field IsActivated boolean
----@field States table
----@field Id integer
----@field CurrentStateId string
----@field InputActions table
----@field SortedInputActions table
----@field BoneParent number|string Model bone to attach the light to (if supported).
----@field RequiredBodyGroups table<number | string, number | table<number>>
----@field private HasBodyGroupRequirements boolean
+---@field [1]? string Template
+---@field Parent? Entity
+---@field Component? PhotonLightingComponent
+---@field Class? string Type of element (2D, Mesh, etc.)
+---@field Disabled? boolean
+---@field Deactivate? boolean When `true`, marks the light to be activated on the next frame.
+---@field DeactivationState? string Deactivation state.
+---@field IsActivated? boolean
+---@field States? table<string, PhotonElementState> Table of available states.
+---@field Id? integer Element's unique identifier (per-component).
+---@field CurrentStateId? string
+---@field InputActions? table
+---@field SortedInputActions? table
+---@field BoneParent? number|string Model bone to attach the light to (if supported).
+---@field RequiredBodyGroups? table<number | string, number | table<number>>
+---@field HasBodyGroupRequirements boolean
+--@field Initialize fun(self: PhotonElement, id: number, component: PhotonLightingComponent): PhotonElement
+--@field CheckBodyGroupRequirements fun(self: PhotonElement): boolean
+--@field OnStateChange fun(self: PhotonElement)
+--@field SetInput fun(self: PhotonElement, sequenceId: string, stateId: string)
 local Light = exmeta.New()
+
+-- -@type PhotonElement
 
 Light.DeactivationState = "OFF"
 
----@param id integer
----@param parent Entity
+---@param id string
+---@param component PhotonLightingComponent
 ---@return PhotonElement
 function Light:Initialize( id, component )
 	local light = {
@@ -36,7 +43,7 @@ function Light:Initialize( id, component )
 		InputActions = {},
 		SortedInputActions = {}
 	}
-	
+
 	if ( isstring( self.BoneParent ) ) then
 		self.BoneParent = parent:LookUpBoneOrError( self.BoneParent )
 	end
@@ -96,6 +103,7 @@ function Light:OnStateChange( state ) end
 
 local debugPrint = false
 
+-- Orders each input state by its priority.
 function Light:SortInputActions()
 	table.SortByMember( self.SortedInputActions, "Priority", false )
 	for k, v in ipairs(self.SortedInputActions) do
@@ -122,6 +130,11 @@ function Light:AddInput( sequenceId, priority )
 	self:SortInputActions()
 end
 
+-- Registers what state the element should have in a sequence.
+-- When multiple sequences are trying to set its state,
+-- the state to actually apply is determined by the sequence priority.
+---@param sequenceId string Sequence identifier.
+---@param stateId string Element's state in the sequence.
 function Light:SetInput( sequenceId, stateId )
 	-- error("deprecated")
 	self.InputActions[sequenceId].State = stateId

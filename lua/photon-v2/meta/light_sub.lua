@@ -4,8 +4,8 @@ NAME = "PhotonElementSub"
 BASE = "PhotonElement"
 
 ---@class PhotonElementSub : PhotonElement
----@field Indexes integer[]
----@field States table<string, PhotonElementSubState>
+---@field Indexes? integer[] Sub-material indexes this element controls.
+---@field States? table<string, PhotonElementSubState> Element states.
 local Light = exmeta.New()
 
 Light.Class="Sub"
