@@ -1,5 +1,6 @@
 ---@meta
 
+-- Properties that are settable by element states.
 ---@class PhotonElementBoneStateProperties
 ---@field Activity? PhotonBoneLightActivity
 ---@field Speed? number Controls how fast rotation is.
@@ -10,6 +11,7 @@
 ---@field Direction number Direction of movement.
 ---@field Smooth? number (NOT IMPLEMENTED) Smoothing factor when reaching target value (only applies to sweep and static)
 
+-- Adjustable element properties.
 ---@class PhotonElementBoneProperties : PhotonElementBoneStateProperties
 ---@field Axis? number | string
 ---@field DeactivateOnTarget? boolean If the light should deactivate upon reaching its target.

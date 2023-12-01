@@ -8,7 +8,7 @@ local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElementProjected: PhotonElement
+---@class PhotonElementProjected : PhotonElement
 ---@field ProjectedTexture? ProjectedTexture
 ---@field LocalPosition? Vector
 ---@field LocalAngles? Angle

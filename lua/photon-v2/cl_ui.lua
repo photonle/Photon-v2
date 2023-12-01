@@ -26,16 +26,20 @@ function Photon2.UI.PopulateMenuBar()
 		local menu = Photon2.UI.MenuBar
 		
 
+		local inputConfigOption = menu:AddOption( "Open Input Settings", function()
+			local form = vgui.Create ( "Photon2BasicInputConfig" )
+		end)
+		
 		local openStudioOption = menu:AddOption("Open Studio", function()
 			Photon2.Studio:Initialize()
 		end)
 
-		local inputConfigOption = menu:AddOption("Input Configuration")
-		local inputConfigMenu = inputConfigOption:AddSubMenu()
-		inputConfigMenu:SetDeleteSelf( false )
+		local inputProfileOption = menu:AddOption("Input Profiles")
+		local inputProfileMenu = inputProfileOption:AddSubMenu()
+		inputProfileMenu:SetDeleteSelf( false )
 
 		for name, config in pairs( Photon2.Library.InputConfigurations ) do
-			local opt = inputConfigMenu:AddOption( config.Title )
+			local opt = inputProfileMenu:AddOption( config.Title )
 			local men = opt:AddSubMenu()
 			men:SetDeleteSelf( false )
 			men:AddOption( "Set for Current Vehicle", function()
@@ -69,6 +73,9 @@ function Photon2.UI.PopulateMenuBar()
 		-- 		-- Photon2.ClientInput.SetProfilePreference( "#default", name )
 		-- 	end)
 		-- end
+
+		
+
 
 		local debugOption = menu:AddOption( "Developer" )
 		local debugMenu = debugOption:AddSubMenu()

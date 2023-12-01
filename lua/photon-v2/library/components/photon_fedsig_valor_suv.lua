@@ -25,13 +25,11 @@ COMPONENT.Templates = {
 		Primary = {
 			Width 		= 5.5,
 			Height		= 2.8,
-			Detail 	= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
-			Shape 			= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
+			Detail 		= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
+			Shape 		= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
-			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			LightMatrixScaleMultiplier = 1
 		},
 		Rear = {
 			Width 		= 5.8,
@@ -47,6 +45,10 @@ COMPONENT.Templates = {
 }
 
 local mult56 = 0.8
+
+COMPONENT.ElementGroups = {
+	["Group"] = { 1, 2, 3, 4 }
+}
 
 COMPONENT.Elements = {
 	[1] = { "Primary", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -54, 0 ), Width = 7 },
@@ -187,6 +189,12 @@ COMPONENT.Segments = {
 			["1"] = { 1 },
 			["2"] = { 2 }
 		}
+	},
+	["SteadyBurn"] = {
+		Frames = { [1] = "[1] 9 10 11 12" },
+		Sequences = {
+			["STEADY"] = { 1 }
+		}
 	}
 }
 
@@ -204,15 +212,28 @@ COMPONENT.Inputs = {
 			P26_FRONT = "P26",
 			P26_REAR = "P26",
 		},
+		
+		
+		
+		
+		
+		
 		["MODE3"] = {
-			-- All = "MIX"
-			-- P26_WOR = "P26",
-			-- P26_EDGE = "P26",
-			Demo = { "1", Rank = 1 },
-			P26_FRONT = { "P26", Rank = 2 },
-			-- P26_REAR = "P26",
-
+			-- White override segment
+			P26_WOR = { "P26", Order = 6 },
+			-- Steady-burn override
+			-- SteadyBurn = { "STEADY", Order = 5 }, -- order defined
+			-- Normal pattern segments
+			P26_EDGE = "P26",
+			P26_FRONT = "P26",
+			P26_REAR = "P26",
 		},
+
+
+
+
+
+
 		-- ["MODE1"] = {
 		-- 	Demo = "1",
 		-- },
@@ -224,7 +245,7 @@ COMPONENT.Inputs = {
 		-- }
 	},
 	["Emergency.Marker"] = {
-		["CRUISE"] = {
+		["ON"] = {
 			Cruise = "CRUISE"
 		}
 	}

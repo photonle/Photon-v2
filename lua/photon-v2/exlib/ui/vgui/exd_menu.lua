@@ -38,7 +38,6 @@ function PANEL:AddPanel( pnl )
 end
 
 function PANEL:AddOption( strText, funcFunction, icon, shortcut )
-	print("ADDING MENU OPTION", strText)
 	local pnl = vgui.Create( "EXDMenuOption", self )
 	pnl:SetMenu( self )
 	pnl:SetText( strText )
