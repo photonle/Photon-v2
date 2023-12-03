@@ -88,7 +88,7 @@ end
 
 
 function Equipment.InheritEntry( entry, parentName, equipmentTable, nameTable, loadedParents )
-	printf( "Inheriting equipment from parent '%s'", parentName )
+	-- printf( "Inheriting equipment from parent '%s'", parentName )
 	local parent = equipmentTable[nameTable[parentName]]
 	if (parent == entry) then
 		error(string.format("Equipment entry attempted to inherit itself.", parentName))
@@ -126,7 +126,7 @@ local overrideableProperties = { "StateMap", "Phase", "Segments", "Inputs", "Ele
 
 -- Builds components as new inherited variants for each equipment entry
 function Equipment.BuildComponents( equipmentTable, key, vehicleId )
-	print("Building Components [" .. key .. "]")
+	-- print("Building Components [" .. key .. "]")
 	for key, entry in pairs( equipmentTable[key] ) do
 		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
 		---@type PhotonLibraryComponent
@@ -154,9 +154,9 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		Photon2.Library.Components[componentId] = component
 		Photon2.CompileComponent( componentId, component )
 		entry.Component = componentId
-		print("NEW Component ID: [" .. componentId .. "]" )
-		print("Equipment key: " .. tostring(key) )
-		PrintTable( entry )
+		-- print("NEW Component ID: [" .. componentId .. "]" )
+		-- print("Equipment key: " .. tostring(key) )
+		-- PrintTable( entry )
 	end
 end
 

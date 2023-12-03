@@ -9,7 +9,8 @@ Photon2.Index = Photon2.Index or {
 		Vehicles = {}
 	},
 	InteractionSounds = {},
-	InputCommands = {},
+	---@type table<string, PhotonCommand>
+	Commands = {},
 	InputConfigurations = {},
 	Schemas = {}
 }
@@ -413,7 +414,7 @@ function Photon2.GetInteractionSoundProfile( class, name )
 	return Photon2.Index.InteractionSounds[class][name]
 end
 
----@param command PhotonClientInputCommand
+---@param command PhotonCommand
 function Photon2.Index.CompileInputCommand( command )
 	if ( SERVER ) then return end
 	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
@@ -428,16 +429,17 @@ function Photon2.Index.CompileInputCommand( command )
 			end
 		end
 	end
-	Photon2.Index.InputCommands[command.Name] = command
-	return Photon2.Index.InputCommands[command.Name]
+	command.ExtendedTitle = command.Category .. " " .. command.Title
+	Photon2.Index.Commands[command.Name] = command
+	return Photon2.Index.Commands[command.Name]
 end
 
 ---@param commandName string
 function Photon2.GetCommand( commandName )
-	if ( not Photon2.Index.InputCommands[commandName] ) then
+	if ( not Photon2.Index.Commands[commandName] ) then
 		error( "Client input command [" .. tostring( commandName ) .. "] not found." )
 	end
-	return Photon2.Index.InputCommands[commandName]
+	return Photon2.Index.Commands[commandName]
 end
 
 function Photon2.Index.CompileInputConfiguration( config )

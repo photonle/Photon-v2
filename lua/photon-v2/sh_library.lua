@@ -255,7 +255,7 @@ function Photon2.Library.LoadCommandFile( filePath, isReload )
 	Photon2._acceptFileReload = true
 end
 
----@param command PhotonClientInputCommand
+---@param command PhotonCommand
 function Photon2.RegisterCommand( command )
 	Photon2.Library.Commands[command.Name] = command
 	return Photon2.Index.CompileInputCommand( command )

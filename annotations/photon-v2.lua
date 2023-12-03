@@ -278,3 +278,19 @@ function istable( object ) end
 ---@field Position? Vector Local position of element (relative to parent entity or bone).
 ---@field Angles? Angle Local angles of element (relative to parent entity or bone).
 ---@field BoneParent? string|integer Parents light to bone.
+
+---@class PhotonCommandAction
+---@field Action string
+---@field Channel? string Applicable channel.
+---@field Value? string Value parameter.
+---@field Sound? string Sound class (for use with "SOUND" action only).
+
+---@class PhotonCommand
+---@field Name string Unique command name. Example: `my_photon_command`
+---@field Title string Readable title of command. Example: _"My Photon Command"_
+---@field Category string Category of command.
+---@field Description string Description of command.
+---@field OnPress? PhotonCommandAction[] Actions executed when key is pressed.
+---@field OnHold? PhotonCommandAction[] Actions executed after key is pressed and held.
+---@field OnRelease? PhotonCommandAction[] Actions executed when key is released.
+---@field ExtendedTitle? string (Internal) Set automatically.

@@ -3,6 +3,7 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	Active = { Binds = {} },
 	KeysPressed = {},
 	KeysHeld = {},
+	---@type table<string, PhotonCommand>
 	Commands = {},
 	Listening = false,
 	---@type PhotonController | boolean
