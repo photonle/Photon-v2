@@ -126,7 +126,9 @@ VEHICLE.Equipment = {
 							forward_hotfeet = 1,
 							alley_hotfeet = 1
 						},
-
+						States = {
+							[1] = "R", [2] = "R", [3] = "W"
+						}
 					}
 				}
 			}

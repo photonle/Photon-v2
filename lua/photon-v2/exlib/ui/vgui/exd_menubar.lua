@@ -1,8 +1,7 @@
-print("[EX VGUI] exd_menubar.lua")
-
 
 local class = "EXDMenuBar"
 local base = "DPanel"
+---@class EXDMenuBar
 local PANEL = {}
 
 AccessorFunc( PANEL, "m_bBackground",		"PaintBackground",	FORCE_BOOL )

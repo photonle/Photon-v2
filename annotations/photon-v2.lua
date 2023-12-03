@@ -129,8 +129,8 @@ PhotonBlendColor = PhotonBlendColor
 
 ---@class PhotonLibraryComponentTemplates
 ---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.
----@field Bone? table<string, PhotonElementBoneParameters> Bone manipulation.
----@field Mesh? table<string, PhotonElementMesh> 3D mesh-based light.
+---@field Bone? table<string, PhotonElementBoneProperties> Bone manipulation.
+---@field Mesh? table<string, PhotonElementMeshProperties> 3D mesh-based light.
 ---@field Projected? table<string, PhotonElementProjected> Projected texture lighting.
 ---@field Sound? table<string, PhotonElementSound> Sound.
 ---@field Dynamic? table<string, PhotonElementDynamicLight> Dynamic lighting.

@@ -7,31 +7,7 @@ local manager = Photon2.RenderLightMesh
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElementMesh : PhotonElement
----@field Model string Name of model that contains the mesh.
----@field MeshName? string Mesh name (model sub-material).
----@field MeshSubIndex? number Model's mesh sub-index (default = `1`).
----@field Mesh? IMesh
----@field LocalPosition? Vector
----@field LocalAngles? Angle
----@field Position? Vector
----@field Angles? Angle
----@field Matrix? VMatrix
----@field Scale? Vector
----@field protected FinalScale? Vector The scale of the mesh multiplied by the scale of its spawned parent. Set automatically.
----@field BloomColor? PhotonBlendColor
----@field DrawColor? PhotonBlendColor
----@field Intensity? number
----@field IntensityGainFactor? number
----@field IntensityLossFactor? number
----@field TargetIntensity? number
----@field IntensityTransitions? boolean
----@field EnableDraw? boolean Whether or the mesh should be rendered in the normal pass.
----@field EnableBloom? boolean Whether or not the mesh should be drawn during the bloom pass.
----@field DrawMaterial? string | IMaterial Material to use when drawing the mesh.
----@field BloomMaterial? string | IMaterial Material to use 
----@field States? table<string, PhotonElementMeshState>
----@field BoneParent? integer
+---@type PhotonElementMesh
 local Light = exmeta.New()
 
 Light.Class = "Mesh"

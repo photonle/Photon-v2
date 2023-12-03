@@ -13,7 +13,7 @@ COMPONENT.PrintName = [[Federal Signal Valor (51")]]
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
 COMPONENT.States = {
-	[1] = "R",
+	[1] = "A",
 	[2] = "B",
 	[3] = "W"
 }
@@ -30,6 +30,7 @@ COMPONENT.Templates = {
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
+
 		},
 		Rear = {
 			Width 		= 5.8,
@@ -47,7 +48,8 @@ COMPONENT.Templates = {
 local mult56 = 0.8
 
 COMPONENT.ElementGroups = {
-	["Group"] = { 1, 2, 3, 4 }
+	["Group"] = { 1, 2, 3, 4 },
+
 }
 
 COMPONENT.Elements = {

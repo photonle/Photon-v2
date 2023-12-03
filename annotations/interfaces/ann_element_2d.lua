@@ -39,7 +39,7 @@
 ---@field Bottom? Vector Bottom-right draw coordinate.
 ---@field Left? Vector Bottom-left draw coordinate.
 
----@class PhotonElement2D : PhotonElement, PhotonElement2DProperties, PhotonElement2DStateProperties
+---@class PhotonElement2D : PhotonElement, PhotonElement2DProperties
 ---@field PixVisHandle pixelvis_handle_t Internal property.
 ---@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
 ---@field LocalPosition Vector Element's local position.
