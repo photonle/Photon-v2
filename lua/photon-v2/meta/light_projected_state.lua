@@ -3,7 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementProjectedState"
 BASE = "PhotonElementState"
 
----@class PhotonElementProjectedState : PhotonElementState
+---@class PhotonElementProjectedState : PhotonElementState, PhotonElementProjectedStateProperties
 ---@field Color PhotonColor
 local State = exmeta.New()
 

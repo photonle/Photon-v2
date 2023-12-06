@@ -29,7 +29,7 @@ function Photon2.UI.PopulateMenuBar()
 		local inputConfigOption = menu:AddOption( "Open Input Settings", function()
 			local form = vgui.Create ( "Photon2BasicInputConfig" )
 		end)
-		
+
 		local openStudioOption = menu:AddOption("Open Studio", function()
 			Photon2.Studio:Initialize()
 		end)
@@ -38,7 +38,7 @@ function Photon2.UI.PopulateMenuBar()
 		local inputProfileMenu = inputProfileOption:AddSubMenu()
 		inputProfileMenu:SetDeleteSelf( false )
 
-		for name, config in pairs( Photon2.Library.InputConfigurations ) do
+		for name, config in pairs( Photon2.Library.InputConfigs ) do
 			local opt = inputProfileMenu:AddOption( config.Title )
 			local men = opt:AddSubMenu()
 			men:SetDeleteSelf( false )

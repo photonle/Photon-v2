@@ -8,10 +8,14 @@ Photon2.Library = Photon2.Library or {
 	InteractionSounds = {},
 	Commands = {},
 
-	InputConfigurations = {},
-	InputConfigurationsReady = false,
+	InputConfigs = {},
+	InputConfigsReady = false,
 
-	Schemas = {}
+	Schemas = {},
+
+	-- New Library system
+	Types = {},
+	Repository = {}
 }
 
 local library = Photon2.Library
@@ -28,6 +32,38 @@ local schemasRoot = "photon-v2/library/schemas/"
 
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
+
+-- local libraries = {
+-- 	{ Name = "Input"}
+-- }
+
+local inputConfigurations = {
+	Name = "InputConfigurations",
+	Folder = "input_configurations",
+	ToJson = function( configProfile ) 
+		return Photon2.ClientInput.ExportProfileToJson( configProfile )
+	end,
+	FromJson = function( json ) 
+		return Photon2.ClientInput.ImportProfileFromJson( json )
+	end,
+	OnPreRegister = function( profile )
+
+	end
+	-- LoadFile = function
+}
+
+local repository = Photon2.Library.Repository
+local types = Photon2.Library.Types
+
+---@param entry PhotonLibraryType
+function Photon2.Library.AddType( entry )
+	entry = PhotonLibraryType.New( entry )
+
+	repository[entry.Name] = repository[entry.Name] or {}
+	types[entry.Name] = entry
+	Photon2.Library[entry.Name] = entry
+end
+Photon2.Library.AddType( inputConfigurations )
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -274,18 +310,28 @@ end
 
 function Photon2.Library.LoadInputConfigurationLibrary()
 	print( "Library.LoadInputConfigurationLibrary() called." )
+	-- load Lua files
 	folderPath = folderPath or ""
 	local search = inputConfigurationsRoot .. folderPath
 	local files, folders = file.Find( search .. "*.lua", "LUA" )
 	for _, fil in pairs( files ) do
 		include( search .. fil )
 	end
+	-- load data JSON files
+	-- search = "addons/Photon-2/data_static/photon_v2/library/input_configurations/*.json"
+	search = "photon_v2/library/input_configurations/*.json"
+	-- files, folders = file.Find( search, "GAME" )
+	files, folders = file.Find( search, "DATA" )
+	for _, fil in pairs( files ) do
+		print( search .. fil )
+	end
 	hook.Call( "Photon2.LoadInputConfigurationLibrary" )
 end
 
+---@param config PhotonInputConfiguration
 function Photon2.RegisterInputConfiguration( config )
 	if SERVER then return end
-	Photon2.Library.InputConfigurations[config.Name] = config
+	Photon2.Library.InputConfigs[config.Name] = config
 	if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == config.Name ) ) then
 		Photon2.Index.CompileInputConfigurationFromLibrary( config.Name )
 	else
@@ -321,3 +367,7 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 		Photon2.ClientInput.SetActiveConfiguration( "default" )
 	end
 end)
+
+-- if CLIENT then
+	-- Photon2.Library.LoadInputConfigurationLibrary()
+-- end

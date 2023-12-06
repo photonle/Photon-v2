@@ -19,7 +19,7 @@ end
 
 function PANEL:Init()
 	self:SetSkin("PhotonStudio")
-	self:SetIcon("photon/ui/studio_icon_16.png")
+	self:SetIcon("photon/ui/photon_2_icon_16.png")
 	self:SetSize( 400, 600 )
 	self:Center()
 	self:SetSizable(true)

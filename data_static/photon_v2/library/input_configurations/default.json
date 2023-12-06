@@ -1,0 +1,159 @@
+{
+	"Title": "Default (JSON)",
+	"Name": "default_json",
+	"Binds": {
+		"4": [
+			{
+				"Command": "toggle_siren_4"
+			},
+			{
+				"Command": "toggle_siren2_4",
+				"Modifiers": [
+					"RALT"
+				]
+			}
+		],
+		"m": [
+			{
+				"Command": "toggle_cruise"
+			}
+		],
+		"1": [
+			{
+				"Command": "toggle_siren_1"
+			},
+			{
+				"Command": "toggle_siren2_1",
+				"Modifiers": [
+					"RALT"
+				]
+			}
+		],
+		"n": [
+			{
+				"Command": "auxiliary_dual_toggle"
+			}
+		],
+		"RIGHTARROW": [
+			{
+				"Command": "right_signal"
+			},
+			{
+				"Command": "scene_right",
+				"Modifiers": [
+					"RSHIFT"
+				]
+			},
+			{
+				"Command": "directional_right",
+				"Modifiers": [
+					"RCTRL"
+				]
+			}
+		],
+		"r": [
+			{
+				"Command": "activate_lights_siren"
+			}
+		],
+		"LEFTARROW": [
+			{
+				"Command": "left_signal"
+			},
+			{
+				"Command": "scene_left",
+				"Modifiers": [
+					"RSHIFT"
+				]
+			},
+			{
+				"Command": "directional_left",
+				"Modifiers": [
+					"RCTRL"
+				]
+			}
+		],
+		"f": [
+			{
+				"Command": "toggle_warning_lights"
+			}
+		],
+		"DOWNARROW": [
+			{
+				"Command": "signal_off"
+			},
+			{
+				"Command": "scene_off",
+				"Modifiers": [
+					"RSHIFT"
+				]
+			},
+			{
+				"Command": "directional_off",
+				"Modifiers": [
+					"RCTRL"
+				]
+			}
+		],
+		"h": [
+			{
+				"Command": "vehicle_lights"
+			}
+		],
+		"3": [
+			{
+				"Command": "toggle_siren_3"
+			},
+			{
+				"Command": "toggle_siren2_3",
+				"Modifiers": [
+					"RALT"
+				]
+			}
+		],
+		"MOUSE2": [
+			{
+				"Command": "manual_siren"
+			}
+		],
+		"2": [
+			{
+				"Command": "toggle_siren_2"
+			},
+			{
+				"Command": "toggle_siren2_2",
+				"Modifiers": [
+					"RALT"
+				]
+			}
+		],
+		"MOUSE1": [
+			{
+				"Command": "airhorn"
+			}
+		],
+		"UPARROW": [
+			{
+				"Command": "hazards"
+			},
+			{
+				"Command": "scene_forward",
+				"Modifiers": [
+					"RSHIFT"
+				]
+			},
+			{
+				"Command": "directional_center_out",
+				"Modifiers": [
+					"RCTRL"
+				]
+			}
+		],
+		"ALT": [
+			{
+				"Command": "cycle_warning_lights"
+			}
+		]
+	},
+	"Author": "Photon"
+}

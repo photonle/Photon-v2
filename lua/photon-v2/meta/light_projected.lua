@@ -8,31 +8,7 @@ local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElementProjected : PhotonElement
----@field ProjectedTexture? ProjectedTexture
----@field LocalPosition? Vector
----@field LocalAngles? Angle
----@field Position? Vector World position of the light. Set and updated automatically.
----@field Angles? Angle World angles of the light. Set and updated automatically.
----@field BoneParent? integer If set, parents the light to the specified bone on the parent entity.
----@field Rotation? Angle
----@field protected TranslatedLocalAngles? Angle
----@field protected Matrix? VMatrix
----@field Color? PhotonColor
----@field Brightness? number
----@field NearZ? number
----@field FarZ? number
----@field FOV? number
----@field HorizontalFOV? number
----@field VerticalFOV? number
----@field Intensity? number
----@field IntensityGainFactor? number
----@field IntensityLossFactor? number
----@field protected TargetIntensity? number
----@field IntensityTransitions? boolean
----@field IntensityFOVFloor? number The minimum FOV multiplier to use when the light intensity is zero.
----@field IntensityDistanceFactor? number Multiplied by light's intensity to modify its distance. Used to smooth intensity transition effects.
----@field EnableShadows? boolean Enable or disable shadows cast from the projected texture.
+---@type PhotonElementProjected 
 local Light = exmeta.New()
 
 Light.Class = "Projected"
@@ -40,7 +16,7 @@ Light.Class = "Projected"
 Light.States = {
 	["~OFF"] = {
 		Intensity = 0,
-		IntensityTransitions = 1
+		IntensityTransitions = true
 	},
 	["OFF"] = {
 		Color = PhotonColor( 0, 0, 0 ),

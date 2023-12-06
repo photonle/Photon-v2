@@ -1,4 +1,4 @@
-Photon2.RegisterInputConfiguration({
+local default = {
 	Name = "default",
 	Title = "Default",
 	Author = "Photon",
@@ -64,7 +64,9 @@ Photon2.RegisterInputConfiguration({
 			{ Command = "toggle_siren2_4", Modifiers = { KEY_RALT } },
 		}
 	}
-})
+}
+
+Photon2.RegisterInputConfiguration( default )
 
 Photon2.RegisterInputConfiguration({
 	Name = "m3_override",
@@ -77,6 +79,8 @@ Photon2.RegisterInputConfiguration({
 		}
 	}
 })
+-- if SERVER then return end
+-- SetClipboardText( Photon2.ClientInput.ExportProfileToJson("default") )
 
 -- Photon2.RegisterInputConfiguration({
 -- 	Name = "default_override",

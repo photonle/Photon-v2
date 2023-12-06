@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElement2DStateProperties
+---@class PhotonElement2DStateProperties : PhotonElementPropertiesIntensityTransitions
 ---@field SourceFillColor? PhotonBlendColor
 ---@field SourceDetailColor? PhotonBlendColor
 ---@field GlowColor? PhotonBlendColor
@@ -9,10 +9,6 @@
 ---@field SubtractiveMid? PhotonBlendColor
 ---@field SourceIntensity? PhotonBlendColor
 ---@field BlendColor? RGB
----@field IntensityTransitions? boolean If intensity transtions should be enabled.
----@field IntensityGainFactor? number How quickly intensity increases.
----@field IntensityLossFactor? number How quickly intensity decreases.
----@field Intensity? number State intensity.
 
 ---@class PhotonElement2DProperties : PhotonElementPositionalProperties, PhotonElement2DStateProperties
 ---@field Width? number Width of light source.

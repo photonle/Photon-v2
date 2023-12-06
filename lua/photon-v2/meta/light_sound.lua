@@ -3,18 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementSound"
 BASE = "PhotonElement"
 
----@class PhotonElementSound : PhotonElement
----@field Sound CSoundPatch
----@field Volume number Volume of the sound.
----@field Level number The distance the sound is heard.
----@field DSP number
----@field File string
----@field Playing boolean
----@field Muted boolean
----@field Pitch number
----@field Tone? string (Optional) Name of library siren tone.
----@field ToneData? PhotonSirenTone Set automatically.
----@field private SoundIdentifier string (Internal)
+---@type PhotonElementSound
 local Sound = exmeta.New()
 
 Sound.Class = "Sound"
@@ -42,7 +31,6 @@ Sound.States = {
 	["OFF"] = {
 		Mute = true,
 		Play = false,
-		-- Volume = 0,
 		DSP = 1
 	},
 	["ON"] = {

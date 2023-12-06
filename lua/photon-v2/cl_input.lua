@@ -47,7 +47,7 @@ function Photon2.ClientInput.StopListening()
 end
 
 function Photon2.ClientInput.SetActiveConfiguration( name )
-	if ( not Photon2.Library.InputConfigurations[name] ) then
+	if ( not Photon2.Library.InputConfigs[name] ) then
 		ErrorNoHalt("Client Input Configuration [" .. tostring(name) .. "] could not be found.")
 		name = "default"
 	end
@@ -172,6 +172,55 @@ function Photon2.ClientInput.SetProfilePreference( profileName, configName )
 		Photon2.ClientInput.SetActiveConfiguration( 
 			Photon2.ClientInput.GetProfilePreference( Photon2.ClientInput.TargetController:GetProfileName() ) )
 	end
+end
+
+function Photon2.ClientInput.ExportProfileToJson( profile )
+	-- local profile = Photon2.Library.InputConfigurations[profileName]
+	-- if ( not profile ) then
+	-- 	error( "Client input profile name [" .. tostring( profileName ) .. "] could not be found in the Library.")
+	-- end
+	profile = table.Copy( profile )
+	
+	local newBinds = {}
+
+	for key, commands in pairs( profile.Binds ) do
+		local keyName = input.GetKeyName( key )
+		for _, command in ipairs( commands ) do
+			if ( istable( command.Modifiers ) ) then
+				local newModifiers = {}
+				for i,  modifierKey in ipairs( command.Modifiers ) do
+					newModifiers[i] = input.GetKeyName( modifierKey )
+				end
+				command.Modifiers = newModifiers
+			end
+		end
+		newBinds[keyName] = profile.Binds[key]
+	end
+
+	profile.Binds = newBinds
+
+	return util.TableToJSON( profile, true )
+end
+
+function Photon2.ClientInput.ImportProfileFromJson( jsonText )
+	local profile = util.JSONToTable( jsonText )
+	local newBinds = {}
+	for key, commands in pairs( profile.Binds ) do
+		local keyCode = input.GetKeyCode( key )
+		for _, command in ipairs( commands ) do
+			if ( istable( command.Modifiers ) ) then
+				local newModifiers = {}
+				for i, modifierKey in ipairs( command.Modifiers ) do
+					newModifiers[i] = input.GetKeyCode( modifierKey )
+				end
+				command.Modifiers = newModifiers
+			end
+		end
+	end
+
+	profile.Binds = newBinds
+
+	return profile
 end
 
 function Photon2.ClientInput.GetProfilePreference( profileName )

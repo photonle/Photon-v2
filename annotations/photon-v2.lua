@@ -84,6 +84,9 @@ PhotonElementBoneState = PhotonElementBoneState
 ---@type PhotonBlendColor
 PhotonBlendColor = PhotonBlendColor
 
+---@type PhotonLibraryType
+PhotonLibraryType = PhotonLibraryType
+
 ---@alias PhotonBoneLightActivity
 ---| '"Rotate"' # Continuously rotates in one direction.
 ---| '"Sweep"' # Rotates back and forth between the `Target` angle and `SweepTo` angle.
@@ -100,11 +103,18 @@ PhotonBlendColor = PhotonBlendColor
 
 ---@class PhotonProfileSchema: table<string, table>
 
+---@alias PhotonLibrarySource
+---| '"Lua"' Object generated from Lua file.
+---| '"Static"' Object generated from data_static folder.
+---| '"Data"' Object generated from data folder. Editable in game.
 
 ---@class Photon2.Index.Profiles
 ---@field Map {}
 ---@field Vehicles table<string, string>
 ---@field Sirens table<string, PhotonSiren>
+
+---@class PhotonLibraryObject
+---@field LibrarySource PhotonLibrarySource (Internal) `nil` should be assumed as "Lua"
 
 ---@class PhotonLibraryComponent
 ---@field Author string Component author's name.
@@ -131,9 +141,9 @@ PhotonBlendColor = PhotonBlendColor
 ---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.
 ---@field Bone? table<string, PhotonElementBoneProperties> Bone manipulation.
 ---@field Mesh? table<string, PhotonElementMeshProperties> 3D mesh-based light.
----@field Projected? table<string, PhotonElementProjected> Projected texture lighting.
----@field Sound? table<string, PhotonElementSound> Sound.
----@field Dynamic? table<string, PhotonElementDynamicLight> Dynamic lighting.
+---@field Projected? table<string, PhotonElementProjectedProperties> Projected texture lighting.
+---@field Sound? table<string, PhotonElementSoundProperties> Sound.
+---@field DynamicLight? table<string, PhotonElementDynamicLightProperties> Dynamic lighting.
 ---@field Sub? table<string, PhotonElementSub> Sub-material.
 ---@field Sequence? table<string, PhotonElementSequence> Model sequence.
 ---@field Virtual? table<string, PhotonElementVirtual> Virtual element (for UI components).
@@ -294,3 +304,9 @@ function istable( object ) end
 ---@field OnHold? PhotonCommandAction[] Actions executed after key is pressed and held.
 ---@field OnRelease? PhotonCommandAction[] Actions executed when key is released.
 ---@field ExtendedTitle? string (Internal) Set automatically.
+
+---@class PhotonElementPropertiesIntensityTransitions
+---@field IntensityTransitions? boolean If intensity transtions should be enabled.
+---@field IntensityGainFactor? number How quickly intensity increases.
+---@field IntensityLossFactor? number How quickly intensity decreases.
+---@field Intensity? number State intensity.

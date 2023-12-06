@@ -3,10 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementDynamicLightState"
 BASE = "PhotonElementState"
 
----@class PhotonElementDynamicLightState : PhotonElementState
----@field Color? PhotonColor
----@field Brightness? number
----@field Size? number
+---@class PhotonElementDynamicLightState : PhotonElementState, PhotonElementDynamicLightStateProperties
 local State = exmeta.New()
 
 function State.New( self, name, data, collection )

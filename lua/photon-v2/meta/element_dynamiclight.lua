@@ -9,25 +9,7 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 local DynamicLight = DynamicLight
 
----@class PhotonElementDynamicLight : PhotonElement
----@field LocalPosition? Vector
----@field LocalAngles? Angle
----@field Position? Vector
----@field Angles? Angle
----@field BoneParent? integer
----@field Brightness? number
----@field Decay? number
----@field DieTime? number
----@field Direction? Vector
----@field InnerAngle? number
----@field OuterAngle? number
----@field MinimumLight? number
----@field World? boolean
----@field Model? boolean
----@field Size? number
----@field Color? PhotonColor
----@field Index? number
----@field Style? number
+---@type PhotonElementDynamicLight
 local Element = exmeta.New()
 
 Element.Class = "DynamicLight"
@@ -39,6 +21,7 @@ Element.Decay = 1000000
 Element.DieTime = 0.001
 Element.Brightness = 0
 Element.Size = 100
+Element.Direction = "Up"
 
 Element.States = {
 	["OFF"] = { 
@@ -89,7 +72,7 @@ end
 
 Element.OnFileLoad()
 
----@param state PhotonElementDynamicLightState
+---@param state PhotonElementDynamicLight\State
 function Element:OnStateChange( state )
 	self.Color = state.Color
 	self.Brightness = state.Brightness
@@ -148,7 +131,8 @@ function Element:DoPreRender()
 		dynamicLight.dietime = CurTime() + self.DieTime
 		dynamicLight.style = self.Style
 		if ( isangle(self.Angles) ) then
-			dynamicLight.dir = self.Angles:Up()
+			-- TODO: unclear if there's any reason to manually override this
+			dynamicLight.dir = Angle[self.Direction]( self.Angles )
 			dynamicLight.innerangle = self.InnerAngle
 			dynamicLight.outerangle = self.OuterAngle
 		end
