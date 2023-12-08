@@ -15,8 +15,8 @@
 ---@field EnableShadows? boolean Enable or disable shadows cast from the projected texture.
 ---@field IntensityFOVFloor? number The minimum FOV multiplier to use when the light intensity is zero.
 ---@field IntensityDistanceFactor? number Multiplied by light's intensity to modify its distance. Used to smooth intensity transition effects.
----@field Texture string
----@field States table<string, PhotonElementProjectedStateProperties>
+---@field Texture? string
+---@field States? table<string, PhotonElementProjectedStateProperties>
 
 ---@class PhotonElementProjected : PhotonElement, PhotonElementProjectedProperties
 ---@field ProjectedTexture? ProjectedTexture
