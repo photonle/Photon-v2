@@ -20,6 +20,12 @@
 ---@field EnableDraw? boolean Whether or the mesh should be rendered in the normal pass.
 ---@field EnableBloom? boolean Whether or not the mesh should be drawn during the bloom pass.
 
+---@class PhotonElementMeshEntry : PhotonElementMeshProperties
+---@field [1] string Element template name.
+---@field [2] Vector Local position.
+---@field [3] Angle Local angles.
+---@field [4] string Mesh sub-material.
+
 ---@class PhotonElementMesh : PhotonElement, PhotonElementMeshProperties
 ---@field MeshSubIndex? number Model's mesh sub-index (default = `1`).
 ---@field Mesh? IMesh

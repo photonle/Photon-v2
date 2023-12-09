@@ -12,7 +12,13 @@ local V = {
 				KeyValues = {}
 }
 
-list.Set( "Vehicles", "lvs_sgm_cvpi", V )
+-- list.Set( "Vehicles", "lvs_sgm_cvpi", V )
+
+-- if not printB then printB = print end
+
+-- function print()
+-- 	error("print called")
+-- end
 
 print("\n\n--------------- RUNNING PHOTON 2 TEST FILE: B ---------------\n\n")
 

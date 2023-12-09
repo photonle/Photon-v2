@@ -117,7 +117,8 @@ function Vehicle.New( data )
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
-		error("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
+		ErrorNoHalt("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
+		return {}
 	end
 
 	-- Handle vehicle itself

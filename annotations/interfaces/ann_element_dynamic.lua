@@ -15,6 +15,9 @@
 ---@field Direction? "Up" | "Right" | "Forward"
 ---@field States? table<string, PhotonElementDynamicLightStateProperties>
 
+---@class PhotonElementDynamicEntry : PhotonElementDynamicLightProperties
+---@field [1] string Element template name.
+
 ---@class PhotonElementDynamicLight : PhotonElement, PhotonElementDynamicLightProperties
 ---@field LocalPosition? Vector
 ---@field LocalAngles? Angle

@@ -289,23 +289,24 @@ hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.Lo
 		-----
 --]]
 
--- surface.CreateFont( "PH2Demo", {
--- 	font = "Roboto Light",
--- 	size = 96,
--- 	weight = 100
--- } )
+surface.CreateFont( "PH2Demo", {
+	font = "Roboto Light",
+	size = 96,
+	weight = 100
+} )
 
--- hook.Add( "HUDPaint", "Photon2:KeyDemo", function()
--- 	local pressedKeysString = ""
--- 	for i=1, #pressedKeys do
--- 		pressedKeysString = pressedKeysString .. input.GetKeyName(pressedKeys[i])
--- 		if ( i < #pressedKeys ) then
--- 			pressedKeysString = pressedKeysString .. " + "
--- 		end
+local inputDisplayConVar = GetConVar("ph2_display_input")
 
--- 	end
--- 	for k, v in ipairs( pressedKeys ) do
+hook.Add( "HUDPaint", "Photon2:KeyDemo", function()
+	if ( inputDisplayConVar:GetBool() ) then
+		local pressedKeysString = ""
+		for i=1, #pressedKeys do
+			pressedKeysString = pressedKeysString .. input.GetKeyName(pressedKeys[i]) .. " (" .. tostring( pressedKeys[i] ) ..")"
+			if ( i < #pressedKeys ) then
+				pressedKeysString = pressedKeysString .. " + "
+			end
 
--- 	end
--- 	draw.DrawText( pressedKeysString, "PH2Demo", ScrW() * 0.5, ScrH() * 0.75, color_white, TEXT_ALIGN_CENTER )
--- end)
+		end
+		draw.DrawText( pressedKeysString, "PH2Demo", ScrW() * 0.5, ScrH() * 0.75, color_white, TEXT_ALIGN_CENTER )
+	end
+end)

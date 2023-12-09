@@ -18,6 +18,11 @@
 ---@field Texture? string
 ---@field States? table<string, PhotonElementProjectedStateProperties>
 
+---@class PhotonElementProjectedEntry : PhotonElementProjectedProperties
+---@field [1] string Element template name.
+---@field [2] Vector Local position.
+---@field [3] Angle Local angles.
+
 ---@class PhotonElementProjected : PhotonElement, PhotonElementProjectedProperties
 ---@field ProjectedTexture? ProjectedTexture
 ---@field LocalPosition? Vector

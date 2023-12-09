@@ -76,9 +76,23 @@ Photon2.RegisterInputConfiguration({
 	Binds = {
 		[KEY_F] = {
 			{ Command = "toggle_warning_lights_m3" }
-		}
+		},
 	}
 })
+
+Photon2.RegisterInputConfiguration({
+	Name = "joystick_test",
+	Inherit = "default",
+	Title = "Joy Stick Test",
+	Author = "Photon",
+	Binds = {
+		[127] = {
+			{ Command = "toggle_warning_lights_m3" }
+		},
+	}
+})
+
+
 -- if SERVER then return end
 -- SetClipboardText( Photon2.ClientInput.ExportProfileToJson("default") )
 

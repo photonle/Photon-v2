@@ -125,7 +125,7 @@ PhotonLibraryType = PhotonLibraryType
 ---@field PrintName string
 ---@field Model string
 ---@field Templates PhotonLibraryComponentTemplates
----@field Elements table<number, PhotonElement2D | PhotonElementBone | PhotonElementMesh | PhotonElementProjected | PhotonElementSound | PhotonElementDynamicLight | PhotonElementSub | PhotonElementSequence | PhotonElementVirtual >
+---@field Elements table<number, PhotonElement2DEntry | PhotonElementBoneEntry | PhotonElementMeshEntry | PhotonElementProjectedEntry | PhotonElementSoundEntry | PhotonElementDynamicEntry | PhotonElementSubEntry | PhotonElementSequenceEntry | PhotonElementVirtualEntry >
 ---@field ElementGroups table<string, table<number>>
 ---@field Segments table<string, PhotonLibraryComponentSegment>
 ---@field Inputs table
@@ -144,9 +144,9 @@ PhotonLibraryType = PhotonLibraryType
 ---@field Projected? table<string, PhotonElementProjectedProperties> Projected texture lighting.
 ---@field Sound? table<string, PhotonElementSoundProperties> Sound.
 ---@field DynamicLight? table<string, PhotonElementDynamicLightProperties> Dynamic lighting.
----@field Sub? table<string, PhotonElementSub> Sub-material.
----@field Sequence? table<string, PhotonElementSequence> Model sequence.
----@field Virtual? table<string, PhotonElementVirtual> Virtual element (for UI components).
+---@field Sub? table<string, PhotonElementSubProperties> Sub-material.
+---@field Sequence? table<string, PhotonElementSequenceProperties> Model sequence.
+---@field Virtual? table<string, PhotonElementVirtualProperties> Virtual element (for UI components).
 
 ---@class PhotonLibrarySirenComponent : PhotonLibraryComponent
 ---@field Siren string Default siren name.
@@ -162,11 +162,11 @@ PhotonLibraryType = PhotonLibraryType
 ---@field Category string The default spawn category of the vehicle.
 ---@field Author string The author of this _Photon_ vehicle profile.
 ---@field IsEquipmentConfigurable boolean (Internal) Whether the equipment is user-configurable or static. This is determined automatically by the `.Equipment {}` table structure.
--- ---@field Equipment PhotonVehicleEquipment[]
 ---@field EquipmentSelections PhotonVehicleSelectionCategory[] Mirror of .Equipment 
 ---@field Equipment PhotonVehicleSelectionCategory[]
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
 ---@field Schema table<string, table<table>>
+-- ---@field Equipment PhotonVehicleEquipment[]
 
 ---@class PhotonLibrarySiren
 ---@field Name string Unique name of siren set entry.

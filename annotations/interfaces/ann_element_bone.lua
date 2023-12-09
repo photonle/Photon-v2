@@ -18,6 +18,9 @@
 ---@field AngleOutputMap? table<integer, table<number, any>>
 ---@field AddSpeed? number Constant number to add speed by. Can be used to intentionally "drift" lights that are otherwise set to the same speed. 
 
+---@class PhotonElementBoneEntry : PhotonElementBoneProperties
+---@field [1] string Element template name.
+
 ---@class PhotonElementBone : PhotonElement, PhotonElementBoneProperties
 ---@field BoneId? number
 ---@field Bone? string

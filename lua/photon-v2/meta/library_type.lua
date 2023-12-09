@@ -32,6 +32,13 @@ function meta:FromJson( json )
 	return util.JSONToTable( json )
 end
 
+-- Saves library entry as a json in the corresponding folder.
+function meta:SaveToData( data )
+	local json = self:ToJson( data )
+	local path = string.format( "%s%s/%s.json", dataPath, self.Folder, data.Name )
+	file.Write( path, json )
+end
+
 -- Loads library objects that were created in Lua
 function meta:LoadLuaLibrary()
 	local path = luaPath .. self.Folder
@@ -70,11 +77,21 @@ function meta:LoadDataJsonFile( fileName )
 	return self:Register( self:FromJson( text ) )
 end
 
+-- Retrieves a library entry using its name/unique identifier.
 function meta:Get( name )
 	return self.Repository[name]
 end
 
+-- Registers an entry to this library.
 function meta:Register( data )
+	self.Repository[data.Name] = data
+	if ( self.Loaded ) then
+		self:OnReload( data )
+	end
+end
+
+-- Called when an entry is reloaded.
+function meta:OnReload( data )
 
 end
 

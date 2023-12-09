@@ -3,9 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementSub"
 BASE = "PhotonElement"
 
----@class PhotonElementSub : PhotonElement
----@field Indexes? integer[] Sub-material indexes this element controls.
----@field States? table<string, PhotonElementSubState> Element states.
+---@type PhotonElementSub
 local Light = exmeta.New()
 
 Light.Class="Sub"

@@ -3,11 +3,11 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonBaseEntity"
 ---@class PhotonBaseEntity : photon_entity
 ---@field Entity Entity
----@field IsVirtual boolean
----@field Model string
+---@field IsVirtual? boolean
+---@field Model? string
 ---@field PhotonController PhotonController
----@field BodyGroups table
----@field SubMaterials table
+---@field BodyGroups? table
+---@field SubMaterials? table
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF

@@ -3,8 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementSequence"
 BASE = "PhotonElement"
 
----@class PhotonElementSequence : PhotonElement
-
+---@type PhotonElementSequence
 local Element = exmeta.New()
 
 Element.Class = "Sequence"

@@ -3,8 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementVirtual"
 BASE = "PhotonElement"
 
----@class PhotonElementVirtual : PhotonElement
-
+---@type PhotonElementVirtual
 local Element = exmeta.New()
 
 Element.Class = "Virtual"

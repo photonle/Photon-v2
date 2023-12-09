@@ -14,6 +14,9 @@
 ---@field PitchTransition? number Transition time when changing the pitch. (Note: this has somewhat erratic behavior in the engine.)
 ---@field States? table<string, PhotonElementSoundStateProperties>
 
+---@class PhotonElementSoundEntry : PhotonElementSoundProperties
+---@field [1] string Element template name.
+
 ---@class PhotonElementSound : PhotonElement, PhotonElementSoundProperties
 ---@field Sound CSoundPatch
 ---@field Playing boolean

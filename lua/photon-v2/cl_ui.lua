@@ -117,6 +117,7 @@ function Photon2.UI.PopulateMenuBar()
 
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
 		local drawLight2d = debugMenu:AddCVar( "Draw 2D Lighting", "ph2_draw_light2d", "1", "0" )		
+		local drawInput = debugMenu:AddCVar( "Display Button Inputs", "ph2_display_input", "1", "0" )
 
 		debugMenu:AddOption( "Clear Mesh Cache", function()
 			Photon2.MeshCache.ClearCache()
