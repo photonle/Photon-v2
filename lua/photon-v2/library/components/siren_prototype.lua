@@ -19,7 +19,9 @@ COMPONENT.PrintName = "Photon Siren Prototype"
 COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"
 
 COMPONENT.Templates = {
-	["Sound"] = { Tone = {} }
+	["Sound"] = { Tone = {
+		DSP = 118
+	} }
 }
 
 COMPONENT.StateMap = "[ON] 1 2 3 4 5 6 7 8 9 10"

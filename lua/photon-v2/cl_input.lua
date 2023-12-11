@@ -47,7 +47,7 @@ function Photon2.ClientInput.StopListening()
 end
 
 function Photon2.ClientInput.SetActiveConfiguration( name )
-	if ( not Photon2.Library.InputConfigs[name] ) then
+	if ( not Photon2.Library.InputConfigurations:Get( name ) ) then
 		ErrorNoHalt("Client Input Configuration [" .. tostring(name) .. "] could not be found.")
 		name = "default"
 	end
@@ -207,7 +207,8 @@ function Photon2.ClientInput.ImportProfileFromJson( jsonText )
 	local newBinds = {}
 	for key, commands in pairs( profile.Binds ) do
 		local keyCode = input.GetKeyCode( key )
-		for _, command in ipairs( commands ) do
+		newBinds[keyCode] = newBinds[keyCode] or {}
+		for cmdIndex, command in ipairs( commands ) do
 			if ( istable( command.Modifiers ) ) then
 				local newModifiers = {}
 				for i, modifierKey in ipairs( command.Modifiers ) do
@@ -215,6 +216,7 @@ function Photon2.ClientInput.ImportProfileFromJson( jsonText )
 				end
 				command.Modifiers = newModifiers
 			end
+			newBinds[keyCode][cmdIndex] = command
 		end
 	end
 
@@ -228,7 +230,6 @@ function Photon2.ClientInput.GetProfilePreference( profileName )
 end
 
 hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.LoadPreferencesFile )
-
 --[[
 		==== ILLUM ====
 		misc: hold for flood, release for takedown?
@@ -291,8 +292,9 @@ hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.Lo
 
 surface.CreateFont( "PH2Demo", {
 	font = "Roboto Light",
-	size = 96,
-	weight = 100
+	size = 64,
+	weight = 100,
+	outline = true
 } )
 
 local inputDisplayConVar = GetConVar("ph2_display_input")

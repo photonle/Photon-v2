@@ -8,19 +8,36 @@ local printf = Photon2.Debug.PrintF
 ---@class PhotonLibraryType
 ---@field Name string Primary type name. Example: `InputConfigurations`
 ---@field Folder string Folder/alternate type name. Example: `input_configuration`
----@field IsLoading boolean When true, library entries are still being loaded. This is to hint that's unsafe to attempt object inheritance.
----@field Loaded boolean Indicates
----@field Repository table<string, table>
+---@field Singular string Singular name of library type.
+---@field IsLoading? boolean When true, library entries are still being loaded. This is to hint that's unsafe to attempt object inheritance.
+---@field Loaded? boolean Indicates
+---@field Repository? table<string, table> Raw entries.
+---@field Index? table<string, table> Compiled entries.
+---@field OnServer? boolean If this library type should be loaded server-side.
+---@field OnClient? boolean If this library type should be loaded client-side.
+---@field IsValidRealm? boolean If this instance is on a proper realm.
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
 local luaPath = "photon-v2/library/"
 
+meta.OnServer = true
+meta.OnClient = true
+
 function meta.New( properties )
 	local result = setmetatable( properties, { __index = meta } )
+	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
+	Photon2["Register" .. result.Singular] = function( entry )
+		if ( not result.IsValidRealm ) then return nil end
+		return result:Register( entry )
+	end
+	if ( not result.IsValidRealm ) then return end
 	Photon2.Library.Repository[result.Name] = Photon2.Library.Repository[result.Name] or {}
+	Photon2.Library.Types = result
+	Photon2.Library[result.Name] = result
 	result.Repository = Photon2.Library.Repository[result.Name]
 	result.Loaded = false
+	
 	return result
 end
 
@@ -41,14 +58,18 @@ end
 
 -- Loads library objects that were created in Lua
 function meta:LoadLuaLibrary()
-	local path = luaPath .. self.Folder
-	local files, folders = file.Find( path .. "*lua", "LUA" )
+	local path = luaPath .. self.Folder .. "/"
+	print( "PATH: " .. tostring( path ) )
+	local files, folders = file.Find( path .. "*.lua", "LUA" )
+	print( "Result: " .. tostring(#files) .. " files found." )
 	for _, fil in pairs( files ) do
+		print( "Loading file: " .. path .. fil )
 		self:LoadLuaFile( path .. fil )
 	end
 end
 
 function meta:LoadLuaFile( path )
+	print("\tIncluding Lua file: " .. tostring( path ) )
 	return include( path )
 end
 
@@ -62,19 +83,35 @@ function meta:LoadDataLibary()
 end
 
 function meta:LoadLibrary()
+	print( "Loading library type [" .. tostring( self.Name ) .. "]...")
+	if ( not self.IsValidRealm ) then return end
 	self.IsLoading = true
+	print("\t Loading Lua library...")
 	self:LoadLuaLibrary()
+	print("\t Loading data library...")
 	self:LoadDataLibary()
 	self.IsLoading = false
 	self.Loaded = true
+	print("\tDone loading. Repository:")
+	PrintTable( self.Repository )
+	print( "===========================================================" )
 end
 
 function meta:LoadDataJsonFile( fileName )
-	print( "Loading JSON file from data [" .. fileName .. "]" )
-	local data = self:FromJson( file.Read(
-		string.format( "photon_v2/library/%s/%s.json", self.Folder, fileName)
-	) )
-	return self:Register( self:FromJson( text ) )
+	local path = string.format( "photon_v2/library/%s/%s", self.Folder, fileName)
+	print( "Loading JSON file from data [" .. path .. "]" )
+	
+	local json = file.Read( path, "DATA" )
+	
+	local data = self:FromJson( json )
+	
+	if ( istable( data ) ) then
+		data.Name = string.sub( fileName, 1, #fileName - 5 )
+		return self:Register( data )
+	else
+		ErrorNoHalt( "Error occurred when attemping to load library data file: [" .. tostring( fileName ) .. "]")
+		return nil
+	end
 end
 
 -- Retrieves a library entry using its name/unique identifier.
@@ -84,6 +121,7 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
+	print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
 	self.Repository[data.Name] = data
 	if ( self.Loaded ) then
 		self:OnReload( data )
@@ -95,6 +133,32 @@ function meta:OnReload( data )
 
 end
 
+function meta:Compile( data )
+	if ( isstring( data ) ) then data = self:Get( data ) end
+	local result = self:DoCompile( data )
+	return result
+end
+
+function meta:DoCompile( data )
+
+end
+
+function meta:SetupInheritance( data )
+
+end
+
+function meta:DoParentInheritance()
+
+end
+
+---@param name string Name of entry to export.
+---@param newName string Name of the exported entry.
+-- Takes an existing library entry and exports (copies) it as a new JSON file entry.
+function meta:Export( name, newName )
+	local copy = table.Copy( self:Get( name ) )
+	copy.Name = newName
+	self:SaveToData( copy )
+end
 -- Loads library objects that were created using JSON in the `data_static` folder.
 -- This is for Workshop addons so GMAs can use JSON files. Implementation by Facepunch
 -- is currently half-assed so this function is not yet available.

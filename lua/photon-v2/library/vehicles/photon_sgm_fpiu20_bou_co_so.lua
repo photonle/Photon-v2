@@ -31,6 +31,10 @@ VEHICLE.SubMaterials = {
 	[20] = bcso.Name,
 }
 
+VEHICLE.Siren = {
+	"sos_nergy400"
+}
+
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
@@ -244,6 +248,24 @@ VEHICLE.Equipment = {
 			},
 		}
 	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-11, 125, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 1
+					},
+				}
+			}
+		}
+	}
 	-- },
 	-- {
 	-- 	Category = "Rear Lightbar",
