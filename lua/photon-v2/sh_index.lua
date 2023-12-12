@@ -1,19 +1,11 @@
-Photon2.Index = Photon2.Index or {
-	Components = {},
-	Vehicles = {},
-	Sirens = {},
-	Tones = {},
-	Profiles = {
-		Map = {},
-		-- For entities that :IsVehicle() and have .VehicleName defined.
-		Vehicles = {}
-	},
-	InteractionSounds = {},
-	---@type table<string, PhotonCommand>
-	Commands = {},
-	InputConfigurations = {},
-	Schemas = {}
-}
+Photon2.Index = Photon2.Index or {}
+Photon2.Index.Components = Photon2.Index.Components or {}
+Photon2.Index.Vehicles = Photon2.Index.Vehicles or {}
+Photon2.Index.Sirens = Photon2.Index.Sirens or {}
+Photon2.Index.Tones = Photon2.Index.Tones or {}
+Photon2.Index.Profiles = Photon2.Index.Profiles or { Map = {}, Vehicles = {} }
+Photon2.Index.InteractionSounds = Photon2.Index.InteractionSounds or {}
+Photon2.Index.Schemas = Photon2.Index.Schemas or {}
 
 --[[
 	Profiles = {
@@ -414,36 +406,71 @@ function Photon2.GetInteractionSoundProfile( class, name )
 	return Photon2.Index.InteractionSounds[class][name]
 end
 
----@param command PhotonCommand
-function Photon2.Index.CompileInputCommand( command )
-	if ( SERVER ) then return end
-	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
-		if ( command[activity] ) then
-			for i, action in pairs( command[activity] ) do
-				if ( istable( action.Value ) ) then
-					action.ValueMap = {}
-					for j, value in pairs( action.Value ) do
-						action.ValueMap[value] = j
-					end
+-- -@param command PhotonCommand
+-- function Photon2.Index.CompileInputCommand( command )
+-- 	if ( SERVER ) then return end
+-- 	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
+-- 		if ( command[activity] ) then
+-- 			for i, action in pairs( command[activity] ) do
+-- 				if ( istable( action.Value ) ) then
+-- 					action.ValueMap = {}
+-- 					for j, value in pairs( action.Value ) do
+-- 						action.ValueMap[value] = j
+-- 					end
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+-- 	command.ExtendedTitle = command.Category .. " " .. command.Title
+-- 	Photon2.Index.Commands[command.Name] = command
+-- 	return Photon2.Index.Commands[command.Name]
+-- end
+
+-- ---@param commandName string
+-- function Photon2.GetCommand( commandName )
+-- 	if ( not Photon2.Index.Commands[commandName] ) then
+-- 		error( "Client input command [" .. tostring( commandName ) .. "] not found." )
+-- 	end
+-- 	return Photon2.Index.Commands[commandName]
+-- end
+
+-- Compiles a configuration with Library inheritance support
+function Photon2.Index.CompileInputConfiguration( config )
+	local inheritancePath = nil
+	-- local config = table.Copy( Photon2.Library.InputConfigurations:Get( configName ) )
+	-- local config = table.Copy( Photon2.Library.InputConfigs[configName] )
+	-- if ( not config ) then 
+	-- 	error( "Configuration name [" .. tostring( configName ) .. "] not found.")
+	-- end
+	local binds = config.Binds
+	if ( config.Inherit ) then
+		local searching = true
+		local currentParent = config.Inherit
+		if ( currentParent ) then
+			inheritancePath = { config.Name }
+			inheritancePath[#inheritancePath+1] = currentParent
+			while ( searching ) do
+				-- local nextParent = Photon2.Library.InputConfigs[currentParent]
+				local nextParent = Photon2.Library.InputConfigurations:Get( currentParent )
+				if ( nextParent and nextParent.Inherit ) then
+					inheritancePath[#inheritancePath+1] = nextParent.Inherit
+					currentParent = nextParent.Inherit
+				else
+					searching = false
 				end
 			end
+			binds = {}
+			for i=#inheritancePath, 1, -1 do
+				local parentConfig = Photon2.Library.InputConfigurations:Get(inheritancePath[i])
+				-- local parentConfig = Photon2.Library.InputConfigs[inheritancePath[i]]
+				for key, commands in pairs( parentConfig.Binds ) do
+					binds[key] = commands
+				end
+			end
+			config.Binds = binds
 		end
 	end
-	command.ExtendedTitle = command.Category .. " " .. command.Title
-	Photon2.Index.Commands[command.Name] = command
-	return Photon2.Index.Commands[command.Name]
-end
-
----@param commandName string
-function Photon2.GetCommand( commandName )
-	if ( not Photon2.Index.Commands[commandName] ) then
-		error( "Client input command [" .. tostring( commandName ) .. "] not found." )
-	end
-	return Photon2.Index.Commands[commandName]
-end
-
-function Photon2.Index.CompileInputConfiguration( config )
-
+	
 	local keys = config.Binds
 	local binds = {}
 
@@ -505,57 +532,12 @@ function Photon2.Index.CompileInputConfiguration( config )
 		end
 	end
 
-	Photon2.Index.InputConfigurations[config.Name] = {
+	return {
 		Name = config.Name,
 		Title = config.Title,
 		Author = config.Author,
 		Binds = binds
 	}
-
-	return Photon2.Index.InputConfigurations[config.Name]
-end
-
-function Photon2.GetInputConfiguration( name )
-	return Photon2.Index.InputConfigurations[name]
-end
-
--- Compiles a configuration with Library inheritance support
-function Photon2.Index.CompileInputConfigurationFromLibrary( configName )
-	local inheritancePath = nil
-	local config = table.Copy( Photon2.Library.InputConfigurations:Get( configName ) )
-	-- local config = table.Copy( Photon2.Library.InputConfigs[configName] )
-	if ( not config ) then 
-		error( "Configuration name [" .. tostring( configName ) .. "] not found.")
-	end
-	local binds = config.Binds
-	if ( config.Inherit ) then
-		local searching = true
-		local currentParent = config.Inherit
-		if ( currentParent ) then
-			inheritancePath = { configName }
-			inheritancePath[#inheritancePath+1] = currentParent
-			while ( searching ) do
-				-- local nextParent = Photon2.Library.InputConfigs[currentParent]
-				local nextParent = Photon2.Library.InputConfigurations:Get( currentParent )
-				if ( nextParent and nextParent.Inherit ) then
-					inheritancePath[#inheritancePath+1] = nextParent.Inherit
-					currentParent = nextParent.Inherit
-				else
-					searching = false
-				end
-			end
-			binds = {}
-			for i=#inheritancePath, 1, -1 do
-				local parentConfig = Photon2.Library.InputConfigurations:Get(inheritancePath[i])
-				-- local parentConfig = Photon2.Library.InputConfigs[inheritancePath[i]]
-				for key, commands in pairs( parentConfig.Binds ) do
-					binds[key] = commands
-				end
-			end
-			config.Binds = binds
-		end
-	end
-	return Photon2.Index.CompileInputConfiguration( config )
 end
 
 function Photon2.Index.CompileInputSchemaFromLibrary( schemaName )

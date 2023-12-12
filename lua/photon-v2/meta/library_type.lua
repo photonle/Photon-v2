@@ -16,6 +16,7 @@ local printf = Photon2.Debug.PrintF
 ---@field OnServer? boolean If this library type should be loaded server-side.
 ---@field OnClient? boolean If this library type should be loaded client-side.
 ---@field IsValidRealm? boolean If this instance is on a proper realm.
+---@field EagerLoading? boolean 
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -36,6 +37,13 @@ function meta.New( properties )
 	Photon2.Library.Types = result
 	Photon2.Library[result.Name] = result
 	result.Repository = Photon2.Library.Repository[result.Name]
+
+	Photon2.Index = Photon2.Index or {}
+	Photon2.Index[result.Name] = Photon2.Index[result.Name] or {}
+	result.Index = Photon2.Index[result.Name]
+	Photon2["Get" .. tostring( result.Singular ) ] = function( name )
+		return result:GetFromIndex( name )
+	end
 	result.Loaded = false
 	
 	return result
@@ -49,7 +57,7 @@ function meta:FromJson( json )
 	return util.JSONToTable( json )
 end
 
--- Saves library entry as a json in the corresponding folder.
+-- Saves library entry as a json file in the corresponding folder.
 function meta:SaveToData( data )
 	local json = self:ToJson( data )
 	local path = string.format( "%s%s/%s.json", dataPath, self.Folder, data.Name )
@@ -115,8 +123,19 @@ function meta:LoadDataJsonFile( fileName )
 end
 
 -- Retrieves a library entry using its name/unique identifier.
+---@return table
 function meta:Get( name )
 	return self.Repository[name]
+end
+
+---@param name string
+-- Retrieves a compiled version of the entry from its index using its name/unique identifier.
+function meta:GetFromIndex( name )
+	-- self.Index = self.Index or Photon2.Index[self.Name]
+	if ( not self.Index[name] and self.Repository[name] ) then
+		self:Compile( name )
+	end
+	return self.Index[name]
 end
 
 -- Registers an entry to this library.
@@ -130,17 +149,20 @@ end
 
 -- Called when an entry is reloaded.
 function meta:OnReload( data )
-
+	self:Compile( data )
 end
 
+-- Compilation wrapper. Actual compilation overrides should be done in `TYPE:DoCompile( data )`
+---@param data table | string
 function meta:Compile( data )
 	if ( isstring( data ) ) then data = self:Get( data ) end
-	local result = self:DoCompile( data )
+	local result = self:DoCompile( table.Copy( data --[[@as table]]) )
+	self.Index[result.Name] = result
 	return result
 end
 
 function meta:DoCompile( data )
-
+	return data
 end
 
 function meta:SetupInheritance( data )

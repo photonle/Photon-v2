@@ -899,8 +899,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			local nextH = 38
 
 			HUD.VehicleInfo( ScrW() - 150 - 4, nextY, 150, nextH, 
-				string.upper(truncateString(Photon2.ClientInput.TargetController:GetProfile().Title, 26 )),
-				string.upper(Photon2.ClientInput.Active.Title)
+				string.upper(truncateString(Photon2.ClientInput.TargetController:GetProfile().Title, 26 ) or "ERROR"),
+				string.upper(Photon2.ClientInput.Active.Title or "ERROR")
 			)
 
 			nextY = ( nextY + nextH + margin )

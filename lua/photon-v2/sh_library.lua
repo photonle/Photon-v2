@@ -6,7 +6,7 @@ Photon2.Library = Photon2.Library or {
 	---@type table<string, PhotonLibrarySiren>
 	Sirens = {},
 	InteractionSounds = {},
-	Commands = {},
+	OldCommands = {},
 
 	InputConfigs = {},
 	InputConfigsReady = false,
@@ -27,7 +27,6 @@ local vehiclesRoot = "photon-v2/library/vehicles/"
 local sirensRoot = "photon-v2/library/sirens/"
 local interactionSoundsRoot = "photon-v2/library/interaction_sounds/"
 local commandsRoot = "photon-v2/library/commands/"
-local inputConfigurationsRoot = "photon-v2/library/input_configurations/"
 local schemasRoot = "photon-v2/library/schemas/"
 
 local printf = Photon2.Debug.PrintF
@@ -51,22 +50,48 @@ local inputConfigurations = {
 	end,
 	OnReload = function( self, profile )
 		if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == profile.Name ) ) then
-			Photon2.Index.CompileInputConfigurationFromLibrary( profile.Name )
+			Photon2.Index.CompileInputConfiguration( profile.Name )
 		else
 			Photon2.Index.InputConfigurations[profile.Name] = nil
 		end
+	end,
+	DoCompile = function( self, profile )
+		return Photon2.Index.CompileInputConfiguration( profile )
 	end
 	-- LoadFile = function
 }
 
-local repository = Photon2.Library.Repository
-local types = Photon2.Library.Types
+---@type PhotonLibraryType
+local commands = {
+	Name = "Commands",
+	Folder = "commands",
+	Singular = "Command",
+	OnServer = false,
+	DoCompile = function( self, command )
+		for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
+			if ( command[activity] ) then
+				for i, action in pairs( command[activity] ) do
+					if ( istable( action.Value ) ) then
+						action.ValueMap = {}
+						for j, value in pairs( action.Value ) do
+							action.ValueMap[value] = j
+						end
+					end
+				end
+			end
+		end
+		command.ExtendedTitle = command.Category .. " " .. command.Title
+		return command
+	end,
+}
 
 ---@param entry PhotonLibraryType
 function Photon2.Library.AddType( entry )
 	entry = PhotonLibraryType.New( entry )
 end
+
 Photon2.Library.AddType( inputConfigurations )
+Photon2.Library.AddType( commands )
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -287,30 +312,6 @@ function Photon2.LoadInteractionSoundLibrary()
 	hook.Call( "Photon2.LoadInteractionSoundLibrary" )
 end
 
-function Photon2.Library.LoadCommandFile( filePath, isReload )
-	Photon2.Debug.Print( "Loading command file: " .. filePath )
-	Photon2._acceptFileReload = false
-	include( filePath )
-	Photon2._acceptFileReload = true
-end
-
----@param command PhotonCommand
-function Photon2.RegisterCommand( command )
-	Photon2.Library.Commands[command.Name] = command
-	return Photon2.Index.CompileInputCommand( command )
-end
-
-function Photon2.Library.LoadCommandLibrary()
-	print( "Library.LoadCommandLibrary() called." )
-	folderPath = folderPath or ""
-	local search = commandsRoot .. folderPath
-	local files, folders = file.Find( search .. "*.lua", "LUA" )
-	for _, fil in pairs( files ) do
-		Photon2.Library.LoadCommandFile( search .. fil )
-	end
-	hook.Call( "Photon2.LoadCommandLibrary" )
-end
-
 function Photon2.Library.LoadSchemaLibrary()
 	print( "Library.LoadSchemaLibrary() called.")
 	folderPath = folderPath or ""
@@ -332,11 +333,10 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.Library.LoadSchemaLibrary()
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadInteractionSoundLibrary()
-	Photon2.Library.LoadCommandLibrary()
-	Photon2.LoadLibraries( { "InputConfigurations" } )
+	Photon2.LoadLibraries( { "Commands", "InputConfigurations" } )
 
 	if CLIENT then
-		Photon2.ClientInput.SetActiveConfiguration( "default" )
+		-- Photon2.ClientInput.SetActiveConfiguration( "default" )
 	end
 end)
 
@@ -345,14 +345,16 @@ function Photon2.LoadLibraries( types )
 	for i=1, #types do
 		---@type PhotonLibraryType
 		local libraryType = Photon2.Library[types[i]]
-		libraryType:LoadLibrary()
+		if ( libraryType ) then
+			libraryType:LoadLibrary()
+		end
 	end
 end
 
 
 
 if CLIENT then
-	Photon2.Library.InputConfigurations:Export( "joystick_test", "joystick_test_json" )
+	-- Photon2.Library.InputConfigurations:Export( "joystick_test", "joystick_test_json" )
 
 end
 -- Photon2.LoadLibraries( { "InputConfigurations" } )

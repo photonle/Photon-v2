@@ -47,13 +47,6 @@ function Photon2.ClientInput.StopListening()
 end
 
 function Photon2.ClientInput.SetActiveConfiguration( name )
-	if ( not Photon2.Library.InputConfigurations:Get( name ) ) then
-		ErrorNoHalt("Client Input Configuration [" .. tostring(name) .. "] could not be found.")
-		name = "default"
-	end
-	if ( not Photon2.Index.InputConfigurations[name] ) then
-		Photon2.Index.CompileInputConfigurationFromLibrary( name )
-	end
 	Photon2.ClientInput.Active = Photon2.GetInputConfiguration( name )
 end
 
