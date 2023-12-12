@@ -38,8 +38,10 @@ function Photon2.UI.PopulateMenuBar()
 		local inputProfileMenu = inputProfileOption:AddSubMenu()
 		inputProfileMenu:SetDeleteSelf( false )
 
-		for name, config in pairs( Photon2.Library.InputConfigs ) do
-			local opt = inputProfileMenu:AddOption( config.Title )
+		print("Adding input configurations to menu...")
+		for name, config in pairs( Photon2.Library.InputConfigurations.Repository ) do
+			print(tostring(name), tostring(config))
+			local opt = inputProfileMenu:AddOption( config.Title or "ERROR" )
 			local men = opt:AddSubMenu()
 			men:SetDeleteSelf( false )
 			men:AddOption( "Set for Current Vehicle", function()
@@ -972,7 +974,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			local siren1Name = target:GetSirenSelection(1)
 			
 			if ( siren1Name ) then
-				local siren1 = Photon2.Index.Sirens[siren1Name]
+				-- local siren1 = Photon2.Index.Sirens[siren1Name]
+				local siren1 = Photon2.GetSiren(siren1Name)
 				-- local sirenTones1 = siren1
 				
 				

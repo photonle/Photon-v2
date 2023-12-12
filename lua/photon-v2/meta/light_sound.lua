@@ -62,7 +62,7 @@ end
 
 function Sound:SetTone( tone )
 	if ( self.Component.Siren ) then
-		local siren = Photon2.Index.Sirens[self.Component.Siren]
+		local siren = Photon2.GetSiren(self.Component.Siren)
 		local data = siren.Tones[tone]
 		if ( data ) then
 			self.File = data.Sound

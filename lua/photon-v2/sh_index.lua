@@ -1,10 +1,8 @@
 Photon2.Index = Photon2.Index or {}
 Photon2.Index.Components = Photon2.Index.Components or {}
 Photon2.Index.Vehicles = Photon2.Index.Vehicles or {}
-Photon2.Index.Sirens = Photon2.Index.Sirens or {}
 Photon2.Index.Tones = Photon2.Index.Tones or {}
 Photon2.Index.Profiles = Photon2.Index.Profiles or { Map = {}, Vehicles = {} }
-Photon2.Index.InteractionSounds = Photon2.Index.InteractionSounds or {}
 Photon2.Index.Schemas = Photon2.Index.Schemas or {}
 
 --[[
@@ -291,7 +289,7 @@ for i=1, 10 do
 	toneNameToNumber["T" .. tostring(i)] = i
 end
 
-function index.CompileSiren( siren )
+function Photon2.Index.CompileSiren( siren )
 	if ( not isstring( siren.Name ) ) then 
 		ErrorNoHaltWithStack( "Siren Name must be defined and must be a string. Received: " .. tostring( siren.Name ) )
 		return nil
@@ -349,10 +347,11 @@ function index.CompileSiren( siren )
 
 	result.OrderedTones = sortedTones
 
-	Photon2.Index.Sirens[result.Name] = result
+	return result
+	-- Photon2.Index.Sirens[result.Name] = result
 	
-	printf( "Compiling siren [%s] and adding to index.", result.Name )
-	return Photon2.Index.Sirens[result.Name]
+	-- printf( "Compiling siren [%s] and adding to index.", result.Name )
+	-- return Photon2.Index.Sirens[result.Name]
 end
 
 function index.ProcessSirenLibrary()
@@ -365,74 +364,6 @@ function Photon2.GetSirenTone( name )
 	return Photon2.Index.Tones[name]
 end
 
-local soundFileMeta = {
-	__index = {
-		-- Volume of sound when played
-		Volume = 100,
-		-- Duration of sound file. (Developer note: does not use SoundDuration due to reliability problems.)
-		Duration = 0.1,
-		-- Pitch of the sound when played.
-		Pitch = 100
-	}
-}
-
-local soundConfigMeta = {
-	__index = {
-		-- Sound played as soon as button is pressed
-		Press = true,
-		-- Sounds played when the button is "momentary," e.g. manual and horn
-		Momentary = true,
-		-- Sounds played when any specified button is released
-		Release = true,
-		-- Sounds played when the button is pressed and held (one second by default)
-		Hold = true
-	}
-}
-
-function index.CompileInteractionSound( profile )
-	local sounds = Photon2.Index.InteractionSounds
-	sounds[profile.Class] = sounds[profile.Class] or {}
-	setmetatable( profile, soundConfigMeta )
-	for key, value in pairs( profile ) do
-		if ( istable( value ) and isstring( value.Sound ) ) then
-			setmetatable( value, soundFileMeta )
-		end
-	end
-	sounds[profile.Class][profile.Name] = profile
-	return sounds[profile.Class][profile.Name]
-end
-
-function Photon2.GetInteractionSoundProfile( class, name )
-	return Photon2.Index.InteractionSounds[class][name]
-end
-
--- -@param command PhotonCommand
--- function Photon2.Index.CompileInputCommand( command )
--- 	if ( SERVER ) then return end
--- 	for _, activity in pairs( Photon2.ClientInput.KeyActivities ) do
--- 		if ( command[activity] ) then
--- 			for i, action in pairs( command[activity] ) do
--- 				if ( istable( action.Value ) ) then
--- 					action.ValueMap = {}
--- 					for j, value in pairs( action.Value ) do
--- 						action.ValueMap[value] = j
--- 					end
--- 				end
--- 			end
--- 		end
--- 	end
--- 	command.ExtendedTitle = command.Category .. " " .. command.Title
--- 	Photon2.Index.Commands[command.Name] = command
--- 	return Photon2.Index.Commands[command.Name]
--- end
-
--- ---@param commandName string
--- function Photon2.GetCommand( commandName )
--- 	if ( not Photon2.Index.Commands[commandName] ) then
--- 		error( "Client input command [" .. tostring( commandName ) .. "] not found." )
--- 	end
--- 	return Photon2.Index.Commands[commandName]
--- end
 
 -- Compiles a configuration with Library inheritance support
 function Photon2.Index.CompileInputConfiguration( config )
