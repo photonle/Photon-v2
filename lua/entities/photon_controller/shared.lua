@@ -315,7 +315,8 @@ end
 
 function ENT:UserCommandSound( action, press, name )
 	-- if true then return end
-	local sound = Photon2.GetInteractionSoundProfile( action.Sound, self.Interactions.Sounds[action.Sound] )
+	-- local sound = Photon2.GetInteractionSoundProfile( action.Sound, self.Interactions.Sounds[action.Sound] )
+	local sound = Photon2.GetInteractionSound( self.Interactions.Sounds[action.Sound] )
 	press = action.Press or press
 	
 	local subSound = sound[press]

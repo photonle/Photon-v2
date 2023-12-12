@@ -5,14 +5,8 @@ Photon2.Library = Photon2.Library or {
 	Vehicles = {},
 	---@type table<string, PhotonLibrarySiren>
 	Sirens = {},
-	InteractionSounds = {},
-	OldCommands = {},
-
-	InputConfigs = {},
-	InputConfigsReady = false,
 
 	Schemas = {},
-
 	-- New Library system
 	Types = {},
 	Repository = {}
@@ -85,6 +79,47 @@ local commands = {
 	end,
 }
 
+local soundFileMeta = {
+	__index = {
+		-- Volume of sound when played
+		Volume = 100,
+		-- Duration of sound file. (Developer note: does not use SoundDuration due to reliability problems.)
+		Duration = 0.1,
+		-- Pitch of the sound when played.
+		Pitch = 100
+	}
+}
+
+local soundConfigMeta = {
+	__index = {
+		-- Sound played as soon as button is pressed
+		Press = true,
+		-- Sounds played when the button is "momentary," e.g. manual and horn
+		Momentary = true,
+		-- Sounds played when any specified button is released
+		Release = true,
+		-- Sounds played when the button is pressed and held (one second by default)
+		Hold = true
+	}
+}
+
+---@type PhotonLibraryType
+local interactionSounds = {
+	Name = "InteractionSounds",
+	Folder = "interaction_sounds",
+	Singular = "InteractionSound",
+	OnServer = false,
+	DoCompile = function( self, profile )
+		setmetatable( profile, soundConfigMeta )
+		for key, value in pairs( profile ) do
+			if ( istable( value ) and isstring( value.Sound ) ) then
+				setmetatable( value, soundFileMeta )
+			end
+		end
+		return profile
+	end
+}
+
 ---@param entry PhotonLibraryType
 function Photon2.Library.AddType( entry )
 	entry = PhotonLibraryType.New( entry )
@@ -92,6 +127,7 @@ end
 
 Photon2.Library.AddType( inputConfigurations )
 Photon2.Library.AddType( commands )
+Photon2.Library.AddType( interactionSounds )
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -286,32 +322,6 @@ function Photon2.LoadSirenLibrary()
 	hook.Call( "Photon2.LoadSirenLibrary" )
 end
 
-function Photon2.LoadInteractionSoundFile( filePath, isReload )
-	Photon2.Debug.Print( "Loading interaction sound file: " .. filePath )
-	Photon2._acceptFileReload = false
-	include( filePath )
-	Photon2._acceptFileReload = true
-end
-
-function Photon2.RegisterInteractionSound( profile )
-	local library = Photon2.Library.InteractionSounds
-	local class = profile.Class
-	library[class] = library[class] or {}
-	library[class][profile.Name] = profile
-	return Photon2.Index.CompileInteractionSound( library[class][profile.Name] )
-end
-
-function Photon2.LoadInteractionSoundLibrary()
-	print( "LoadInteractionSoundLibrary() called." )
-	folderPath = folderPath or ""
-	local search = interactionSoundsRoot .. folderPath
-	local files, folders = file.Find( search .. "*.lua", "LUA" )
-	for _, fil in pairs( files ) do
-		Photon2.LoadInteractionSoundFile( search .. fil )
-	end
-	hook.Call( "Photon2.LoadInteractionSoundLibrary" )
-end
-
 function Photon2.Library.LoadSchemaLibrary()
 	print( "Library.LoadSchemaLibrary() called.")
 	folderPath = folderPath or ""
@@ -332,8 +342,7 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadComponentLibrary()
 	Photon2.Library.LoadSchemaLibrary()
 	Photon2.LoadVehicleLibrary()
-	Photon2.LoadInteractionSoundLibrary()
-	Photon2.LoadLibraries( { "Commands", "InputConfigurations" } )
+	Photon2.LoadLibraries( { "InteractionSounds", "Commands", "InputConfigurations" } )
 
 	if CLIENT then
 		-- Photon2.ClientInput.SetActiveConfiguration( "default" )
