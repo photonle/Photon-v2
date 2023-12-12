@@ -74,7 +74,7 @@ function PANEL:Init()
 	end
 
 	local byCommand = {}
-	local inputConfig = Photon2.Library.InputConfigs["default"]
+	local inputConfig = Photon2.Library.InputConfigurations:Get("default")
 
 	for key, commands in pairs( inputConfig.Binds ) do
 		for i, data in ipairs( commands ) do

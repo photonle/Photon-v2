@@ -4,9 +4,7 @@ Photon2.Library = Photon2.Library or {
 	ComponentsGraph = {},
 	Vehicles = {},
 	---@type table<string, PhotonLibrarySiren>
-	Sirens = {},
 
-	Schemas = {},
 	-- New Library system
 	Types = {},
 	Repository = {}
@@ -125,10 +123,15 @@ local sirens = {
 	Name = "Sirens",
 	Folder = "sirens",
 	Singular = "Siren",
-	OnServer = true,
 	DoCompile = function( self, siren )
 		return Photon2.Index.CompileSiren( siren )
 	end
+}
+
+local schemas = {
+	Name = "Schemas",
+	Folder = "schemas",
+	Singular = "Schema"
 }
 
 ---@param entry PhotonLibraryType
@@ -140,6 +143,7 @@ Photon2.Library.AddType( sirens )
 Photon2.Library.AddType( inputConfigurations )
 Photon2.Library.AddType( commands )
 Photon2.Library.AddType( interactionSounds )
+Photon2.Library.AddType( schemas )
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -311,48 +315,10 @@ function Photon2.ReloadVehicleFile()
 	return false
 end
 
--- function Photon2.LoadSirenFile( filePath, isReload )
--- 	Photon2.Debug.Print( "Loading siren file: " .. filePath )
--- 	Photon2._acceptFileReload = false
--- 	include( filePath )
--- 	Photon2._acceptFileReload = true
--- end
-
--- function Photon2.RegisterSiren( siren )
--- 	Photon2.Library.Sirens[siren.Name] = siren
--- 	Photon2.Index.CompileSiren( Photon2.Library.Sirens[siren.Name] )
--- end
-
--- function Photon2.LoadSirenLibrary()
--- 	print( "LoadSirenLibrary() called." )
--- 	folderPath = folderPath or ""
--- 	local search = sirensRoot .. folderPath
--- 	local files, folders = file.Find( search .. "*.lua", "LUA" )
--- 	for _, fil in pairs( files ) do
--- 		Photon2.LoadSirenFile( search .. fil )
--- 	end
--- 	hook.Call( "Photon2.LoadSirenLibrary" )
--- end
-
-function Photon2.Library.LoadSchemaLibrary()
-	print( "Library.LoadSchemaLibrary() called.")
-	folderPath = folderPath or ""
-	local search = schemasRoot .. folderPath
-	local files, folders = file.Find( search .. "*.lua", "LUA" )
-	for _, fil in pairs( files ) do
-		include( search .. fil )
-	end
-	hook.Call( "Photon2.LoadSchemaLibrary" )
-end
-
-function Photon2.RegisterSchema( schema )
-	Photon2.Library.Schemas[schema.Name] = schema
-end
-
 hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.LoadLibraries( { "Sirens" })
 	Photon2.LoadComponentLibrary()
-	Photon2.Library.LoadSchemaLibrary()
+	Photon2.LoadLibraries( { "Schemas" })
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadLibraries( { "InteractionSounds", "Commands", "InputConfigurations" } )
 

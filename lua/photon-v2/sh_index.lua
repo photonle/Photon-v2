@@ -3,7 +3,6 @@ Photon2.Index.Components = Photon2.Index.Components or {}
 Photon2.Index.Vehicles = Photon2.Index.Vehicles or {}
 Photon2.Index.Tones = Photon2.Index.Tones or {}
 Photon2.Index.Profiles = Photon2.Index.Profiles or { Map = {}, Vehicles = {} }
-Photon2.Index.Schemas = Photon2.Index.Schemas or {}
 
 --[[
 	Profiles = {
@@ -471,24 +470,3 @@ function Photon2.Index.CompileInputConfiguration( config )
 	}
 end
 
-function Photon2.Index.CompileInputSchemaFromLibrary( schemaName )
-	local librarySchema = Photon2.Library.Schemas[schemaName]
-	if ( not librarySchema ) then
-		-- ErrorNoHalt("Schema [" ..)
-	end
-	local result = table.Copy( Photon2.Library.Schemas[schemaName] )
-	Photon2.Index.Schemas[schema.Name] = result
-end
-
-function Photon2.Index.GetInputSchema( schemaName )
-	if ( not Photon2.Index.Schemas[schemaName] ) then
-		if ( not Photon2.Library.Schemas[schemaName] ) then
-			ErrorNoHalt( "Schema [" .. tostring( schemaName ) .. "] could not be found.")
-			return Photon2.Index.GetInputSchema( "Default" )
-		else
-			Photon2.Index.CompileInputSchema(  Photon2.Library.Schemas[schemaName] )
-			return Photon2.Index.GetInputSchema( schemaName )
-		end
-	end
-	return Photon2.Index.Schemas[schemaName]
-end
