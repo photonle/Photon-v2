@@ -16,17 +16,9 @@ local Util = Photon2.Util
 
 local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
-local sirensRoot = "photon-v2/library/sirens/"
-local interactionSoundsRoot = "photon-v2/library/interaction_sounds/"
-local commandsRoot = "photon-v2/library/commands/"
-local schemasRoot = "photon-v2/library/schemas/"
 
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
-
--- local libraries = {
--- 	{ Name = "Input"}
--- }
 
 ---@type PhotonLibraryType
 local inputConfigurations = {
@@ -337,16 +329,3 @@ function Photon2.LoadLibraries( types )
 		end
 	end
 end
-
-
-
-if CLIENT then
-	-- Photon2.Library.InputConfigurations:Export( "joystick_test", "joystick_test_json" )
-
-end
--- Photon2.LoadLibraries( { "InputConfigurations" } )
-
-
--- if CLIENT then
-	-- Photon2.Library.LoadInputConfigurationLibrary()
--- end

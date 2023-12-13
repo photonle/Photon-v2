@@ -16,7 +16,8 @@ local printf = Photon2.Debug.PrintF
 ---@field OnServer? boolean If this library type should be loaded server-side.
 ---@field OnClient? boolean If this library type should be loaded client-side.
 ---@field IsValidRealm? boolean If this instance is on a proper realm.
----@field EagerLoading? boolean 
+---@field EagerLoading? boolean
+---@field CurrentLoadSource? string (Internal) Establishes where ensuing library entries are (presumably) for any bulk operations.
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -49,6 +50,22 @@ function meta.New( properties )
 	return result
 end
 
+function meta:GetUsedSourceTypes()
+	local result = {
+		Data = true,
+		Lua = true,
+		Other = true
+	}
+
+	for name, entry in pairs( self.Repository ) do
+		if ( entry.SourceType ) then
+			result[entry.SourceType] = true
+		end
+	end
+
+	return result
+end
+
 function meta:ToJson( data )
 	return util.TableToJSON( data, true )
 end
@@ -78,7 +95,10 @@ end
 
 function meta:LoadLuaFile( path )
 	print("\tIncluding Lua file: " .. tostring( path ) )
-	return include( path )
+	self.CurrentLoadSource = "Lua"
+	local result = include( path )
+	self.CurrentLoadSource = nil
+	return result
 end
 
 -- Loads library objects that were created using JSON in the `data` folder.
@@ -115,6 +135,7 @@ function meta:LoadDataJsonFile( fileName )
 	
 	if ( istable( data ) ) then
 		data.Name = string.sub( fileName, 1, #fileName - 5 )
+		data.SourceType = "Data"
 		return self:Register( data )
 	else
 		ErrorNoHalt( "Error occurred when attemping to load library data file: [" .. tostring( fileName ) .. "]")
@@ -142,6 +163,7 @@ end
 function meta:Register( data )
 	print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
 	self.Repository[data.Name] = data
+	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( self.Loaded ) then
 		self:OnReload( data )
 	end

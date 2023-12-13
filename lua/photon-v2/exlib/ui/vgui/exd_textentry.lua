@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_textentry.lua")
-
 local class = "EXDTextEntry"
 local base = "TextEntry"
 
@@ -61,8 +59,9 @@ function PANEL:Init()
 	self.m_bLoseFocusOnClickAway = true
 
 	-- Beam Me Up Scotty
-		-- jesus christ just don't
 	self:SetCursor( "beam" )
+
+	-- please note that the cringey comments above were from facepunch and not me
 
 	self:SetFont( "DermaDefault" )
 

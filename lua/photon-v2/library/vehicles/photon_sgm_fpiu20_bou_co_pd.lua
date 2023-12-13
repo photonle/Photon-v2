@@ -39,12 +39,29 @@ local bpd = PhotonDynamicMaterial.Generate("schmal_fpiu20_bpd", { "VertexLitGene
 	["$nodecal"] = 1
 })
 
-VEHICLE.SubMaterials = {
-	[20] = bpd.Name,
-}
+-- VEHICLE.SubMaterials = {
+-- 	[20] = bpd.Name,
+-- }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
+	{
+		Category = "Liveries",
+		Options = {
+			{
+				Option = "Boulder PD",
+				SubMaterials = {
+					{ Id = 20, Material = bpd.Name }
+				}
+			},
+			{
+				Option = "None",
+				SubMaterials = {
+					{ Id = 20, Material = nil }
+				}
+			}
+		}
+	},
 	{
 		Category = "License Plate",
 		Options = {

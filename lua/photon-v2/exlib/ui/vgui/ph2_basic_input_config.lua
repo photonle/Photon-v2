@@ -18,7 +18,6 @@ function PANEL:Init()
 	local this = self
 
 	self:SetTitle("Input Configuration - Photon 2")
-	self:SetScreenLock( true )
 	self:SetMinWidth( 352 )
 	self:SetMinHeight( 340 )
 	local menubar = self:GetOrBuildMenuBar()
@@ -28,7 +27,7 @@ function PANEL:Init()
 	
 	end)
 	fileMenu:AddOption("Open Profile...", function()
-	
+		self:ShowBrowser()
 	end)
 	fileMenu:AddOption("Save", function()
 	
@@ -75,6 +74,7 @@ function PANEL:Init()
 
 	local byCommand = {}
 	local inputConfig = Photon2.Library.InputConfigurations:Get("default")
+
 
 	for key, commands in pairs( inputConfig.Binds ) do
 		for i, data in ipairs( commands ) do
@@ -168,6 +168,16 @@ function PANEL:SetMetaPanel( data )
 	inheritLabel:SetHeight( height )
 	inheritLabel:Dock( TOP )
 	inheritLabel:SetText( "Inherits:" )
+end
+
+function PANEL:ShowBrowser()
+	local this = self
+	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
+	window:Setup( "InputConfigurations", "OPEN" )
+
+	function window:OnFileConfirmed( entryName )
+		window:Close()
+	end
 end
 
 function PANEL:ShowKeyEditor()

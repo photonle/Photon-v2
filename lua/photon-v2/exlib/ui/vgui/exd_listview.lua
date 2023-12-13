@@ -82,7 +82,7 @@ function PANEL:AddColumn( strName, iPosition )
 	pColumn:SetTextAlign(self.ColumnAlignment)
 	
 	if (insetIf[self.ColumnAlignment]) then
-		print("COLUMN ALIGNMENT VALID")
+		-- print("COLUMN ALIGNMENT VALID")
 		pColumn.Header:SetTextInset(self.ColumnInset, 0)		
 	end
 

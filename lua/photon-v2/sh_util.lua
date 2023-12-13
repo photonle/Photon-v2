@@ -102,4 +102,25 @@ function Photon2.Util.FindBodyGroupOptionByName( ent, bodyGroupIndex, name )
 	return 0
 end
 
+function Photon2.Util.PrintTableProperties( tbl )
+	print("\nSTART >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+	local searching = true
+	local currentTable = tbl
+	while ( searching ) do
+		if istable( currentTable ) then
+			PrintTable( currentTable )
+		else
+
+		end
+		local metaTable = debug.getmetatable( currentTable )
+		if ( istable( metaTable ) and istable( metaTable.__index ) ) then
+			currentTable = metaTable.__index
+			print("\n HAS META TABLE: ==========\n")
+		else
+			searching = false
+		end
+	end
+	print("\nEND   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
+end
+
 -- PrintTable(Util.ModelMeshes)
