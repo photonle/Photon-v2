@@ -24,6 +24,23 @@ function PANEL:Init()
 	self:SetScreenLock( true )
 	self:Center()
 	self:SetSizable(true)
+	hook.Add( "OnTextEntryGetFocus", self, function( panel ) 
+		self:StartKeyFocus( panel )
+	end )
+	hook.Add( "OnTextEntryLoseFocus", self, function( panel) 
+		self:EndKeyFocus( panel )
+	end )
+end
+
+function PANEL:StartKeyFocus( panel )
+	if ( not IsValid( panel ) or not panel:HasParent( self ) ) then return end
+	self.KeyFocusPanel = panel
+	self:SetKeyboardInputEnabled( true )
+end
+
+function PANEL:EndKeyFocus( panel )
+	if ( self.KeyFocusPanel ~= panel ) then return end
+	self:SetKeyboardInputEnabled( false )
 end
 
 derma.DefineControl( class, "Photon 2 Window", PANEL, base )

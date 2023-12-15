@@ -2,6 +2,7 @@ local class = "Photon2BasicInputConfig"
 local base = "Photon2UIWindow"
 ---@class Photon2UIBasicInputConfig : Photon2UIWindow
 ---@field EditPanel Panel
+---@field CommandList EXDListView
 local PANEL = {}
 
 PANEL.AllowAutoRefresh = true
@@ -27,7 +28,7 @@ function PANEL:Init()
 	
 	end)
 	fileMenu:AddOption("Open Profile...", function()
-		self:ShowBrowser()
+		this:ShowOpenBrowser()
 	end)
 	fileMenu:AddOption("Save", function()
 	
@@ -67,14 +68,44 @@ function PANEL:Init()
 	listView:DockMargin( 4, 4, 4, 4 )
 	listView:Dock( FILL )
 	listView:SetMultiSelect( false )
+	listView:SetDataHeight( 20 )
 
 	function listView:OnRowSelected( lineId, line )
 		this:SetEditPanel( line.CommandData )
 	end
 
-	local byCommand = {}
-	local inputConfig = Photon2.Library.InputConfigurations:Get("default")
+	this.CommandList = listView
 
+
+
+	self:SetMetaPanel(nil)
+
+	local editPanel = vgui.Create( "DPanel", self )
+	editPanel:DockMargin( 4, 0, 4, 4 )
+	-- why 8???
+	editPanel:DockPadding( 8, 4, 4, 4 )
+	editPanel:SetHeight( 128 )
+	editPanel:Dock( BOTTOM )
+	self.EditPanel = editPanel
+
+	self:MakePopup()
+	self:SetKeyBoardInputEnabled( false )
+end
+
+function PANEL:LoadInputConfiguration( inputConfig )
+
+	if ( isstring( inputConfig ) ) then inputConfig = Photon2.Library.InputConfigurations:GetCopy( inputConfig ) end
+
+	print("Loading input configuration: " .. tostring( inputConfig ) )
+
+	local listView = self.CommandList
+	listView:Clear()
+
+	local byCommand = {}
+
+	self.WorkingCopy = inputConfig
+
+	self:SetMetaPanel( inputConfig )
 
 	for key, commands in pairs( inputConfig.Binds ) do
 		for i, data in ipairs( commands ) do
@@ -95,6 +126,8 @@ function PANEL:Init()
 		end
 	end
 
+	Photon2.Library.Commands:CompileAll()
+
 	for key, command in SortedPairsByMemberValue( Photon2.Index.Commands, "ExtendedTitle" ) do
 		local keys = ""
 		if ( byCommand[command.Name] ) then
@@ -112,8 +145,14 @@ function PANEL:Init()
 			Keys = byCommand[command.Name]
 		}
 	end
+end
 
-	local metaPanel = vgui.Create( "DPanel", self )
+---@param data PhotonInputConfiguration
+function PANEL:SetMetaPanel( data )
+	if ( IsValid( self.MetaPanel ) ) then self.MetaPanel:Remove() end
+
+	---@type Photon2UIFormPanel
+	local metaPanel = vgui.Create( "Photon2UIFormPanel", self )
 	metaPanel:Dock( TOP )
 	metaPanel:SetHeight( 128 ) 
 	metaPanel:DockMargin( 4, 4, 4, 0 )
@@ -121,53 +160,25 @@ function PANEL:Init()
 	metaPanel:SetPaintBackground( false )
 	self.MetaPanel = metaPanel
 
+	if ( not data ) then 
+		self.MetaPanel:SetHeight( 0 )
+		self.MetaPanelData = nil
+		return 
+	end
 
-	self:SetMetaPanel(nil)
-
-	local editPanel = vgui.Create( "DPanel", self )
-	editPanel:DockMargin( 4, 0, 4, 4 )
-	editPanel:DockPadding( 8, 4, 4, 4 )
-	editPanel:Dock( BOTTOM )
-	editPanel:SetHeight( 128 )
-	self.EditPanel = editPanel
+	self.MetaPanelData = data
 
 	
-end
-
-function PANEL:SetMetaPanel( data )
-	self.MetaPanel:Clear()
-	local this = self
 	local panel = self.MetaPanel
-	local height = 28
 
-	local keyPanel = vgui.Create( "DPanel", panel )
-	keyPanel:SetPaintBackground( false )
-	keyPanel:Dock( LEFT )
-	keyPanel:SetWidth( 96 )
-	
-	local valuePanel = vgui.Create( "DPanel", panel )
-	valuePanel:SetPaintBackground( false )
-	valuePanel:Dock( RIGHT )
-	
-	local titleLabel = vgui.Create( "DLabel", keyPanel )
-	titleLabel:SetHeight( height )
-	titleLabel:Dock( TOP )
-	titleLabel:SetText( "Title:" )
-	
-	local nameLabel = vgui.Create( "DLabel", keyPanel )
-	nameLabel:SetHeight( height )
-	nameLabel:Dock( TOP )
-	nameLabel:SetText( "Name:" )
-	
-	local authorLabel = vgui.Create( "DLabel", keyPanel )
-	authorLabel:SetHeight( height )
-	authorLabel:Dock( TOP )
-	authorLabel:SetText( "Author:" )
-	
-	local inheritLabel = vgui.Create( "DLabel", keyPanel )
-	inheritLabel:SetHeight( height )
-	inheritLabel:Dock( TOP )
-	inheritLabel:SetText( "Inherits:" )
+	panel:CreateTextEntryProperty( "Title", "Title", data.Title )
+	panel:CreateTextEntryProperty( "Author", "Author", data.Author )
+	panel:CreateLibraryEntryProperty( "Inherit", "Inherit", data.Inherit )
+
+	print("PANEL SHOULD BE VISIBLE")
+	self.MetaPanel:SetHeight( 106 )
+
+	self:InvalidateLayout( false )
 end
 
 function PANEL:ShowBrowser()
@@ -177,6 +188,16 @@ function PANEL:ShowBrowser()
 
 	function window:OnFileConfirmed( entryName )
 		window:Close()
+	end
+end
+
+function PANEL:ShowOpenBrowser()
+	local this = self
+	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
+	window:Setup( "InputConfigurations", "OPEN" )
+	function window:OnFileConfirmed( entryName )
+		window:Close()
+		this:LoadInputConfiguration( entryName )
 	end
 end
 
@@ -193,7 +214,7 @@ function PANEL:ShowKeyEditor()
 	local dialogX, dialogY = dialog:GetPos()
 	-- dialog:SetX( dialog:GetX() )
 	dialog:MakePopup()
-
+	dialog:DoModal()
 	-- print( "local", tostring(dialog:GetX() ) )
 	-- print( "parent", tostring(this:GetX() ) )
 	dialog:SetX( parentX + dialogX )
@@ -218,6 +239,11 @@ end
 function PANEL:PreAutoRefresh()
 end
 
+function PANEL:PostAutoRefresh()
+	self.WorkingCopy = self.WorkingCopy or "default"
+	self:LoadInputConfiguration( self.WorkingCopy )
+end 
+
 function PANEL:SetEditPanel( data )
 	self.EditPanel:Clear()
 	if ( not data ) then return end
@@ -227,8 +253,8 @@ function PANEL:SetEditPanel( data )
 	local buttonsPanel = vgui.Create( "DPanel", editPanel )
 	buttonsPanel:DockPadding( 4, 4, 4, 4 )
 	buttonsPanel:SetPaintBackground( false )
-	buttonsPanel:Dock( RIGHT )
 	buttonsPanel:SetWidth( 128 )
+	buttonsPanel:Dock( RIGHT )
 
 	local previewButton = vgui.Create( "DButton", buttonsPanel )
 	previewButton:DockMargin( 0, 0, 0, 8 )

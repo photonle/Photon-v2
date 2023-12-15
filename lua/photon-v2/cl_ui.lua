@@ -34,6 +34,11 @@ function Photon2.UI.PopulateMenuBar()
 			Photon2.Studio:Initialize()
 		end)
 
+		local openDialogConfirm = menu:AddOption( "(DEV) Dialog/Confirm", function()
+			local form = vgui.Create( "Photon2UIDialogConfirm" )
+			form:Setup( "Are you sure you want to?" )
+		end)
+
 		local inputProfileOption = menu:AddOption("Input Profiles")
 		local inputProfileMenu = inputProfileOption:AddSubMenu()
 		inputProfileMenu:SetDeleteSelf( false )

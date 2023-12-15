@@ -126,6 +126,10 @@ function PANEL:SetupMain()
 		this:SetSelected( line.EntryName )
 	end
 
+	function files:DoDoubleClick( lineId, line )
+		this:OnFileConfirmed( line.EntryName )
+	end
+
 	this.EntriesPanel = files
 
 	local previewPanel = vgui.Create( "DPanel", main )
@@ -230,24 +234,25 @@ function PANEL:SetupBottom()
 	cancelButton:Dock( RIGHT )
 	cancelButton:DockMargin( 8, 0, 0, 0 )
 	
+	local confirmButton = vgui.Create( "EXDButton", buttons )
+	confirmButton:SetText( "Select" )
+	confirmButton:SetWidth( 92 )
+	confirmButton:Dock( RIGHT )
+	function confirmButton:DoClick()
+		this:OnFileConfirmed( this.SelectedEntryName )
+
+	end
+
+	function cancelButton:DoClick()
+		this:OnCanceled()
+	end
+
 	if ( self.FileMode == "OPEN" ) then
-
-		local openButton = vgui.Create( "EXDButton", buttons )
-		openButton:SetText( "Open" )
-		openButton:SetWidth( 92 )
-		openButton:Dock( RIGHT )
-		
-		function openButton:DoClick()
-			
-			this:OnFileConfirmed( this.SelectedEntryName )
-		end
-
-	elseif ( self.FileMode == "SAVE" ) then
-		local saveButton = vgui.Create( "EXDButton", buttons )
-		saveButton:SetText( "Save" )
-		saveButton:SetWidth( 92 )
-		saveButton:Dock( RIGHT )
+		confirmButton:SetText( "Open" )
+	elseif ( self.FileMode == "SAVE" ) then		
+		confirmButton:SetText( "Save" )
 	else
+		confirmButton:SetText( "Select" )
 		cancelButton:SetText( "Close" )
 	end
 
@@ -264,6 +269,11 @@ end
 -- Override
 function PANEL:OnFileConfirmed( entryName )
 	print( "File confirmed: " .. tostring( entryName ) )
+	self:Close()
+end
+
+function PANEL:OnCanceled()
+	self:Close()
 end
 
 function PANEL:Init()
@@ -272,7 +282,7 @@ function PANEL:Init()
 end
 
 ---@param library string Library type.
----@param mode "OPEN" | "SAVE" Mode type.
+---@param mode "OPEN" | "SAVE" | "SELECT" Mode type.
 function PANEL:Setup( library, mode )
 	local this = self
 	self:SetWidth( 500 )
@@ -292,6 +302,8 @@ function PANEL:Setup( library, mode )
 		title = "Open "
 	elseif ( mode == "SAVE" ) then
 		title = "Save"
+	elseif ( mode == "SELECT") then
+		title = "Select"
 	end
 
 	self.FileMode = mode

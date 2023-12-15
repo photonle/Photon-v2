@@ -66,6 +66,12 @@ function meta:GetUsedSourceTypes()
 	return result
 end
 
+function meta:CompileAll()
+	for name, entry in pairs( self.Repository ) do
+		self:GetFromIndex( name )
+	end
+end
+
 function meta:ToJson( data )
 	return util.TableToJSON( data, true )
 end
@@ -147,6 +153,11 @@ end
 ---@return table
 function meta:Get( name )
 	return self.Repository[name]
+end
+
+-- Retrieves a copy of a library entry using its name/unique identifier. Used for non-destructive editing.
+function meta:GetCopy( name )
+	return table.Copy( self.Repository[name] )
 end
 
 ---@param name string
