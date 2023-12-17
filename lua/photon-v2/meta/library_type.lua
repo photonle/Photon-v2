@@ -18,6 +18,7 @@ local printf = Photon2.Debug.PrintF
 ---@field IsValidRealm? boolean If this instance is on a proper realm.
 ---@field EagerLoading? boolean
 ---@field CurrentLoadSource? string (Internal) Establishes where ensuing library entries are (presumably) for any bulk operations.
+---@field Template? table
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -25,6 +26,7 @@ local luaPath = "photon-v2/library/"
 
 meta.OnServer = true
 meta.OnClient = true
+meta.Template = {}
 
 function meta.New( properties )
 	local result = setmetatable( properties, { __index = meta } )
@@ -142,6 +144,7 @@ function meta:LoadDataJsonFile( fileName )
 	if ( istable( data ) ) then
 		data.Name = string.sub( fileName, 1, #fileName - 5 )
 		data.SourceType = "Data"
+		data.ReadOnly = data.ReadOnly or false
 		return self:Register( data )
 	else
 		ErrorNoHalt( "Error occurred when attemping to load library data file: [" .. tostring( fileName ) .. "]")
@@ -160,6 +163,11 @@ function meta:GetCopy( name )
 	return table.Copy( self.Repository[name] )
 end
 
+-- Generates a new, blank library entry of this type.
+function meta:GetNew()
+	return table.Copy( self.Template )
+end
+
 ---@param name string
 -- Retrieves a compiled version of the entry from its index using its name/unique identifier.
 function meta:GetFromIndex( name )
@@ -175,6 +183,7 @@ function meta:Register( data )
 	print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
+	if ( data.ReadOnly == nil ) then data.ReadOnly = true end
 	if ( self.Loaded ) then
 		self:OnReload( data )
 	end

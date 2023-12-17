@@ -25,6 +25,9 @@ local inputConfigurations = {
 	Name = "InputConfigurations",
 	Folder = "input_configurations",
 	Singular = "InputConfiguration",
+	Template = {
+		Binds = {}
+	},
 	OnServer = false,
 	ToJson = function( self, configProfile ) 
 		return Photon2.ClientInput.ExportProfileToJson( configProfile )

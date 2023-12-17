@@ -5,6 +5,29 @@ local base = "DFrame"
 ---@field MenuBar EXDMenuBar 
 local PANEL = {}
 
+PANEL.TitleSuffix = ""
+PANEL.TitleMain = ""
+PANEL.TitlePrefix = ""
+
+function PANEL:SetTitleMain( text )
+	self.TitleMain = text
+	self:UpdateTitle()
+end
+
+function PANEL:SetTitlePrefix( text )
+	self.TitlePrefix = text
+	self:UpdateTitle()
+end
+
+function PANEL:SetTitleSuffix( text )
+	self.TitleSuffix = text
+	self:UpdateTitle()
+end
+
+function PANEL:UpdateTitle()
+	self:SetTitle( self.TitlePrefix .. self.TitleMain .. self.TitleSuffix )
+end
+
 function PANEL:GetOrBuildMenuBar()
 	if ( not self.MenuBar ) then
 		local lp, tp, rp, bp = self:GetDockPadding()

@@ -3,6 +3,76 @@ Photon2.UI = Photon2.UI or {
 	HUD = {}
 }
 
+Photon2.UI.DialogBox = {}
+
+function Photon2.UI.DialogBox.UserError( message )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle("Error")
+	dialog:SetMainText( message )
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 250 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "OK", function()
+		dialog:Close()
+	end)
+	return dialog
+end
+
+function Photon2.UI.DialogBox.ConfirmSave( name, onSave, onDoNotSave, onCancel )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( "Save changes?" )
+	dialog:SetMainText( "Do you want to save the changes you made to " .. tostring( name ) .. "?" )
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 250 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "Cancel", function()
+		if ( isfunction( onCancel ) ) then
+			onCancel()
+		end
+		dialog:Close()
+	end )
+	dialog:AddButton( "Don't Save", function()
+		if ( isfunction( onDoNotSave ) ) then
+			onDoNotSave()
+		end
+		dialog:Close()
+	end )
+	dialog:AddButton( "Save", function()
+		if ( isfunction( onSave ) ) then
+			onSave()
+		end
+		dialog:Close()
+	end )
+	return dialog
+end
+
+function Photon2.UI.DialogBox.Confirm( title, message, onYes, onNo )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( title )
+	dialog:SetMainText( message )
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 256 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "No", function() 
+		if ( isfunction( onNo ) ) then
+			onNo()
+		end
+		dialog:Close()
+	end )
+	dialog:AddButton( "Yes", function() 
+		if ( isfunction( onYes ) ) then
+			onYes()
+		end
+		dialog:Close()
+	end )
+end
+
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 

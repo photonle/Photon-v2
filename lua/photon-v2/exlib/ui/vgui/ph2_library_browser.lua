@@ -184,6 +184,33 @@ function PANEL:PopulateEntries()
 
 end
 
+-- Checks if an "open" operation on an entry should succeed.
+function PANEL:VerifyOpenEntry( value )
+	if ( value == nil or value == "" ) then return false end
+	if ( not self.CurrentLibrary.Repository[value] ) then
+		Photon2.UI.DialogBox.UserError( tostring( value ) .. "\nEntry could not be found.\nPlease check the name and try again." )
+		return false
+	end
+	return true
+end
+
+function PANEL:AttemptSave( value )
+	if ( value == nil or value == "" ) then return false end
+	if ( self.CurrentLibrary.Repository[value] ) then
+
+	end
+end
+
+function PANEL:AttemptOpen( value )
+	if ( not self:VerifyOpenEntry( value ) ) then return end
+	self:OnFileConfirmed( value, false )
+end
+
+function PANEL:AttemptOpenAsCopy( value )
+	if ( not self:VerifyOpenEntry( value ) ) then return end
+	self:OnFileConfirmed( value, true )
+end
+
 function PANEL:SetupBottom()
 	local this = self
 	
@@ -238,10 +265,9 @@ function PANEL:SetupBottom()
 	confirmButton:SetText( "Select" )
 	confirmButton:SetWidth( 92 )
 	confirmButton:Dock( RIGHT )
-	function confirmButton:DoClick()
-		this:OnFileConfirmed( this.SelectedEntryName )
+	confirmButton:DockMargin( 8, 0, 0, 0 )
 
-	end
+	
 
 	function cancelButton:DoClick()
 		this:OnCanceled()
@@ -249,6 +275,16 @@ function PANEL:SetupBottom()
 
 	if ( self.FileMode == "OPEN" ) then
 		confirmButton:SetText( "Open" )
+		local openCopy = vgui.Create( "EXDButton", buttons )
+		openCopy:SetText( "Open as Copy" )
+		openCopy:SetWidth( 92 )
+		openCopy:Dock( RIGHT )
+		function confirmButton:DoClick()
+			this:AttemptOpen( this.FileNameTextBox:GetText() )
+		end
+		function openCopy:DoClick()
+			this:AttemptOpenAsCopy( this.FileNameTextBox:GetText() )
+		end
 	elseif ( self.FileMode == "SAVE" ) then		
 		confirmButton:SetText( "Save" )
 	else
@@ -267,7 +303,7 @@ function PANEL:SetSelected( entryName )
 end
 
 -- Override
-function PANEL:OnFileConfirmed( entryName )
+function PANEL:OnFileConfirmed( entryName, copy )
 	print( "File confirmed: " .. tostring( entryName ) )
 	self:Close()
 end

@@ -13,6 +13,42 @@ PANEL.ModifierKeys = {
 	KEY_RALT
 }
 
+PANEL.TitleSuffix = " - Input Configuration"
+PANEL.TitleMain = "Photon 2"
+
+function PANEL:DoSave( postSaveFunc )
+	local this = self
+	if ( not this.WorkingCopy ) then return end
+	if ( this.WorkingCopy.Name == nil ) then
+		return this:DoSaveAs( postSaveFunc )
+	end
+	if ( isfunction( postSaveFunc ) ) then postSaveFunc() end
+end
+
+function PANEL:DoSaveAs( postSaveAsFunc )
+	self:ShowSaveBrowser()
+	if ( isfunction( postSaveAsFunc ) ) then postSaveAsFunc() end
+end
+
+-- Prompts user to save unsaved file and will call continueFunc when handled.
+---@param onContinue function
+function PANEL:RunSaveCheck( onContinue )
+	local this = self
+	if ( self.WorkingCopy and self.WorkingCopy.Unsaved ) then
+		Photon2.UI.DialogBox.ConfirmSave( 
+			self.WorkingCopy.Name,
+			-- On Save
+			this:DoSave( onContinue ),
+			-- On Don't Save
+			onContinue,
+			-- On Cancel
+			nil
+		)
+	else
+		onContinue()
+	end
+end
+
 function PANEL:Init()
 	self.BaseClass.Init( self )
 
@@ -24,18 +60,32 @@ function PANEL:Init()
 	local menubar = self:GetOrBuildMenuBar()
 	
 	local fileMenu = menubar:AddMenu("File")
-	fileMenu:AddOption("New Profile...", function()
+	
+	fileMenu:AddOption("New Profile", function()
 	
 	end)
+
+	fileMenu:AddSpacer()
 	fileMenu:AddOption("Open Profile...", function()
-		this:ShowOpenBrowser()
+		this:RunSaveCheck( function()
+			this:ShowOpenBrowser()
+		end)
 	end)
+	
+	fileMenu:AddSpacer()
 	fileMenu:AddOption("Save", function()
-	
+		this:DoSave()
+		-- if ( not this.WorkingCopy ) then return end
+		-- if ( this.WorkingCopy and not this.WorkingCopy.Name ) then 
+		-- 	this:ShowSaveBrowser()
+		-- end
 	end)
+	
 	fileMenu:AddOption("Save As...", function()
-	
+		this:DoSaveAs()
 	end)
+	
+	fileMenu:AddSpacer()
 	fileMenu:AddOption("Close", function()
 		this:Remove()
 	end)
@@ -92,9 +142,24 @@ function PANEL:Init()
 	self:SetKeyBoardInputEnabled( false )
 end
 
-function PANEL:LoadInputConfiguration( inputConfig )
+function PANEL:LoadInputConfiguration( inputConfig, asNew )
 
 	if ( isstring( inputConfig ) ) then inputConfig = Photon2.Library.InputConfigurations:GetCopy( inputConfig ) end
+
+	self.WorkingCopy = inputConfig
+
+	if ( asNew ) then
+		local isNew = (inputConfig.Name == nil)
+		inputConfig.Name = nil
+		self:MarkUnsaved()
+		if ( not isNew ) then
+			inputConfig.Title = tostring( inputConfig.Title or "" ) .. " (Copy)"
+		end
+	else
+		self:MarkSaved()
+	end
+
+	self:SetTitleMain( inputConfig.Name or "untitled" )
 
 	print("Loading input configuration: " .. tostring( inputConfig ) )
 
@@ -103,7 +168,6 @@ function PANEL:LoadInputConfiguration( inputConfig )
 
 	local byCommand = {}
 
-	self.WorkingCopy = inputConfig
 
 	self:SetMetaPanel( inputConfig )
 
@@ -153,6 +217,7 @@ function PANEL:SetMetaPanel( data )
 
 	---@type Photon2UIFormPanel
 	local metaPanel = vgui.Create( "Photon2UIFormPanel", self )
+	metaPanel.LabelWidth = 50
 	metaPanel:Dock( TOP )
 	metaPanel:SetHeight( 128 ) 
 	metaPanel:DockMargin( 4, 4, 4, 0 )
@@ -195,10 +260,16 @@ function PANEL:ShowOpenBrowser()
 	local this = self
 	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
 	window:Setup( "InputConfigurations", "OPEN" )
-	function window:OnFileConfirmed( entryName )
+	function window:OnFileConfirmed( entryName, asCopy )
 		window:Close()
-		this:LoadInputConfiguration( entryName )
+		this:LoadInputConfiguration( entryName, asCopy )
 	end
+end
+
+function PANEL:ShowSaveBrowser()
+	local this = self
+	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
+	window:Setup( "InputConfigurations", "SAVE" )
 end
 
 function PANEL:ShowKeyEditor()
@@ -244,6 +315,17 @@ function PANEL:PostAutoRefresh()
 	self:LoadInputConfiguration( self.WorkingCopy )
 end 
 
+function PANEL:MarkUnsaved()
+	self:SetTitlePrefix( "*" )
+	self.WorkingCopy.Unsaved = true
+end
+
+function PANEL:MarkSaved()
+	self:SetTitlePrefix("")
+	self.WorkingCopy.Saved = true
+end
+
+
 function PANEL:SetEditPanel( data )
 	self.EditPanel:Clear()
 	if ( not data ) then return end
@@ -260,8 +342,6 @@ function PANEL:SetEditPanel( data )
 	previewButton:DockMargin( 0, 0, 0, 8 )
 	previewButton:Dock( TOP )
 	previewButton:SetText( "Preview" )
-	
-	
 
 	local clearButton = vgui.Create( "DButton", buttonsPanel )
 	clearButton:DockMargin( 0, 0, 0, 8 )
