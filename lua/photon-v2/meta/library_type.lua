@@ -89,6 +89,16 @@ function meta:SaveToData( data )
 	file.Write( path, json )
 end
 
+-- Saves a library entry and then registers it so it's immediately loaded.
+function meta:SaveToDataAndRegister( data )
+	if ( not data.Name ) then 
+		ErrorNoHaltWithStack( "Attempted to save a library entry with no .Name defined." )
+		return
+	end
+	self:SaveToData( data )
+	self:LoadDataJsonFile( data.Name )
+end
+
 -- Loads library objects that were created in Lua
 function meta:LoadLuaLibrary()
 	local path = luaPath .. self.Folder .. "/"

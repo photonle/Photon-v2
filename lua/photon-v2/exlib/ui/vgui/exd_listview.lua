@@ -331,7 +331,6 @@ function PANEL:AddLine( ... )
 	if ( SortID % 2 == 1 ) then
 		Line:SetAltLine( true )
 	end
-
 	return Line
 
 end

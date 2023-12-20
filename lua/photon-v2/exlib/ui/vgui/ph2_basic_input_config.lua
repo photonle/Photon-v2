@@ -16,18 +16,18 @@ PANEL.ModifierKeys = {
 PANEL.TitleSuffix = " - Input Configuration"
 PANEL.TitleMain = "Photon 2"
 
+-- Saves the current WorkingCopy table as an entry
 function PANEL:DoSave( postSaveFunc )
 	local this = self
-	if ( not this.WorkingCopy ) then return end
-	if ( this.WorkingCopy.Name == nil ) then
+	if ( this.WorkingCopy and this.WorkingCopy.Name == nil ) then
 		return this:DoSaveAs( postSaveFunc )
 	end
+	Photon2.Library.InputConfigurations:SaveToDataAndRegister( this.WorkingCopy )
 	if ( isfunction( postSaveFunc ) ) then postSaveFunc() end
 end
 
 function PANEL:DoSaveAs( postSaveAsFunc )
-	self:ShowSaveBrowser()
-	if ( isfunction( postSaveAsFunc ) ) then postSaveAsFunc() end
+	self:ShowSaveBrowser( postSaveAsFunc )
 end
 
 -- Prompts user to save unsaved file and will call continueFunc when handled.
@@ -38,7 +38,7 @@ function PANEL:RunSaveCheck( onContinue )
 		Photon2.UI.DialogBox.ConfirmSave( 
 			self.WorkingCopy.Name,
 			-- On Save
-			this:DoSave( onContinue ),
+			function() this:DoSave( onContinue ) end,
 			-- On Don't Save
 			onContinue,
 			-- On Cancel
@@ -62,7 +62,9 @@ function PANEL:Init()
 	local fileMenu = menubar:AddMenu("File")
 	
 	fileMenu:AddOption("New Profile", function()
-	
+		this:RunSaveCheck( function()
+			this:LoadInputConfiguration( Photon2.Library.InputConfigurations:GetNew(), false )
+		end)
 	end)
 
 	fileMenu:AddSpacer()
@@ -266,10 +268,21 @@ function PANEL:ShowOpenBrowser()
 	end
 end
 
-function PANEL:ShowSaveBrowser()
+function PANEL:ShowSaveBrowser( postSaveFunc )
 	local this = self
 	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
 	window:Setup( "InputConfigurations", "SAVE" )
+	function window:OnFileConfirmed( entryName )
+		if ( not this.WorkingCopy ) then
+			ErrorNoHalt( "Attempted to save [" .. tostring(entryName) .. "] but no valid entry (WorkingCopy) appeared to be loaded." )
+			return
+		end
+		-- SAVE ENTRY
+		this.WorkingCopy.Name = entryName
+		this:DoSave( postSaveFunc )
+		window:Close()
+		if ( isfunction( postSaveFunc ) ) then postSaveFunc() end
+	end
 end
 
 function PANEL:ShowKeyEditor()

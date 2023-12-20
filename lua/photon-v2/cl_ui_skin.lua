@@ -1013,7 +1013,9 @@ function SKIN:PaintListViewLine( panel, w, h )
 	if ( panel:IsSelected() ) then
 
 		self.tex.Input.ListBox.EvenLineSelected( 0, 0, w, h )
-
+	elseif ( not panel:IsEnabled() ) then
+		-- self.tex.Input.ListBox.Hovered( 0, 0, w, h )
+		
 	elseif ( panel.Hovered ) then
 
 		self.tex.Input.ListBox.Hovered( 0, 0, w, h )

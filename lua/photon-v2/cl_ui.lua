@@ -24,9 +24,10 @@ function Photon2.UI.DialogBox.ConfirmSave( name, onSave, onDoNotSave, onCancel )
 	local dialog = vgui.Create( "Photon2UIDialogWindow" )
 	dialog:SetupDialog()
 	dialog:SetTitle( "Save changes?" )
+	if ( name == nil ) then name = "untitled" end
 	dialog:SetMainText( "Do you want to save the changes you made to " .. tostring( name ) .. "?" )
 	dialog:SetHeight( 128 )
-	dialog:SetWidth( 250 )
+	dialog:SetWidth( 320 )
 	dialog:Center()
 	dialog:DoModal()
 	dialog:AddButton( "Cancel", function()
@@ -48,6 +49,35 @@ function Photon2.UI.DialogBox.ConfirmSave( name, onSave, onDoNotSave, onCancel )
 		dialog:Close()
 	end )
 	return dialog
+end
+
+function Photon2.UI.DialogBox.OpenReadOnly( name, onOpenReadOnly, onOpenCopy, onCancel )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( "Read-Only File" )
+	dialog:SetMainText( tostring( name ) .. " is read-only and you will not be able to modify it.")
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 320 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "Cancel", function()
+		if ( isfunction( onCancel ) ) then
+			onCancel()
+		end
+		dialog:Close()
+	end)
+	dialog:AddButton( "OK", function()
+		if ( isfunction( onOpenReadOnly ) ) then
+			onOpenReadOnly()
+		end
+		dialog:Close()
+	end)
+	dialog:AddButton( "Open as Copy", function()
+		if ( isfunction( onOpenCopy ) ) then
+			onOpenCopy()
+		end
+		dialog:Close()
+	end)
 end
 
 function Photon2.UI.DialogBox.Confirm( title, message, onYes, onNo )

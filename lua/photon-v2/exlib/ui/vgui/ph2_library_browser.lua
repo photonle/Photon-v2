@@ -127,7 +127,7 @@ function PANEL:SetupMain()
 	end
 
 	function files:DoDoubleClick( lineId, line )
-		this:OnFileConfirmed( line.EntryName )
+		this:OnItemDoubleClick( line.EntryName )
 	end
 
 	this.EntriesPanel = files
@@ -136,6 +136,10 @@ function PANEL:SetupMain()
 	divider:SetRight( previewPanel )
 
 	self.MainPanel = main
+end
+
+function PANEL:OnItemDoubleClick( value )
+	self:OnFileConfirmed( value )
 end
 
 function PANEL:PopulateEntries()
@@ -175,10 +179,16 @@ function PANEL:PopulateEntries()
 			columns[i] = entry[self.ColumnSchema[i].Property]
 		end
 
+		
 		local line = files:AddLine( unpack( columns ) )
 		line.EntryName = name
 		if ( name == self.SelectedEntryName ) then
 			files:SelectItem( line )
+		end
+		if ( self.FileMode =="SAVE" and entry.ReadOnly ) then
+			line.LineDisabled = true
+			line:SetMouseInputEnabled( false )
+			line:SetEnabled( false )
 		end
 	end
 
@@ -195,15 +205,44 @@ function PANEL:VerifyOpenEntry( value )
 end
 
 function PANEL:AttemptSave( value )
+	local this = self
 	if ( value == nil or value == "" ) then return false end
 	if ( self.CurrentLibrary.Repository[value] ) then
-
+		local entry = self.CurrentLibrary.Repository[value]
+		if ( entry.ReadOnly ) then
+			Photon2.UI.DialogBox.UserError( value .. " is read-only and cannot be overwritten." )
+		else
+			Photon2.UI.DialogBox.Confirm(
+				-- title
+				"Confirm Save As",
+				-- message
+				string.format("%s already exists.\nDo you want to replace it?", value),
+				-- onYes
+				function() this:OnFileConfirmed( value, false ) end,
+				-- onNo
+				nil
+			)
+		end
+		
+	else
+		self:OnFileConfirmed( value, false )
 	end
 end
 
 function PANEL:AttemptOpen( value )
+	local this = self
 	if ( not self:VerifyOpenEntry( value ) ) then return end
-	self:OnFileConfirmed( value, false )
+	local entry = self.CurrentLibrary.Repository[value]
+	if ( entry.ReadOnly ) then
+		Photon2.UI.DialogBox.OpenReadOnly( 
+			value,
+			function() self:OnFileConfirmed( value, false ) end,
+			function() self:AttemptOpenAsCopy( value) end,
+			nil
+		)
+	else
+		self:OnFileConfirmed( value, false )
+	end
 end
 
 function PANEL:AttemptOpenAsCopy( value )
@@ -287,8 +326,15 @@ function PANEL:SetupBottom()
 		end
 	elseif ( self.FileMode == "SAVE" ) then		
 		confirmButton:SetText( "Save" )
+		function confirmButton:DoClick()
+			this:AttemptSave( this.FileNameTextBox:GetText() )
+		end
+		this.OnItemDoubleClick = this.AttemptSave
 	else
 		confirmButton:SetText( "Select" )
+		function confirmButton:DoClick()
+			this:AttemptOpen( this.FileNameTextBox:GetText() )
+		end
 		cancelButton:SetText( "Close" )
 	end
 
@@ -337,9 +383,9 @@ function PANEL:Setup( library, mode )
 	if ( mode == "OPEN" ) then
 		title = "Open "
 	elseif ( mode == "SAVE" ) then
-		title = "Save"
+		title = "Save "
 	elseif ( mode == "SELECT") then
-		title = "Select"
+		title = "Select "
 	end
 
 	self.FileMode = mode

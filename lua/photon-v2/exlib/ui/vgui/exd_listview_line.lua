@@ -10,9 +10,14 @@ end
 
 function PANEL:UpdateColours( skin )
 
-	if ( self:GetParent():IsLineSelected() ) then return self:SetTextStyleColor( skin.Colours.Label.Bright ) end
+	if ( self:GetParent().LineDisabled ) then
+		self:SetTextStyleColor( skin.Colours.Label.Disabled )
+		return
+	end
 
-	return self:SetTextStyleColor( skin.Colours.Label.Dark )
+	if ( self:GetParent():IsLineSelected() ) then return self:SetTextStyleColor( skin.Colours.Label.Bright ) end
+		
+	self:SetTextStyleColor( skin.Colours.Label.Dark )
 
 end
 

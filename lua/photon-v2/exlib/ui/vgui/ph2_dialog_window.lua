@@ -46,6 +46,7 @@ function PANEL:SetMainText( text )
 	if ( not label ) then
 		label = vgui.Create( "DLabel", self.ContentContainer )
 		label:Dock( FILL )
+		label:SetWrap( true )
 		label:SetTextInset( 8, 0 )
 		self.MainTextLabel = label
 	end
