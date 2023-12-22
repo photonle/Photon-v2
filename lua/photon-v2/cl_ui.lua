@@ -3,6 +3,59 @@ Photon2.UI = Photon2.UI or {
 	HUD = {}
 }
 
+Photon2.UI.Icons = Photon2.UI.Icons or {
+	Index = {}
+}
+
+--[[
+	SETUP PROCEDURE
+	1.
+--]]
+
+local function utfChar(code)
+	return utf8.char(tonumber(code, 16))
+end
+
+function Photon2.UI.Icons.GenerateMap()
+	local rawFile = file.Read("addons/Photon-2/data_static/photon_v2/misc/mdi_7_3_67.json", "MOD")
+	if not rawFile then error("file didn't load - path is probably incorrect") end
+	local asTable = util.JSONToTable( rawFile )
+	local result = {}
+	for i=1, #asTable do
+		local entry = asTable[i]
+		result[entry.name] = tonumber( "0x" .. entry.hex, 16 )
+		-- result[entry.name] = utf8.char( tonumber( "0x" .. entry.hex, 16 ) )
+	end
+	local asJson = util.TableToJSON( result, true )
+	SetClipboardText( asJson )
+end
+-- Photon2.UI.Icons.GenerateMap()
+
+---@param keyName string
+---@param style? "box" | "box-outline"
+---@param fallback? string
+function Photon2.UI.FindInputIcon( keyName, style, fallback )
+	local icon = fallback or "keyboard-variant"
+	style = style or "box"
+	style = "-" .. style
+	local arrowIcons = {
+		UPARROW = "arrow-up-bold",
+		RIGHTARROW = "arrow-right-bold",
+		LEFTARROW = "arrow-left-bold",
+		DOWNARROW = "arrow-down-bold"
+	}
+	if ( exui.FindIcon("alpha-" .. keyName .. style) ) then
+		icon = "alpha-" .. keyName .. style
+	elseif ( exui.FindIcon("numeric-" .. keyName .. style) ) then
+		icon = "numeric-" .. keyName .. style
+	elseif ( arrowIcons[keyName] ) then
+		icon = arrowIcons[keyName] .. "-box-outline"
+	elseif ( string.find( keyName, "MOUSE") == 1 ) then
+		icon = "mouse"
+	end
+	return icon
+end
+
 Photon2.UI.DialogBox = {}
 
 function Photon2.UI.DialogBox.UserError( message )
@@ -101,6 +154,35 @@ function Photon2.UI.DialogBox.Confirm( title, message, onYes, onNo )
 		end
 		dialog:Close()
 	end )
+end
+
+---@param text string
+---@param onConfirm? function
+---@param onCancel? function
+function Photon2.UI.DialogBox.ButtonInput( text, onConfirm, onCancel )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( "Select a Key/Button" )
+	dialog:SetWidth( 300 )
+	dialog:SetHeight( 150 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog.ContentContainer:DockPadding( 8, 8, 8, 8 )
+	-- local label = vgui.Create( "DLabel", dialog.ContentContainer )
+	-- label:Dock( TOP )
+	-- label:SetText( "Click the button below and press a key or button:")
+	-- label:DockMargin( 0, 0, 0, 8 )
+	local binder = vgui.Create( "DBinder", dialog.ContentContainer )
+	binder:Dock( FILL )
+	dialog:AddButton( "Cancel", function ()
+		if onCancel and isfunction( onCancel ) then onCancel() end
+		dialog:Close()
+	end )
+	dialog:AddButton( "Accept", function ()
+		if onConfirm and isfunction( onConfirm ) then onConfirm( binder:GetValue() ) end
+		dialog:Close()
+	end )
+	binder:DoClick()
 end
 
 local print = Photon2.Debug.Print

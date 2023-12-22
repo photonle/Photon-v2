@@ -47,8 +47,10 @@ function PANEL:CreateBaseProperty( propertyName, labelText )
 end
 
 function PANEL:CreateTextEntryProperty( propertyName, labelText, currentValue, params )
+	local this = self
 	local panel = self:CreateBaseProperty( propertyName, labelText )
 	local textEntry = vgui.Create( "DTextEntry", panel.Content )
+	textEntry:SetUpdateOnType( true )
 	textEntry:Dock( FILL )
 
 	function panel:SetValue( value )
@@ -61,6 +63,9 @@ function PANEL:CreateTextEntryProperty( propertyName, labelText, currentValue, p
 
 	panel:SetValue( currentValue )
 
+	function textEntry:OnValueChange( value )
+		this:OnPropertyChanged( propertyName, value )
+	end
 end
 
 function PANEL:SetPropertyValue( property, value )
@@ -76,7 +81,7 @@ function PANEL:CreateLibraryEntryProperty( propertyName, labelText, currentValue
 	local panel = self:CreateBaseProperty( propertyName, labelText )
 	local textEntry = vgui.Create( "DTextEntry", panel.Content )
 	textEntry:Dock( FILL )
-
+	textEntry:SetUpdateOnType( true )
 	function panel:SetValue( value )
 		textEntry:SetText( value or "" )
 	end
@@ -87,6 +92,9 @@ function PANEL:CreateLibraryEntryProperty( propertyName, labelText, currentValue
 
 	panel:SetValue( currentValue )
 
+	function textEntry:OnValueChange( value )
+		this:OnPropertyChanged( propertyName, value )
+	end
 
 	local browse = vgui.Create( "DButton", panel.Content )
 	browse:DockMargin( 8, 0, 0, 0 )
@@ -104,6 +112,11 @@ function PANEL:CreateLibraryEntryProperty( propertyName, labelText, currentValue
 		end
 	end
 
+end
+
+--- For overriding
+function PANEL:OnPropertyChanged( name, value )
+	print("On property changed")
 end
 
 derma.DefineControl( class, description, PANEL, base )

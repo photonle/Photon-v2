@@ -327,7 +327,7 @@ Photon2.RegisterCommand({
 
 Photon2.RegisterCommand({
 	Name = "toggle_siren2_1",
-	Title = "Tone 1",
+	Title = "Tone 1 (Siren 2)",
 	Category = "Siren #2",
 	Description = "Toggles secondary siren tone #1 (T1).",
 	OnPress = {
@@ -341,7 +341,7 @@ Photon2.RegisterCommand({
 
 Photon2.RegisterCommand({
 	Name = "toggle_siren2_2",
-	Title = "Tone 2",
+	Title = "Tone 2 (Siren 2)",
 	Category = "Siren #2",
 	Description = "Toggles siren tone #2 (T2).",
 	OnPress = {
@@ -355,7 +355,7 @@ Photon2.RegisterCommand({
 
 Photon2.RegisterCommand({
 	Name = "toggle_siren2_3",
-	Title = "Tone 3",
+	Title = "Tone 3 (Siren 2)",
 	Category = "Siren #2",
 	Description = "Toggles secondary siren tone #3 (T3).",
 	OnPress = {
@@ -369,7 +369,7 @@ Photon2.RegisterCommand({
 
 Photon2.RegisterCommand({
 	Name = "toggle_siren2_4",
-	Title = "Tone 4",
+	Title = "Tone 4 (Siren 2)",
 	Category = "Siren #2",
 	Description = "Toggles secondary siren tone #4 (T4).",
 	OnPress = {

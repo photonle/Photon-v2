@@ -14,6 +14,7 @@ function PANEL:Init()
 	-- These are Lua side commands
 	-- Defined above using AccessorFunc
 	--
+	
 	self:SetDrawBorder( true )
 	self:SetPaintBackground( true )
 
@@ -112,7 +113,9 @@ function PANEL:PerformLayout()
 
 	elseif (IsValid(self.m_Icon)) then
 		self.m_Icon:SetPos( 4, ( self:GetTall() - self.m_Icon:GetTall() ) * 0.5 )
+		-- self:SetTextInset( 8, 0 )
 		self:SetTextInset( self.m_Icon:GetWide(), 0 )
+		self:SetContentAlignment( 5 )
 	end
 
 	DLabel.PerformLayout( self )

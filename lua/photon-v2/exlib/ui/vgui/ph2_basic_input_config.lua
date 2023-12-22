@@ -23,6 +23,7 @@ function PANEL:DoSave( postSaveFunc )
 		return this:DoSaveAs( postSaveFunc )
 	end
 	Photon2.Library.InputConfigurations:SaveToDataAndRegister( this.WorkingCopy )
+	self:LoadInputConfiguration( this.WorkingCopy.Name )
 	if ( isfunction( postSaveFunc ) ) then postSaveFunc() end
 end
 
@@ -57,89 +58,9 @@ function PANEL:Init()
 	self:SetTitle("Input Configuration - Photon 2")
 	self:SetMinWidth( 352 )
 	self:SetMinHeight( 340 )
-	local menubar = self:GetOrBuildMenuBar()
 	
-	local fileMenu = menubar:AddMenu("File")
+	self:Setup()
 	
-	fileMenu:AddOption("New Profile", function()
-		this:RunSaveCheck( function()
-			this:LoadInputConfiguration( Photon2.Library.InputConfigurations:GetNew(), false )
-		end)
-	end)
-
-	fileMenu:AddSpacer()
-	fileMenu:AddOption("Open Profile...", function()
-		this:RunSaveCheck( function()
-			this:ShowOpenBrowser()
-		end)
-	end)
-	
-	fileMenu:AddSpacer()
-	fileMenu:AddOption("Save", function()
-		this:DoSave()
-		-- if ( not this.WorkingCopy ) then return end
-		-- if ( this.WorkingCopy and not this.WorkingCopy.Name ) then 
-		-- 	this:ShowSaveBrowser()
-		-- end
-	end)
-	
-	fileMenu:AddOption("Save As...", function()
-		this:DoSaveAs()
-	end)
-	
-	fileMenu:AddSpacer()
-	fileMenu:AddOption("Close", function()
-		this:Remove()
-	end)
-
-	local viewMenu = menubar:AddMenu("View")
-	viewMenu:AddOption("Commands", function()
-	
-	end)
-	viewMenu:AddOption("Keys and Buttons", function()
-	
-	end)
-
-	local helpMenu = menubar:AddMenu("Help")
-	helpMenu:AddOption("Open Documentation", function()
-	
-	end)
-
-
-	---@type EXDListView
-	local listView = vgui.Create( "EXDListView", self )
-	local catColumn = listView:AddColumn( "Category" )
-	catColumn:SetMaxWidth(96)
-	catColumn:SetMinWidth(96)
-	local cmdColumn = listView:AddColumn( "Command" )
-	cmdColumn:SetMaxWidth(160)
-	cmdColumn:SetMinWidth(128)
-	local keyColumn = listView:AddColumn( "Key(s)" )
-	keyColumn:SetMinWidth(128)
-
-	listView:DockMargin( 4, 4, 4, 4 )
-	listView:Dock( FILL )
-	listView:SetMultiSelect( false )
-	listView:SetDataHeight( 20 )
-
-	function listView:OnRowSelected( lineId, line )
-		this:SetEditPanel( line.CommandData )
-	end
-
-	this.CommandList = listView
-
-
-
-	self:SetMetaPanel(nil)
-
-	local editPanel = vgui.Create( "DPanel", self )
-	editPanel:DockMargin( 4, 0, 4, 4 )
-	-- why 8???
-	editPanel:DockPadding( 8, 4, 4, 4 )
-	editPanel:SetHeight( 128 )
-	editPanel:Dock( BOTTOM )
-	self.EditPanel = editPanel
-
 	self:MakePopup()
 	self:SetKeyBoardInputEnabled( false )
 end
@@ -170,8 +91,9 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 
 	local byCommand = {}
 
-
 	self:SetMetaPanel( inputConfig )
+	self:SetEditPanel( nil )
+	self:SetButtonsPanel( inputConfig )
 
 	for key, commands in pairs( inputConfig.Binds ) do
 		for i, data in ipairs( commands ) do
@@ -215,6 +137,7 @@ end
 
 ---@param data PhotonInputConfiguration
 function PANEL:SetMetaPanel( data )
+	local this = self
 	if ( IsValid( self.MetaPanel ) ) then self.MetaPanel:Remove() end
 
 	---@type Photon2UIFormPanel
@@ -225,6 +148,11 @@ function PANEL:SetMetaPanel( data )
 	metaPanel:DockMargin( 4, 4, 4, 0 )
 	metaPanel:DockPadding( 8, 4, 4, 4 )
 	metaPanel:SetPaintBackground( false )
+	
+	function metaPanel:OnPropertyChanged( name, value )
+		this:SetProperty( name, value )
+	end
+
 	self.MetaPanel = metaPanel
 
 	if ( not data ) then 
@@ -236,13 +164,13 @@ function PANEL:SetMetaPanel( data )
 	self.MetaPanelData = data
 
 	
+	
 	local panel = self.MetaPanel
 
 	panel:CreateTextEntryProperty( "Title", "Title", data.Title )
 	panel:CreateTextEntryProperty( "Author", "Author", data.Author )
 	panel:CreateLibraryEntryProperty( "Inherit", "Inherit", data.Inherit )
 
-	print("PANEL SHOULD BE VISIBLE")
 	self.MetaPanel:SetHeight( 106 )
 
 	self:InvalidateLayout( false )
@@ -283,6 +211,16 @@ function PANEL:ShowSaveBrowser( postSaveFunc )
 		window:Close()
 		if ( isfunction( postSaveFunc ) ) then postSaveFunc() end
 	end
+	if ( self.WorkingCopy and self.WorkingCopy.Name ) then
+		window:PreFillSelection( self.WorkingCopy.Name )
+	end
+end
+
+function PANEL:SetProperty( key, value )
+	if ( not self.WorkingCopy ) then return end
+	if ( self.WorkingCopy[key] == value ) then return end
+	self.WorkingCopy[key] = value
+	self:MarkUnsaved()
 end
 
 function PANEL:ShowKeyEditor()
@@ -320,10 +258,30 @@ function PANEL:ShowKeyEditor()
 	priLabel:SetPos( 8, 32 )
 end
 
+function PANEL:Setup()
+	self:SetupMenuBar()
+	self:SetMetaPanel(nil)
+	self:SetupCommandsPanel()
+	self:SetupButtonsPanel()
+
+	if ( IsValid( self.PropertySheet ) ) then self.PropertySheet:Remove() end
+
+	local propertySheet  = vgui.Create( "DPropertySheet", self )
+	propertySheet:Dock( FILL )
+	propertySheet:DockMargin( 4, 0, 4, 4 )
+	propertySheet:SetPadding( 1 )
+	propertySheet:AddSheet( "Buttons", self.ButtonsPanel )
+	propertySheet:AddSheet( "Commands", self.CommandPanel )
+	self.PropertySheet = propertySheet
+	-- function propertySheet:OnActiveTabChanged
+end
+
 function PANEL:PreAutoRefresh()
 end
 
 function PANEL:PostAutoRefresh()
+	self:Setup()
+
 	self.WorkingCopy = self.WorkingCopy or "default"
 	self:LoadInputConfiguration( self.WorkingCopy )
 end 
@@ -335,15 +293,309 @@ end
 
 function PANEL:MarkSaved()
 	self:SetTitlePrefix("")
-	self.WorkingCopy.Saved = true
+	self.WorkingCopy.Unsaved = nil
 end
 
+function PANEL:SetupCommandsPanel()
+	local this = self
+	if ( IsValid( self.CommandPanel ) ) then self.CommandPanel:Remove() end
+
+	local panel = vgui.Create( "DPanel", self )
+	self.CommandPanel = panel
+
+	panel:SetPaintBackground( false )
+	---@type EXDListView
+	local listView = vgui.Create( "EXDListView", panel )
+	local catColumn = listView:AddColumn( "Category" )
+	catColumn:SetMaxWidth(96)
+	catColumn:SetMinWidth(96)
+	local cmdColumn = listView:AddColumn( "Command" )
+	cmdColumn:SetMaxWidth(160)
+	cmdColumn:SetMinWidth(128)
+	local keyColumn = listView:AddColumn( "Button(s)" )
+	keyColumn:SetMinWidth(128)
+
+	listView:DockMargin( 4, 4, 4, 4 )
+	listView:Dock( FILL )
+	listView:SetMultiSelect( false )
+	listView:SetDataHeight( 20 )
+
+	function listView:OnRowSelected( lineId, line )
+		this:SetEditPanel( line.CommandData )
+	end
+
+	this.CommandList = listView
+
+	local editPanel = vgui.Create( "DPanel", panel )
+	-- why 8???
+	editPanel:DockPadding( 8, 4, 4, 4 )
+	editPanel:SetHeight( 0 )
+	editPanel:Dock( BOTTOM )
+
+	self.EditPanel = editPanel
+
+end
+
+function PANEL:SetupButtonsPanel()
+	if ( IsValid( self.ButtonsPanel ) ) then self.ButtonsPanel:Remove() end
+
+	local panel = vgui.Create( "DPanel", self )
+	panel:SetPaintBackground( false )
+	self.ButtonsPanel = panel
+
+	local divider = vgui.Create( "EXDHorizontalDivider", panel )
+	divider:Dock( FILL )
+	divider:SetDividerWidth( 4 )
+	divider:SetLeftMin( 140 )
+
+	local left = vgui.Create( "DPanel", panel )
+	left :SetPaintBackground( false )
+	divider:SetLeft( left )
+
+	local right = vgui.Create( "DScrollPanel", panel )
+	right:SetPaintBackground( false )
+	divider:SetRight( right )
+
+	local buttonPanel = vgui.Create( "DPanel", right )
+	buttonPanel:Dock( TOP )
+	buttonPanel:SetHeight( 90 )
+	buttonPanel:DockMargin( 0, 36, 4, 4 )
+	self.SelectedButtonPanel = buttonPanel
+
+	local commandPanel = vgui.Create( "DPanel", right )
+	commandPanel:Dock( TOP )
+	commandPanel:SetHeight( 128 )
+	commandPanel:DockMargin( 0, 4, 4, 4 )
+	self.SelectedCommandPanel = commandPanel
+	
+	local modifierPanel = vgui.Create( "DPanel", right )
+	modifierPanel:Dock( TOP )
+	modifierPanel:SetHeight( 0 )
+	modifierPanel:DockMargin( 0, 4, 4, 4 )
+	self.SelectedModifierPanel = modifierPanel
+
+	local tree = vgui.Create( "EXDTree", left )
+	tree:SetLineHeight( 22 )
+	tree:Dock( FILL )
+	tree:DockMargin( 4, 4, 4, 4 )
+	self.ButtonsTree = tree
+
+	local newCommandButton = vgui.Create( "EXDButton", left )
+	newCommandButton:Dock( TOP )
+	newCommandButton:SetHeight( 24 )
+	newCommandButton:SetText( "    Add Key/Button..." )
+	newCommandButton:SetIcon( "plus-box" )
+	newCommandButton:DockMargin( 4, 8, 4, 0 )
+	newCommandButton:SetTextInset( -60, 0 )
+	function newCommandButton:DoClick()
+		Photon2.UI.DialogBox.ButtonInput( "Bind...", 
+		function()
+
+		end)
+	end
+end
+
+function PANEL:SetButtonsPanel( config )
+	local tree = self.ButtonsTree
+	if ( not IsValid( tree ) ) then return end
+	tree:Clear()
+
+	local bindTree = {}
+
+	for key, commands in pairs( config.Binds ) do
+		local keyName = input.GetKeyName(key)
+		local icon = Photon2.UI.FindInputIcon( keyName )
+		local keyNode = tree:AddNode( keyName, icon )
+		keyNode.InputConfigurationLevel = "BUTTON"
+		keyNode.InputConfigurationLevelIndex = key
+		bindTree[key] = bindTree[key] or {}
+		for i, command in ipairs( commands ) do
+			local commandData = Photon2.Library.Commands:Get( command.Command )
+			local commandNode = keyNode:AddNode( commandData.Title .. " (" .. commandData.Category .. ")", "console-line" )
+			commandNode.InputConfigurationLevel = "COMMAND"
+			commandNode.InputConfigurationLevelIndex = i
+			if ( command.Modifiers ) then
+				for i, modifier in ipairs( command.Modifiers ) do
+					local modifierNode = commandNode:AddNode( input.GetKeyName( modifier ), "keyboard" )
+					modifierNode.InputConfigurationLevelIndex = i
+					modifierNode.InputConfigurationLevel = "MODIFIER"
+					print( modifierNode:GetParentNode().CommandIndex )
+				end
+			end
+		end
+	end
+
+	function tree:OnNodeSelected( node )
+		local levels = { "BUTTON", "COMMAND", "MODIFIER" }
+		print( "node type: " .. tostring( node.InputConfigurationLevel ), "id: " .. tostring( node.InputConfigurationLevelIndex ))
+		local searching = true
+		local resultTree = {}
+		local result = {}
+		local currentNode = node
+		while ( searching ) do
+			resultTree[#resultTree+1] = currentNode.InputConfigurationLevelIndex
+			if ( currentNode and currentNode.GetParentNoded and currentNode:GetParentNode() ) then
+				currentNode = currentNode:GetParentNode()
+			else
+				searching = false
+			end
+		end
+		resultTree = table.Reverse( resultTree )
+		for i=1, 3 do
+			result[i] = levels[i]
+		end
+		PrintTable( result )
+	end
+
+	self:SetSelectedButton( )
+	self:SetSelectedCommand( )
+	self:SetSelectedModifier( )
+end
+
+function PANEL:BuildActionsSection( parent, title, height )
+	
+	parent:Clear()
+	parent:SetPaintBackground( false )
+	parent:SetHeight( height )
+	
+	local titleLabel = vgui.Create( "DLabel", parent )
+	titleLabel:Dock( TOP )
+	titleLabel:SetText( title )
+	titleLabel:SetContentAlignment( 7 )
+	titleLabel:SetHeight( 20 )
+
+	local container = vgui.Create( "DPanel", parent )
+	container:Dock( FILL )
+
+	local left = vgui.Create( "DPanel", container )
+	left:Dock( FILL )
+	left:SetPaintBackground( false )
+	left:DockPadding( 8, 8, 8, 8 )
+
+	local right = vgui.Create( "DPanel", container )
+	right:Dock( RIGHT )
+	right:SetWidth( 150 )
+	right:DockPadding( 8, 8, 8, 8 )
+	right:SetPaintBackground( false )
+
+	return {
+		Title = titleLabel,
+		Container = container,
+		Left = left,
+		Right = right,
+		AddButton = function( btnLabel, btnIcon, onBtnClick )
+			local button = vgui.Create( "EXDButton", right )
+			button:Dock( TOP )
+			button:DockMargin( 0, 0, 0, 4 )
+			button:SetText( btnLabel )
+			button:SetIcon( btnIcon )
+			button.DoClick = onBtnClick
+			return button
+		end
+	}
+end
+
+---@param btn number Input button.
+function PANEL:SetSelectedButton( btn )
+	local panel = self.SelectedButtonPanel
+	local section = self:BuildActionsSection( panel, "Key / Button", 110 )
+	local addButton = section.AddButton( "Add a Command...", "plus-box-multiple-outline" )
+	local clearButton = section.AddButton( "Clear All Commands", "eraser" )
+	local deleteButton = section.AddButton( "Delete Key / Button", "delete-outline" )
+end
+
+function PANEL:SetSelectedCommand( index )
+	local panel = self.SelectedCommandPanel
+	if ( not IsValid( panel ) ) then return end
+	local section = self:BuildActionsSection( panel, "Command", 136 )
+	local swapButton = section.AddButton( "Swap Command...", "swap-horizontal-variant" )
+	local addButton = section.AddButton( "Add a Modifier...", "keyboard" )
+	local clearButton = section.AddButton( "Clear All Modifiers", "eraser" )
+	local deleteButton = section.AddButton( "Remove Command", "close-box-outline" )
+
+	local commandInfo = vgui.Create( "DLabel", section.Left )
+	commandInfo:SetText("Toggle Warning | Emergency\ntoggle_warning")
+	commandInfo:Dock( TOP )
+	commandInfo:SetHeight( 26 )
+	commandInfo:SetContentAlignment( 7 )
+
+end
+
+function PANEL:SetSelectedModifier( index )
+	local panel = self.SelectedModifierPanel
+	if ( not IsValid( panel ) ) then return end
+
+	local section = self:BuildActionsSection( panel, "Modifier Key / Button", 84 )
+	section.AddButton( "Swap Modifier...", "swap-horizontal-variant" )
+	section.AddButton( "Remove Modifier", "close-box-outline" )
+
+
+end
+
+function PANEL:SetupMenuBar()
+	local this = self
+	if ( IsValid( self.MenuBar ) ) then self.MenuBar:Remove() end
+
+	local menubar = self:GetOrBuildMenuBar()
+	
+	local fileMenu = menubar:AddMenu("File")
+	
+	fileMenu:AddOption("New Profile", function()
+		this:RunSaveCheck( function()
+			this:LoadInputConfiguration( Photon2.Library.InputConfigurations:GetNew(), false )
+		end)
+	end)
+
+	fileMenu:AddSpacer()
+	fileMenu:AddOption("Open Profile...", function()
+		this:RunSaveCheck( function()
+			this:ShowOpenBrowser()
+		end)
+	end)
+	
+	fileMenu:AddSpacer()
+	fileMenu:AddOption("Save", function()
+		this:DoSave()
+	end)
+	
+	fileMenu:AddOption("Save As...", function()
+		this:DoSaveAs()
+	end)
+	
+	fileMenu:AddSpacer()
+	fileMenu:AddOption("Close", function()
+		this:RunSaveCheck( function()
+			this:Remove()
+		end )
+	end)
+
+	local viewMenu = menubar:AddMenu("View")
+	viewMenu:AddOption("Commands", function()
+	
+	end)
+	viewMenu:AddOption("Keys and Buttons", function()
+	
+	end)
+
+	local helpMenu = menubar:AddMenu("Help")
+	helpMenu:AddOption("Open Documentation", function()
+	
+	end)
+
+end
 
 function PANEL:SetEditPanel( data )
 	self.EditPanel:Clear()
-	if ( not data ) then return end
+	if ( not data ) then 
+		self.EditPanel:SetHeight( 0 )
+		self.EditPanel:DockMargin( 0, 0, 0, 0 )
+		return end
 	local this = self
+
 	local editPanel = self.EditPanel
+	
+	editPanel:SetHeight( 128 )
+	editPanel:DockMargin( 4, 0, 4, 4 )
 
 	local buttonsPanel = vgui.Create( "DPanel", editPanel )
 	buttonsPanel:DockPadding( 4, 4, 4, 4 )

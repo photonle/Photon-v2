@@ -123,4 +123,9 @@ function Photon2.Util.PrintTableProperties( tbl )
 	print("\nEND   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 end
 
+-- Runs a function if it is indeed a function.
+function Photon2.Run( func )
+	if ( isfunction( func ) ) then func() end
+end
+
 -- PrintTable(Util.ModelMeshes)

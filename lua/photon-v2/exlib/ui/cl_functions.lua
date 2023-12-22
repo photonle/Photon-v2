@@ -199,6 +199,11 @@ function exui.MaterialIcon(name)
 	return exui.MaterialIconsIndex[name] or "?"
 end
 
+function exui.FindIcon( name )
+	if not exui.MaterialIconsIndex then exui.LoadMaterialIconsIndex() end
+	return exui.MaterialIconsIndex[name]
+end
+
 MaterialIcon = exui.MaterialIcon
 
 function EXDermaMenu( parentmenu, parent )

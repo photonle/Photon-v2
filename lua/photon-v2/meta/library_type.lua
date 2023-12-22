@@ -19,6 +19,8 @@ local printf = Photon2.Debug.PrintF
 ---@field EagerLoading? boolean
 ---@field CurrentLoadSource? string (Internal) Establishes where ensuing library entries are (presumably) for any bulk operations.
 ---@field Template? table
+---@field Unsaved? boolean
+---@field ReadOnly? boolean
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -84,6 +86,8 @@ end
 
 -- Saves library entry as a json file in the corresponding folder.
 function meta:SaveToData( data )
+	data.Unsaved = nil
+	data.ReadOnly = nil
 	local json = self:ToJson( data )
 	local path = string.format( "%s%s/%s.json", dataPath, self.Folder, data.Name )
 	file.Write( path, json )
@@ -95,8 +99,10 @@ function meta:SaveToDataAndRegister( data )
 		ErrorNoHaltWithStack( "Attempted to save a library entry with no .Name defined." )
 		return
 	end
+	data.Unsaved = nil
+
 	self:SaveToData( data )
-	self:LoadDataJsonFile( data.Name )
+	self:LoadDataJsonFile( data.Name .. ".json", data )
 end
 
 -- Loads library objects that were created in Lua

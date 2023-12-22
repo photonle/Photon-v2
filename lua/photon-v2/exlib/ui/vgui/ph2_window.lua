@@ -29,9 +29,12 @@ function PANEL:UpdateTitle()
 end
 
 function PANEL:GetOrBuildMenuBar()
-	if ( not self.MenuBar ) then
-		local lp, tp, rp, bp = self:GetDockPadding()
-		self:DockPadding(1, tp - 5, 1, 1)
+	if ( not IsValid(self.MenuBar) ) then
+		if ( not self.DockPaddingModified ) then
+			local lp, tp, rp, bp = self:GetDockPadding()
+			self:DockPadding(1, tp - 5, 1, 1)
+			self.DockPaddingModified = true
+		end
 		local menubar = vgui.Create( "EXDMenuBar", self ) --[[@as EXDMenuBar]]
 		menubar:SetSkin( self:GetSkin().ID )
 		menubar:Dock( TOP )

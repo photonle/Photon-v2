@@ -157,7 +157,7 @@ function PANEL:PopulateEntries()
 			for i=1, #self.ColumnSchema do
 				column = self.ColumnSchema[i]
 				if ( not column.Search ) then continue end
-				propertyValue = string.lower( entry[column.Property] )
+				propertyValue = string.lower( entry[column.Property] or "" )
 				local startPos, endPos, match = string.find(propertyValue, self.SearchFilter, nil, true )
 				-- printf("[%s] ~ [%s] => [%s]", propertyValue, self.SearchFilter, tostring( startPos ~= nil ) )
 				if ( startPos ~= nil ) then
@@ -229,6 +229,11 @@ function PANEL:AttemptSave( value )
 	end
 end
 
+function PANEL:AttemptSelect( value )
+	if ( not self:VerifyOpenEntry( value ) ) then return end
+	self:OnFileConfirmed( value, false )
+end
+
 function PANEL:AttemptOpen( value )
 	local this = self
 	if ( not self:VerifyOpenEntry( value ) ) then return end
@@ -273,6 +278,8 @@ function PANEL:SetupBottom()
 	fileName:Dock( FILL )
 	fileName:DockMargin( 8, 0, 8, 0 )
 	this.FileNameTextBox = fileName
+	this.FileNameTextBox:RequestFocus()
+
 
 	local usedTypes = self.CurrentLibrary:GetUsedSourceTypes()
 
@@ -333,7 +340,7 @@ function PANEL:SetupBottom()
 	else
 		confirmButton:SetText( "Select" )
 		function confirmButton:DoClick()
-			this:AttemptOpen( this.FileNameTextBox:GetText() )
+			this:AttemptSelect( this.FileNameTextBox:GetText() )
 		end
 		cancelButton:SetText( "Close" )
 	end
@@ -401,6 +408,15 @@ function PANEL:Setup( library, mode )
 	self:PopulateEntries()
 
 	self:MakePopup()
+end
+
+-- Sets the file selection text box to the given value and selects the text.
+-- Used for standardized save-as behavior.
+function PANEL:PreFillSelection( name )
+	self.FileNameTextBox:SetText( name )
+	self.FileNameTextBox:RequestFocus()
+	self.FileNameTextBox:SelectAll(true)
+	self.FileNameTextBox:SetCaretPos( string.len(name) )
 end
 
 function PANEL:PostAutoRefresh()

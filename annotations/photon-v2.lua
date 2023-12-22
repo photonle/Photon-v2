@@ -310,3 +310,8 @@ function istable( object ) end
 ---@field IntensityGainFactor? number How quickly intensity increases.
 ---@field IntensityLossFactor? number How quickly intensity decreases.
 ---@field Intensity? number State intensity.
+
+function isfunction( func )
+	if ( func ~= nil ) then return true end
+	return false
+end

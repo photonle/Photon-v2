@@ -226,14 +226,14 @@ function PANEL:Open( x, y, skipanimation, ownerpanel )
 
 	self:SetPos( x, y )
 
-	-- Popup!
-	self:MakePopup()
-
 	-- Make sure it's visible!
 	self:SetVisible( true )
 
 	-- Keep the mouse active while the menu is visible.
 	self:SetKeyboardInputEnabled( false )
+
+	-- Popup!
+	self:MakePopup()
 
 end
 
