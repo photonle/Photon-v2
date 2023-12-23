@@ -7,7 +7,9 @@ Photon2.Library = Photon2.Library or {
 
 	-- New Library system
 	Types = {},
-	Repository = {}
+	Repository = {},
+	---@type PhotonInputConfigurationLibrary
+	InputConfigurations = nil
 }
 
 local library = Photon2.Library
@@ -20,7 +22,7 @@ local vehiclesRoot = "photon-v2/library/vehicles/"
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
 
----@type PhotonLibraryType
+---@class PhotonInputConfigurationLibrary : PhotonLibraryType
 local inputConfigurations = {
 	Name = "InputConfigurations",
 	Folder = "input_configurations",
@@ -44,6 +46,87 @@ local inputConfigurations = {
 	end,
 	DoCompile = function( self, profile )
 		return Photon2.Index.CompileInputConfiguration( profile )
+	end,
+	AddButtonToConfig = function( config, button )
+		config.Binds[button] = config.Binds[button] or {}
+	end,
+	AddCommandToButton = function( config, button, command )
+		config.Binds[button] = config.Binds[button] or {}
+		config.Binds[button][#config.Binds[button]+1] = { Command = command }
+	end,
+	ClearCommandsFromButton = function( config, button )
+		if ( config.Binds[button] ) then
+			config.Binds[button] = {}
+		end
+	end,
+	DeleteButton = function( config, button )
+		config.Binds[button] = nil
+	end,
+	SwapButtonCommand = function( config, button, commandIndex, newCommand )
+		config.Binds[button][commandIndex].Command = newCommand
+	end,
+	AddModifierToCommand = function( config, button, commandIndex, modifier )
+		config.Binds[button][commandIndex].Modifiers = config.Binds[button][commandIndex].Modifiers or {}
+		if ( not table.HasValue( config.Binds[button][commandIndex].Modifiers, modifier ) ) then
+			config.Binds[button][commandIndex].Modifiers[#config.Binds[button][commandIndex].Modifiers+1] = modifier
+		end
+	end,
+	ClearAllModifiers = function( config, button, commandIndex )
+		config.Binds[button][commandIndex].Modifiers = nil
+	end,
+	RemoveCommandFromButton = function( config, button, commandIndex )
+		table.remove( config.Binds[button], commandIndex )
+	end,
+	SwapCommandModifier = function( config, button, commandIndex, modifierIndex, newModifier )
+		config.Binds[button][commandIndex].Modifiers[modifierIndex] = newModifier
+	end,
+	RemoveCommandModifier = function( config, button, commandIndex, modifierIndex )
+		if ( #config.Binds[button][commandIndex].Modifiers == 1 ) then
+			return inputConfigurations.ClearAllModifiers( config, button, commandIndex )
+		end
+		table.remove( config.Binds[button][commandIndex].Modifiers, modifierIndex )
+	end,
+	BuildBasicCommandMap = function( config )
+		local result = {}
+		for key, commands in pairs( config.Binds ) do
+			for i, commandEntry in ipairs( commands ) do
+				result[commandEntry.Command] = result[commandEntry.Command] or {}
+				result[commandEntry.Command][#result[commandEntry.Command]+1] = {
+					Key = key,
+					Index = i
+				}
+			end
+		end
+		return result
+	end,
+	-- Removes the specified command from every key it's referenced in
+	ClearCommandFromAll = function( config, command )
+		local map = inputConfigurations.BuildBasicCommandMap( config )
+		if not ( map[command] ) then return end
+		for i, assignment in pairs( map[command] ) do
+			inputConfigurations.RemoveCommandFromButton( config, assignment.Key, assignment.Index )
+		end
+	end,
+	-- For basic configuration. Erases command references from other keys and assigns to the specified key.
+	AssignCommandToButtonBasic = function( config, button, command, modifier )
+		inputConfigurations.ClearBasicCommandButton( config, button, command )
+		-- local map = inputConfigurations.BuildBasicCommandMap( config )
+		config[button] = config[button] or {}
+		config[button][#config[button]+1] = {
+			Command = command,
+			Modifiers = modifier
+		}
+	end,
+	-- Returns the default key and modifier of a command (if it exists)
+	GetDefaultButtonsForCommand = function( command )
+		local default = Photon2.Library.InputConfigurations.Get("default")
+		local map = inputConfigurations.BuildBasicCommandMap( default )
+		if not map[command] then return nil, nil end
+		local defaultCommandLocation = map[command][1]
+		local modifiers = default.Binds[defaultCommandLocation.Key][defaultCommandLocation.Index].Modifiers
+		local modifier
+		if ( modifiers ) then modifier = modifiers[1] end
+		return defaultCommandLocation.Key, modifier
 	end
 	-- LoadFile = function
 }

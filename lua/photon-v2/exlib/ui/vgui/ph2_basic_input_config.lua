@@ -63,6 +63,8 @@ function PANEL:Init()
 	
 	self:MakePopup()
 	self:SetKeyBoardInputEnabled( false )
+
+	self.SelectedButtonNodes = {}
 end
 
 function PANEL:LoadInputConfiguration( inputConfig, asNew )
@@ -176,6 +178,15 @@ function PANEL:SetMetaPanel( data )
 	self:InvalidateLayout( false )
 end
 
+function PANEL:ShowCommandSelectionBrowser( onSelected )
+	local this = self
+	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
+	window:Setup( "Commands", "SELECT" )
+	function window:OnFileConfirmed( entryName )
+		if ( isfunction( onSelected ) ) then onSelected( entryName ) end
+	end
+end
+
 function PANEL:ShowBrowser()
 	local this = self
 	local window = vgui.Create( "Photon2UILibraryBrowser", self:GetParent() )
@@ -221,41 +232,6 @@ function PANEL:SetProperty( key, value )
 	if ( self.WorkingCopy[key] == value ) then return end
 	self.WorkingCopy[key] = value
 	self:MarkUnsaved()
-end
-
-function PANEL:ShowKeyEditor()
-	local this = self
-	local dialog = vgui.Create( "Photon2UIWindow", self )
-	-- dialog:SetSkin("PhotonStudio")
-	dialog:SetTitle("Edit Key")
-	dialog:SetIcon("photon/ui/photon_2_icon_16.png")
-	dialog:SetSize( 300, 200 )
-	dialog:SetScreenLock( true )
-	local parentX, parentY = this:GetPos()
-	dialog:Center()
-	local dialogX, dialogY = dialog:GetPos()
-	-- dialog:SetX( dialog:GetX() )
-	dialog:MakePopup()
-	dialog:DoModal()
-	-- print( "local", tostring(dialog:GetX() ) )
-	-- print( "parent", tostring(this:GetX() ) )
-	dialog:SetX( parentX + dialogX )
-	dialog:SetY( parentY + dialogY )
-	self:SetMouseInputEnabled( false )
-
-	function dialog:OnFocusChanged( gained )
-		if ( not gained ) then
-			dialog:Remove()
-		end
-	end
-
-	function dialog:OnRemove()
-		this:SetMouseInputEnabled( true )
-	end
-
-	local priLabel = vgui.Create( "DLabel", dialog )
-	priLabel:SetText( "Primary:" )
-	priLabel:SetPos( 8, 32 )
 end
 
 function PANEL:Setup()
@@ -337,6 +313,7 @@ function PANEL:SetupCommandsPanel()
 end
 
 function PANEL:SetupButtonsPanel()
+	local this = self
 	if ( IsValid( self.ButtonsPanel ) ) then self.ButtonsPanel:Remove() end
 
 	local panel = vgui.Create( "DPanel", self )
@@ -389,35 +366,48 @@ function PANEL:SetupButtonsPanel()
 	newCommandButton:SetTextInset( -60, 0 )
 	function newCommandButton:DoClick()
 		Photon2.UI.DialogBox.ButtonInput( "Bind...", 
-		function()
-
+		function( key )
+			Photon2.Library.InputConfigurations.AddButtonToConfig( this.WorkingCopy, key )
+			this.WorkingCopy.Binds[key] = this.WorkingCopy.Binds[key] or {}
+			this.SelectedButtonNodes = { key }
+			this:PushWorkingCopyChange()
 		end)
 	end
 end
 
 function PANEL:SetButtonsPanel( config )
+	local this = self
 	local tree = self.ButtonsTree
 	if ( not IsValid( tree ) ) then return end
 	tree:Clear()
-
-	local bindTree = {}
-
-	for key, commands in pairs( config.Binds ) do
+	tree.KeyNodeMap = {}
+	function tree:AddButtonNode( key )
 		local keyName = input.GetKeyName(key)
 		local icon = Photon2.UI.FindInputIcon( keyName )
 		local keyNode = tree:AddNode( keyName, icon )
 		keyNode.InputConfigurationLevel = "BUTTON"
-		keyNode.InputConfigurationLevelIndex = key
-		bindTree[key] = bindTree[key] or {}
-		for i, command in ipairs( commands ) do
-			local commandData = Photon2.Library.Commands:Get( command.Command )
-			local commandNode = keyNode:AddNode( commandData.Title .. " (" .. commandData.Category .. ")", "console-line" )
-			commandNode.InputConfigurationLevel = "COMMAND"
-			commandNode.InputConfigurationLevelIndex = i
+		keyNode.InputConfigurationLevelIndex = { key }
+		tree.KeyNodeMap[key] = keyNode
+		return keyNode
+	end
+
+	function tree:AddCommandNode( key, commandIndex, command )
+		local keyNode = tree.KeyNodeMap[key]
+		local commandData = Photon2.Library.Commands:Get( command.Command )
+		local commandNode = keyNode:AddNode( commandData.Title .. " (" .. commandData.Category .. ")", "console-line" )
+		commandNode.InputConfigurationLevel = "COMMAND"
+		commandNode.InputConfigurationLevelIndex = { key, commandIndex }
+		return commandNode
+	end
+
+	for key, commands in SortedPairs( config.Binds ) do
+		local keyNode = tree:AddButtonNode( key )
+		for commandIndex, command in ipairs( commands ) do
+			local commandNode = tree:AddCommandNode( key, commandIndex, command )
 			if ( command.Modifiers ) then
-				for i, modifier in ipairs( command.Modifiers ) do
+				for modifierIndex, modifier in ipairs( command.Modifiers ) do
 					local modifierNode = commandNode:AddNode( input.GetKeyName( modifier ), "keyboard" )
-					modifierNode.InputConfigurationLevelIndex = i
+					modifierNode.InputConfigurationLevelIndex = { key, commandIndex, modifierIndex}
 					modifierNode.InputConfigurationLevel = "MODIFIER"
 					print( modifierNode:GetParentNode().CommandIndex )
 				end
@@ -427,7 +417,8 @@ function PANEL:SetButtonsPanel( config )
 
 	function tree:OnNodeSelected( node )
 		local levels = { "BUTTON", "COMMAND", "MODIFIER" }
-		print( "node type: " .. tostring( node.InputConfigurationLevel ), "id: " .. tostring( node.InputConfigurationLevelIndex ))
+		local index = node.InputConfigurationLevelIndex
+		-- print( "node type: " .. tostring( node.InputConfigurationLevel ), "id: " .. tostring( node.InputConfigurationLevelIndex ))
 		local searching = true
 		local resultTree = {}
 		local result = {}
@@ -444,15 +435,24 @@ function PANEL:SetButtonsPanel( config )
 		for i=1, 3 do
 			result[i] = levels[i]
 		end
-		PrintTable( result )
+		this.SelectedButtonNodes = index
+		this:SetSelectedButton( index[1] )
+		this:SetSelectedCommand( index[1], index[2] )
+		this:SetSelectedModifier( index[1], index[2], index[3] )
+		-- PrintTable( result )
 	end
 
-	self:SetSelectedButton( )
-	self:SetSelectedCommand( )
-	self:SetSelectedModifier( )
+	if ( this.SelectedButtonNodes[1] and tree.KeyNodeMap[this.SelectedButtonNodes[1]]) then
+		tree:SetSelectedItem( tree.KeyNodeMap[this.SelectedButtonNodes[1]] )
+		tree.KeyNodeMap[this.SelectedButtonNodes[1]]:SetExpanded( true )
+	end
+
+	self:SetSelectedButton( self.SelectedButtonNodes[1] )
+	self:SetSelectedCommand( self.SelectedButtonNodes[1], self.SelectedButtonNodes[2] )
+	self:SetSelectedModifier( self.SelectedButtonNodes[1], self.SelectedButtonNodes[2], self.SelectedButtonNodes[3] )
 end
 
-function PANEL:BuildActionsSection( parent, title, height )
+function PANEL:BuildActionsSection( parent, title, height, scrollable )
 	
 	parent:Clear()
 	parent:SetPaintBackground( false )
@@ -467,10 +467,16 @@ function PANEL:BuildActionsSection( parent, title, height )
 	local container = vgui.Create( "DPanel", parent )
 	container:Dock( FILL )
 
-	local left = vgui.Create( "DPanel", container )
+	local left
+	if ( scrollable ) then
+		left = vgui.Create( "DScrollPanel", container )
+	else
+		left = vgui.Create( "DPanel", container )
+	end
 	left:Dock( FILL )
 	left:SetPaintBackground( false )
-	left:DockPadding( 8, 8, 8, 8 )
+	left:DockMargin( 8, 8, 8, 8 )
+	-- left:DockPadding( 8, 8, 8, 8 )
 
 	local right = vgui.Create( "DPanel", container )
 	right:Dock( RIGHT )
@@ -489,47 +495,73 @@ function PANEL:BuildActionsSection( parent, title, height )
 			button:DockMargin( 0, 0, 0, 4 )
 			button:SetText( btnLabel )
 			button:SetIcon( btnIcon )
-			button.DoClick = onBtnClick
+			if ( onBtnClick ) then button.DoClick = onBtnClick end
 			return button
 		end
 	}
 end
 
----@param btn number Input button.
-function PANEL:SetSelectedButton( btn )
+---@param index number Input button.
+function PANEL:SetSelectedButton( index )
+	local this = self
 	local panel = self.SelectedButtonPanel
+	if ( not index ) then panel:Clear(); panel:SetHeight( 0 ); return end
 	local section = self:BuildActionsSection( panel, "Key / Button", 110 )
-	local addButton = section.AddButton( "Add a Command...", "plus-box-multiple-outline" )
+	local addButton = section.AddButton( "Add a Command...", "plus-box-multiple-outline",
+	function()
+			this:ShowCommandSelectionBrowser( function( command ) 
+			Photon2.Library.InputConfigurations.AddCommandToButton( self.WorkingCopy, index, command )
+			this.SelectedButtonNodes = { index, #this.WorkingCopy.Binds[key] }
+			this:PushWorkingCopyChange()
+		end)
+	end)
 	local clearButton = section.AddButton( "Clear All Commands", "eraser" )
 	local deleteButton = section.AddButton( "Delete Key / Button", "delete-outline" )
+	local valueLabel = vgui.Create( "DLabel", section.Left ) 
+	valueLabel:Dock( FILL )
+	valueLabel:SetText( input.GetKeyName( index ) .. " (" .. tostring( index ) .. ")" )
 end
 
-function PANEL:SetSelectedCommand( index )
+function PANEL:SetSelectedCommand( buttonIndex, index )
 	local panel = self.SelectedCommandPanel
 	if ( not IsValid( panel ) ) then return end
-	local section = self:BuildActionsSection( panel, "Command", 136 )
+	if ( not index ) then panel:Clear(); panel:SetHeight( 0 ); return end
+	local commandName = self.WorkingCopy.Binds[buttonIndex][index].Command
+	local section = self:BuildActionsSection( panel, "Command", 136, true )
 	local swapButton = section.AddButton( "Swap Command...", "swap-horizontal-variant" )
 	local addButton = section.AddButton( "Add a Modifier...", "keyboard" )
 	local clearButton = section.AddButton( "Clear All Modifiers", "eraser" )
 	local deleteButton = section.AddButton( "Remove Command", "close-box-outline" )
 
+	local command = Photon2.Library.Commands:Get( commandName )
 	local commandInfo = vgui.Create( "DLabel", section.Left )
-	commandInfo:SetText("Toggle Warning | Emergency\ntoggle_warning")
+	commandInfo:SetText( tostring(commandName) .. " \n\n" .. tostring(command.Title) .. " (" .. command.Category .. ")\n\n" .. command.Description )
 	commandInfo:Dock( TOP )
-	commandInfo:SetHeight( 26 )
+	commandInfo:SetAutoStretchVertical( true )
+	-- commandInfo:SetHeight( 26 )
 	commandInfo:SetContentAlignment( 7 )
-
+	commandInfo:SetWrap( true )
 end
 
-function PANEL:SetSelectedModifier( index )
+-- Reloads the WorkingCopy object to update the UI and flags the entry as unsaved.
+function PANEL:PushWorkingCopyChange()
+	if ( not self.WorkingCopy ) then return end
+	self:LoadInputConfiguration( self.WorkingCopy )
+	self:MarkUnsaved()
+end
+
+function PANEL:SetSelectedModifier( buttonIndex, commandIndex, index )
 	local panel = self.SelectedModifierPanel
 	if ( not IsValid( panel ) ) then return end
-
+	if ( not index ) then panel:Clear(); panel:SetHeight( 0 ); return end
+	local buttonCode = self.WorkingCopy.Binds[buttonIndex][commandIndex].Modifiers[index]
 	local section = self:BuildActionsSection( panel, "Modifier Key / Button", 84 )
 	section.AddButton( "Swap Modifier...", "swap-horizontal-variant" )
 	section.AddButton( "Remove Modifier", "close-box-outline" )
-
-
+	
+	local valueLabel = vgui.Create( "DLabel", section.Left ) 
+	valueLabel:Dock( FILL )
+	valueLabel:SetText( input.GetKeyName( buttonCode ) .. " (" .. tostring( buttonCode ) .. ")" )
 end
 
 function PANEL:SetupMenuBar()
@@ -617,14 +649,6 @@ function PANEL:SetEditPanel( data )
 	resetButton:DockMargin( 0, 0, 0, 8 )
 	resetButton:Dock( TOP )
 	resetButton:SetText( "Reset to Default" )
-	
-	local editButton = vgui.Create( "DButton", buttonsPanel )
-	editButton:DockMargin( 0, 0, 0, 8 )
-	editButton:Dock( TOP )
-	editButton:SetText( "Advanced..." )
-	function editButton:DoClick()
-		this:ShowKeyEditor()
-	end
 
 	local cmdTitleLabel = vgui.Create( "DLabel", editPanel )
 	cmdTitleLabel:Dock( TOP )
