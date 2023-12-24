@@ -82,7 +82,7 @@ local inputConfigurations = {
 	end,
 	RemoveCommandModifier = function( config, button, commandIndex, modifierIndex )
 		if ( #config.Binds[button][commandIndex].Modifiers == 1 ) then
-			return inputConfigurations.ClearAllModifiers( config, button, commandIndex )
+			return Photon2.Library.InputConfigurations.ClearAllModifiers( config, button, commandIndex )
 		end
 		table.remove( config.Binds[button][commandIndex].Modifiers, modifierIndex )
 	end,
@@ -101,26 +101,30 @@ local inputConfigurations = {
 	end,
 	-- Removes the specified command from every key it's referenced in
 	ClearCommandFromAll = function( config, command )
-		local map = inputConfigurations.BuildBasicCommandMap( config )
+		local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( config )
 		if not ( map[command] ) then return end
 		for i, assignment in pairs( map[command] ) do
-			inputConfigurations.RemoveCommandFromButton( config, assignment.Key, assignment.Index )
+			Photon2.Library.InputConfigurations.RemoveCommandFromButton( config, assignment.Key, assignment.Index )
 		end
 	end,
 	-- For basic configuration. Erases command references from other keys and assigns to the specified key.
 	AssignCommandToButtonBasic = function( config, button, command, modifier )
-		inputConfigurations.ClearBasicCommandButton( config, button, command )
-		-- local map = inputConfigurations.BuildBasicCommandMap( config )
-		config[button] = config[button] or {}
-		config[button][#config[button]+1] = {
+		Photon2.Library.InputConfigurations.ClearCommandFromAll( config, command )
+		-- local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( config )
+		config.Binds[button] = config.Binds[button] or {}
+		local modifierTable = nil
+		if ( modifier ) then
+			modifierTable = { modifier }
+		end
+		config.Binds[button][#config.Binds[button]+1] = {
 			Command = command,
-			Modifiers = modifier
+			Modifiers = modifierTable
 		}
 	end,
 	-- Returns the default key and modifier of a command (if it exists)
 	GetDefaultButtonsForCommand = function( command )
 		local default = Photon2.Library.InputConfigurations.Get("default")
-		local map = inputConfigurations.BuildBasicCommandMap( default )
+		local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( default )
 		if not map[command] then return nil, nil end
 		local defaultCommandLocation = map[command][1]
 		local modifiers = default.Binds[defaultCommandLocation.Key][defaultCommandLocation.Index].Modifiers
