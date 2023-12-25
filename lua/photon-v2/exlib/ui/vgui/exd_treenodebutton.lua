@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_treenodebutton.lua")
-
 local class = "EXDTree_Node_Button"
 local base = "EXDButton"
 local PANEL = {}

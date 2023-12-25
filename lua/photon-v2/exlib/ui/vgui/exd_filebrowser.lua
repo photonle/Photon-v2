@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_filebrowser.lua")
-
 local class = "EXDFileBrowser"
 local base = "DFrame"
 local description = "Photon EX Component Browser"

@@ -15,12 +15,10 @@
 	Photon v2 Initialization
 --]]
 
-print( "Initializing Photon 2..." )
-
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.12 (PREVIEW)"
+Photon2.Version = "2.0.13 (BETA)"
 
 --[[
 	Compatability
@@ -29,7 +27,7 @@ Photon2.Version = "2.0.12 (PREVIEW)"
 string.StartsWith = string.StartsWith or string.StartWith
 
 if CLIENT then
-    MsgC( Color(255, 94, 82), "\nP H O ", Color(97, 160, 255), "T O N ", Color(255, 255, 255, 255), " v2\n\n")
+    MsgC( Color(255, 94, 82), "\nP H O ", Color(97, 160, 255), "T O N ", Color(255, 255, 255, 255), "  v" .. Photon2.Version .. "\n\n")
 end
 
 local fol, files, folders = "", nil, nil

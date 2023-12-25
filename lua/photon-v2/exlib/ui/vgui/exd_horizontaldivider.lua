@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_horizontaldivider.lua")
-
 local class = "EXDHorizontalDivider"
 local base = "DPanel"
 local description = "Horizontal Divider"

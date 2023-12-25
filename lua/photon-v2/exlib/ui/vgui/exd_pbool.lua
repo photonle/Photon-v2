@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_pfov.lua")
-
 local class = "EXDPBool"
 local base = "EXDPBase"
 

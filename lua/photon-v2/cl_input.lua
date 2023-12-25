@@ -9,7 +9,7 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	---@type PhotonController | boolean
 	TargetController = false,
 	KeyActivities = { "OnPress", "OnHold", "OnRelease" },
-	ProfileMap = { ["#global"] = "default" }
+	ProfileMap = { ["#global"] = "user" }
 }
 
 local mouseKeys = { 
@@ -146,9 +146,20 @@ function Photon2.ClientInput.ScanPressed()
 end
 hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
 
+function Photon2.ClientInput.Initialize()
+	Photon2.ClientInput.LoadPreferencesFile()
+	if ( not Photon2.Library.InputConfigurations:Get( "user" ) ) then
+		local config = Photon2.Library.InputConfigurations:GetCopy( "default" )
+		config.Name = "user"
+		config.Title = "User"
+		config.Author = LocalPlayer():Nick()
+		Photon2.Library.InputConfigurations:SaveToDataAndRegister( config )
+	end
+end
+
 function Photon2.ClientInput.LoadPreferencesFile()
 	local prefs = util.JSONToTable( file.Read( "photon_v2/user/profile_input_map.json" ) or "" )
-	Photon2.ClientInput.ProfileMap = prefs or { ["#global"] = "default" }
+	Photon2.ClientInput.ProfileMap = prefs or { ["#global"] = "user" }
 end
 
 function Photon2.ClientInput.SavePreferencesFile()
@@ -158,7 +169,7 @@ end
 function Photon2.ClientInput.SetProfilePreference( profileName, configName )
 	Photon2.ClientInput.LoadPreferencesFile()
 	printf( "Setting profile [%s] to use input configuration [%s]", profileName, configName )
-	if ( configName == "default" and profileName ~= "#global" ) then configName = nil end
+	if ( configName == "user" and profileName ~= "#global" ) then configName = nil end
 	Photon2.ClientInput.ProfileMap[profileName] = configName
 	Photon2.ClientInput.SavePreferencesFile()
 	if ( IsValid( Photon2.ClientInput.TargetController ) ) then
@@ -222,7 +233,7 @@ function Photon2.ClientInput.GetProfilePreference( profileName )
 	return Photon2.ClientInput.ProfileMap[profileName] or Photon2.ClientInput.ProfileMap["#global"]
 end
 
-hook.Add( "Initialize", "Photon2.ClientInput:Initialize", Photon2.ClientInput.LoadPreferencesFile )
+hook.Add( "InitPostEntity", "Photon2.ClientInput:Initialize", Photon2.ClientInput.Initialize )
 --[[
 		==== ILLUM ====
 		misc: hold for flood, release for takedown?

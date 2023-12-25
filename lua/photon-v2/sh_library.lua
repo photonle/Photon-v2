@@ -102,14 +102,19 @@ local inputConfigurations = {
 	-- Removes the specified command from every key it's referenced in
 	ClearCommandFromAll = function( config, command )
 		local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( config )
-		if not ( map[command] ) then return end
+		if not ( map[command] ) then 
+			print(string.format("command: %s not in map!", command )); 
+			return end
 		for i, assignment in pairs( map[command] ) do
 			Photon2.Library.InputConfigurations.RemoveCommandFromButton( config, assignment.Key, assignment.Index )
 		end
 	end,
 	-- For basic configuration. Erases command references from other keys and assigns to the specified key.
 	AssignCommandToButtonBasic = function( config, button, command, modifier )
+		if ( ( button ) and ( button < 1 ) ) then button = nil end
+		if ( ( modifier ) and ( modifier < 1 ) ) then modifier = nil end
 		Photon2.Library.InputConfigurations.ClearCommandFromAll( config, command )
+		if ( not button ) then return end
 		-- local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( config )
 		config.Binds[button] = config.Binds[button] or {}
 		local modifierTable = nil
@@ -123,7 +128,7 @@ local inputConfigurations = {
 	end,
 	-- Returns the default key and modifier of a command (if it exists)
 	GetDefaultButtonsForCommand = function( command )
-		local default = Photon2.Library.InputConfigurations.Get("default")
+		local default = Photon2.Library.InputConfigurations:Get("default")
 		local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( default )
 		if not map[command] then return nil, nil end
 		local defaultCommandLocation = map[command][1]
@@ -260,7 +265,7 @@ function Photon2.LoadComponentLibrary( folderPath )
 	for _, fil in pairs( files ) do
 		Photon2.LoadComponentFile( search .. fil )
 	end
-	hook.Call("Photon2.LoadComponentLibrary")
+	hook.Run("Photon2.LoadComponentLibrary")
 	Photon2.Index.ProcessComponentLibrary()
 end
 
@@ -333,7 +338,7 @@ function Photon2.LoadVehicleLibrary( folderPath )
 	end
 	Photon2.Debug.Print("LoadVehicleLibrary hook")
 	
-	hook.Call("Photon2.LoadVehicleLibrary")
+	hook.Run("Photon2.LoadVehicleLibrary")
 	Photon2.Debug.Print("ProcessVehicleLibrary hook called()")
 	Photon2.Index.ProcessVehicleLibrary()
 end
@@ -407,6 +412,7 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	if CLIENT then
 		-- Photon2.ClientInput.SetActiveConfiguration( "default" )
 	end
+	hook.Run( "Photon2.PostInitializeLibrary" )
 end)
 
 ---@param types string[]

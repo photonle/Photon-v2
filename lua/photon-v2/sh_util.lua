@@ -128,4 +128,10 @@ function Photon2.Run( func )
 	if ( isfunction( func ) ) then func() end
 end
 
+function Photon2.Util.GetKeyName( key )
+	local result = input.GetKeyName( key )
+	result = result or "(INVALID)"
+	return result
+end
+
 -- PrintTable(Util.ModelMeshes)

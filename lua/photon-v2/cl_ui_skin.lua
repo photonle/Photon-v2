@@ -367,7 +367,13 @@ function SKIN:PaintFrame( panel, w, h )
 
 		
 	else
-		
+		if ( panel.m_bPaintShadow ) then
+
+			DisableClipping( true )
+			SKIN.tex.Shadow( -4, -4, w+8, h+8 )
+			DisableClipping( false )
+	
+		end
 		self.tex.Window.Normal( 0, 0, w, h )
 
 		-- self.tex.Window.Inactive( 0, 0, w, h )

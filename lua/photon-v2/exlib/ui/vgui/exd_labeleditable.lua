@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_labeleditable.lua")
-
 local class = "EXDLabelEditable"
 local base = "DLabel"
 local description = "Editable label (EX)."

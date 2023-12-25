@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_listview.lua")
-
 local class = "EXDListView"
 local base = "DPanel"
 local description = "Modified version of DListView"

@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_pvector.lua")
-
 local class = "EXDPVector"
 local base = "EXDPBase"
 

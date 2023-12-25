@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_tree.lua")
-
 local class = "EXDTree"
 local base = "DScrollPanel"
 local PANEL = {}

@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_actionbarbutton.lua")
-
 local class = "EXDActionBarButton"
 local base = "DLabel"
 local description = "EX Action Bar Button"

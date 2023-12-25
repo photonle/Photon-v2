@@ -1,6 +1,3 @@
-print("[EX VGUI] exd_menuoption.lua")
-
-
 local class = "EXDMenuOption"
 local base = "EXDButton"
 local PANEL = {}

@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_pcombobox.lua")
-
 local class = "EXDPBase"
 local base = "DLabel"
 local PANEL = {}

@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_pnumber.lua")
-
 local class = "EXDPNumber"
 local base = "EXDPBase"
 

@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_button.lua")
-
 local class = "EXDButton"
 local base = "EXDLabelEditable"
 local PANEL = {}
@@ -66,6 +64,7 @@ function PANEL:SetIcon(name)
 	end
 	if not IsValid(self.m_Icon) then
 		self.m_Icon = vgui.Create("EXDIcon", self)
+		-- self.m_Icon.UpdateColours = self.UpdateColours
 		self.m_Icon:Dock(LEFT)
 		self.m_Icon:SetWidth(24)
 		self.m_Icon:SetMouseInputEnabled(false)
@@ -113,8 +112,11 @@ function PANEL:PerformLayout()
 
 	elseif (IsValid(self.m_Icon)) then
 		self.m_Icon:SetPos( 4, ( self:GetTall() - self.m_Icon:GetTall() ) * 0.5 )
+		if ( self.m_Icon:GetTall() > 24 ) then
+			self.m_Icon:SetWidth( self.m_Icon:GetTall() )
+		end
 		-- self:SetTextInset( 8, 0 )
-		self:SetTextInset( self.m_Icon:GetWide(), 0 )
+		self:SetTextInset( self.m_Icon:GetWide() * 1.5, 0 )
 		self:SetContentAlignment( 5 )
 	end
 

@@ -223,10 +223,12 @@ function meta:DoCompile( data )
 	return data
 end
 
+-- Not implemented
 function meta:SetupInheritance( data )
-
+	
 end
 
+-- Not implemented
 function meta:DoParentInheritance()
 
 end

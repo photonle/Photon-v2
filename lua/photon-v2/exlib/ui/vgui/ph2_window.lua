@@ -56,6 +56,16 @@ function PANEL:Init()
 	hook.Add( "OnTextEntryLoseFocus", self, function( panel) 
 		self:EndKeyFocus( panel )
 	end )
+
+	local this = self
+	function self.btnClose:DoClick()
+		this:DoClose()
+	end
+	self:SetPaintShadow( true )
+end
+
+function PANEL:DoClose()
+	self:Close()
 end
 
 function PANEL:StartKeyFocus( panel )

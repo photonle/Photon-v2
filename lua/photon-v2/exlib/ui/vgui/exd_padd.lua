@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_padd.lua")
-
 local class = "EXDPAdd"
 local base = "DLabel"
 

@@ -1,6 +1,3 @@
-
-print("[EX VGUI] exd_numwang.lua")
-
 local class = "EXDNumberWang"
 local base = "EXDTextEntry"
 local PANEL = {}

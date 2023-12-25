@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_actionbar.lua")
-
 local class = "EXDActionBar"
 local base = "DPanel"
 local description = "EX UI Actionbar"

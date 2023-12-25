@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_iconlabel.lua")
-
 local class = "EXDIconLabel"
 local base = "DLabel"
 local description = "description"

@@ -1,6 +1,6 @@
-local class = "Photon2BasicInputConfig"
+local class = "Photon2UIInputConfiguration"
 local base = "Photon2UIWindow"
----@class Photon2UIBasicInputConfig : Photon2UIWindow
+---@class Photon2UIInputConfiguration : Photon2UIWindow
 ---@field EditPanel Panel
 ---@field CommandList EXDListView
 local PANEL = {}
@@ -65,12 +65,27 @@ function PANEL:Init()
 	self:SetKeyBoardInputEnabled( false )
 
 	self.SelectedButtonNodes = {}
+
+	if ( Photon2.ClientInput.Active.Name ) then
+		local current = Photon2.ClientInput.Active.Name
+		local entry = Photon2.Library.InputConfigurations:Get( current )
+		local asNew = false
+		if ( entry.ReadOnly ) then asNew = true end
+		self:LoadInputConfiguration( Photon2.ClientInput.Active.Name, asNew )
+	else
+		self:LoadInputConfiguration( "user" )
+	end
+
 end
 
 function PANEL:LoadInputConfiguration( inputConfig, asNew )
-
+	local this = self
+	local inputConfigParam = inputConfig
 	if ( isstring( inputConfig ) ) then inputConfig = Photon2.Library.InputConfigurations:GetCopy( inputConfig ) end
-
+	if ( not inputConfig ) then 
+		ErrorNoHaltWithStack( "Failed to load input configuration from: " .. tostring( inputConfigParam ) )
+		return
+	end
 	self.WorkingCopy = inputConfig
 
 	if ( asNew ) then
@@ -94,6 +109,12 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 	local byCommand = {}
 
 	self:SetMetaPanel( inputConfig )
+	if ( inputConfig.Name == "user" ) then
+		self.MetaPanel:SetHeight( 0 )
+	else
+		self.MetaPanel:SetHeight( 128 )
+	end
+
 	self:SetEditPanel( nil )
 	self:SetButtonsPanel( inputConfig )
 
@@ -104,10 +125,10 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 			byCommand[command] = byCommand[command] or {}
 			if ( data.Modifiers ) then
 				for _, keyCode in pairs( data.Modifiers ) do
-					keyString = keyString .. input.GetKeyName( keyCode ) .. " + "
+					keyString = keyString .. Photon2.Util.GetKeyName( keyCode ) .. " + "
 				end
 			end
-			keyString = keyString .. input.GetKeyName( key )
+			keyString = keyString .. Photon2.Util.GetKeyName( key )
 			byCommand[command][#byCommand[command]+1] = {
 				String = keyString,
 				Primary = key,
@@ -117,7 +138,9 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 	end
 
 	Photon2.Library.Commands:CompileAll()
-
+	
+	local commandMap = {}
+	
 	for key, command in SortedPairsByMemberValue( Photon2.Index.Commands, "ExtendedTitle" ) do
 		local keys = ""
 		if ( byCommand[command.Name] ) then
@@ -130,11 +153,20 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 			-- keys = table.concat( byCommand[command.Name].String, ", " )
 		end
 		local line = listView:AddLine( command.Category, command.Title, keys )
+		
 		line.CommandData = {
 			Command = command,
 			Keys = byCommand[command.Name]
 		}
+
+		commandMap[command.Name] = line
 	end
+
+	if ( this.SelectedCommand and commandMap[this.SelectedCommand]) then
+		listView:SelectItem( commandMap[this.SelectedCommand] )
+	end
+
+	self:SetupOptionsPanel()
 end
 
 ---@param data PhotonInputConfiguration
@@ -235,11 +267,56 @@ function PANEL:SetProperty( key, value )
 	self:MarkUnsaved()
 end
 
+function PANEL:SetupBottomSavePanel()
+	local this = self
+	if ( IsValid( self.BottomSavePanel ) ) then self.BottomSavePanel:Remove() end
+	local panel = vgui.Create( "DPanel", self )
+	panel:Dock( BOTTOM )
+	panel:SetHeight( 40 )
+	panel:DockMargin( 4, 0, 4, 4 )
+	panel:DockPadding( 6, 6, 6, 6)
+	panel:SetPaintBackground( false )
+	function panel:Appear()
+		self:SetVisible( true  )
+	end
+	function panel:Disappear()
+		self:SetVisible( false )
+	end
+	self.BottomSavePanel = panel
+
+	local saveButton = vgui.Create( "EXDButton", panel )
+	saveButton:SetIcon( "content-save" )
+	saveButton:Dock( RIGHT )
+	saveButton:SetWidth( 140 )
+	saveButton:SetText( "   Save Changes")
+	saveButton:DockMargin( 8, 0, 0, 0 )
+	function saveButton:DoClick()
+		this:DoSave()
+	end
+
+	local discardButton = vgui.Create( "EXDButton", panel )
+	discardButton:SetIcon( "backspace-outline" )
+	discardButton:Dock( RIGHT )
+	discardButton:SetWidth( 140 )
+	discardButton:SetText( "   Discard Changes")
+	function discardButton:DoClick()
+		if ( this.WorkingCopy and this.WorkingCopy.Name ) then
+			this:LoadInputConfiguration( this.WorkingCopy.Name )
+		else
+			this:LoadInputConfiguration( Photon2.Library.InputConfigurations:GetNew(), false )
+		end
+	end
+
+	panel:SetVisible( false )
+end
+
 function PANEL:Setup()
 	self:SetupMenuBar()
 	self:SetMetaPanel(nil)
 	self:SetupCommandsPanel()
 	self:SetupButtonsPanel()
+	self:SetupBottomSavePanel()
+	self:SetupOptionsPanel()
 
 	if ( IsValid( self.PropertySheet ) ) then self.PropertySheet:Remove() end
 
@@ -247,8 +324,9 @@ function PANEL:Setup()
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 4, 0, 4, 4 )
 	propertySheet:SetPadding( 1 )
-	propertySheet:AddSheet( "Buttons", self.ButtonsPanel )
 	propertySheet:AddSheet( "Commands", self.CommandPanel )
+	propertySheet:AddSheet( "Buttons", self.ButtonsPanel )
+	propertySheet:AddSheet( "Options", self.OptionsPanel )
 	self.PropertySheet = propertySheet
 	-- function propertySheet:OnActiveTabChanged
 end
@@ -259,18 +337,22 @@ end
 function PANEL:PostAutoRefresh()
 	self:Setup()
 
-	self.WorkingCopy = self.WorkingCopy or "default"
-	self:LoadInputConfiguration( self.WorkingCopy )
+	if ( self.WorkingCopy ) then
+		self:LoadInputConfiguration( self.WorkingCopy )
+	end
+	-- self.WorkingCopy = self.WorkingCopy or "default"
 end 
 
 function PANEL:MarkUnsaved()
 	self:SetTitlePrefix( "*" )
 	self.WorkingCopy.Unsaved = true
+	self.BottomSavePanel:Appear()
 end
 
 function PANEL:MarkSaved()
 	self:SetTitlePrefix("")
 	self.WorkingCopy.Unsaved = nil
+	self.BottomSavePanel:Disappear()
 end
 
 function PANEL:SetupCommandsPanel()
@@ -295,9 +377,10 @@ function PANEL:SetupCommandsPanel()
 	listView:DockMargin( 4, 4, 4, 4 )
 	listView:Dock( FILL )
 	listView:SetMultiSelect( false )
-	listView:SetDataHeight( 20 )
+	listView:SetDataHeight( 22 )
 
 	function listView:OnRowSelected( lineId, line )
+		this.SelectedCommand = line.CommandData.Command.Name
 		this:SetEditPanel( line.CommandData )
 	end
 
@@ -336,7 +419,6 @@ function PANEL:SetupButtonsPanel()
 
 	local rightButtons = vgui.Create( "DPanel", right )
 	rightButtons:Dock( BOTTOM )
-	rightButtons:SetHeight( 128 )
 	rightButtons.ButtonPadding = 6
 	rightButtons.ButtonHeight = 24
 	rightButtons:DockMargin( 0, 8, 5, 1 )
@@ -367,14 +449,14 @@ function PANEL:SetupButtonsPanel()
 
 	local buttonPanel = vgui.Create( "DPanel", rightInfo )
 	buttonPanel:Dock( TOP )
-	buttonPanel:SetHeight( 90 )
 	buttonPanel:DockMargin( 0, 36, 4, 4 )
+	buttonPanel:SetHeight( 0 )
 	self.SelectedButtonPanel = buttonPanel
 
 	local commandPanel = vgui.Create( "DPanel", rightInfo )
 	commandPanel:Dock( TOP )
-	commandPanel:SetHeight( 128 )
 	commandPanel:DockMargin( 0, 4, 4, 4 )
+	commandPanel:SetHeight( 0 )
 	self.SelectedCommandPanel = commandPanel
 	
 	local modifierPanel = vgui.Create( "DPanel", rightInfo )
@@ -408,6 +490,59 @@ function PANEL:SetupButtonsPanel()
 	end
 end
 
+function PANEL:SetupOptionsPanel()
+	local this = self
+	local panel
+	if ( IsValid( self.OptionsPanel ) ) then
+		self.OptionsPanel:Clear()
+		panel = self.OptionsPanel
+	else
+		panel = vgui.Create( "DScrollPanel", self )
+		panel:Dock( FILL )
+		panel:DockMargin( 8, 0, 8, 8 )
+		self.OptionsPanel = panel
+	end
+	if ( not self.WorkingCopy ) then return end
+	
+
+	local globalConfigName = tostring( Photon2.ClientInput.GetProfilePreference( "#global" ) )
+
+	local assignGlobalPanel = vgui.Create( "DPanel", panel )
+	assignGlobalPanel:DockPadding( 8, 8, 8, 8 )
+	assignGlobalPanel:Dock( TOP )
+	assignGlobalPanel:SetHeight( 114 )
+
+	local assignGlobalPanelLabel = vgui.Create( "DLabel", assignGlobalPanel )
+	assignGlobalPanelLabel:Dock( TOP )
+	assignGlobalPanelLabel:SetText("Global Configuration: " .. tostring( Photon2.ClientInput.GetProfilePreference( "#global" )))
+	
+	local assignGlobalPanelDescriptor = vgui.Create( "DLabel", assignGlobalPanel )
+	assignGlobalPanelDescriptor:Dock( TOP )
+	assignGlobalPanelDescriptor:SetText( "Vehicles will use your Global configuration unless they've been specifically assigned to something else.")
+	assignGlobalPanelDescriptor:SetWrap( true )
+	assignGlobalPanelDescriptor:SetHeight( 48)
+
+	local assignGlobalPanelButton = vgui.Create( "EXDButton", assignGlobalPanel )
+	assignGlobalPanelButton:Dock( BOTTOM )
+	assignGlobalPanelButton:SetText("Assign This Configuration as Global")
+	
+	function assignGlobalPanelButton:DoClick()
+		if ( not this.WorkingCopy.Name ) then
+			Photon2.UI.DialogBox.UserError("This configuration must be saved before assigning it.")
+			return
+		end
+		Photon2.ClientInput.SetProfilePreference( "#global", this.WorkingCopy.Name )
+		this:SetupOptionsPanel()
+	end
+
+	if ( this.WorkingCopy.Name and ( this.WorkingCopy.Name == globalConfigName ) ) then
+		assignGlobalPanelButton:SetEnabled( false )
+		assignGlobalPanelButton:SetText( "This is the Global Configuration" )
+	end
+	
+	self.OptionsPanel = panel
+end
+
 function PANEL:SetButtonsPanel( config )
 	local this = self
 	this.SelectedButtonNodes = this.SelectedButtonNodes or {}
@@ -417,7 +552,7 @@ function PANEL:SetButtonsPanel( config )
 	tree:Clear()
 	tree.KeyNodeMap = {}
 	function tree:AddButtonNode( key )
-		local keyName = input.GetKeyName(key)
+		local keyName = Photon2.Util.GetKeyName(key)
 		local icon = Photon2.UI.FindInputIcon( keyName )
 		local keyNode = tree:AddNode( keyName, icon )
 		keyNode.InputConfigurationLevel = "BUTTON"
@@ -444,7 +579,7 @@ function PANEL:SetButtonsPanel( config )
 			local commandNode = tree:AddCommandNode( key, commandIndex, command )
 			if ( command.Modifiers ) then
 				for modifierIndex, modifier in ipairs( command.Modifiers ) do
-					local modifierNode = commandNode:AddNode( input.GetKeyName( modifier ), "keyboard" )
+					local modifierNode = commandNode:AddNode( Photon2.Util.GetKeyName( modifier ), "keyboard" )
 					modifierNode.InputConfigurationLevelIndex = { key, commandIndex, modifierIndex}
 					modifierNode.InputConfigurationLevel = "MODIFIER"
 				end
@@ -563,11 +698,11 @@ function PANEL:BuildActionsSectionButtonDisplay( parent, button )
 	local iconPreview = vgui.Create( "EXDIcon", parent )
 	iconPreview:Dock( LEFT )
 	iconPreview:SetWidth( 32 )
-	iconPreview:SetIcon( Photon2.UI.FindInputIcon( input.GetKeyName( button )  ) )
+	iconPreview:SetIcon( Photon2.UI.FindInputIcon( Photon2.Util.GetKeyName( button )  ) )
 	iconPreview:SetContentAlignment( 4 )
 	local valueLabel = vgui.Create( "DLabel", parent ) 
 	valueLabel:Dock( FILL )
-	valueLabel:SetText( "Name: " .. input.GetKeyName( button ) .. "      Input ID: " .. tostring( button ) )
+	valueLabel:SetText( "Name: " .. Photon2.Util.GetKeyName( button ) .. "      Input ID: " .. tostring( button ) )
 	
 end
 
@@ -711,7 +846,7 @@ function PANEL:SetSelectedModifier( buttonIndex, commandIndex, index )
 		function()
 			Photon2.UI.DialogBox.ButtonInput( "Swap modifier button...",
 				function( key )
-					Photon2.Library.InputConfigurations.SwapCommandModifier( this.WorkingCopy, buttonIndex, index, key )
+					Photon2.Library.InputConfigurations.SwapCommandModifier( this.WorkingCopy, buttonIndex, commandIndex, index, key )
 					this.SelectedButtonNodes = { buttonIndex, commandIndex }
 					this:PushWorkingCopyChange()
 				end
@@ -768,24 +903,21 @@ function PANEL:SetupMenuBar()
 	
 	fileMenu:AddSpacer()
 	fileMenu:AddOption("Close", function()
-		this:RunSaveCheck( function()
-			this:Remove()
-		end )
-	end)
-
-	local viewMenu = menubar:AddMenu("View")
-	viewMenu:AddOption("Commands", function()
-	
-	end)
-	viewMenu:AddOption("Keys and Buttons", function()
-	
+		this:DoClose()
 	end)
 
 	local helpMenu = menubar:AddMenu("Help")
 	helpMenu:AddOption("Open Documentation", function()
-	
+		gui.OpenURL( "https://photon.lighting/docs")
 	end)
 
+end
+
+function PANEL:DoClose()
+	local this = self
+	self:RunSaveCheck( function()
+		this:Close()
+	end )
 end
 
 function PANEL:SetEditPanel( data )
@@ -796,6 +928,9 @@ function PANEL:SetEditPanel( data )
 		return end
 	local this = self
 
+	-- print(" EDITPANEL DATA ")
+	-- PrintTable( data )
+
 	local editPanel = self.EditPanel
 	
 	editPanel:SetHeight( 128 )
@@ -804,23 +939,46 @@ function PANEL:SetEditPanel( data )
 	local buttonsPanel = vgui.Create( "DPanel", editPanel )
 	buttonsPanel:DockPadding( 4, 4, 4, 4 )
 	buttonsPanel:SetPaintBackground( false )
-	buttonsPanel:SetWidth( 128 )
+	buttonsPanel:SetWidth( 150 )
 	buttonsPanel:Dock( RIGHT )
 
-	local previewButton = vgui.Create( "DButton", buttonsPanel )
+	local previewButton = vgui.Create( "EXDButton", buttonsPanel )
+	previewButton:SetHeight( 32 )
 	previewButton:DockMargin( 0, 0, 0, 8 )
 	previewButton:Dock( TOP )
 	previewButton:SetText( "Preview" )
+	previewButton:SetIcon( "eye" )
 
-	local clearButton = vgui.Create( "DButton", buttonsPanel )
+	function previewButton:OnMousePressed( keyCode )
+		print("Pressed....", tostring(keyCode))
+	end
+
+	function previewButton:OnMouseReleased( keyCode )
+		print("Released....", tostring(keyCode))
+	end
+
+	local clearButton = vgui.Create( "EXDButton", buttonsPanel )
+	clearButton:SetHeight( 32 )
 	clearButton:DockMargin( 0, 0, 0, 8 )
 	clearButton:Dock( TOP )
 	clearButton:SetText( "Clear" )
+	clearButton:SetIcon( "close-box-outline" )
+	function clearButton:DoClick()
+		Photon2.Library.InputConfigurations.ClearCommandFromAll( this.WorkingCopy, data.Command.Name )
+		this:PushWorkingCopyChange()
+	end
 	
-	local resetButton = vgui.Create( "DButton", buttonsPanel )
+	local resetButton = vgui.Create( "EXDButton", buttonsPanel )
+	resetButton:SetHeight( 32 )
 	resetButton:DockMargin( 0, 0, 0, 8 )
 	resetButton:Dock( TOP )
 	resetButton:SetText( "Reset to Default" )
+	resetButton:SetIcon( "undo-variant" )
+	function resetButton:DoClick()
+		local defaultPrimary, defaultModifier = Photon2.Library.InputConfigurations.GetDefaultButtonsForCommand( data.Command.Name )
+		Photon2.Library.InputConfigurations.AssignCommandToButtonBasic( this.WorkingCopy, defaultPrimary, data.Command.Name, defaultModifier )
+		this:PushWorkingCopyChange()
+	end
 
 	local cmdTitleLabel = vgui.Create( "DLabel", editPanel )
 	cmdTitleLabel:Dock( TOP )
@@ -863,7 +1021,7 @@ function PANEL:SetEditPanel( data )
 	if ( currentPrimary ) then primaryBindButton:SetValue( currentPrimary ) end
 
 	function primaryBindButton:OnChange( num )
-		print( "Primary bind changed to: " .. tostring( input.GetKeyName( num ) or nil ) )
+		-- print( "Primary bind changed to: " .. tostring( Photon2.Util.GetKeyName( num ) or nil ) )
 		Photon2.Library.InputConfigurations.AssignCommandToButtonBasic( this.WorkingCopy, num, data.Command.Name )
 		this:PushWorkingCopyChange()
 	end
@@ -881,7 +1039,7 @@ function PANEL:SetEditPanel( data )
 	if ( currentModifier ) then modifierBindButton:SetValue( currentModifier ) end
 
 	function modifierBindButton:OnChange( num )
-		print( "Primary bind changed to: " .. tostring( ( input.GetKeyName( num ) or nil ) ) )
+		-- print( "Primary bind changed to: " .. tostring( ( Photon2.Util.GetKeyName( num ) or nil ) ) )
 		Photon2.Library.InputConfigurations.AssignCommandToButtonBasic( this.WorkingCopy, currentPrimary, data.Command.Name, num )
 		this:PushWorkingCopyChange()
 	end

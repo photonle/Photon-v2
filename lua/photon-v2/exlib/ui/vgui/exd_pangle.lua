@@ -1,5 +1,3 @@
-print("[EX VGUI] exd_pangle.lua")
-
 local class = "EXDPAngle"
 local base = "EXDPVector"
 

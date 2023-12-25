@@ -9,6 +9,8 @@ function exmeta.Inherit(tbl, base)
 	return r
 end
 
+local print = Photon2.Debug.Print
+
 ---@param obj table
 ---@param key string
 ---@param prototype table|string
@@ -69,7 +71,7 @@ end
 
 function exmeta.LoadFile(filename, tableName, erase)
 	tableName = tableName or "META"
-	print("[EXMeta] Loading file: " .. tostring(filename))
+	-- print("[EXMeta] Loading file: " .. tostring(filename))
 	_NAME, _BASE, _META = NAME, BASE, _G[tableName]
 	NAME, BASE = nil, nil
 	_G[tableName] = {}
@@ -89,14 +91,14 @@ function exmeta.LoadTable(name, base, tbl, erase)
 	-- local copy = table.Copy(tbl)
 	local copy = tbl
 	local meta = FindMetaTable(name)
-	print("Name:", name)
-	print("Base:", base)
+	-- print("Name:", name)
+	-- print("Base:", base)
 	if (meta == nil) or (erase) then
 		meta = exmeta.RegisterMetaTable(name, {}, base)
 	end
 	table.Merge(debug.getregistry()[name], copy)
 	if isstring(base) or istable(base) then
-		print("INHERITING FROM: '" .. tostring(base) .. "'")
+		-- print("INHERITING FROM: '" .. tostring(base) .. "'")
 		meta = exmeta.Inherit(meta, base --[[@as string | table]])
 	else
 		local metaTable = getmetatable( tbl )
@@ -135,7 +137,7 @@ end
 function exmeta.LoadFolder(path, fol, tableName)
 	fol = isstring(fol) and fol .. "/" or "exmeta/"
 	fol = path .. fol
-	print("[EXMeta] Loading folder '" .. tostring(fol) .. "'")
+	-- print("[EXMeta] Loading folder '" .. tostring(fol) .. "'")
 	local files = file.Find(fol .. "sh_*.lua", "LUA")
 	for _, f in pairs(files) do
 		AddCSLuaFile(fol .. f)

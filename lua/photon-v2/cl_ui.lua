@@ -208,17 +208,16 @@ function Photon2.UI.PopulateMenuBar()
 		local menu = Photon2.UI.MenuBar
 		
 
-		local inputConfigOption = menu:AddOption( "Open Input Settings", function()
-			local form = vgui.Create ( "Photon2BasicInputConfig" )
+		local inputConfigOption = menu:AddOption( "Open Input Configuration", function()
+			local form = vgui.Create ( "Photon2UIInputConfiguration" )
 		end)
 
-		local openStudioOption = menu:AddOption("Open Studio", function()
+		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu", function()
+			local form = vgui.Create ( "Photon2UIDesktop" )
+		end)
+
+		local openStudioOption = menu:AddOption("Open Photon Studio", function()
 			Photon2.Studio:Initialize()
-		end)
-
-		local openDialogConfirm = menu:AddOption( "(DEV) Dialog/Confirm", function()
-			local form = vgui.Create( "Photon2UIDialogConfirm" )
-			form:Setup( "Are you sure you want to?" )
 		end)
 
 		local inputProfileOption = menu:AddOption("Input Profiles")
@@ -392,10 +391,22 @@ properties.Add("photon2_equipment", {
 list.Set("DesktopWindows", "Photon2", {
 	title = "Photon 2",
 	icon = "photon/ui/photon_2_icon_64.png",
+	onewindow = true,
 	init = function( icon, window )
-		Photon2.Studio:Setup( window )
+		-- Needs a hacky workaround because the window is a defined Derma panel
+		-- and not just a mutated DFrame.
+		local parent = window:GetParent()
+		window:Remove()
+		if ( IsValid( icon.Photon2Window ) ) then
+			icon.Photon2Window:Center()
+			return
+		end
+		window = parent:Add( "Photon2UIDesktop" )
+		window.ContextParent = parent
+		icon.Photon2Window = window
 	end
 })
+
 
 list.Set("DesktopWindows", "PhotonStudio", {
 	title = "Photon Studio",
