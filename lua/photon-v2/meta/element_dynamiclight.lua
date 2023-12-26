@@ -132,7 +132,7 @@ function Element:DoPreRender()
 		dynamicLight.style = self.Style
 		if ( isangle(self.Angles) ) then
 			-- TODO: unclear if there's any reason to manually override this
-			dynamicLight.dir = Angle[self.Direction]( self.Angles )
+			dynamicLight.dir = Angle()[self.Direction]( self.Angles )
 			dynamicLight.innerangle = self.InnerAngle
 			dynamicLight.outerangle = self.OuterAngle
 		end

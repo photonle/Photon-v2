@@ -510,7 +510,7 @@ end
 
 function ENT:SetupUIComponent( id )
 	local data = self.Equipment.UIComponents[id] --[[@as PhotonVehicleEquipment]]
-	printf("Setting up UI component [%s]", id)
+	-- printf("Setting up UI component [%s]", id)
 	if ( not data ) then
 		error(string.format("Unable to locate equipment UI component ID [%s]", id))
 		return
@@ -525,7 +525,7 @@ end
 ---@param id string
 function ENT:SetupVirtualComponent( id )
 	local data = self.Equipment.VirtualComponents[id] --[[@as PhotonVehicleEquipment]]
-	printf("Setting up virtual component [%s]", id)
+	-- printf("Setting up virtual component [%s]", id)
 	if (not data) then
 		error(string.format("Unable to locate equipment virtual component ID [%s]", id))
 		return
@@ -539,7 +539,7 @@ end
 
 function ENT:SetupProp( id )
 	local data = self.Equipment.Props[id]
-	printf( "Setting up Prop [%s]", id )
+	-- printf( "Setting up Prop [%s]", id )
 	if ( not data ) then
 		error(string.format("Unable to locate prop ID [%s]", id))
 	end
@@ -572,7 +572,7 @@ end
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
-	printf( "Setting up BodyGroup [%s]", id )
+	-- printf( "Setting up BodyGroup [%s]", id )
 	local bodyGroup = data.BodyGroup
 	local value = data.Value
 	if ( isstring( bodyGroup ) ) then bodyGroup = self:GetParent():FindBodygroupByName( bodyGroup ) end
@@ -582,14 +582,14 @@ function ENT:SetupBodyGroup( id )
 		error("Body group [" .. tostring( data.BodyGroup ) .. "] could not be identified.")
 	end
 
-	printf("\tSetting bodygroup [%s] to [%s]", bodyGroup, value )
+	-- printf("\tSetting bodygroup [%s] to [%s]", bodyGroup, value )
 	self:GetParent():SetBodygroup( bodyGroup, value )
 end
 
 function ENT:SetupSubMaterial( id )
 	-- if CLIENT then return end
 	local data = self.Equipment.SubMaterials[id]
-	printf( "Setting up SubMaterial [%s]", id )
+	-- printf( "Setting up SubMaterial [%s]", id )
 	local index = data.Id
 	local material = data.Material
 	self:GetParent():SetSubMaterial( index, material )
@@ -597,7 +597,7 @@ end
 
 function ENT:SetupInteractionSound( id )
 	local data = self.Equipment.InteractionSounds[id]
-	printf( "Setting up interaction sound [%s]", id )
+	-- printf( "Setting up interaction sound [%s]", id )
 	self:SetInteractionSound( data.Class, data.Profile )
 end
 
@@ -609,7 +609,7 @@ function ENT:SetupComponent( id )
 		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
 	end
-	print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
+	-- print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
 	local component = Photon2.Index.Components[data.Component]
@@ -663,7 +663,7 @@ function ENT:RemoveAllProps()
 end
 
 function ENT:RemoveEquipmentComponentByIndex( index )
-	printf("Controller is removing equipment ID [%s]", index)
+	-- printf("Controller is removing equipment ID [%s]", index)
 	if (IsValid(self.Components[index])) then
 		self.Components[index]:Remove()
 	end
@@ -671,7 +671,7 @@ function ENT:RemoveEquipmentComponentByIndex( index )
 end
 
 function ENT:RemoveEquipmentVirtualComponentByIndex( index )
-	printf("Controller is removing virtual component equipment ID [%s]", index)
+	-- printf("Controller is removing virtual component equipment ID [%s]", index)
 	if ( self.VirtualComponents[index] ) then
 		self.VirtualComponents[index]:RemoveVirtual()
 	end
@@ -679,7 +679,7 @@ function ENT:RemoveEquipmentVirtualComponentByIndex( index )
 end
 
 function ENT:RemoveEquipmentUIComponentByIndex( index )
-	printf("Controller is removing UI component equipment ID [%s]", index)
+	-- printf("Controller is removing UI component equipment ID [%s]", index)
 	if ( self.UIComponents[index] ) then
 		self.UIComponents[index]:RemoveVirtual()
 	end
@@ -687,7 +687,7 @@ function ENT:RemoveEquipmentUIComponentByIndex( index )
 end
 
 function ENT:RemoveEquipmentPropByIndex( index )
-	printf("Controller is removing virtual component equipment ID [%s]", index)
+	-- printf("Controller is removing virtual component equipment ID [%s]", index)
 	if ( self.Props[index] ) then
 		self.Props[index]:Remove()
 	end
@@ -728,7 +728,7 @@ end
 
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:RemoveEquipment( equipmentTable )
-	print("Controller is removing an equipment table...")
+	-- print("Controller is removing an equipment table...")
 	for i=1, #equipmentTable.Components do
 		self:RemoveEquipmentComponentByIndex(equipmentTable.Components[i])
 	end
@@ -768,7 +768,7 @@ function ENT:SetupProfile( name, isReload )
 		return
 	end
 	
-	print( string.format( "Setting up %s (%s)...", profile.Title, profile.ID ) )
+	-- print( string.format( "Setting up %s (%s)...", profile.Title, profile.ID ) )
 	
 	self.Equipment = profile.Equipment
 

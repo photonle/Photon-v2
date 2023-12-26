@@ -311,11 +311,11 @@ end
 ---@param controller PhotonController
 ---@return PhotonBaseEntity
 function ENT:CreateClientside( controller )
-	if ( self.RenderGroup ~= nil ) then ErrorNoHalt("RENDER GROUP IS SET: " .. tostring( self.RenderGroup ) ) end
+	-- RenderGroup requires a hacky implementation because it can't be
+	-- set after the entity is created.
 	PHOTON2_ENTITY.RenderGroup = self.RenderGroup or nil
 	local ent = self:Initialize( ents.CreateClientside( "photon_entity" ) --[[@as photon_entity]], controller )
 	PHOTON2_ENTITY.RenderGroup = nil
-	print( "Created RenderGroup = " .. tostring( ent:GetRenderGroup() ) )
 	ent:Setup()
 	return ent
 end

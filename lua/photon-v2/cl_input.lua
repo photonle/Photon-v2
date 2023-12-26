@@ -24,7 +24,7 @@ local printf = Photon2.Debug.PrintF
 
 ---@param controller PhotonController
 function Photon2.ClientInput.SetTargetController( controller )
-	print( "Setting input controller: (" .. tostring( controller ) .. ")" )
+	-- print( "Setting input controller: (" .. tostring( controller ) .. ")" )
 	if IsValid( controller ) then
 		Photon2.ClientInput.TargetController = controller
 		Photon2.ClientInput.SetActiveConfiguration( Photon2.ClientInput.GetProfilePreference( controller:GetProfileName() ) )
