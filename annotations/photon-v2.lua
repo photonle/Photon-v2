@@ -116,7 +116,17 @@ PhotonLibraryType = PhotonLibraryType
 ---@class PhotonLibraryObject
 ---@field LibrarySource PhotonLibrarySource (Internal) `nil` should be assumed as "Lua"
 
----@class PhotonLibraryComponent
+---@class PhotonEquipmentLibraryComponentProperties
+---@field StateMap table<integer, string[]> | string
+---@field Phase string Pattern variant identifier.
+---@field Segments table<string, PhotonLibraryComponentSegment>
+---@field ElementGroups table<string, table<number>>
+---@field ElementStates { SubMat: table, Mesh: table } Light states.
+---@field States table<integer, string> Pre-defined state slots.
+---@field RenderGroup RENDERGROUP
+---@field Inputs table
+
+---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
 ---@field Author string Component author's name.
 ---@field Base string Base component ID if inheriting from an existing component.
 ---@field Credits table<string, string>
@@ -126,16 +136,9 @@ PhotonLibraryType = PhotonLibraryType
 ---@field Model string
 ---@field Templates PhotonLibraryComponentTemplates
 ---@field Elements table<number, PhotonElement2DEntry | PhotonElementBoneEntry | PhotonElementMeshEntry | PhotonElementProjectedEntry | PhotonElementSoundEntry | PhotonElementDynamicEntry | PhotonElementSubEntry | PhotonElementSequenceEntry | PhotonElementVirtualEntry >
----@field ElementGroups table<string, table<number>>
----@field Segments table<string, PhotonLibraryComponentSegment>
----@field Inputs table
 ---@field InputPriorities table<string, number>
 ---@field VirtualOutputs table
----@field StateMap table<integer, string[]> | string
 ---@field SubMaterials table<integer, string>
----@field ElementStates { SubMat: table, Mesh: table } Light states.
----@field Phase string Pattern variant identifier.
----@field States table<integer, string> Pre-defined state slots.
 
 ---@class PhotonLibraryComponentTemplates
 ---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.
@@ -184,13 +187,22 @@ PhotonLibraryType = PhotonLibraryType
 ---@class PhotonSiren : PhotonLibrarySiren
 
 ---@class PhotonEquipmentTable
----@field Components table<integer, PhotonEquipmentComponentEntry>
----@field Props table
----@field BodyGroups table
----@field SubMaterials table
----@field VirtualComponents table
----@field UIComponents table
----@field InteractionSounds table
+-- Photon Components.
+---@field Components? PhotonEquipmentComponentEntry[]
+-- Decorative props.
+---@field Props? PhotonEquipmentPropEntry[]
+-- Body groups.
+---@field BodyGroups? PhotonEquipmentBodyGroupEntry[]
+-- Sub materials.
+---@field SubMaterials? PhotonEquipmentSubMaterialEntry[]
+-- For Photon components that don't create standalone entities.
+---@field VirtualComponents? PhotonEquipmentVirtualComponentEntry[]
+-- For UI components (used for the HUD indicator).
+---@field UIComponents? PhotonEquipmentUIComponentEntry[]
+-- User HUD sounds (i.e. beeps and clicks).
+---@field InteractionSounds? PhotonEquipmentInteractionSoundEntry[]
+
+
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.
@@ -200,22 +212,19 @@ PhotonLibraryType = PhotonLibraryType
 ---@field Option string Selection name.
 ---@field Variants? PhotonVehicleSelectionVariant[]
 
-
 ---@class PhotonVehicleSelectionVariant
 ---@field Variant string
----@field Variants PhotonVehicleEquipment[]
+---@field Variants PhotonEquipmentTable[]
 
----@class PhotonVehicleEquipment
----@field ID string (Internal) Unique per-vehicle identifier.
----@field Component string Component identifier. Cannot be used with `Prop` defined.
----@field Prop string Model path. If set, the model is treated as a static prop. Cannot be used if `Component` is also defined.
----@field BodyGroups table
----@field Position Vector
----@field Angles Angle
----@field Scale number
----@field MoveType MOVETYPE
----@field OnServer boolean -- NOT IMPLEMENTED! (Default = `false`) If true, the component will be spawned on the server instead of just clientside. Do not enable unless you know what you're doing.
----@field FollowBone string|integer Attaches to the specified parent bone and sets the positioning relative to the bone.
+---@class PhotonEquipmentPositional
+
+---@class PhotonEquipmentEntityProperties : PhotonEquipmentEntryProperties
+---@field Position Vector Local position.
+---@field Angles Angle Local angles.
+---@field Scale? number Entity scale.
+---@field SubMaterials? table<integer | string, string>
+---@field BodyGroups? table<string, integer | string>
+---@field PoseParameters? table<string, number>
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>
@@ -233,13 +242,30 @@ PhotonLibraryType = PhotonLibraryType
 ---@field Channel? string
 ---@field Modifiers? table<any>
 
----@class PhotonEquipmentEntry
----@field Name string
----@field Inherit string
+---@class PhotonEquipmentEntryProperties
+---@field Name? string Unique equipment entry name. Only required if you want other entries to inherit from it.
+---@field Inherit? string Name of an equipment entry to inherit from.
 
----@class PhotonEquipmentComponentEntry : PhotonEquipmentEntry, PhotonLibraryComponent
+---@class PhotonEquipmentComponentEntry : PhotonEquipmentEntityProperties, PhotonEquipmentLibraryComponentProperties
 
+---@class PhotonEquipmentVirtualComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
 
+---@class PhotonEquipmentUIComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
+
+---@class PhotonEquipmentPropEntry : PhotonEquipmentEntityProperties
+---@field Model? string Model path. (e.g. `models/my/props/model.mdl`)
+
+---@class PhotonEquipmentBodyGroupEntry : PhotonEquipmentEntryProperties
+---@field BodyGroup string | integer Body group name or index.
+---@field Value string | integer Body group option name or index.
+
+---@class PhotonEquipmentSubMaterialEntry : PhotonEquipmentEntityProperties
+---@field Id string | integer Sub-material name or index to override.
+---@field Material string Material to apply.
+
+---@class PhotonEquipmentInteractionSoundEntry : PhotonEquipmentEntryProperties
+---@field Class "Controller" | "Click" | string Sound type.
+---@field Profile "whelen_cencom" | "code3_z3s" | "fedsig" | "sos_nergy" | string Sound profile name.
 
 ---@class RGB
 ---@field r number Red

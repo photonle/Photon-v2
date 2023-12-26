@@ -5,29 +5,29 @@ local additiveMaterial = Material( "pp/add" )
 local subtractiveMaterial = Material( "pp/sub" )
 
 local storeRenderTarget = render.GetScreenEffectTexture( 0 )
--- local storeRenderTarget = GetRenderTargetEx( "Photon2_RT5", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
-local blurRenderTarget = render.GetScreenEffectTexture( 1 )
--- local blurRenderTarget = GetRenderTargetEx( "Photon2_RT6", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-
--- local storeRenderTarget = render.GetBloomTex0()
--- local blurRenderTarget = render.GetBloomTex1()
-
-local storeRT = GetRenderTargetEx( "Photon2_RT", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-local storeRT2 = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-local bloomTex2 = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
+local rtBloomOuter = GetRenderTargetEx( "Photon2_RT", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
+local rtMeshSource = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
+local rtBloomInner = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
 
 local bloomEnabled = true
 
-local bloomBlur = 5
-local bloomPasses = 2
-local blurPasses = 1
+local additiveDrawMeshSourcePasses = 2
+local additiveDrawBloomOuterPasses = 2
+local additiveDrawBloomInnerPasses = 4
 
-local bloomBlurX = bloomBlur
-local bloomBlurY = bloomBlur
+-- local bloomOuterEnabled		= true
+local bloomOuterBlurPasses 	= 1
+local bloomOuterBlurX 		= 5
+local bloomOuterBlurY 		= bloomOuterBlurX
+
+-- local bloomInnerEnabled		= true
+local bloomInnerBlurPasses 	= 1
+local bloomInnerBlurX		= 1
+local bloomInnerBlurY		= 1
 
 ---@param additive boolean Additive bloom pass.
-function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
+function Photon2.RenderBloom.Render( additive )
 	render.TurnOnToneMapping()
 	local scene = render.GetRenderTarget()
 	render.CopyRenderTargetToTexture( storeRenderTarget )
@@ -52,8 +52,7 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 		render.SetStencilZFailOperation( STENCIL_KEEP )
 
 		Photon2.RenderLightMesh.Render()
-		render.CopyRenderTargetToTexture( storeRT2 )
-
+		render.CopyRenderTargetToTexture( rtMeshSource )
 
 		-- RENDER MESHES
 		Photon2.RenderLightMesh.DrawBloom()
@@ -67,13 +66,12 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 	cam.End3D()
 
 	
-	render.CopyRenderTargetToTexture( blurRenderTarget )
-	render.CopyRenderTargetToTexture( bloomTex2 )
-	-- render.BlurRenderTarget( blurRenderTarget, 0, 0, 0 )
-	render.BlurRenderTarget( blurRenderTarget, blurX, blurY, blurPasses )
-	render.CopyRenderTargetToTexture( storeRT )
+	render.CopyRenderTargetToTexture( rtBloomOuter )
+	render.CopyRenderTargetToTexture( rtBloomInner )
+	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX, bloomOuterBlurY, bloomOuterBlurPasses )
+	render.CopyRenderTargetToTexture( rtBloomOuter )
 	
-	render.BlurRenderTarget( bloomTex2, 1, 1, 1 )
+	render.BlurRenderTarget( rtBloomInner, bloomInnerBlurX, bloomInnerBlurY, bloomInnerBlurPasses )
 
 
 	render.SetRenderTarget( scene )
@@ -108,25 +106,27 @@ function Photon2.RenderBloom.Render( additive, blurX, blurY, passes )
 end
 
 function Photon2.RenderBloom.DrawAdditive()
+
 	
-	render.TurnOnToneMapping()
 
-	additiveMaterial:SetTexture( "$basetexture", storeRT )
+	additiveMaterial:SetTexture( "$basetexture", rtBloomOuter )
 	render.SetMaterial( additiveMaterial )
-	for i=0, bloomPasses do
+	for i=1, additiveDrawBloomOuterPasses do
+		render.DrawScreenQuad()
+	end
+	
+	additiveMaterial:SetTexture( "$basetexture", rtBloomInner )
+	for i=1, additiveDrawBloomInnerPasses do
 		render.DrawScreenQuad()
 	end
 
-	additiveMaterial:SetTexture( "$basetexture", bloomTex2 )
-	for i=0, bloomPasses*2 do
+	additiveMaterial:SetTexture( "$basetexture", rtMeshSource )
+	for i=1, additiveDrawMeshSourcePasses do
 		render.DrawScreenQuad()
 	end
-
-	additiveMaterial:SetTexture( "$basetexture", storeRT2 )
-	render.DrawScreenQuad()
 end
 
 hook.Add( "PreDrawViewModels", "Photon2.RenderBloom:Draw", function( depth, sky )
-	Photon2.RenderBloom.Render( true, bloomBlurX, bloomBlurY, blurPasses )
+	Photon2.RenderBloom.Render( true )
 	Photon2.RenderBloom.DrawAdditive()
 end )
