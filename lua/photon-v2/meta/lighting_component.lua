@@ -194,7 +194,7 @@ function Component.New( name, data )
 		-- Iterate through each template in the light class
 		for templateName, templateData in pairs( templates ) do
 			templateData.Class = lightClassName
-			printf("\t\t\tTemplate name: %s", templateName)
+			-- printf("\t\t\tTemplate name: %s", templateName)
 			-- Throw error on duplicate light template name
 			if ( lightTemplates[templateName] ) then
 				error( string.format( "Light template name [%s] is declared more than once. Each template name must be unique, regardless of its class.", templateName ) )

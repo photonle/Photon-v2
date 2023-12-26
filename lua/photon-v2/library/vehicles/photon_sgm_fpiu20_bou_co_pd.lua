@@ -143,6 +143,7 @@ VEHICLE.Equipment = {
 							forward_hotfeet = 1,
 							alley_hotfeet = 1
 						},
+						-- RenderGroup = RENDERGROUP_OTHER,
 						States = {
 							[1] = "W", [2] = "R", [3] = "W"
 						}

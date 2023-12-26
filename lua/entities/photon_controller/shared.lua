@@ -408,13 +408,13 @@ end
 ---@param actions table Actions to process and execute.
 ---@param press? number Simulated button press state.
 ---@param name? string Generic name of command.
-function ENT:InputUserCommand( actions, key, press, name )
+function ENT:InputUserCommand( actions, press, name )
 	-- any condition in which the server would run this and not the client?
 	-- self:EmitSound( self.Interactions.Sounds.Button )
 	local action
 	for i=1, #actions do
 		action = actions[i].Action
-		print("[" .. tostring( action.Action ) .. "] " .. tostring( action.Channel ) .. "::" .. tostring( action.Value ))
+		-- print("[" .. tostring( action.Action ) .. "] " .. tostring( action.Channel ) .. "::" .. tostring( action.Value ))
 
 		local func = self[self.UserCommands[action.Action]]
 		if ( not isfunction( func ) ) then

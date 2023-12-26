@@ -9,7 +9,9 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	---@type PhotonController | boolean
 	TargetController = false,
 	KeyActivities = { "OnPress", "OnHold", "OnRelease" },
-	ProfileMap = { ["#global"] = "user" }
+	ProfileMap = { ["#global"] = "user" },
+	-- Duration (in seconds) that a key needs to be pressed before the "hold" action is executed.
+	HoldThreshold = 1
 }
 
 local mouseKeys = { 
@@ -19,8 +21,6 @@ local mouseKeys = {
 
 local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
-
-local holdThreshold = 1
 
 ---@param controller PhotonController
 function Photon2.ClientInput.SetTargetController( controller )
@@ -51,12 +51,12 @@ function Photon2.ClientInput.SetActiveConfiguration( name )
 end
 
 
-function Photon2.ClientInput.ExecuteActions( actions, key, press )
+function Photon2.ClientInput.ExecuteActions( actions, key, press, name )
 	if ( not actions ) then return end
 	if ( not IsValid( Photon2.ClientInput.TargetController ) ) then return end
 	-- print("Executing " .. tostring(#actions) .. " actions...")
 	local controller = Photon2.ClientInput.TargetController ---@as PhotonController
-	controller:InputUserCommand( actions, key, press, "NAME NOT IMPLEMENTED" )
+	controller:InputUserCommand( actions, press, name )
 end
 
 function Photon2.ClientInput.ValidateActions( actions, key, press )
@@ -90,6 +90,52 @@ function Photon2.ClientInput.ValidateActions( actions, key, press )
 end
 
 local pressedKeys = {}
+
+function Photon2.ClientInput.SimulatePress( commandName )
+	if ( not IsValid( Photon2.ClientInput.TargetController ) ) then return end
+	local command = Photon2.Index.Commands[commandName]
+	if ( not command ) or ( not command.OnPress ) then return end
+	local result = {}
+	for i, action in pairs( command.OnPress) do
+		result[#result+1] = 
+		{
+			Key = "VIRTUAL",
+			Press = "Press",
+			Action = action
+		}
+	end
+	Photon2.ClientInput.ExecuteActions( result, 0, "Press", commandName )
+end
+
+function Photon2.ClientInput.SimulateHold( commandName )
+	local command = Photon2.Index.Commands[commandName]
+	if ( not command ) or ( not command.OnHold ) then return end
+	local result = {}
+	for i, action in pairs( command.OnHold ) do
+		result[#result+1] = 
+		{
+			Key = "VIRTUAL",
+			Press = "Hold",
+			Action = action
+		}
+	end
+	Photon2.ClientInput.ExecuteActions( result, 0, "Hold", commandName )
+end
+
+function Photon2.ClientInput.SimulateRelease( commandName )
+	local command = Photon2.Index.Commands[commandName]
+	if ( not command ) or ( not command.OnRelease ) then return end
+	local result = {}
+	for i, action in pairs( command.OnRelease ) do
+		result[#result+1] = 
+		{
+			Key = "VIRTUAL",
+			Press = "Release",
+			Action = action
+		}
+	end
+	Photon2.ClientInput.ExecuteActions( result, 0, "Release", commandName )
+end
 
 function Photon2.ClientInput.OnPress( key )
 	-- OCTOBER INPUT DEMO 
@@ -137,7 +183,7 @@ function Photon2.ClientInput.ScanPressed()
 
 		local binds = Photon2.ClientInput.Active.Binds[key]
 
-		if ( RealTime() >= ( time + holdThreshold ) and ( binds.OnHold ) ) then
+		if ( RealTime() >= ( time + Photon2.ClientInput.HoldThreshold ) and ( binds.OnHold ) ) then
 			Photon2.ClientInput.KeysPressed[key] = nil
 			Photon2.ClientInput.KeysHeld[key] = RealTime()
 			Photon2.ClientInput.ValidateActions(  binds.OnHold, key, "Hold" )
@@ -151,8 +197,8 @@ function Photon2.ClientInput.Initialize()
 	if ( not Photon2.Library.InputConfigurations:Get( "user" ) ) then
 		local config = Photon2.Library.InputConfigurations:GetCopy( "default" )
 		config.Name = "user"
-		config.Title = "User"
-		config.Author = LocalPlayer():Nick()
+		config.Title = "Default (User)"
+		config.Author = "user"
 		Photon2.Library.InputConfigurations:SaveToDataAndRegister( config )
 	end
 end

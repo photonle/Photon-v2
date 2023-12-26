@@ -311,6 +311,8 @@ function PANEL:SetupBottomSavePanel()
 end
 
 function PANEL:Setup()
+	local this = self
+
 	self:SetupMenuBar()
 	self:SetMetaPanel(nil)
 	self:SetupCommandsPanel()
@@ -324,11 +326,22 @@ function PANEL:Setup()
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 4, 0, 4, 4 )
 	propertySheet:SetPadding( 1 )
-	propertySheet:AddSheet( "Commands", self.CommandPanel )
-	propertySheet:AddSheet( "Buttons", self.ButtonsPanel )
-	propertySheet:AddSheet( "Options", self.OptionsPanel )
+	local commands = propertySheet:AddSheet( "Commands", self.CommandPanel )
+	commands.Tab.TabName = "Commands"
+	local buttons = propertySheet:AddSheet( "Buttons", self.ButtonsPanel )
+	buttons.Tab.TabName = "Buttons"
+	local options = propertySheet:AddSheet( "Options", self.OptionsPanel )
+	options.Tab.TabName = "Options"
+
 	self.PropertySheet = propertySheet
-	-- function propertySheet:OnActiveTabChanged
+	
+	function propertySheet:OnActiveTabChanged( oldPanel, newPanel )
+		this.SelectedTabName = newPanel.TabName
+	end
+
+	self.SelectedTabName = self.SelectedTabName or "Commands"
+
+	propertySheet:SwitchToName( self.SelectedTabName )
 end
 
 function PANEL:PreAutoRefresh()
@@ -360,6 +373,7 @@ function PANEL:SetupCommandsPanel()
 	if ( IsValid( self.CommandPanel ) ) then self.CommandPanel:Remove() end
 
 	local panel = vgui.Create( "DPanel", self )
+	panel.TabName = "Commands"
 	self.CommandPanel = panel
 
 	panel:SetPaintBackground( false )
@@ -402,6 +416,7 @@ function PANEL:SetupButtonsPanel()
 
 	local panel = vgui.Create( "DPanel", self )
 	panel:SetPaintBackground( false )
+	panel.TabName = "Buttons"
 	self.ButtonsPanel = panel
 
 	local divider = vgui.Create( "EXDHorizontalDivider", panel )
@@ -474,7 +489,7 @@ function PANEL:SetupButtonsPanel()
 	local newCommandButton = vgui.Create( "EXDButton", left )
 	newCommandButton:Dock( TOP )
 	newCommandButton:SetHeight( 24 )
-	newCommandButton:SetText( "    Add Key/Button..." )
+	newCommandButton:SetText( "  Add Key/Button..." )
 	newCommandButton:SetIcon( "plus-box" )
 	newCommandButton:DockMargin( 4, 8, 4, 0 )
 	newCommandButton:SetTextInset( -60, 0 )
@@ -500,6 +515,7 @@ function PANEL:SetupOptionsPanel()
 		panel = vgui.Create( "DScrollPanel", self )
 		panel:Dock( FILL )
 		panel:DockMargin( 8, 0, 8, 8 )
+		panel.TabName = "Options"
 		self.OptionsPanel = panel
 	end
 	if ( not self.WorkingCopy ) then return end
@@ -949,12 +965,29 @@ function PANEL:SetEditPanel( data )
 	previewButton:SetText( "Preview" )
 	previewButton:SetIcon( "eye" )
 
+	local runInputCheck = true
+
 	function previewButton:OnMousePressed( keyCode )
-		print("Pressed....", tostring(keyCode))
+		self.BaseClass.OnMousePressed( self, keyCode )
+		if ( runInputCheck and not Photon2.ClientInput.Listening ) then
+			return
+		end
+		Photon2.ClientInput.SimulatePress( data.Command.Name )
+		timer.Create( "Photon2.InputConfiguration.Preview", Photon2.ClientInput.HoldThreshold, 1, function()
+			Photon2.ClientInput.SimulateHold( data.Command.Name )
+		end)
+	end
+	
+	function previewButton:DoClick()
+		if ( runInputCheck and not Photon2.ClientInput.Listening ) then
+			Photon2.UI.DialogBox.UserError( "You must be driving a Photon 2-enabled vehicle to preview commands." )
+		end
 	end
 
 	function previewButton:OnMouseReleased( keyCode )
-		print("Released....", tostring(keyCode))
+		self.BaseClass.OnMouseReleased( self, keyCode )
+		Photon2.ClientInput.SimulateRelease( data.Command.Name )
+		timer.Destroy( "Photon2.InputConfiguration.Preview" )
 	end
 
 	local clearButton = vgui.Create( "EXDButton", buttonsPanel )

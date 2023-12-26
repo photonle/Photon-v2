@@ -8,6 +8,7 @@ NAME = "PhotonBaseEntity"
 ---@field PhotonController PhotonController
 ---@field BodyGroups? table
 ---@field SubMaterials? table
+---@field RenderGroup? RENDERGROUP
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
@@ -86,7 +87,7 @@ function ENT:FindSubMaterialByName( materialName )
 	if ( not self._subMaterialMap ) then
 		self._subMaterialMap = {}
 		local materials = self:GetMaterials()
-		PrintTable( materials )
+		-- PrintTable( materials )
 		for i=1, #materials do
 			self._subMaterialMap[materials[i]] = i - 1
 		end
@@ -124,7 +125,7 @@ function ENT:FindBodyGroupOptionByName( bodyGroup, name )
 		if ( name == subModel ) then return index end
 	end
 	ErrorNoHaltWithStack(string.format("Could not find body group option [%s] in body group index [%s] in model [%s]", name, bodyGroup, self:GetModel() ))
-	PrintTable( self:GetBodyGroups() )
+	-- PrintTable( self:GetBodyGroups() )
 	return 0
 end
 
@@ -184,7 +185,7 @@ function ENT:SetupStaticBones()
 		data.Position = data.Position or data[1] or Vector()
 		data.Angles = data.Angles or data[2] or Angle()
 		data.Scale = data.Scale or data[3] or Vector( 1, 1, 1 )
-		if ( isnumber(data.Scale) ) then data.Scale = Vector(data.Scale, data.Scale, data.Scale) end
+		if ( isnumber(data.Scale) ) then data.Scale = Vector( data.Scale, data.Scale, data.Scale ) end
 		data.Follow = data.Follow or data[4] or false
 
 		if ( not data.Follow ) then
@@ -310,7 +311,11 @@ end
 ---@param controller PhotonController
 ---@return PhotonBaseEntity
 function ENT:CreateClientside( controller )
+	if ( self.RenderGroup ~= nil ) then ErrorNoHalt("RENDER GROUP IS SET: " .. tostring( self.RenderGroup ) ) end
+	PHOTON2_ENTITY.RenderGroup = self.RenderGroup or nil
 	local ent = self:Initialize( ents.CreateClientside( "photon_entity" ) --[[@as photon_entity]], controller )
+	PHOTON2_ENTITY.RenderGroup = nil
+	print( "Created RenderGroup = " .. tostring( ent:GetRenderGroup() ) )
 	ent:Setup()
 	return ent
 end
@@ -348,7 +353,8 @@ ENT.PropertyFunctionMap = {
 	["SubMaterials"] = "UpdateAndApplySubMaterials",
 	["BodyGroups"] = "UpdateAndApplyBodyGroups",
 	["PoseParameters"] = "UpdateAndApplyPoseParameters",
-	["Bones"] = "UpdateAndApplyStaticBoneData"
+	["Bones"] = "UpdateAndApplyStaticBoneData",
+	["RenderMode"] = "SetRenderMode"
 }
 
 ENT.PropertiesUpdatedOnSoftUpdate = {
@@ -359,7 +365,8 @@ ENT.PropertiesUpdatedOnSoftUpdate = {
 	["BodyGroups"] = true,
 	["PoseParameters"] = true,
 	["FollowBone"] = true,
-	["Bones"] = true
+	["Bones"] = true,
+	["RenderMode"] = true
 }
 
 function ENT:FollowParentBone( bone )

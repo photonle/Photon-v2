@@ -100,8 +100,7 @@ end
 ---@param inputComponent PhotonLibraryComponent
 ---@return PhotonComponent
 function Photon2.CompileComponent( name, inputComponent )
-	print("Compiling component [" .. name .. "]")
-
+	-- print("Compiling component [" .. name .. "]")
 
 	-- local component = _G[class].New( name, inputComponent, class )
 	local component = PhotonLightingComponent.New( name, inputComponent )
@@ -223,7 +222,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		-- Build Selections signature of current table
 		if (current.EquipmentSelections) then
 			currentSelectionsSignature = buildSelectionSignature( current.EquipmentSelections )
-			print("currentSelectionSignature: " .. tostring(currentSelectionsSignature))
+			-- print("currentSelectionSignature: " .. tostring(currentSelectionsSignature))
 		end
 		
 	end
@@ -237,7 +236,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		-- Build new Equipment signature
 		newEquipmentSignature = buildEquipmentSignature( newVehicle.Equipment )
 		
-		printf("EQUIPMENT SIGNATURE\nOld: %s\nNew:%s", currentEquipmentSignature, newEquipmentSignature)
+		-- printf("EQUIPMENT SIGNATURE\nOld: %s\nNew:%s", currentEquipmentSignature, newEquipmentSignature)
 		if (currentEquipmentSignature == newEquipmentSignature) then
 			hardSet = false
 		end
@@ -247,7 +246,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		if (currentSelectionsSignature) then
 			if ( newVehicle.EquipmentSelections ) then
 				newSelectionsSignature = buildSelectionSignature( newVehicle.EquipmentSelections )
-				print("newSelectionSignature: " .. tostring(currentSelectionsSignature))
+				-- print("newSelectionSignature: " .. tostring(currentSelectionsSignature))
 				
 				if (newSelectionsSignature ~= currentSelectionsSignature) then
 					hardSet = true

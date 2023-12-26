@@ -1,5 +1,4 @@
 Photon2.cl_Network = {}
-Photon2.Debug.Print("cl_net.lua")
 
 local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
@@ -9,7 +8,7 @@ local printf = Photon2.Debug.PrintF
 ---@param state string
 function Photon2.cl_Network.SetControllerChannelState( controller, channel, state )
     if ( not state ) then return end
-	printf("Requesting a mode change [%s]. Channel: [%s]  Mode: [%s]", controller, channel, state )
+	-- printf("Requesting a mode change [%s]. Channel: [%s]  Mode: [%s]", controller, channel, state )
 	net.Start("Photon2:SetControllerChannelState")
         net.WriteEntity( controller )
         net.WriteString( channel )
