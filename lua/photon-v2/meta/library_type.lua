@@ -38,6 +38,9 @@ function meta.New( properties )
 		return result:Register( entry )
 	end
 	if ( not result.IsValidRealm ) then return end
+
+	file.CreateDir( "photon_v2/library/" .. result.Folder )
+
 	Photon2.Library.Repository[result.Name] = Photon2.Library.Repository[result.Name] or {}
 	Photon2.Library.Types = result
 	Photon2.Library[result.Name] = result
@@ -100,7 +103,6 @@ function meta:SaveToDataAndRegister( data )
 		return
 	end
 	data.Unsaved = nil
-
 	self:SaveToData( data )
 	self:LoadDataJsonFile( data.Name .. ".json", data )
 end
