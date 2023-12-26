@@ -8,6 +8,10 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
+COMPONENT.WorkshopRequirements = {
+	[2821476376] = "Code 3 MX7000 Model"
+}
+
 COMPONENT.PrintName = [[Code 3 MX7000]]
 
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
