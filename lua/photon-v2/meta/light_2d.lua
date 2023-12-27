@@ -335,6 +335,8 @@ function Light:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return nil end
 
+	self:UpdateProxyState()
+
 	self.ShouldDraw = true
 
 	
