@@ -7,26 +7,9 @@ VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
 
--- local livery = PhotonDynamicMaterial.Generate("schmal_sgm_durang21_csp", { "VertexLitGeneric",
--- 	["$basetexture"] = Material( "schmal/liveries/sgm_durang21/co_csp.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
--- 	["$bumpmap"] = "photon/common/flat",
--- 	["$phong"] = 1,
--- 	["$envmap"] = "env_cubemap",
--- 	["$envmaptint"] = Vector(0.020, 0.020, 0.023),
--- 	["$phongboost"] = 1.25,
--- 	["$phongexponent"] = 23,
--- 	["$nodecal"] = 1
--- })
-
--- Works but is superseded by equipment options
--- VEHICLE.InteractionSounds = {
--- 	Controller = "whelen_cencom"
--- }
-
 VEHICLE.SubMaterials = {
 	[17] = "photon/common/blank", -- skin
 	[20] = "photon/common/blank", -- black_chrome
-	-- [17] = livery.Name,
 }
 
 VEHICLE.Equipment = {
@@ -116,6 +99,7 @@ VEHICLE.Equipment = {
 								Angles = Angle( 0, 0, 0 ),
 								Scale = 1,
 								Follow = { Attachment = "wheel_rr" }
+								-- Follow = { Bone = "door_fl" }
 							},
 						},
 						AutoWheels = { Offset = Vector( -2.7, 0, 0 ) }
@@ -184,7 +168,7 @@ VEHICLE.Equipment = {
 	},
 	{
 		Category = "Lightbar",
-		Options ={
+		Options = {
 			{
 				Option = "Liberty II",
 				Components = {
@@ -192,9 +176,19 @@ VEHICLE.Equipment = {
 						Component = "photon_sm_liberty_ii_suv",
 						Position = Vector( 0, -14, 86.7 ),
 						Angles = Angle( 2, 90, 0 ),
-						Scale = 1.1
+						Scale = 1.1,
+						
 					}
-				}
+				},
+				
+			}
+		}
+	},
+	{
+		Category = "fuck",
+		Options = {
+			{
+				Option = "fuck"
 			}
 		}
 	},

@@ -28,20 +28,20 @@ VEHICLE.Siren = {
 	[2] = "fedsig_smartsiren"
 }
 
-local bpd = PhotonDynamicMaterial.Generate("schmal_fpiu20_bpd", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/bou_co_pd.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.020, 0.020, 0.023),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
+local livery = PhotonMaterial.New({
+	Name = "schmal_fpiu20_boulderpd",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+		["$basetexture"] = "schmal/liveries/sgm_fpiu20/bou_co_pd.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$phong"] = 1,
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector(0.020, 0.020, 0.023),
+		["$phongboost"] = 1.25,
+		["$phongexponent"] = 23,
+		["$nodecal"] = 1
+	}
 })
-
--- VEHICLE.SubMaterials = {
--- 	[20] = bpd.Name,
--- }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
@@ -51,7 +51,7 @@ VEHICLE.Equipment = {
 			{
 				Option = "Boulder PD",
 				SubMaterials = {
-					{ Id = 20, Material = bpd.Name }
+					{ Id = 20, Material = livery.MaterialName },
 				}
 			},
 			{
@@ -143,9 +143,8 @@ VEHICLE.Equipment = {
 							forward_hotfeet = 1,
 							alley_hotfeet = 1
 						},
-						-- RenderGroup = RENDERGROUP_OTHER,
 						States = {
-							[1] = "W", [2] = "R", [3] = "W"
+							[1] = "R", [2] = "B", [3] = "W"
 						}
 					}
 				}

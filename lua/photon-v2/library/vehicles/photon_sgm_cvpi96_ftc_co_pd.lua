@@ -6,31 +6,53 @@ VEHICLE.Vehicle		= "96cvpi_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-local fcpd = PhotonDynamicMaterial.Generate("schmal_cvpi96_fcpd", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_cvpi96/ftc_co_pd.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.020, 0.020, 0.023),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
-})
-
-VEHICLE.SubMaterials = {
-	[6] = fcpd.Name,
+VEHICLE.WorkshopRequirements = {
+	[218869210] = "SGM Shared Textures",
+	[2861441761] = "1996 Ford Crown Victoria P71"
 }
+
+local livery = PhotonMaterial.New({
+	Name = "schmal_cvpi96_fcpd",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+		["$basetexture"] = "schmal/liveries/sgm_cvpi96/ftc_co_pd.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$phong"] = 1,
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector(0.020, 0.020, 0.023),
+		["$phongboost"] = 1.25,
+		["$phongexponent"] = 23,
+		["$nodecal"] = 1
+	}
+})
 
 VEHICLE.Schema = {
 	["Emergency.Warning"] = {
 		{ Label = "PRIMARY" },
-		{ Mode = "MODE1", Label = "ST1" },
-		{ Mode = "MODE2", Label = "ST2" },
-		{ Mode = "MODE3", Label = "ST3" },
+		{ Mode = "MODE1", Label = "STAGE 1" },
+		{ Mode = "MODE2", Label = "STAGE 2" },
+		{ Mode = "MODE3", Label = "STAGE 3" },
 	}
 }
 
 VEHICLE.Equipment = {
+	{
+		Category = "Livery",
+		Options = {
+			{
+				Option = "Fort Collins Police Department",
+				SubMaterials = {
+					{ Id = 6, Material = livery.MaterialName }
+				}
+			},
+			{
+				Option = "None",
+				SubMaterials = {
+					{ Id = 6, Material = nil }
+				}
+			}
+		}
+	},
 	{
 		Category = "Lighting",
 		Options = {
@@ -81,7 +103,6 @@ VEHICLE.Equipment = {
 							["screws_bottom"] = 1,
 							["face"] = "face_circular"
 						},
-						-- FollowBone = "fl_wheel"
 					},
 					{
 						Inherit = "@rear_plate",
@@ -97,6 +118,21 @@ VEHICLE.Equipment = {
 							["mount"] = "mount"
 						}
 					},
+					-- {
+					-- 	Model = "models/license/na_license_plate.mdl",
+					-- 	Angles = Angle( 0, 0, 90 ),
+					-- 	Position = Vector( 20, -10, 0 ),
+					-- 	SubMaterials = {
+					-- 		[1] = "photon/license/plates/ftc_muni_fr"
+					-- 	},
+					-- 	BodyGroups = {
+					-- 		["screws_top"] = 1,
+					-- 		["screws_bottom"] = 1,
+					-- 		["face"] = "face_circular",
+					-- 		["mount"] = "mount"
+					-- 	},
+					-- 	FollowBone = "door_fl"
+					-- },
 				},
 			}
 		}

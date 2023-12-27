@@ -61,7 +61,8 @@ function PANEL:Init()
 	function self.btnClose:DoClick()
 		this:DoClose()
 	end
-	self:SetPaintShadow( true )
+	-- Pretty but negates translucency 
+	self:SetPaintShadow( false )
 end
 
 function PANEL:DoClose()
