@@ -15,21 +15,20 @@ VEHICLE.Author		= "Schmal"
 
 VEHICLE.Equipment = {}
 
-
-local bcso = PhotonDynamicMaterial.Generate("schmal_fpiu20_bcso", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/bou_co_cso.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
+local livery = PhotonMaterial.New({
+	Name = "schmal_fpiu20_bcso",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+		["$basetexture"] = "schmal/liveries/sgm_fpiu20/bou_co_cso.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$phong"] = 1,
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector(0.1, 0.1, 0.1),
+		["$phongboost"] = 1.25,
+		["$phongexponent"] = 23,
+		["$nodecal"] = 1
+	}
 })
-
-VEHICLE.SubMaterials = {
-	[20] = bcso.Name,
-}
 
 VEHICLE.Siren = {
 	"sos_nergy400"
@@ -37,6 +36,23 @@ VEHICLE.Siren = {
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
+	{
+		Category = "Liveries",
+		Options = {
+			{
+				Option = "Boulder County Sheriff",
+				SubMaterials = {
+					{ Id = 20, Material = livery.MaterialName },
+				}
+			},
+			{
+				Option = "None",
+				SubMaterials = {
+					{ Id = 20, Material = nil }
+				}
+			}
+		}
+	},
 	{
 		Category = "Controller Sound",
 		Options = {

@@ -1,4 +1,3 @@
-print("cl_ui_skin.lua")
 
 local SkinID = "PhotonStudio"
 local surface = surface

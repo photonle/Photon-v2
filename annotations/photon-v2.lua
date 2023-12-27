@@ -54,14 +54,8 @@ PhotonElementMesh = PhotonElementMesh
 ---@type PhotonElementMeshState
 PhotonElementMeshState = PhotonElementMeshState
 
----@type PhotonDynamicMaterial
-PhotonDynamicMaterial = PhotonDynamicMaterial
-
 ---@type PhotonComponent
 PhotonComponent = PhotonComponent
-
----@type PhotonAuralComponent
-PhotonAuralComponent = PhotonAuralComponent
 
 ---@type PhotonElementSound
 PhotonElementSound = PhotonElementSound
@@ -86,6 +80,9 @@ PhotonBlendColor = PhotonBlendColor
 
 ---@type PhotonLibraryType
 PhotonLibraryType = PhotonLibraryType
+
+---@type PhotonMaterial
+PhotonMaterial = PhotonMaterial
 
 ---@alias PhotonBoneLightActivity
 ---| '"Rotate"' # Continuously rotates in one direction.

@@ -205,7 +205,7 @@ end
 
 function ENT:AttemptComponentReload( id )
 	local success, code = pcall( self.OnComponentReloaded, self, id )
-	print( "Reload result: " .. tostring( success ) .. " [" .. tostring( code ) .. "]" )
+	-- print( "Reload result: " .. tostring( success ) .. " [" .. tostring( code ) .. "]" )
 	if ( not success ) then self.LastReloadFailed = true end
 end
 
@@ -973,7 +973,7 @@ function ENT:OnComponentReloaded( componentId )
 	-- self:SetupComponentArrays()
 	-- if true then return end
 	local matched = false
-	printf( "Controller notified of a component reload [%s]", componentId )
+	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then

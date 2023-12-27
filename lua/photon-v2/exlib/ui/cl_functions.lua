@@ -17,18 +17,6 @@ surface.CreateFont("EXUI.PropertyLabel", {
 	weight = 500
 })
 
-surface.CreateFont("EXUI.PropertyHeader", {
-	font = "Nunito",
-	size = 14,
-	weight = 900
-})
-
-surface.CreateFont("EXUI.Button", {
-	font = "Nunito",
-	size = 14,
-	weight = 900
-})
-
 -- surface.CreateFont("EXUI.PropertyHeader", {
 -- 	font = "Helvetica World",
 -- 	size = 20,
@@ -117,9 +105,9 @@ function exui.LoadMaterialIconsIndex()
 	exui.MaterialIconsIndex = util.JSONToTable(file.Read("lua/photon-v2/exlib/ui/mdi-index.json", "GAME"))
 end
 
-function exui.GetMDIFont(size)
+function exui.GetMDIFont( size )
 	if not exui.materialIconSizes[size] then
-		exui.CreateShadowFont("MaterialIcons" .. size, {
+		surface.CreateFont("MaterialIcons" .. size, {
 			font = "EXUI-MDI",
 			extended = true,
 			size = size

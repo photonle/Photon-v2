@@ -16,9 +16,9 @@ local sequence = Photon2.SequenceBuilder.New
 
 
 COMPONENT.SubMaterials = {
-	[3] = "!ph2_sos_nforce_dome_red",
-	[4] = "!ph2_sos_nforce_dome_blu",
-	[8] = "!ph2_sos_nforce_dome_blk"
+	[3] = "!photon_material/ph2_sos_nforce_dome_red",
+	[4] = "!photon_material/ph2_sos_nforce_dome_blu",
+	[8] = "!photon_material/ph2_sos_nforce_dome_blk"
 }
 
 COMPONENT.Segments = {

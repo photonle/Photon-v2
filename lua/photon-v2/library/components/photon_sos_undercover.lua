@@ -18,8 +18,8 @@ COMPONENT.Templates = {
 			Width = 3,
 			Height = 3,
 			Scale = 4,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_undercover_detail.png").MaterialName,
-			Shape = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sos_undercover_bloom.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sos_undercover_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sos_undercover_bloom.png").MaterialName,
 		}
 	},
 	["Sub"] = {

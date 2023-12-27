@@ -20,7 +20,7 @@ file.CreateDir("photon_v2/library")
 function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/library_type.lua")
 
-	exmeta.LoadFile("photon-v2/meta/dynamic_material.lua")
+	exmeta.LoadFile("photon-v2/meta/material.lua")
 	exmeta.LoadFile("photon-v2/meta/blend_color.lua")
 	exmeta.LoadFile("photon-v2/meta/color.lua")
 

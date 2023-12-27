@@ -25,8 +25,8 @@ COMPONENT.Templates = {
 		Primary = {
 			Width 		= 5.5,
 			Height		= 2.8,
-			Detail 		= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
-			Shape 		= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
+			Detail 		= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
+			Shape 		= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
@@ -35,8 +35,8 @@ COMPONENT.Templates = {
 		Rear = {
 			Width 		= 5.8,
 			Height		= 2.9,
-			Detail 	= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
-			Shape 			= PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
+			Detail 	= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
+			Shape 			= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
@@ -49,7 +49,6 @@ local mult56 = 0.8
 
 COMPONENT.ElementGroups = {
 	["Group"] = { 1, 2, 3, 4 },
-
 }
 
 COMPONENT.Elements = {

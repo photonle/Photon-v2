@@ -4,7 +4,6 @@ include("cl_convars.lua")
 include("cl_net.lua")
 include("cl_render.lua")
 include("cl_dynamic_materials.lua")
-include("cl_material.lua")
 
 LoadPhoton2MetaFiles()
 

@@ -20,6 +20,10 @@ function Photon2.Debug.PrintF( text, ... )
 	Photon2.Debug.Print(string.format(text, ...))
 end
 
+function Photon2.Debug.PrintD( type, text, ... )
+	Photon2.Debug.Print( "[" .. tostring( type ) .. "] " .. string.format( text, ... ) )
+end
+
 local printf = Photon2.Debug.PrintF
 
 if (CLIENT) then

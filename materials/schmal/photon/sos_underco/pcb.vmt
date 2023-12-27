@@ -2,7 +2,8 @@
 {
 	"$basetexture"	"schmal/photon/sos_underco/texture"
 	"$bumpmap"	"schmal/photon/sos_underco/texture_nm"
-	"$envmap"	"[.02 .02 .02]"
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[0.02 0.02 0.02]"
 	"$phong"		"1"
 	"$phongexponent"	"1"
 	"$phongboost"	"1"

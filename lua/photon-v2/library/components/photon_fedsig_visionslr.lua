@@ -26,21 +26,21 @@ COMPONENT.Templates = {
 	},
 	["2D"] = {
 		SignalMaster = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_detail.png").MaterialName,
 			Width = 4.7,
 			Height = 4.5/2,
 		},
 		AlleyHotFeet = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
 			Width = 4.7,
 			Height = 4.5/2,
 			RequiredBodyGroups = { ["Hotfeet"] = { 0 } }
 		},
 		ForwardHotFeet = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/visionslr_sm_shape.png").MaterialName,
 			Width = 4.5,
 			Height = 4.5/2,
 			Scale = 1.2,
@@ -619,7 +619,7 @@ COMPONENT.Inputs = {
 			LVMPD_Pods = "MODE2",
 		},
 		["MODE3"] = {
-			SignalMaster = "WARN2",
+			-- SignalMaster = "WARN2",
 			LVMPD_Lights = "MODE3",
 			LVMPD_Pods = "MODE3",
 			SignalMaster = "WARN4",

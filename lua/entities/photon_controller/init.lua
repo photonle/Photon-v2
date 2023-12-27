@@ -23,7 +23,7 @@ function ENT:Initialize()
 end
 
 function ENT:SetProfileName( name )
-	Photon2.Debug.Print( "Setting controller profile name to " .. name )
+	-- Photon2.Debug.Print( "Setting controller profile name to " .. name )
 	self:SetNW2String( "Photon2:ProfileName", name )
 	self:SetupProfile( name )
 end

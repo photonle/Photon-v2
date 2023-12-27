@@ -12,7 +12,8 @@ COMPONENT.PrintName = [[SoundOff Signal nForce (54")]]
 
 COMPONENT.Model = "models/sentry/props/nforce_suv.mdl"
 
-local domeParameters = { "VertexLitGeneric",
+local domeParameters = { 
+	Shader = "VertexLitGeneric",
 	["$basetexture"] 			= "sentry/props/nforce/top",
 	["$bumpmap"] 				= "sentry/props/nforce/top_nm",
 	["$phong"] 					= 1,
@@ -27,11 +28,11 @@ local domeParameters = { "VertexLitGeneric",
 }
 
 local Domes = {
-	Black = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_blk", domeParameters, { ["$color2"] = Vector( 0.15, 0.15, 0.15 )} ).Name,
-	Blue = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_blu", domeParameters, { ["$color2"] = Vector( 0.18, 0.27, 0.64 )} ).Name,
-	Amber = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_amb", domeParameters, { ["$color2"] = Vector( 0.84, 0.49, 0.05 )} ).Name,
-	Red = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_red", domeParameters, { ["$color2"] = Vector( 0.64, 0.15, 0.0 )} ).Name,
-	White = PhotonDynamicMaterial.Generate( "ph2_sos_nforce_dome_whi", domeParameters, { ["$color2"] = Vector( 0.74, 0.74, 0.74 )} ).Name
+	Black = PhotonMaterial.GenerateWithTemplate( "ph2_sos_nforce_dome_blk", domeParameters, { ["$color2"] = Vector( 0.15, 0.15, 0.15 )} ).Name,
+	Blue = PhotonMaterial.GenerateWithTemplate( "ph2_sos_nforce_dome_blu", domeParameters, { ["$color2"] = Vector( 0.18, 0.27, 0.64 )} ).Name,
+	Amber = PhotonMaterial.GenerateWithTemplate( "ph2_sos_nforce_dome_amb", domeParameters, { ["$color2"] = Vector( 0.84, 0.49, 0.05 )} ).Name,
+	Red = PhotonMaterial.GenerateWithTemplate( "ph2_sos_nforce_dome_red", domeParameters, { ["$color2"] = Vector( 0.64, 0.15, 0.0 )} ).Name,
+	White = PhotonMaterial.GenerateWithTemplate( "ph2_sos_nforce_dome_whi", domeParameters, { ["$color2"] = Vector( 0.74, 0.74, 0.74 )} ).Name
 }
 
 COMPONENT.SubMaterials = {
@@ -58,10 +59,8 @@ local s = 1.2
 COMPONENT.Templates = {
 	["2D"] = {
 		Main = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_shape.png").MaterialName,
-			-- Detail = "photon/lights/sos_nforce_main_detail",
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_detail.png").MaterialName,
-			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sos_nforce_main_bloom.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sos_nforce_main_detail.png").MaterialName,
 			Width = 9.9,
 			Height = 9.9,
 			Ratio = 2.4,
@@ -72,9 +71,8 @@ COMPONENT.Templates = {
 			LightMatrixScaleMultiplier = 1
 		},
 		Corner3 = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_corner3_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sos_nforce_corner3_detail.png").MaterialName,
-			MaterialBloom = PhotonDynamicMaterial.GenerateBloomQuad("photon/lights/sos_nforce_corner3_bloom.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sos_nforce_corner3_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sos_nforce_corner3_detail.png").MaterialName,
 			Width = 9.9,
 			Height = 9.9,
 			Ratio = 1,

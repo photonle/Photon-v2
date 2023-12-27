@@ -2,7 +2,8 @@
 {
 	"$basetexture"	"schmal/photon/fedsig_opticom795/opticom"
 	"$bumpmap"	"schmal/photon/fedsig_opticom795/opticom_nm"
-	"$envmap"	"[.02 .02 .02]"
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[0.02 0.02 0.02]"
 	"$phong"		"1"
 	"$phongexponent"	"1"
 	"$phongboost"	"1"

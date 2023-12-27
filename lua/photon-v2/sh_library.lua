@@ -103,7 +103,6 @@ local inputConfigurations = {
 	ClearCommandFromAll = function( config, command )
 		local map = Photon2.Library.InputConfigurations.BuildBasicCommandMap( config )
 		if not ( map[command] ) then 
-			print(string.format("command: %s not in map!", command )); 
 			return end
 		for i, assignment in pairs( map[command] ) do
 			Photon2.Library.InputConfigurations.RemoveCommandFromButton( config, assignment.Key, assignment.Index )
@@ -233,11 +232,11 @@ Photon2.Library.AddType( interactionSounds )
 Photon2.Library.AddType( schemas )
 
 function Photon2.LoadComponentFile( filePath, isReload )
-	Photon2.Debug.Print("Loading component file: " .. filePath)
+	-- Photon2.Debug.Print("Loading component file: " .. filePath)
 	local nameStart = string.len(componentsRoot) + 1
 	local nameEnd = string.len(componentsRoot) - nameStart - 4
 	local name = string.sub(filePath, nameStart, nameEnd)
-	Photon2.Debug.Print("Component name: " .. name)
+	-- Photon2.Debug.Print("Component name: " .. name)
 	-- _COMPONENT = COMPONENT
 	_UNSET = UNSET
 	UNSET = PHOTON2_UNSET
@@ -245,9 +244,9 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	Photon2._acceptFileReload = false
 	include( filePath )
 	Photon2._acceptFileReload = true
-	if (istable(library.Components[name])) then
-		Photon2.Debug.Print("Component '" .. name .. "' already exists. Overwriting.")
-	end
+	-- if (istable(library.Components[name])) then
+	-- 	Photon2.Debug.Print("Component '" .. name .. "' already exists. Overwriting.")
+	-- end
 	PHOTON_LIBRARY_COMPONENT.Name = name
 	library.Components[name] = PHOTON_LIBRARY_COMPONENT
 	-- COMPONENT = _COMPONENT
@@ -295,24 +294,24 @@ end
 ---@param filePath string
 ---@param isReload? boolean
 function Photon2.LoadVehicleFile( filePath, isReload )
-	Photon2.Debug.Print("Loading vehicle file: " .. filePath)
+	-- Photon2.Debug.Print("Loading vehicle file: " .. filePath)
 	local nameStart = string.len(vehiclesRoot) + 1
 	local nameEnd = string.len(vehiclesRoot) - nameStart - 4
 	local name = filePath:sub(nameStart, nameEnd)
-	Photon2.Debug.Print("Vehicle name: " .. name)
+	-- Photon2.Debug.Print("Vehicle name: " .. name)
 	---@type PhotonLibraryVehicle
 	PHOTON2_LIBRARY_VEHICLE = {}
 	Photon2._acceptFileReload = false
 	include( filePath )
 	Photon2._acceptFileReload = true
-	if (istable(library.Vehicles[name])) then
-		Photon2.Debug.Print("Vehicle '" .. name .. "' already exists. Overwriting.")
-	end
+	-- if (istable(library.Vehicles[name])) then
+	-- 	Photon2.Debug.Print("Vehicle '" .. name .. "' already exists. Overwriting.")
+	-- end
 	PHOTON2_LIBRARY_VEHICLE.ID = name
 	library.Vehicles[name] = PHOTON2_LIBRARY_VEHICLE
 	PHOTON2_LIBRARY_VEHICLE = nil
-	printf("END of LoadVehicleFile() filepath: %s", filePath)
-	printf("\tname: %s", name)
+	-- printf("END of LoadVehicleFile() filepath: %s", filePath)
+	-- printf("\tname: %s", name)
 	Photon2.Index.CompileVehicle( name, library.Vehicles[name], isReload )
 end
 
@@ -329,17 +328,17 @@ function Photon2.LibraryComponent()
 end
 
 function Photon2.LoadVehicleLibrary( folderPath )
-	Photon2.Debug.Print("LoadVehicleLibrary() called")
+	-- Photon2.Debug.Print("LoadVehicleLibrary() called")
 	folderPath = folderPath or ""
 	local search = vehiclesRoot .. folderPath
 	local files, folders = file.Find( search .. "*.lua", "LUA" )
 	for _, fil in pairs( files ) do
 		Photon2.LoadVehicleFile( search .. fil )
 	end
-	Photon2.Debug.Print("LoadVehicleLibrary hook")
+	-- Photon2.Debug.Print("LoadVehicleLibrary hook")
 	
 	hook.Run("Photon2.LoadVehicleLibrary")
-	Photon2.Debug.Print("ProcessVehicleLibrary hook called()")
+	-- Photon2.Debug.Print("ProcessVehicleLibrary hook called()")
 	Photon2.Index.ProcessVehicleLibrary()
 end
 

@@ -15,9 +15,11 @@ VEHICLE.Author		= "Schmal"
 
 VEHICLE.Equipment = {}
 
-
-local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
+local livery = PhotonMaterial.New({
+	Name = "schmal_fpiu20_mpdc",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+	["$basetexture"] = "schmal/liveries/sgm_fpiu20/mpdc.png",
 	["$bumpmap"] = "photon/common/flat",
 	["$phong"] = 1,
 	["$envmap"] = "env_cubemap",
@@ -25,20 +27,32 @@ local mpdcSkin = PhotonDynamicMaterial.Generate("schmal_fpiu20_mpdc", { "VertexL
 	["$phongboost"] = 1.25,
 	["$phongexponent"] = 23,
 	["$nodecal"] = 1
+	}
 })
 
-if CLIENT then
-	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))
-end
-
 VEHICLE.SubMaterials = {
-	[20] = mpdcSkin.Name,
 	[3] = "photon/common/blank"
-	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
 }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
+	{
+		Category = "Liveries",
+		Options = {
+			{
+				Option = "MPDC",
+				SubMaterials = {
+					{ Id = 20, Material = livery.MaterialName },
+				}
+			},
+			{
+				Option = "None",
+				SubMaterials = {
+					{ Id = 20, Material = nil }
+				}
+			}
+		}
+	},
 	{
 		Category = "Controller Sound",
 		Options = {

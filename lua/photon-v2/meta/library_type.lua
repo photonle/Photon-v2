@@ -110,17 +110,17 @@ end
 -- Loads library objects that were created in Lua
 function meta:LoadLuaLibrary()
 	local path = luaPath .. self.Folder .. "/"
-	print( "PATH: " .. tostring( path ) )
+	-- print( "PATH: " .. tostring( path ) )
 	local files, folders = file.Find( path .. "*.lua", "LUA" )
-	print( "Result: " .. tostring(#files) .. " files found." )
+	-- print( "Result: " .. tostring(#files) .. " files found." )
 	for _, fil in pairs( files ) do
-		print( "Loading file: " .. path .. fil )
+		-- print( "Loading file: " .. path .. fil )
 		self:LoadLuaFile( path .. fil )
 	end
 end
 
 function meta:LoadLuaFile( path )
-	print("\tIncluding Lua file: " .. tostring( path ) )
+	-- print("\tIncluding Lua file: " .. tostring( path ) )
 	self.CurrentLoadSource = "Lua"
 	local result = include( path )
 	self.CurrentLoadSource = nil
@@ -137,23 +137,23 @@ function meta:LoadDataLibary()
 end
 
 function meta:LoadLibrary()
-	print( "Loading library type [" .. tostring( self.Name ) .. "]...")
+	-- print( "Loading library type [" .. tostring( self.Name ) .. "]...")
 	if ( not self.IsValidRealm ) then return end
 	self.IsLoading = true
-	print("\t Loading Lua library...")
+	-- print("\t Loading Lua library...")
 	self:LoadLuaLibrary()
-	print("\t Loading data library...")
+	-- print("\t Loading data library...")
 	self:LoadDataLibary()
 	self.IsLoading = false
 	self.Loaded = true
-	print("\tDone loading. Repository:")
-	PrintTable( self.Repository )
-	print( "===========================================================" )
+	-- print("\tDone loading. Repository:")
+	-- PrintTable( self.Repository )
+	-- print( "===========================================================" )
 end
 
 function meta:LoadDataJsonFile( fileName )
 	local path = string.format( "photon_v2/library/%s/%s", self.Folder, fileName)
-	print( "Loading JSON file from data [" .. path .. "]" )
+	-- print( "Loading JSON file from data [" .. path .. "]" )
 	
 	local json = file.Read( path, "DATA" )
 	
@@ -198,7 +198,7 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
-	print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
+	-- print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end

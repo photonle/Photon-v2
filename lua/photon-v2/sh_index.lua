@@ -275,7 +275,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 end
 
 hook.Add("Photon2.VehicleCompiled", "Photon2:OnVehicleCompiled", function(name, vehicle)
-	print("Vehicle compiled (%s)", name)
+	-- print("Vehicle compiled (%s)", name)
 end)
 
 

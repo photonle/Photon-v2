@@ -30,8 +30,8 @@ COMPONENT.Templates = {
 	},
 	["2D"] = {
 		["Tail"] = {
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/bulb_shape.png").MaterialName,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_shape.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
 			Scale = 1,
 			Width = 1.5,
 			Height = 1.5,

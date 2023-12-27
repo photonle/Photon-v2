@@ -17,24 +17,24 @@ COMPONENT.Templates = {
 		Reverse = {
 			Width = 5.4,
 			Height = 5.4,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rev_detail.png").MaterialName,
 			Scale = 2,
 			ForwardBloomOffset = 0.5
 		},
 		Turn = {
 			Width = 6.3,
 			Height = 6.3,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rsig_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rsig_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rsig_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_rsig_detail.png").MaterialName,
 			Scale = 1,
 			ForwardBloomOffset = 0.3
 		},
 		Headlight = {
 			Width = 6.8,
 			Height = 3.4,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_detail.png").MaterialName,
 			Scale = 0.5,
 			LightMatrix = {
 				Vector( 1 * 1, 0, 0 ), Vector( -1 * 1, 0, 0 ), 
@@ -46,8 +46,8 @@ COMPONENT.Templates = {
 		ForwardMarker = {
 			Width = 3.2,
 			Height = 3.2,
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_marker_detail.png").MaterialName,
 			Scale = 0.4,
 			LightMatrix = {
 				Vector( .9, 0, 0 ), Vector( -.9, 0, 0 )

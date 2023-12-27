@@ -17,8 +17,8 @@ COMPONENT.Model = "models/schmal/fedsig_xstream_single.mdl"
 COMPONENT.Templates = {
 	["2D"] = {
 		Light = {
-			Shape = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_xstream_shape.png").MaterialName,
-			Detail = PhotonDynamicMaterial.GenerateLightQuad("photon/lights/fs_xstream_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/fs_xstream_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/fs_xstream_detail.png").MaterialName,
 			Width = 6,
 			Height = 1.5
 		}

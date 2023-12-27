@@ -14,8 +14,9 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	HoldThreshold = 1
 }
 
+-- These keys/inputs are ignored when the cursor is visible
 local mouseKeys = { 
-	[MOUSE_LEFT] = true, 
+	[MOUSE_LEFT] = true,
 	[MOUSE_RIGHT] = true
 }
 

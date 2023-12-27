@@ -41,13 +41,13 @@ hook.Add("OnEntityCreated", "Photon2:OnEntityCreated", Photon2.OnEntityCreated)
 Photon2.OnPostVehicleCreated = function ( ent )
 	if (not IsValid( ent )) then return end
 	if (not ent.VehicleName) then
-		Photon2.Debug.Print( "A vehicle was just spawned (" .. tostring( ent ) .. ") but no .VehicleName was set." )
-		print("Vehicle parent: " .. tostring( ent:GetParent() ))
+		-- Photon2.Debug.Print( "A vehicle was just spawned (" .. tostring( ent ) .. ") but no .VehicleName was set." )
+		-- print("Vehicle parent: " .. tostring( ent:GetParent() ))
 		return
 	end
 	local profile = profiles.Vehicles[ent.VehicleName]
 	if (profiles.Vehicles[ent.VehicleName]) then
-		Photon2.Debug.PrintF( "Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile ) 
+		-- Photon2.Debug.PrintF( "Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile ) 
 		Photon2.AddControllerToVehicle( ent, profile )
 	end
 end

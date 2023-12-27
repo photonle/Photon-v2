@@ -1,5 +1,3 @@
-print("[EX VGUI] exd__pform.lua")
-
 local class = "EXPForm"
 local base = "DPanel"
 local PANEL = {}

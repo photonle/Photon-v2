@@ -225,7 +225,6 @@ function Photon2.UI.PopulateMenuBar()
 		inputProfileMenu:SetDeleteSelf( false )
 
 		for name, config in pairs( Photon2.Library.InputConfigurations.Repository ) do
-			print(tostring(name), tostring(config))
 			local opt = inputProfileMenu:AddOption( config.Title or "ERROR" )
 			local men = opt:AddSubMenu()
 			men:SetDeleteSelf( false )

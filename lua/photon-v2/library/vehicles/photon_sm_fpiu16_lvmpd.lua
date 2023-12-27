@@ -11,24 +11,44 @@ VEHICLE.Siren = {
 	-- [1] = "fedsig_touchmaster_delta",
 }
 
-local livery = PhotonDynamicMaterial.Generate("schmal_fpiu16_lvmpd", { "VertexLitGeneric",
-	["$basetexture"] = Material( "schmal/liveries/sm_fpiu16/lvmpd.png", "VertexLitGeneric smooth" ):GetTexture( "$basetexture" ):GetName(),
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.020, 0.020, 0.023),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
+local livery = PhotonMaterial.New({
+	Name = "schmal_fpiu16_lvmpd",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+		["$basetexture"] = "schmal/liveries/sm_fpiu16/lvmpd.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$phong"] = 1,
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector(0.020, 0.020, 0.023),
+		["$phongboost"] = 1.25,
+		["$phongexponent"] = 23,
+		["$nodecal"] = 1
+	}
 })
 
 VEHICLE.SubMaterials = {
-	[15] = livery.Name,
 	[5] = "photon/common/blank",
 	[28] = "photon/common/blank",
 }
 
 VEHICLE.Equipment = {
+	{
+		Category = "Liveries",
+		Options = {
+			{
+				Option = "LVMPD",
+				SubMaterials = {
+					{ Id = 15, Material = livery.MaterialName },
+				}
+			},
+			{
+				Option = "None",
+				SubMaterials = {
+					{ Id = 15, Material = nil }
+				}
+			}
+		}
+	},
 	{
 		Category = "HUD",
 		Options = {
