@@ -31,6 +31,7 @@ hook.Add("PlayerButtonDown", "Photon2.Input:PlayerButtonDown", function( ply, bu
 			net.Send( ply )
 		end
 	else
+		if ( not IsFirstTimePredicted() ) then return end
 		Photon2.PressedKeys[button] = true
 		hook.Run( "Photon2:KeyPressed", button )
 	end
@@ -45,6 +46,7 @@ hook.Add("PlayerButtonUp", "Photon2.Input:PlayerButtonUp", function( ply, button
 			net.Send( ply )
 		end
 	else
+		if ( not IsFirstTimePredicted() ) then return end
 		Photon2.PressedKeys[button] = false
 		hook.Run( "Photon2:KeyReleased", button )
 	end

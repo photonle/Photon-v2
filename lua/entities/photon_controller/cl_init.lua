@@ -20,10 +20,41 @@ function ENT:Initialize()
 	self.Frame = 1
 	self.NextFrameTime = RealTime() + self.FrameDuration
 	self:InitializeShared()
-
+	self:DoInitializationStandby()
 	-- addTestEquipment(self)
 end
 
+-- Further delays executing initialization code until it's believed
+-- other Photon functions are ready. This is primarily a concern
+-- when loading in next to an already active Photon vehicle, especially 
+-- if the vehicle relies on Photon's dynamic materials.
+function ENT:DoInitializationStandby()
+	if ( not Photon2.Materials.Ready ) then
+		timer.Simple( 1, function() 
+			if ( not IsValid( self ) ) then return end
+			pcall( self.DoInitializationStandby, self )
+		end)
+		return
+	end
+
+	local queue = Photon2.cl_Network.ControllerQueue[self]
+	if ( queue ) then
+		
+		if ( queue.Profile ) then
+			self:SetupProfile( queue.Profile )
+		end
+
+		if ( queue.SelectionString ) then
+			self:ProcessSelectionsString( queue.SelectionsString )
+		end
+
+		for channel, mode in pairs( queue.Channels ) do
+			self:OnChannelModeChanged( channel, mode, "" )
+		end
+
+		queue = nil
+	end
+end
 
 -- Called when player is believed to have left the vehicle's PVS.
 function ENT:OnSuspended()
@@ -106,24 +137,3 @@ function ENT:Think()
 	-- print("controller thinking")
 end
 
-local function NetworkedVarChanged( ent, name, oldValue, newValue )
-	-- Must be delayed by a tick to ensure entity is properly
-	-- initialized first. Unpredictable results otherwise.
-	local duration = 0.001
-	if ( CurTime() > 10000 ) then duration = 0.01 end
-	if ( CurTime() > 100000 ) then duration = 0.1 end
-	timer.Simple(duration, function()
-		if (IsValid(ent) and (ent.IsPhotonController)) then
-			if (string.StartsWith(name,"Photon2:CS:")) then
-				name = string.sub( name, 12 )
-				ent:OnChannelModeChanged( name, newValue, oldValue )
-			elseif (name == "Photon2:ProfileName") then
-				ent:SetupProfile( newValue )
-			elseif (name == "Photon2:Selections") then
-				ent:ProcessSelectionsString( newValue )
-			end
-		end
-	end)
-	
-end
-hook.Add("EntityNetworkedVarChanged", "Photon2:PhotonController", NetworkedVarChanged)

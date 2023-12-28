@@ -1108,60 +1108,62 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 			local schema = target:GetInputSchema()
 			-- local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
-			local priData = schema[priChannel][priMode]
-
-			if ( not priData ) then
-				schema[priChannel][priMode] = {
-					Label = priMode
-				}
-			end
 			
-			local priStyle = 1
-			if ( priMode == "OFF" ) then priStyle = 0 end
-			
-			local showSecondary = false
+			if ( schema[priChannel] ) then 
+				local priData = schema[priChannel][priMode]
 
-			local secChannel = "Emergency.Directional"
-			local secMode = target.CurrentModes[secChannel]
+				if ( not priData ) then
+					schema[priChannel][priMode] = {
+						Label = priMode
+					}
+				end
+				
+				local priStyle = 1
+				if ( priMode == "OFF" ) then priStyle = 0 end
+				
+				local showSecondary = false
 
-			showSecondary = ( schema[secChannel] ~= nil )
+				local secChannel = "Emergency.Directional"
+				local secMode = target.CurrentModes[secChannel]
 
-			if ( showSecondary ) then
-				local secStyle = 1
-				if ( secMode == "OFF" ) then secStyle = 0 end
-				secMode = (schema[secChannel] or {})[secMode] or {}
+				showSecondary = ( schema[secChannel] ~= nil )
 
-				nextH = 64
-				HUD.LightStageIndicator( ScrW() - 150 - 4, nextY, 150, 
-					-- lightStateIndicator.Primary[priMode].Label, 
-					schema[priChannel][priMode].Label or priMode, 
-					-- #lightStateIndicator.PrimaryArray, 
-					#schema[priChannel], 
-					-- lightStateIndicator.PrimaryMap[priMode] or 0,
-					schema[priChannel][priMode].Index or 0,
-					priStyle,
+				if ( showSecondary ) then
+					local secStyle = 1
+					if ( secMode == "OFF" ) then secStyle = 0 end
+					secMode = (schema[secChannel] or {})[secMode] or {}
 
-					secMode.Label or target.CurrentModes[secChannel], 
-					#(schema[secChannel] or {}) or 0, 
-					secMode.Index or 0,
-					secStyle,
-					indicatorComponent
-				)
+					nextH = 64
+					HUD.LightStageIndicator( ScrW() - 150 - 4, nextY, 150, 
+						-- lightStateIndicator.Primary[priMode].Label, 
+						schema[priChannel][priMode].Label or priMode, 
+						-- #lightStateIndicator.PrimaryArray, 
+						#schema[priChannel], 
+						-- lightStateIndicator.PrimaryMap[priMode] or 0,
+						schema[priChannel][priMode].Index or 0,
+						priStyle,
 
-			else
-				nextH = 40
-				HUD.LightStageIndicatorSingle( ScrW() - 150 - 4, nextY, 150,
-					schema[priChannel][priMode].Label, 
-					-- 3, 
-					#schema[priChannel], 
-					schema[priChannel][priMode].Index or 0,
-					priStyle
-				)
+						secMode.Label or target.CurrentModes[secChannel], 
+						#(schema[secChannel] or {}) or 0, 
+						secMode.Index or 0,
+						secStyle,
+						indicatorComponent
+					)
 
+				else
+					nextH = 40
+					HUD.LightStageIndicatorSingle( ScrW() - 150 - 4, nextY, 150,
+						schema[priChannel][priMode].Label, 
+						-- 3, 
+						#schema[priChannel], 
+						schema[priChannel][priMode].Index or 0,
+						priStyle
+					)
+
+				end
+
+				nextY = ( nextY + nextH + margin )
 			end
-
-			nextY = ( nextY + nextH + margin )
-
 			-- if ( schema[secChannel] )
 
 			

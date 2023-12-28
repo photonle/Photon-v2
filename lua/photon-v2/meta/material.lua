@@ -22,7 +22,7 @@ local textureParams = {
 ---@class PhotonMaterial : PhotonMaterialProperties
 ---@field MaterialName string
 ---@field IsGenerated boolean
----@field Version number
+---@field Version number This is not supported server-side.
 local material = exmeta.New()
 
 material.Shader = "UnlitGeneric"
@@ -59,10 +59,12 @@ function material.New( data, asNew )
 
 	result:GenerateCreationName()
 
-	if ( Photon2.Materials.Ready ) then
-		result:Generate()
-	else
-		Photon2.Materials.Queue[result.Name] = result
+	if CLIENT then
+		if ( Photon2.Materials.Ready ) then
+			result:Generate()
+		else
+			Photon2.Materials.Queue[result.Name] = result
+		end
 	end
 
 	return result
@@ -71,7 +73,7 @@ end
 ---@param name string
 ---@return PhotonMaterial
 function material.Get( name )
-	if SERVER then return {} end
+	if SERVER then return nil end
 	if ( Photon2.Materials.Ready ) then
 		return Photon2.Materials.Index[name]
 	else
@@ -211,6 +213,8 @@ function material:Update( data, asNew )
 	self.Mipmaps = data.Mipmaps
 	self.Smooth = data.Smooth
 	
+	if SERVER then return self end
+
 	if ( Photon2.Materials.Ready ) then
 		if ( asNew or not self.IsGenerated ) then
 			self:Generate( asNew )

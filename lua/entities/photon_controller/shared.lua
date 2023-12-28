@@ -184,6 +184,9 @@ function ENT:InitializeShared()
 
 	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
 
+	self.CurrentSelections = {}
+	self.Schema = {}
+
 	--self.CurrentConfiguration = {}
 	-- self.EquipmentConfiguration = {}
 	self:SetupChannels()
@@ -227,7 +230,8 @@ function ENT:SetupChannels()
 end
 
 function ENT:SetChannelMode( channel, state )
-
+	state = state or "OFF"
+	
 	local oldState = self:GetNW2String("Photon2:CS:" .. channel, "OFF" )
 
 	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
@@ -587,8 +591,9 @@ function ENT:SetupBodyGroup( id )
 end
 
 function ENT:SetupSubMaterial( id )
-	-- if CLIENT then return end
+	if SERVER then return end
 	local data = self.Equipment.SubMaterials[id]
+	-- if ( string.StartWith( data.Material, "!" ) and SERVER ) then return end
 	-- printf( "Setting up SubMaterial [%s]", id )
 	local index = data.Id
 	local material = data.Material
@@ -772,6 +777,8 @@ function ENT:SetupProfile( name, isReload )
 	
 	self.Equipment = profile.Equipment
 
+	-- This block is for static equipment which is technically
+	-- supported but also deprecated and should be removed.
 	if ( not profile.EquipmentSelections ) then
 		-- Setup normal components
 		for id, equipment in pairs( self.Equipment.Components ) do
@@ -1061,6 +1068,6 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 end
 
 function ENT:GetSirenSelection( number )
-	if ( not self.CurrentProfile.Siren ) then return nil end
+	if ( not self.CurrentProfile or not self.CurrentProfile.Siren ) then return nil end
 	return self.CurrentProfile.Siren[number]
 end
