@@ -176,11 +176,13 @@ function ENT:InitializeShared()
 	self.VirtualComponents = {}
 	self.Props = {}
 	self.UIComponents = {}
+	self.SubMaterials = {}
 
 	self.ComponentArray = {}
 	self.VirtualComponentArray = {}
 	self.PropArray = {}
 	self.UIComponentArray = {}
+	self.SubMaterialArray = {}
 
 	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
 
@@ -598,6 +600,7 @@ function ENT:SetupSubMaterial( id )
 	local index = data.Id
 	local material = data.Material
 	self:GetParent():SetSubMaterial( index, material )
+	self.SubMaterials[id] = data
 end
 
 function ENT:SetupInteractionSound( id )
@@ -667,6 +670,12 @@ function ENT:RemoveAllProps()
 	end
 end
 
+function ENT:RemoveAllSubMaterials()
+	for id, subMaterial in pairs( self.SubMaterials ) do
+		self:RemoveSubMaterialByIndex( id )
+	end
+end
+
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
 	if (IsValid(self.Components[index])) then
@@ -699,8 +708,19 @@ function ENT:RemoveEquipmentPropByIndex( index )
 	self.Props[index] = nil
 end
 
+function ENT:RemoveSubMaterialByIndex( index )
+	local parent = self:GetParent()
+	if ( not IsValid( parent ) ) then return end
+	if ( self.SubMaterials[index] ) then
+		parent:SetSubMaterial( self.SubMaterials[index].Id, nil )
+	end
+	self.SubMaterials[index] = nil
+end
+
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:AddEquipment( equipmentTable )
+	if ( not equipmentTable ) then return end
+
 	local components = equipmentTable.Components
 	for i=1, #components do
 		self:SetupComponent( components[i] )
@@ -731,6 +751,35 @@ function ENT:AddEquipment( equipmentTable )
 	end
 end
 
+function ENT:RefreshParentSubMaterials()
+	for i=1, #self.SubMaterialArray do
+		self:GetParent():SetSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
+	end
+end
+
+function ENT:RefreshParentMaterialsOnNextFrame()
+	local hookName = "PreRender"
+	local hookId = "Photon2:" .. tostring( SysTime() )
+	-- Should work 80% of the time
+	hook.Add( hookName, hookId, function()
+		hook.Remove( hookName, hookId )
+		if ( not IsValid( self ) ) then return end
+		self:RefreshParentSubMaterials()
+		-- If not, then probably now...
+		timer.Simple( 0.1, function()
+			if ( not IsValid( self ) ) then return end
+			self:RefreshParentSubMaterials()
+			-- And once again...
+			timer.Simple( 1, function()
+				if ( not IsValid( self ) ) then return end
+				self:RefreshParentSubMaterials()
+			end)
+		end)
+	end)
+	
+	
+end
+
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:RemoveEquipment( equipmentTable )
 	-- print("Controller is removing an equipment table...")
@@ -746,6 +795,9 @@ function ENT:RemoveEquipment( equipmentTable )
 	for i=1, #equipmentTable.Props do
 		self:RemoveEquipmentPropByIndex(equipmentTable.Props[i])
 	end
+	for i=1, #equipmentTable.SubMaterials do
+		self:RemoveSubMaterialByIndex(equipmentTable.SubMaterials[i])
+	end
 end
 
 ---@param name? string Name of profile to load.
@@ -759,6 +811,7 @@ function ENT:SetupProfile( name, isReload )
 
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
+	self:RemoveAllSubMaterials()
 
 	if ( istable( profile.InteractionSounds ) ) then
 		for class, name in pairs( profile.InteractionSounds ) do
@@ -815,6 +868,7 @@ function ENT:SetupProfile( name, isReload )
 	self:SetupComponentArrays()
 
 	self:ApplySubMaterials( profile.SubMaterials )
+	self:RefreshParentMaterialsOnNextFrame()
 
 	if CLIENT then
 		self:ProcessSelectionsString(self:GetSelectionsString())
@@ -869,6 +923,15 @@ function ENT:SetupComponentArrays()
 	end
 	for id, prop in pairs( self.Props ) do
 		propsArray[#propsArray+1] = prop
+	end
+
+	-- Setup sub-materials
+	local subMaterialArray = self.SubMaterialArray
+	for i=1, #subMaterialArray do
+		subMaterialArray[i] = nil
+	end
+	for id, subMaterial in pairs( self.SubMaterials ) do
+		subMaterialArray[#subMaterialArray+1] = subMaterial
 	end
 end
 

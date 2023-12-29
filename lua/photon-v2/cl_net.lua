@@ -65,3 +65,28 @@ function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 	end
 end
 hook.Add("EntityNetworkedVarChanged", "Photon2:OnNetworkVarChanged", Photon2.cl_Network.OnNetworkVarChanged)
+
+function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
+	if ( ent:GetClass() == "photon_controller" ) then
+		if ( not ent.IsPhotonController ) then return end
+		if ( shouldTransmit ) then
+			if ( ent.IsSuspended ) then
+				ent:OnResumed()
+			end
+		else
+			if ( not ent.IsSuspended ) then
+				ent:OnSuspended()
+			end
+		end
+	end
+
+end
+hook.Add( "NotifyShouldTransmit", "Photon2:NotifyShouldTransmit", Photon2.cl_Network.OnUpdateTransmitState )
+
+function Photon2.cl_Network.OnSubMaterialChange( len )
+	local ent = net.ReadEntity() --[[@as PhotonController]]
+	if ( IsValid( ent ) and ( ent.IsPhotonController ) ) then
+		ent:RefreshParentMaterialsOnNextFrame()
+	end
+end
+net.Receive( "Photon2:OnSubMaterialChange", Photon2.cl_Network.OnSubMaterialChange )

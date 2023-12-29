@@ -52,3 +52,9 @@ function ENT:PlayerExitedLinkedVehicle( ply, vehicle )
 	self:UpdateVehicleBraking( false )
 	self:UpdateVehicleReversing( false )
 end
+
+function ENT:ParentSubMaterialChanged()
+	if ( self.LastSubMaterialUpdate and self.LastSubMaterialUpdate >= CurTime() ) then return end
+	Photon2.sv_Network.NotifySubMaterialChange( self )
+	self.LastSubMaterialUpdate = CurTime()
+end

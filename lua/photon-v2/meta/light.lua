@@ -130,6 +130,14 @@ function Light:AddInput( sequenceId, priority )
 	self:SortInputActions()
 end
 
+function Light:ReapplyState()
+	if ( self.StateProxy ) then 
+		self:UpdateProxyState()
+		return
+	end
+	self:OnStateChange( self.States[self.CurrentStateId] )
+end
+
 -- Registers what state the element should have in a sequence.
 -- When multiple sequences are trying to set its state,
 -- the state to actually apply is determined by the sequence priority.
@@ -147,7 +155,8 @@ function Light:RemoveInput( sequenceId )
 	-- if ( #self.SortedInputActions < 1 ) then self.Deactivate = true end
 end
 
-function Light:UpdateState()
+---@param force boolean If true, forces lights to update their state, even if unchanged (necessary in case of exeternal mutations).
+function Light:UpdateState( force )
 	-- If a light state is not being updated, verify that component supports
 	-- the input channel.
 
@@ -161,7 +170,7 @@ function Light:UpdateState()
 	end
 	if state == "PASS" then state = self.DeactivationState end
 	
-	if (state ~= self.CurrentStateId) then
+	if ( ( state ~= self.CurrentStateId ) or ( force ) ) then
 		self.CurrentStateId = state
 		if ( not self.States[state] ) then
 			error( "StateProxy [" .. tostring( state ) .."] is not defined on child light [" .. tostring( self.Id ) .. "]. Verify that you have all necessary light states configured (COMPONENT.ElementStates)."  )

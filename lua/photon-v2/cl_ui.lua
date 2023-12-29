@@ -603,10 +603,17 @@ surface.CreateFont( "Photon2.UI:Medium", {
 	weight = 100
 } );
 
-surface.CreateFont( "Photon2.UI:Small", {
-	font = "Roboto Bold",
+surface.CreateFont( "Photon2.UI:MediumSmall", {
+	font = "Roboto Black",
 	size = 12,
-	weight = 100
+	weight = 900,
+	additive = true
+} );
+
+surface.CreateFont( "Photon2.UI:Small", {
+	font = "Roboto",
+	size = 11,
+	weight = 900
 } );
 
 surface.CreateFont( "Photon2.UI:ExtraSmall", {
@@ -770,7 +777,7 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 
 	draw.RoundedBox( cornerRadius, x, y, width, 64, bgColor )
 	draw.DrawText( priLabel, "Photon2.UI:Medium", x + 40, y + 8, priLabelColor )
-	draw.DrawText( secLabel, "Photon2.UI:Small", x + 40, y + 43, secLabelColor )
+	draw.DrawText( secLabel, "Photon2.UI:Small", x + 40, y + 44, secLabelColor )
 
 	
 
@@ -904,14 +911,13 @@ function HUD.FunctionsIndicator( x, y, width, height, columns, columnWidth, func
 
 end
 
+-- Draws vehicle name with current input profile below it.
 function HUD.VehicleInfo( x, y, w, h, vehicleName, inputConfigName )
 	local backgroundColor = Color( 64, 64, 64, 200 )
 	draw.RoundedBox( cornerRadius, x, y, w, h, backgroundColor )
 
-	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 5, white )
+	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 7, white )
 	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, Color(255,255,255,100) )
-	-- draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 4, white )
-
 end
 
 ---@param x integer
@@ -991,6 +997,30 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	end
 	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
 end
+
+function HUD.KeyBindHint( x, y, keys )
+	local key
+	for i=1, #keys do
+		key = keys[i]
+		draw.RoundedBox( 4, x, y, 28, 20, Color( 64, 64, 64, 200 ) )
+		draw.DrawText( key[1], "Photon2.UI:MediumSmall", x + 14, y + 4, white, TEXT_ALIGN_CENTER )
+		draw.DrawText( key[2], "Photon2.UI:MediumSmall", x + 34, y + 4, white, TEXT_ALIGN_LEFT )
+		y = y + 22
+	end
+	
+end
+
+
+-- Displays basic input 
+function HUD.BasicInputHint()
+	HUD.KeyBindHint( 190, 220, {
+		{ "F", "EMERGENCY LIGHTS" },
+		{ "ALT", "LIGHT MODE" },
+		{ "R", "SIREN" },
+		{ "1-4", "SIREN TONE" },
+	})
+end
+
 
 ---@param x integer
 ---@param y integer
@@ -1108,7 +1138,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 			local schema = target:GetInputSchema()
 			-- local priMode = target.CurrentModes[lightStateIndicator.PrimaryChannel]
-			
+
 			if ( schema[priChannel] ) then 
 				local priData = schema[priChannel][priMode]
 
@@ -1278,6 +1308,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:ExtraSmall", ScrW() - 4, nextY, white, TEXT_ALIGN_RIGHT )
 			draw.DrawText( "DO NOT REDISTRIBUTE", "Photon2.UI:ExtraSmall", ScrW() - 4, nextY + 11, white, TEXT_ALIGN_RIGHT )
 
+			HUD.BasicInputHint()
+			
 		cam.End2D()
 		render.PopRenderTarget()
 		lastUpdate = CurTime()

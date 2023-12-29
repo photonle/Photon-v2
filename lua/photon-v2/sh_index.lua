@@ -461,11 +461,24 @@ function Photon2.Index.CompileInputConfiguration( config )
 		end
 	end
 
+	-- Build map that indexes by command
+	local commandMap = {}
+	for key, commands in pairs( binds ) do
+		for i, command in ipairs( commands ) do
+			commandMap[command.Command] = commandMap[command.Command] or {}
+			commandMap[command.Command][#commandMap[command.Command]+1] = {
+				Key = key,
+				Modifiers = command.Modifiers
+			}
+		end
+	end
+
 	return {
 		Name = config.Name,
 		Title = config.Title,
 		Author = config.Author,
-		Binds = binds
+		Binds = binds,
+		Map = commandMap
 	}
 end
 

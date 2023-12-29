@@ -1,10 +1,10 @@
 
 ---@class Entity
-local ent = FindMetaTable("Entity")
+local ENTITY = FindMetaTable( "Entity" )
 
 
 ---@return PhotonController
-function ent:GetPhotonController()
+function ENTITY:GetPhotonController()
 	return self:GetNW2Entity( "Photon2:Controller" )
 end
 
@@ -12,7 +12,7 @@ end
 -- the entity itself does not. Is necessary for custom vehicle bases where
 -- the driver is technically in a seat and the seat is not the intended target.
 ---@return PhotonController|nil
-function ent:GetPhotonControllerFromAncestor()
+function ENTITY:GetPhotonControllerFromAncestor()
 	if ( IsValid( self:GetPhotonController() ) ) then
 		return self:GetPhotonController()
 	elseif ( IsValid( self:GetParent() ) ) then
@@ -21,11 +21,11 @@ function ent:GetPhotonControllerFromAncestor()
 	return nil
 end
 
-function ent:SetPhotonController( controller )
+function ENTITY:SetPhotonController( controller )
 	self:SetNW2Entity( "Photon2:Controller", controller )
 end
 
-function ent:LookUpBoneOrError( boneName )
+function ENTITY:LookUpBoneOrError( boneName )
 	local result = self:LookupBone( boneName )
 	if ( not result ) then
 		ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( self:GetModel() .. "]."))
@@ -33,8 +33,23 @@ function ent:LookUpBoneOrError( boneName )
 	return result or -1
 end
 
-function ent:IsPhoton2Seat()
+function ENTITY:IsPhoton2Seat()
 	if ( self:GetClass() == "prop_vehicle_prisoner" ) then
 		return true
+	end
+end
+
+if SERVER then
+	local VEHICLE = FindMetaTable("Vehicle")
+
+	VEHICLE.PhotonPreviousSetSubMaterial = VEHICLE.PhotonPreviousSetSubMaterial or VEHICLE.SetSubMaterial or ENTITY.SetSubMaterial
+
+	function VEHICLE:SetSubMaterial( index, material )
+		if ( IsValid( self:GetPhotonController() ) ) then
+			self:GetPhotonController():ParentSubMaterialChanged()
+			VEHICLE.PhotonPreviousSetSubMaterial( self, index, material )
+		else
+			VEHICLE.PhotonPreviousSetSubMaterial( self, index, material )
+		end
 	end
 end

@@ -5,6 +5,7 @@ local printf = Photon2.Debug.PrintF
 util.AddNetworkString( "Photon2:SetControllerChannelState" )
 util.AddNetworkString( "Photon2:SetControllerSelection" )
 util.AddNetworkString( "Photon2:SetPlayerInputControllerTarget")
+util.AddNetworkString( "Photon2:OnSubMaterialChange")
 
 function Photon2.sv_Network.OnSetControllerChannelState(len, ply)
 	local controller = net.ReadEntity() --[[@as sv_PhotonController]]
@@ -42,4 +43,10 @@ function Photon2.sv_Network.NotifyPlayerInputController( ply, controller )
 	net.Start( "Photon2:SetPlayerInputControllerTarget" )
 		net.WriteEntity( controller )
 	net.Send( ply )
+end
+
+function Photon2.sv_Network.NotifySubMaterialChange( controller )
+	net.Start( "Photon2:OnSubMaterialChange" )
+		net.WriteEntity( controller )
+	net.SendPVS( controller:GetParent():GetPos() )
 end

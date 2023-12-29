@@ -12,6 +12,12 @@
 	P R O J E C T   S T A R T   D A T E :   F E B R U A R Y   1 4 T H ,   2 0 2 3
 	B A S E D   O N   P H O T O N .   P R O J E C T   S T A R T :   S E P T E M B E R   2 0 1 3
 
+	C O D E D   B Y :   S C H M A L
+
+	
+--]]
+
+--[[
 	Photon v2 Initialization
 --]]
 

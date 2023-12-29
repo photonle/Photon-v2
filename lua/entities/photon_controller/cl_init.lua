@@ -54,12 +54,15 @@ function ENT:DoInitializationStandby()
 
 		queue = nil
 	end
+	
+	self:RefreshParentSubMaterials()
 end
 
 -- Called when player is believed to have left the vehicle's PVS.
 function ENT:OnSuspended()
 	self.IsSuspended = true
 	self:RemoveAllComponents()
+	self:RemoveAllProps()
 end
 
 
