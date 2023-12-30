@@ -755,6 +755,13 @@ function ENT:RefreshParentSubMaterials()
 	for i=1, #self.SubMaterialArray do
 		self:GetParent():SetSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
 	end
+	for i=1, #self.VirtualComponentArray do
+		for elementIndex, element in pairs( self.VirtualComponentArray[i].Elements ) do
+			if ( element and element.Class == "Sub" ) then
+				element--[[@as PhotonElementSub]]:ReapplyState()
+			end
+		end
+	end
 end
 
 function ENT:RefreshParentMaterialsOnNextFrame()
