@@ -365,12 +365,9 @@ end
 
 -- Compiles a configuration with Library inheritance support
 function Photon2.Index.CompileInputConfiguration( config )
+	print("Compiling input configuration: " .. tostring( config.Name ))
 	local inheritancePath = nil
-	-- local config = table.Copy( Photon2.Library.InputConfigurations:Get( configName ) )
-	-- local config = table.Copy( Photon2.Library.InputConfigs[configName] )
-	-- if ( not config ) then 
-	-- 	error( "Configuration name [" .. tostring( configName ) .. "] not found.")
-	-- end
+
 	local binds = config.Binds
 	if ( config.Inherit ) then
 		local searching = true
@@ -401,7 +398,8 @@ function Photon2.Index.CompileInputConfiguration( config )
 	end
 	
 	local keys = config.Binds
-	local binds = {}
+	
+	binds = {}
 
 	-- Loads commands into the configuration
 	for key, commands in pairs( keys ) do
@@ -463,15 +461,25 @@ function Photon2.Index.CompileInputConfiguration( config )
 
 	-- Build map that indexes by command
 	local commandMap = {}
-	for key, commands in pairs( binds ) do
+	for key, commands in pairs( config.Binds ) do
 		for i, command in ipairs( commands ) do
 			commandMap[command.Command] = commandMap[command.Command] or {}
+			local displayKey = ""
+			if ( command.Modifiers ) then
+				for _i, modifier in ipairs( command.Modifiers ) do
+					displayKey = displayKey .. Photon2.ClientInput.GetKeyPrintName( modifier ) .. " + "
+				end
+			end
+			displayKey = displayKey .. Photon2.ClientInput.GetKeyPrintName( key )
 			commandMap[command.Command][#commandMap[command.Command]+1] = {
 				Key = key,
-				Modifiers = command.Modifiers
+				Modifiers = command.Modifiers,
+				Display = displayKey
 			}
 		end
 	end
+
+	PrintTable( commandMap )
 
 	return {
 		Name = config.Name,

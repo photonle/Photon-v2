@@ -9,6 +9,7 @@ LoadPhoton2MetaFiles()
 
 include("cl_ui.lua")
 include("cl_ui_skin.lua")
+include("cl_hud.lua")
 include("sh_component_builder.lua")
 include("cl_render_light_projected.lua")
 include("cl_render_light_2d.lua")

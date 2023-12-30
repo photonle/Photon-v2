@@ -281,6 +281,29 @@ function Photon2.ClientInput.GetProfilePreference( profileName )
 end
 
 hook.Add( "InitPostEntity", "Photon2.ClientInput:Initialize", Photon2.ClientInput.Initialize )
+
+local keyRenames = {
+	["LEFTARROW"] = "◄",
+	["RIGHTARROW"] = "►",
+	["UPARROW"] = "▲",
+	["DOWNARROW"] = "▼",
+	["KP_END"] = "NUM1",
+	["KP_DOWNARROW"] = "NUM2",
+	["KP_PGDN"] = "NUM3",
+	["KP_LEFTARROW"] = "NUM4",
+	["KP_5"] = "NUM5",
+	["KP_RIGHTARROW"] = "NUM6",
+	["KP_DOWNARROW"] = "NUM7",
+	["KP_DOWNARROW"] = "NUM8",
+	["KP_DOWNARROW"] = "NUM9",
+	["KP_DOWNARROW"] = "NUM0",
+}
+
+function Photon2.ClientInput.GetKeyPrintName( keyNum )
+	local name = input.GetKeyName( keyNum )
+	return string.upper( keyRenames[name] or name )
+end
+
 --[[
 		==== ILLUM ====
 		misc: hold for flood, release for takedown?

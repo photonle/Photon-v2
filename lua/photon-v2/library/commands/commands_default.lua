@@ -1,7 +1,8 @@
 
 Photon2.RegisterCommand({
 	Name = "toggle_warning_lights",
-	Title = "Lights On/Off", 
+	Title = "Lights On/Off",
+	Alt = "Emergency Lights",
 	Category = "Emergency",
 	Description = "When warning lights are off, turns them on to MODE2. When warning lights are on (any mode), turns them off.",
 	OnPress = {
@@ -368,6 +369,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Name = "activate_lights_siren",
 	Title = "Siren On/Off",
+	Alt = "Siren",
 	Category = "Emergency",
 	Description = "Activates warning lights (MODE3) and toggles the siren (T1).",
 	OnPress = {

@@ -17,6 +17,7 @@ file.CreateDir("photon_v2")
 file.CreateDir("photon_v2/user")
 file.CreateDir("photon_v2/library")
 
+-- This is done manually because some files have dependencies on others
 function LoadPhoton2MetaFiles()
 	exmeta.LoadFile("photon-v2/meta/library_type.lua")
 

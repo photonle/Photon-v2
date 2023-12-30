@@ -752,7 +752,9 @@ function ENT:AddEquipment( equipmentTable )
 end
 
 function ENT:RefreshParentSubMaterials()
+	-- print("REFRESHING PARENT SUB MATERIALS @ " .. tostring( CurTime() ) )
 	for i=1, #self.SubMaterialArray do
+		-- printf("ID: %s Material: %s", self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material)
 		self:GetParent():SetSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
 	end
 	for i=1, #self.VirtualComponentArray do
@@ -783,8 +785,6 @@ function ENT:RefreshParentMaterialsOnNextFrame()
 			end)
 		end)
 	end)
-	
-	
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -872,14 +872,14 @@ function ENT:SetupProfile( name, isReload )
 		self:SetupSelections()
 	end
 
+	if CLIENT then
+		self:ProcessSelectionsString(self:GetSelectionsString())
+	end
+
 	self:SetupComponentArrays()
 
 	self:ApplySubMaterials( profile.SubMaterials )
 	self:RefreshParentMaterialsOnNextFrame()
-
-	if CLIENT then
-		self:ProcessSelectionsString(self:GetSelectionsString())
-	end
 end
 
 function ENT:SetSchema( schema )
