@@ -436,6 +436,8 @@ local hintDuration = 7
 local drawHeight = 0
 local hudStartTime = 0
 
+local hintInfoVisible = false
+
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
@@ -448,7 +450,10 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	hudMaterial:SetTexture( "$basetexture", hudRT )
 	if ( CurTime() >= (lastUpdate + 0.05) ) then
 
-		if hudStartTime == 0 then hudStartTime = CurTime() end
+		if hudStartTime == 0 then 
+			hudStartTime = CurTime()
+			hintInfoVisible = true
+		end
 
 		for k, v in pairs( target.UIComponents ) do
 			if ( v.PrintName == "Photon 2 HUD" ) then
@@ -492,8 +497,10 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				local priStyle = 1
 				if ( priMode == "OFF" ) then priStyle = 0 end
 
-				addHintKey( keyHints, "toggle_warning_lights" )
-				addHintKey( keyHints, "cycle_warning_lights" )
+				if ( hintInfoVisible ) then
+					addHintKey( keyHints, "toggle_warning_lights" )
+					addHintKey( keyHints, "cycle_warning_lights" )
+				end
 
 				local showSecondary = false
 
@@ -542,8 +549,10 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				-- local siren1 = Photon2.Index.Sirens[siren1Name]
 				local siren1 = Photon2.GetSiren(siren1Name)
 				-- local sirenTones1 = siren1
-				addHintKey( keyHints, "activate_lights_siren" )
-				addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
+				if ( hintInfoVisible ) then
+					addHintKey( keyHints, "activate_lights_siren" )
+					addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
+				end
 				
 				-- Siren 1 Indicator
 				local sirenDisplay
@@ -643,6 +652,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			else
 				-- prevents HUD from moving
 				nextY = ( nextY + 32 + margin )
+				hintInfoVisible = false
 			end
 			-- HUD.BasicInputHint()
 			drawHeight = nextY

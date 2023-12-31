@@ -1,16 +1,20 @@
 PHOTON2_UNSET = "<UNSET>"
+PHOTON2_STUDIO_ENABLED = false
 
 include("sh_util.lua")
 include("sh_tonemapping.lua")
 include("sh_functions.lua")
 include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
-include("sh_schema.lua")
 include("sh_vcmod.lua")
 
 ---@return PhotonColor
 function PhotonColor( r, g, b, a )
 	return _PhotonColor.New( r, g, b, a )
+end
+
+if ( game.SinglePlayer() ) then
+	PHOTON2_STUDIO_ENABLED = true
 end
 
 file.CreateDir("photon_v2")

@@ -293,10 +293,10 @@ local keyRenames = {
 	["KP_LEFTARROW"] = "NUM4",
 	["KP_5"] = "NUM5",
 	["KP_RIGHTARROW"] = "NUM6",
-	["KP_DOWNARROW"] = "NUM7",
-	["KP_DOWNARROW"] = "NUM8",
-	["KP_DOWNARROW"] = "NUM9",
-	["KP_DOWNARROW"] = "NUM0",
+	["KP_HOME"] = "NUM7",
+	["KP_UPARROW"] = "NUM8",
+	["KP_PGUP"] = "NUM9",
+	["KP_INS"] = "NUM0",
 }
 
 function Photon2.ClientInput.GetKeyPrintName( keyNum )

@@ -233,7 +233,7 @@ function Photon2.UI.PopulateMenuBar()
 		local menu = Photon2.UI.MenuBar
 		
 
-		local inputConfigOption = menu:AddOption( "Open Input Configuration", function()
+		local inputConfigOption = menu:AddOption( "Open Control Options", function()
 			local form = vgui.Create ( "Photon2UIInputConfiguration" )
 		end)
 
@@ -241,11 +241,17 @@ function Photon2.UI.PopulateMenuBar()
 			local form = vgui.Create ( "Photon2UIDesktop" )
 		end)
 
-		local openStudioOption = menu:AddOption("Open Photon Studio", function()
-			Photon2.Studio:Initialize()
+		local openWelcome = menu:AddOption( "Open Welcome Menu", function()
+			local form = vgui.Create ( "Photon2UIWelcome" )
+			-- form:SetAlpha( 0 )
+			-- form:AlphaTo( 255, 2, 0, function()
+			-- 	form:MakePopup()
+			-- end)
 		end)
 
-		local inputProfileOption = menu:AddOption("Input Profiles")
+		menu:AddSpacer()
+
+		local inputProfileOption = menu:AddOption("Input Control Profiles")
 		local inputProfileMenu = inputProfileOption:AddSubMenu()
 		inputProfileMenu:SetDeleteSelf( false )
 
@@ -285,8 +291,13 @@ function Photon2.UI.PopulateMenuBar()
 		-- 	end)
 		-- end
 
-		
+		if not PHOTON2_STUDIO_ENABLED then return end
 
+		menu:AddSpacer()
+
+		local openStudioOption = menu:AddOption("Open Photon Studio", function()
+			Photon2.Studio:Initialize()
+		end)
 
 		local debugOption = menu:AddOption( "Developer" )
 		local debugMenu = debugOption:AddSubMenu()
@@ -430,15 +441,15 @@ list.Set("DesktopWindows", "Photon2", {
 	end
 })
 
-
-list.Set("DesktopWindows", "PhotonStudio", {
-	title = "Photon Studio",
-	icon = "photon/ui/photon_studio_icon_64.png",
-	init = function( icon, window )
-		Photon2.Studio:Setup( window )
-	end
-})
-
+if PHOTON2_STUDIO_ENABLED then
+	list.Set("DesktopWindows", "PhotonStudio", {
+		title = "Photon Studio",
+		icon = "photon/ui/photon_studio_icon_64.png",
+		init = function( icon, window )
+			Photon2.Studio:Setup( window )
+		end
+	})
+end
 --[[
 		Photon Studio Window
 --]]
@@ -447,6 +458,7 @@ Photon2.Studio = Photon2.Studio or {}
 
 local Studio = Photon2.Studio
 function Studio:Initialize()
+	if not ( PHOTON2_STUDIO_ENABLED ) then return end
 	if (IsValid(self.Window)) then
 		self.Window:Remove()
 	end
@@ -455,6 +467,7 @@ function Studio:Initialize()
 end
 
 function Studio:Setup( frame )
+	if ( not PHOTON2_STUDIO_ENABLED ) then frame:Remove() return end
 	frame:SetSize( 388, 512 )
 	frame:SetPos( ScrW() - 450, 100 )
 	frame:SetSkin("PhotonStudio")
@@ -506,70 +519,71 @@ if (reloadStudioOnSave) then
 	end
 end
 
-PHOTON2_CL_CVAR_SRCBLEND = CreateClientConVar( "ph2_render_blend_srcblend", "0", true, false, "Source Blend Mode", 0, 10 )
-PHOTON2_CL_CVAR_DSTBLEND = CreateClientConVar( "ph2_render_blend_dstblend", "0", true, false, "Destination Blend Mode", 0, 10 )
-PHOTON2_CL_CVAR_BLENDFUNC = CreateClientConVar( "ph2_render_blend_blendfunc", "0", true, false, "Blend Function", 0, 4 )
-PHOTON2_CL_CVAR_SRCBLENDA = CreateClientConVar( "ph2_render_blend_srcblendalpha", "0", true, false, "Source Blend Mode", 0, 10 )
-PHOTON2_CL_CVAR_DSTBLENDA = CreateClientConVar( "ph2_render_blend_dstblendalpha", "0", true, false, "Destination Blend Mode", 0, 10 )
-PHOTON2_CL_CVAR_ABLENDFUNC = CreateClientConVar( "ph2_render_blend_blendfuncalpha", "0", true, false, "Blend Function", 0, 4 )
+if ( PHOTON2_STUDIO_ENABLED ) then
+	PHOTON2_CL_CVAR_SRCBLEND = CreateClientConVar( "ph2_render_blend_srcblend", "0", true, false, "Source Blend Mode", 0, 10 )
+	PHOTON2_CL_CVAR_DSTBLEND = CreateClientConVar( "ph2_render_blend_dstblend", "0", true, false, "Destination Blend Mode", 0, 10 )
+	PHOTON2_CL_CVAR_BLENDFUNC = CreateClientConVar( "ph2_render_blend_blendfunc", "0", true, false, "Blend Function", 0, 4 )
+	PHOTON2_CL_CVAR_SRCBLENDA = CreateClientConVar( "ph2_render_blend_srcblendalpha", "0", true, false, "Source Blend Mode", 0, 10 )
+	PHOTON2_CL_CVAR_DSTBLENDA = CreateClientConVar( "ph2_render_blend_dstblendalpha", "0", true, false, "Destination Blend Mode", 0, 10 )
+	PHOTON2_CL_CVAR_ABLENDFUNC = CreateClientConVar( "ph2_render_blend_blendfuncalpha", "0", true, false, "Blend Function", 0, 4 )
 
-local blendFunctions = {
-	{ "BLENDFUNC_ADD" 				, 0 },
-	{ "BLENDFUNC_SUBTRACT" 			, 1 },
-	{ "BLENDFUNC_REVERSE_SUBTRACT" 	, 2 },
-	{ "BLENDFUNC_MIN" 				, 3 },
-	{ "BLENDFUNC_MAX" 				, 4 }
-}
+	local blendFunctions = {
+		{ "BLENDFUNC_ADD" 				, 0 },
+		{ "BLENDFUNC_SUBTRACT" 			, 1 },
+		{ "BLENDFUNC_REVERSE_SUBTRACT" 	, 2 },
+		{ "BLENDFUNC_MIN" 				, 3 },
+		{ "BLENDFUNC_MAX" 				, 4 }
+	}
 
-local blendOptions = {
-	{ "BLEND_ZERO", 				0 },
-	{ "BLEND_ONE",					1 },
-	{ "BLEND_DST_COLOR",			2 },
-	{ "BLEND_ONE_MINUS_DST_COLOR",	3 },
-	{ "BLEND_SRC_ALPHA",				4 },
-	{ "BLEND_ONE_MINUS_SRC_ALPHA",	5 },
-	{ "BLEND_DST_ALPHA",			6 },
-	{ "BLEND_ONE_MINUS_DST_ALPHA",	7 },
-	{ "BLEND_SRC_ALPHA_SATURATE",	8 },
-	{ "BLEND_SRC_COLOR",			9 },
-	{ "BLEND_ONE_MINUS_SRC_COLOR",	10 }
-}
+	local blendOptions = {
+		{ "BLEND_ZERO", 				0 },
+		{ "BLEND_ONE",					1 },
+		{ "BLEND_DST_COLOR",			2 },
+		{ "BLEND_ONE_MINUS_DST_COLOR",	3 },
+		{ "BLEND_SRC_ALPHA",				4 },
+		{ "BLEND_ONE_MINUS_SRC_ALPHA",	5 },
+		{ "BLEND_DST_ALPHA",			6 },
+		{ "BLEND_ONE_MINUS_DST_ALPHA",	7 },
+		{ "BLEND_SRC_ALPHA_SATURATE",	8 },
+		{ "BLEND_SRC_COLOR",			9 },
+		{ "BLEND_ONE_MINUS_SRC_COLOR",	10 }
+	}
 
-local blendControllerOptions = {
-	{ "Source Blend", "ph2_render_blend_srcblend", blendOptions },
-	{ "Destination Blend", "ph2_render_blend_dstblend", blendOptions },
-	{ "Blend Function", "ph2_render_blend_blendfunc", blendFunctions },
-	{ "Source Blend Alpha", "ph2_render_blend_srcblendalpha", blendOptions },
-	{ "Destination Blend Alpha", "ph2_render_blend_dstblendalpha", blendOptions },
-	{ "Alpha Blend Function", "ph2_render_blend_blendfuncalpha", blendFunctions },
-}
+	local blendControllerOptions = {
+		{ "Source Blend", "ph2_render_blend_srcblend", blendOptions },
+		{ "Destination Blend", "ph2_render_blend_dstblend", blendOptions },
+		{ "Blend Function", "ph2_render_blend_blendfunc", blendFunctions },
+		{ "Source Blend Alpha", "ph2_render_blend_srcblendalpha", blendOptions },
+		{ "Destination Blend Alpha", "ph2_render_blend_dstblendalpha", blendOptions },
+		{ "Alpha Blend Function", "ph2_render_blend_blendfuncalpha", blendFunctions },
+	}
 
----@param panel DForm
-function Photon2.UI.BuildBlendingController( panel )
-	panel:Clear()
-	for _, option in pairs( blendControllerOptions ) do
-		local combobox, label = panel:ComboBox( option[1], option[2] )
-		combobox:GetParent():SetHeight( 32 )
-		for __, innerOption in pairs( option[3] ) do
-			combobox:AddChoice( innerOption[1], innerOption[2] )
+	---@param panel DForm
+	function Photon2.UI.BuildBlendingController( panel )
+		panel:Clear()
+		for _, option in pairs( blendControllerOptions ) do
+			local combobox, label = panel:ComboBox( option[1], option[2] )
+			combobox:GetParent():SetHeight( 32 )
+			for __, innerOption in pairs( option[3] ) do
+				combobox:AddChoice( innerOption[1], innerOption[2] )
+			end
+			local wang, nlabel = panel:NumSlider( "", option[2], 0, #option[3]-1, 0 )
 		end
-		local wang, nlabel = panel:NumSlider( "", option[2], 0, #option[3]-1, 0 )
 	end
+
+	function Photon2.UI.GetBlendingConfiguration()
+		return PHOTON2_CL_CVAR_SRCBLEND:GetInt(),
+			PHOTON2_CL_CVAR_DSTBLEND:GetInt(),
+			PHOTON2_CL_CVAR_BLENDFUNC:GetInt(),
+			PHOTON2_CL_CVAR_SRCBLENDA:GetInt(),
+			PHOTON2_CL_CVAR_DSTBLENDA:GetInt(),
+			PHOTON2_CL_CVAR_ABLENDFUNC:GetInt()
+	end
+
+	hook.Add( "PopulateToolMenu", "Photon2:ToolMenu", function() 
+		spawnmenu.AddToolMenuOption( "Utilities", "Photon 2", "photon2_utilities_blendining", "Blending Options", "", "", Photon2.UI.BuildBlendingController )
+	end )
 end
-
-function Photon2.UI.GetBlendingConfiguration()
-	return PHOTON2_CL_CVAR_SRCBLEND:GetInt(),
-		PHOTON2_CL_CVAR_DSTBLEND:GetInt(),
-		PHOTON2_CL_CVAR_BLENDFUNC:GetInt(),
-		PHOTON2_CL_CVAR_SRCBLENDA:GetInt(),
-		PHOTON2_CL_CVAR_DSTBLENDA:GetInt(),
-		PHOTON2_CL_CVAR_ABLENDFUNC:GetInt()
-end
-
-hook.Add( "PopulateToolMenu", "Photon2:ToolMenu", function() 
-	spawnmenu.AddToolMenuOption( "Utilities", "Photon 2", "photon2_utilities_blendining", "Blending Options", "", "", Photon2.UI.BuildBlendingController )
-end )
-
 PHOTON2_CL_CVAR_F3CURSORTOGGLE = CreateClientConVar( "ph2_f3cursor_enable", "0", true, false, "Toggle cursor with F3", 0, 1 )
 
 function Photon2.UI.ToggleCursorRelease()

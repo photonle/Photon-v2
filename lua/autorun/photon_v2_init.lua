@@ -14,7 +14,7 @@
 
 	C O D E D   B Y :   S C H M A L
 
-	
+
 --]]
 
 --[[
@@ -24,7 +24,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.14 (BETA)"
+Photon2.Version = "2.0.15 (BETA)"
 
 --[[
 	Compatability

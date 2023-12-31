@@ -365,7 +365,6 @@ end
 
 -- Compiles a configuration with Library inheritance support
 function Photon2.Index.CompileInputConfiguration( config )
-	print("Compiling input configuration: " .. tostring( config.Name ))
 	local inheritancePath = nil
 
 	local binds = config.Binds
@@ -478,8 +477,6 @@ function Photon2.Index.CompileInputConfiguration( config )
 			}
 		end
 	end
-
-	PrintTable( commandMap )
 
 	return {
 		Name = config.Name,
