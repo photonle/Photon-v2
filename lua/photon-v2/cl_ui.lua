@@ -373,6 +373,7 @@ hook.Add( "PopulateMenuBar", "Photon2:PopulateMenuBar", Photon2.UI.OnPopulateMen
 
 properties.Add("photon2_equipment", {
 	MenuLabel = "Equipment",
+	MenuIcon = "photon/ui/photon_2_icon_16.png",
 	Order = 60,
 	Filter = function(self, ent, ply)
 		if (not IsValid( ent:GetPhotonController() )) then

@@ -52,10 +52,14 @@ function ENT:DoInitializationStandby()
 			self:OnChannelModeChanged( channel, mode, "" )
 		end
 
-		queue = nil
+		Photon2.cl_Network.ControllerQueue[self] = nil
 	end
-	
+
 	self:RefreshParentSubMaterials()
+
+	timer.Simple( 2, function()
+		Photon2.cl_Network.ControllerQueue[self] = nil
+	end)
 end
 
 -- Called when player is believed to have left the vehicle's PVS.

@@ -76,6 +76,8 @@ local helpTextBottom =
 Press "Dismiss for Now" to close this window until next game load. 
 
 Press "Close" to close this window and never see it on game load again. (You can always re-open it from the Photon 2 menus later.)
+
+Note: This window only appears automatically in single-player mode.
 ]]
 
 local function addContentLabel( panel, text )
@@ -257,7 +259,7 @@ function PANEL:Setup()
 
 	self:SetupTabWelcome( self:AddTab( "Welcome" ) )
 	self:SetupTabStarter( self:AddTab( "Starter Pack" ) )
-	if ( Photon2.IsVCModInstalled )  then self:SetupTabVCMod( self:AddTab( "VCMod" ) ) end
+	if ( Photon2.IsVCModInstalled() )  then self:SetupTabVCMod( self:AddTab( "VCMod" ) ) end
 	self:SetupTabControls( self:AddTab( "Controls" ) )
 	self:SetupTabHelp( self:AddTab( "Help & Support" ) )
 
@@ -273,7 +275,7 @@ function PANEL:Setup()
 	dismissButton:SetWidth( 128 )
 	function dismissButton:DoClick()
 		this:Close()
-		cookie.Set( "Photon2.WelcomeScreenSeen", "1" )
+		cookie.Set( "Photon2.WelcomeScreenSeen", 1 )
 	end
 
 	local laterButton = vgui.Create( "EXDButton", bottomButtons )
@@ -283,7 +285,7 @@ function PANEL:Setup()
 	laterButton:DockMargin( 0, 0, 4, 0 )
 	function laterButton:DoClick()
 		this:Close()
-		cookie.Set( "Photon2.WelcomeScreenSeen", "0" )
+		cookie.Set( "Photon2.WelcomeScreenSeen", 0 )
 	end
 
 	if ( self.SelectedTabIndex ) then self:NavigateToTabIndex( self.SelectedTabIndex ) end
@@ -308,8 +310,9 @@ end
 
 derma.DefineControl( class, "Photon 2 welcome window.", PANEL, base )
 
-hook.Add( "InitPostEntity", "Photon2.ShowWelcomeScreen", function()
-	if not ( game.SinglePlayer() and ( cookie.GetNumber( "Photon2.WelcomeScreenSeen", 0 ) ~= 0 ) ) then return end
+hook.Add( "HUDPaint", "Photon2.ShowWelcomeScreen", function()
+	hook.Remove("HUDPaint", "Photon2.ShowWelcomeScreen")
+	if ( ( not game.SinglePlayer() ) or ( cookie.GetNumber( "Photon2.WelcomeScreenSeen", 0 ) ~= 0 ) ) then return end
 	local window = vgui.Create( "Photon2UIWelcome" )
 	window:SetAlpha( 0 )
 	window:AlphaTo( 255, 3, 1, function()

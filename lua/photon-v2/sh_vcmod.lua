@@ -1,8 +1,10 @@
 -- VCMod compatability functions
 
 -- If VCMod appears to be installed
-Photon2.IsVCModInstalled = true
--- Photon2.IsVCModInstalled = not ( VC_AU_Ver == nil )
+-- Photon2.IsVCModInstalled = true
+function Photon2.IsVCModInstalled()
+	return not ( VC_AU_Ver == nil )
+end
 
 Photon2.VCMod = Photon2.VCMod or {}
 
