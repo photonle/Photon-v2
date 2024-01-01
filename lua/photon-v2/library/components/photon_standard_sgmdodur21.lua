@@ -83,15 +83,17 @@ COMPONENT.Segments = {
 			[1] = "1:DRL 16:W"
 		 },
 		 Sequences = {
-			["ON"] =  sequence():Alternate( 0, 1, 8 )
-		 }
+			["ON"] = { 1 },
+			["FLASH"] =  sequence():Alternate( 0, 1, 8 )
+		}
 	},
 	DRL_L = {
 		Frames = {
 			[1] = "2:DRL 15:W"
-		 },
-		 Sequences = {
-			["ON"]  = sequence():Alternate( 1, 0, 8 )
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["FLASH"]  = sequence():Alternate( 1, 0, 8 )
 		 }
 	},
 	Brake_R = {
@@ -115,23 +117,26 @@ COMPONENT.Segments = {
 			[1] = "7:Tail_Red 13:R"
 		 },
 		 Sequences = {
-			["ON"] = sequence():Alternate( 0, 1, 8 )
-		 }
+			["ON"] = { 1 },
+			["FLASH"] = sequence():Alternate( 0, 1, 8 )
+		}
 	},
 	Tail_R = {
 		Frames = {
 			[1] = "8:Tail_Red 14:R"
-		 },
-		 Sequences = {
-			["ON"]  = sequence():Alternate( 0, 1, 8 )
-		 }
-	},
-	Tail_Center = {
-		Frames = {
-			[1] = "9:Tail_Red 10:Tail_Red 11:R 12:R"
-		 },
-		 Sequences = {
-			["ON"] = sequence():Alternate( 0, 1, 8 )
+		},
+		Sequences = {
+			 ["ON"] = { 1 },
+			 ["FLASH"]  = sequence():Alternate( 0, 1, 8 )
+			}
+		},
+		Tail_Center = {
+			Frames = {
+				[1] = "9:Tail_Red 10:Tail_Red 11:R 12:R"
+			},
+			Sequences = {
+			 ["ON"] = { 1 },
+			["FLASH"] = sequence():Alternate( 0, 1, 8 )
 		 }
 	},
 	Reverse_L = {
@@ -175,12 +180,26 @@ COMPONENT.Inputs = {
 		}
 	},
 	["Emergency.Warning"] = {
-		["MODE3"] = {
+		["MODE1"] = {
 			["DRL_R"] = "ON",
 			["DRL_L"] = "ON",
 			["Tail_L"] = "ON",
 			["Tail_R"] = "ON",
 			["Tail_Center"] = "ON",
+		},
+		["MODE2"] = {
+			["DRL_R"] = "FLASH",
+			["DRL_L"] = "FLASH",
+			["Tail_L"] = "FLASH",
+			["Tail_R"] = "FLASH",
+			["Tail_Center"] = "FLASH",
+		},
+		["MODE3"] = {
+			["DRL_R"] = "FLASH",
+			["DRL_L"] = "FLASH",
+			["Tail_L"] = "FLASH",
+			["Tail_R"] = "FLASH",
+			["Tail_Center"] = "FLASH",
 		}
 	}
 }

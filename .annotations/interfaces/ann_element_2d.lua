@@ -1,0 +1,95 @@
+---@meta
+
+---@class PhotonElement2DStateProperties : PhotonElementPropertiesIntensityTransitions
+---@field SourceFillColor? PhotonBlendColor
+---@field SourceDetailColor? PhotonBlendColor
+---@field GlowColor? PhotonBlendColor
+---@field ShapeGlowColor? PhotonBlendColor
+---@field InnerGlowColor? PhotonBlendColor
+---@field SubtractiveMid? PhotonBlendColor
+---@field SourceIntensity? PhotonBlendColor
+---@field BlendColor? RGB
+
+---@class PhotonElement2DProperties : PhotonElementPositionalProperties, PhotonElement2DStateProperties
+---@field Width? number Width of light source.
+---@field Height? number Height of light source.
+---@field Scale? number Size of glow effect.
+---@field Ratio? number Ratio (W:H) of glow effect. Adjusts horizontal spread.
+---@field VisibilityRadius? number Radius of visibility. Higher numbers make it more likely to draw through solid objects.
+---@field FlipHorizontal? boolean Flips the draw texture on the horizontal axis.
+---@field FlipVertical? boolean Flips the draw texture on the vertical axis.
+---@field LightMatrix? Vector[] Draws additional light emission points at each vector.
+---@field LightMatrixScaleMultiplier? number Scales the size of the glow effect used on each light matrix point.
+---@field Shape? string|IMaterial Light's shape material.
+---@field Detail? string|IMaterial Light's detail material.
+---@field DrawSource? boolean If light source materials should be drawn.
+---@field DrawGlow? boolean If light glow effect should be drawn.
+---@field DrawLightPoints? boolean (Unknown)
+---@field Persist? boolean Forces the light to render when its visibility is zero. Can be used if glow effects cause undesirable bleeding.
+---@field InnerSpread? number Scale of inner glow effects.
+---@field ForwardVisibilityOffset? number Offsets the point where the light's visibility is calculated from.
+---@field ForwardBloomOffset? number Offsets the point where the glow effects are drawn from.
+---@field States? table<string, PhotonElement2DStateProperties> Light states.
+---@field Top? Vector Top-left draw coordinate.
+---@field Right? Vector Top-right draw coordinate.
+---@field Bottom? Vector Bottom-right draw coordinate.
+---@field Left? Vector Bottom-left draw coordinate.
+
+---@class PhotonElement2DEntry : PhotonElement2DProperties
+---@field [1] string Element template name.
+---@field [2] Vector Local position.
+---@field [3] Angle Local angles.
+
+---@class PhotonElement2D : PhotonElement, PhotonElement2DProperties
+---@field PixVisHandle pixelvis_handle_t Internal property.
+---@field UseBasicPlacement boolean (Default = `true`) Signifies that the light placement is static and simply relative to its component.
+---@field LocalPosition Vector Element's local position.
+---@field LocalAngles Angle Element's local angles.
+---@field Rotation Angle
+---@field QuadRotation Angle
+---@field Intensity number Light's current (actual) intensity.
+---@field TargetIntensity number Light's target intensity.
+---@field Position Vector World position of the light. Set and updated automatically.
+---@field EffectPosition Vector World position to render the light effects at. Except in special cirumstances, this is equal to Light.Position.
+---@field Angles Angle World angles of the light. Set and updated automatically.
+---@field ShouldDraw boolean
+---@field Matrix VMatrix
+---@field ViewNormal Vector
+---@field ViewDotRight number
+---@field ViewDotUp number
+---@field LightMatrixEnabled boolean Internal property. Will set to true if a LightMatrix is defined.
+---@field WorldLightMatrix Vector[] Internal property. Stores the matrix points' world positions.
+---@field MaterialsLoaded boolean If true, material string names should be materials.
+---@field ViewDot number
+---@field TranslatedLocalAngles Angle
+---@field ScalableProperties string[] Properties affected by the component's scale.
+---@field RightNormal Vector
+---@field UpNormal Vector
+---@field ForwardNormal Vector
+---@field Visibility number Pixel-visible score.
+---@field States table<string, PhotonElement2DState> 2D light states.
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field Initialize fun(self: PhotonElement2D, id: number, component: PhotonLightingComponent): PhotonElement2D
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field NewTemplate fun(data: PhotonElement2DStateProperties): PhotonElement2D
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field Activate fun(self: PhotonElement2D)
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field DeactivateNow fun(self: PhotonElement2D)
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field DoPreRender fun(self: PhotonElement2D): PhotonElement2D Does pre-render.
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field OnStateChange fun(self: PhotonElement2D, state: PhotonElement2DState)
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field SetLightScale fun(self: PhotonElement2D, scale: number)
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field New fun(light: PhotonElement2D, template?: PhotonElement2D)
+---@source ../lua/photon-v2/meta/light_2d.lua
+---@field OnLoad fun() Runs when file is executed.
+---@field SourceFillColor? PhotonElementColor
+---@field SourceDetailColor? PhotonElementColor
+---@field GlowColor? PhotonElementColor
+---@field ShapeGlowColor? PhotonElementColor
+---@field InnerGlowColor? PhotonElementColor
+---@field SubtractiveMid? PhotonElementColor
+---@field SourceIntensity? PhotonElementColor

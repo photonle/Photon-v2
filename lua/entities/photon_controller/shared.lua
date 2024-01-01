@@ -304,10 +304,10 @@ function ENT:QueryModeFromInputSchema( channel, query, param )
 		end
 	elseif ( query == "LAST_MINUS" ) then
 		param = tonumber( param ) or 0
-		result = schema[math.clamp( #schema - param, 1, #schema )]
+		result = schema[math.Clamp( #schema - param, 1, #schema )]
 	elseif ( query == "FIRST_PLUS" ) then
 		param = tonumber( param ) or 0
-		result = schema[math.clamp( 1 + param, 1, #schema )]
+		result = schema[math.Clamp( 1 + param, 1, #schema )]
 	end
 	return result.Mode
 end

@@ -102,7 +102,8 @@ exui.IconSizes = { 16, 24, 32, 48, 56, 60, 64, 96 }
 exui.materialIconSizes = exui.materialIconSizes or {}
 
 function exui.LoadMaterialIconsIndex()
-	exui.MaterialIconsIndex = util.JSONToTable(file.Read("lua/photon-v2/exlib/ui/mdi-index.json", "GAME"))
+	exui.MaterialIconsIndex = util.JSONToTable( EXUI_MDI_MAP_JSON )
+	-- exui.MaterialIconsIndex = util.JSONToTable(file.Read("lua/photon-v2/exlib/ui/mdi-index.json", "GAME"))
 end
 
 function exui.GetMDIFont( size )
