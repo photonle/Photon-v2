@@ -247,7 +247,7 @@ end
 
 ---@param channel string
 ---@return string
-function ENT:GetChannelState( channel )
+function ENT:GetChannelMode( channel )
     return self:GetNW2String( "Photon2:CS:" .. channel, "OFF" )
 end
 

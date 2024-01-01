@@ -41,15 +41,15 @@ function ENT:DoInitializationStandby()
 	if ( queue ) then
 		
 		if ( queue.Profile ) then
-			self:SetupProfile( queue.Profile )
+			self:SetupProfile( self:GetProfileName() )
 		end
 
 		if ( queue.SelectionString ) then
-			self:ProcessSelectionsString( queue.SelectionsString )
+			self:ProcessSelectionsString( self:GetSelectionsString() )
 		end
 
 		for channel, mode in pairs( queue.Channels ) do
-			self:OnChannelModeChanged( channel, mode, "" )
+			self:OnChannelModeChanged( channel, self:GetChannelMode( channel ), "" )
 		end
 
 		Photon2.cl_Network.ControllerQueue[self] = nil

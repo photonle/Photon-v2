@@ -51,7 +51,6 @@ function PANEL:Init()
 		if (state) then
 
 		else
-			print("FOCUS LOST")
 			if this:GetToggle() == true then
 				if (t.menuOpen) then
 					t:RequestFocus()

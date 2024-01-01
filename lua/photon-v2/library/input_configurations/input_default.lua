@@ -120,10 +120,7 @@ Photon2.RegisterInputConfiguration({
 		[KEY_Y] = {
 			{ Command = "airhorn" }
 		},
-		[KEY_B] = {
-			{ Command = "vehicle_lights" } 
-		},
-		[KEY_H] = { 
+		[KEY_L] = {
 			{ Command = "vehicle_lights" } 
 		},
 		[KEY_N] = {
