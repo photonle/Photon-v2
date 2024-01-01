@@ -5,7 +5,7 @@ Photon2.HUD = Photon2.HUD or {
 local hudMaterial = Material("photon/ui/hud")
 
 local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512, 
-0, MATERIAL_RT_DEPTH_NONE, 32768 + 2048 + 4 + 8 + 1, 0, IMAGE_FORMAT_RGBA8888 )
+0, MATERIAL_RT_DEPTH_NONE, 32768 + 2048 + 4 + 8 + 512, 0, IMAGE_FORMAT_RGBA8888 )
 
 -- local hudRTId = 
 local illumRearOff = Material("photon/ui/hud_icon_illum_rear_off.png")
