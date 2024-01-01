@@ -78,7 +78,7 @@ COMPONENT.ElementGroups = {
 	["Intersector"] = { 1, 2, 3, 4, 5, 6, 7 }
 }
 
-COMPONENT.StateMap = "[W] Intersector"
+COMPONENT.StateMap = "[R] Intersector"
 
 COMPONENT.Segments = {
 	Intersector = {
@@ -104,6 +104,9 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
+			Intersector = "FLASH1"
+		},
+		["MODE2"] = {
 			Intersector = "FLASH1"
 		},
 		["MODE3"] = {

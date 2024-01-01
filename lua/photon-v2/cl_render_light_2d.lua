@@ -84,7 +84,7 @@ local drawDetail 		= true
 local drawShape 		= true
 local drawGlow 			= true
 local drawBloom 		= true
-local drawSubtractive 	= true
+local drawSubtractive 	= GetConVar( "ph2_enable_subtractive_sprites" )
 local drawAdditive 		= true
 
 
@@ -142,7 +142,7 @@ function Photon2.RenderLight2D.Render()
 				light = activeLights[i] --[[@as PhotonElement2D]]
 				if ( not light or not light.ShouldDraw or not light.DrawLightPoints ) then continue end
 				
-				if (drawSubtractive) then
+				if (drawSubtractive:GetBool()) then
 					render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 					render.SetMaterial( mat1 )
 					render.DrawSprite( light.EffectPosition, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, light.GlowColor )

@@ -370,7 +370,92 @@ VEHICLE.Equipment = {
 				}
 			}
 		}
-	}
+	},
+	{
+		Category = "Standard",
+		Options = {
+			{
+				Option = "Standard Lighting",
+				VirtualComponents = {
+					{
+						Component = "photon_standard_sgmfpiu20"
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Grille",
+		Options = {
+			{
+				Option = "Intersectors",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -11, 116.2, 48 ),
+						Angles = Angle( 0, 7, 12 ),
+						Scale = 1
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 11, 116.2, 48 ),
+						Angles = Angle( 0, -7, 12 ),
+						Scale = 1
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Hide-Aways",
+		Options = {
+			{
+				Option = "SOS Undercover",
+				Components = {
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( -41.4, 90, 51.5 ),
+						Angles = Angle( 0, 74, -76 ),
+						Scale = 0.4
+					},
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( 41.4, 90, 51.5 ),
+						Angles = Angle( 0, -74, -76 ),
+						Scale = 0.4
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Mirror",
+		Options = {
+			{
+				Option = "Intersectors (Surface)",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -45.5, 34.5, 57.3 ),
+						Angles = Angle( 1, 90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 45.5, 34.5, 57.3 ),
+						Angles = Angle( -1, -90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+				}
+			}
+		}
+	},
 	-- {
 	-- 	Category = "Forward Lightbar",
 	-- 	Options = {

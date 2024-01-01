@@ -159,3 +159,75 @@ function DynamicLighting.DrawDebug()
 		end
 	cam.End3D()
 end
+
+local defaultBloomOptions = {
+	HighPerformance = {
+		AdditiveSourcePasses 	= 1,
+		AdditiveOuterPasses 	= 1,
+		AdditiveInnerPasses 	= 1,
+
+		OuterBlurPasses 		= 1,
+		OuterBlurX 				= 1,
+		OuterBlurY 				= 1,
+
+		InnerBlurPasses 		= 1,
+		InnerBlurX 				= 1,
+		InnerBlurY 				= 1
+	},
+	Default = {
+		AdditiveSourcePasses 	= 2,
+		AdditiveOuterPasses 	= 2,
+		AdditiveInnerPasses 	= 4,
+
+		OuterBlurPasses 		= 1,
+		OuterBlurX 				= 5,
+		OuterBlurY 				= 5,
+
+		InnerBlurPasses 		= 1,
+		InnerBlurX 				= 1,
+		InnerBlurY 				= 1
+	},
+	Vivid = {
+		AdditiveSourcePasses 	= 4,
+		AdditiveOuterPasses 	= 4,
+		AdditiveInnerPasses 	= 8,
+
+		OuterBlurPasses 		= 1,
+		OuterBlurX 				= 5,
+		OuterBlurY 				= 5,
+
+		InnerBlurPasses 		= 4,
+		InnerBlurX 				= 1,
+		InnerBlurY 				= 1
+	},
+	Max = {
+		AdditiveSourcePasses 	= 4,
+		AdditiveOuterPasses 	= 16,
+		AdditiveInnerPasses 	= 16,
+
+		OuterBlurPasses 		= 1,
+		OuterBlurX 				= 5,
+		OuterBlurY 				= 5,
+
+		InnerBlurPasses 		= 8,
+		InnerBlurX 				= 0.5,
+		InnerBlurY 				= 0.5
+	},
+}
+
+function Photon2.Render.ApplyBloomSettings( options )
+	if ( isstring( options ) ) then options = defaultBloomOptions[options] end
+	if ( not options ) then Error( "Invalid bloom settings: " .. tostring( options ) ); return end
+
+	GetConVar( "ph2_bloom_add_src_passes" ):SetInt( options.AdditiveSourcePasses )
+	GetConVar( "ph2_bloom_add_outer_passes" ):SetFloat( options.AdditiveOuterPasses )
+	GetConVar( "ph2_bloom_add_inner_passes" ):SetFloat( options.AdditiveInnerPasses )
+
+	GetConVar( "ph2_bloom_outer_blur_passes" ):SetInt( options.OuterBlurPasses )
+	GetConVar( "ph2_bloom_outer_blur_x" ):SetFloat( options.OuterBlurX )
+	GetConVar( "ph2_bloom_outer_blur_y" ):SetFloat( options.OuterBlurY )
+
+	GetConVar( "ph2_bloom_inner_blur_passes" ):SetInt( options.InnerBlurPasses )
+	GetConVar( "ph2_bloom_inner_blur_x" ):SetFloat( options.InnerBlurX )
+	GetConVar( "ph2_bloom_inner_blur_y" ):SetFloat( options.InnerBlurY )
+end

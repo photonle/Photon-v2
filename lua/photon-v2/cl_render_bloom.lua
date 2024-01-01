@@ -12,19 +12,17 @@ local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_N
 
 local bloomEnabled = true
 
-local additiveDrawMeshSourcePasses = 2
-local additiveDrawBloomOuterPasses = 2
-local additiveDrawBloomInnerPasses = 4
+local additiveDrawMeshSourcePasses = GetConVar( "ph2_bloom_add_src_passes" )
+local additiveDrawBloomOuterPasses = GetConVar( "ph2_bloom_add_outer_passes" )
+local additiveDrawBloomInnerPasses = GetConVar( "ph2_bloom_add_inner_passes" )
 
--- local bloomOuterEnabled		= true
-local bloomOuterBlurPasses 	= 1
-local bloomOuterBlurX 		= 5
-local bloomOuterBlurY 		= bloomOuterBlurX
+local bloomOuterBlurPasses 	= GetConVar( "ph2_bloom_outer_blur_passes" )
+local bloomOuterBlurX 		= GetConVar( "ph2_bloom_outer_blur_x" )
+local bloomOuterBlurY 		= GetConVar( "ph2_bloom_outer_blur_y" )
 
--- local bloomInnerEnabled		= true
-local bloomInnerBlurPasses 	= 1
-local bloomInnerBlurX		= 1
-local bloomInnerBlurY		= 1
+local bloomInnerBlurPasses 	= GetConVar( "ph2_bloom_inner_blur_passes" )
+local bloomInnerBlurX		= GetConVar( "ph2_bloom_inner_blur_x" )
+local bloomInnerBlurY		= GetConVar( "ph2_bloom_inner_blur_y" )
 
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive )
@@ -68,10 +66,10 @@ function Photon2.RenderBloom.Render( additive )
 	
 	render.CopyRenderTargetToTexture( rtBloomOuter )
 	render.CopyRenderTargetToTexture( rtBloomInner )
-	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX, bloomOuterBlurY, bloomOuterBlurPasses )
+	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX:GetFloat(), bloomOuterBlurY:GetFloat(), bloomOuterBlurPasses:GetInt() )
 	render.CopyRenderTargetToTexture( rtBloomOuter )
 	
-	render.BlurRenderTarget( rtBloomInner, bloomInnerBlurX, bloomInnerBlurY, bloomInnerBlurPasses )
+	render.BlurRenderTarget( rtBloomInner, bloomInnerBlurX:GetFloat(), bloomInnerBlurY:GetFloat(), bloomInnerBlurPasses:GetInt() )
 
 
 	render.SetRenderTarget( scene )
@@ -108,25 +106,25 @@ end
 function Photon2.RenderBloom.DrawAdditive()
 
 	
-
 	additiveMaterial:SetTexture( "$basetexture", rtBloomOuter )
 	render.SetMaterial( additiveMaterial )
-	for i=1, additiveDrawBloomOuterPasses do
+	for i=1, additiveDrawBloomOuterPasses:GetInt() do
 		render.DrawScreenQuad()
 	end
 	
 	additiveMaterial:SetTexture( "$basetexture", rtBloomInner )
-	for i=1, additiveDrawBloomInnerPasses do
+	for i=1, additiveDrawBloomInnerPasses:GetInt() do
 		render.DrawScreenQuad()
 	end
 
 	additiveMaterial:SetTexture( "$basetexture", rtMeshSource )
-	for i=1, additiveDrawMeshSourcePasses do
+	for i=1, additiveDrawMeshSourcePasses:GetInt() do
 		render.DrawScreenQuad()
 	end
 end
 
 hook.Add( "PreDrawViewModels", "Photon2.RenderBloom:Draw", function( depth, sky )
+	if ( ( #Photon2.RenderLightMesh.Active < 1 ) and ( #Photon2.RenderLight2D.Active < 1 ) ) then return end
 	Photon2.RenderBloom.Render( true )
 	Photon2.RenderBloom.DrawAdditive()
 end )

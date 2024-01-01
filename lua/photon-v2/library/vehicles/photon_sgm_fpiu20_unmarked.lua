@@ -13,26 +13,13 @@ VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Equipment = {}
-
-if CLIENT then
-	-- mpdcSkin.Material:SetTexture("$basetexture", Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "VertexLitGeneric noclamp smooth" ):GetTexture( "$basetexture" ))
-end
-
-VEHICLE.SubMaterials = {
-	-- [20] = mpdcSkin.Name,
-	-- [3] = "photon/common/blank"
-	-- [20] = Material( "schmal/liveries/sgm_fpiu20/mpdc.png", "vertexlitgeneric"):GetName(),
-}
+VEHICLE.Siren = { "fedsig_smartsiren", "fedsig_touchmaster_delta" }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
 		Category = "License Plate",
 		Options = {
-			{
-				Option = "None",
-			},
 			{
 				Option = "Visible",
 				Props = {
@@ -43,8 +30,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 80 ),
 						Scale = 1.2,
 						SubMaterials = {
-							-- [1] = "",
-							[1] = "photon/license/plates/ph2_co_gvt"
+							[1] = "",
 							-- [1] = "photon/license/plates/mpdc_demo"
 							-- [1] = "!ph2_mpdc_demo"
 						},
@@ -64,27 +50,15 @@ VEHICLE.Equipment = {
 							["face"] = "face_circular",
 							["mount"] = "mount"
 						}
-					},
-					-- {
-					-- 	Model = "models/schmal/sgm_fpiu20_win.mdl",
-					-- 	Position = Vector(),
-					-- 	Angles = Angle(0, -90, 0)
-					-- }
+					}
 				},
 				Components = {
 					{
-						Component = "siren_prototype",
-						Position = Vector(0, 0, 100),
-						Angles = Angle(1.5, -90, 0),
-						Scale = 3,
+						Component = "photon_sos_mpf4_lic_h",
+						Angles = Angle( 0, -90, 0 ),
+						Position = Vector( 0, -125, 49 ),
+						Scale = 0.96
 					}
-					-- {
-					-- 	Component = "photon_sos_mpf4_lic_h",
-					-- 	Angles = Angle( 0, -90, 0 ),
-					-- 	Position = Vector( 0, -125, 49 ),
-					-- 	Scale = 0.96
-					-- }
-
 				}
 			}
 		}
@@ -102,30 +76,6 @@ VEHICLE.Equipment = {
 				Option = "Pushbar",
 				BodyGroups = {
 					{ BodyGroup = "pushbar", Value = 1 }
-				}
-			}
-		}
-	},
-	{
-		Category = "Windows",
-		Options = {
-			{
-				Option = "Default",
-				SubMaterials = {
-					{ Id = 3, Material = nil }
-				}
-			},
-			{
-				Option = "Modified",
-				SubMaterials = {
-					{ Id = 3, Material = "photon/common/blank" }
-				},
-				Props = {
-					{
-						Model = "models/schmal/sgm_fpiu20_win.mdl",
-						Position = Vector(),
-						Angles = Angle(0, -90, 0)
-					}
 				}
 			}
 		}
@@ -171,7 +121,118 @@ VEHICLE.Equipment = {
 			},
 			{ Option = "None" },
 		}
-	}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-11, 110, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 1
+					},
+					{
+						Component = "photon_siren_secondary",
+						Position = Vector(11, 110, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 2
+					},
+				}
+			}
+		}
+	},
+	{
+		Category = "Standard",
+		Options = {
+			{
+				Option = "Standard Lighting",
+				VirtualComponents = {
+					{
+						Component = "photon_standard_sgmfpiu20"
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Grille",
+		Options = {
+			{
+				Option = "Intersectors",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -11, 116.2, 48 ),
+						Angles = Angle( 0, 7, 12 ),
+						Scale = 1
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 11, 116.2, 48 ),
+						Angles = Angle( 0, -7, 12 ),
+						Scale = 1
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Hide-Aways",
+		Options = {
+			{
+				Option = "SOS Undercover",
+				Components = {
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( -41.4, 90, 51.5 ),
+						Angles = Angle( 0, 74, -76 ),
+						Scale = 0.4
+					},
+					{
+						Component = "photon_sos_undercover",
+						Position = Vector( 41.4, 90, 51.5 ),
+						Angles = Angle( 0, -74, -76 ),
+						Scale = 0.4
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Mirror",
+		Options = {
+			{
+				Option = "Intersectors (Surface)",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -45.5, 34.5, 57.3 ),
+						Angles = Angle( 1, 90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 45.5, 34.5, 57.3 ),
+						Angles = Angle( -1, -90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+				}
+			}
+		}
+	},
 	-- {
 	-- 	Category = "Standard",
 	-- 	Options = {

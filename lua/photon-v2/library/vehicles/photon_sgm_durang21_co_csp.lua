@@ -12,7 +12,22 @@ VEHICLE.SubMaterials = {
 	[20] = "photon/common/blank", -- black_chrome
 }
 
+VEHICLE.Siren = { "whelen_gamma" }
+
 VEHICLE.Equipment = {
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				UIComponents = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}
+	},
 	{
 		Category = "Controller Sound",
 		Options = {
@@ -185,14 +200,6 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "fuck",
-		Options = {
-			{
-				Option = "fuck"
-			}
-		}
-	},
-	{
 		Category = "Spotlight",
 		Options = {
 			{
@@ -226,6 +233,23 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 2 ),
 						Scale = .9
 					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-13, 123, 33.2),
+						Angles = Angle(1.5, -90, -180),
+						Scale = 1.4,
+						Siren = 1
+					},
 				}
 			}
 		}

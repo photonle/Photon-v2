@@ -1017,13 +1017,20 @@ function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
 	-- print("Controller:OnSelectionChanged() - Selections:")
 	-- PrintTable( self.CurrentProfile.EquipmentSelections )
+	if ( not self.CurrentProfile.EquipmentSelections[categoryIndex] ) then
+		print("Category index " .. tostring( categoryIndex ) .. " is invalid. Vehicle respawn may be necessary.")
+		return
+	end
 	self.CurrentInputSchema = nil
-	local category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
+	local category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map 
 	if ( istable(category[self.CurrentSelections[categoryIndex]]) ) then 
+		category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
 		self:RemoveEquipment(category[self.CurrentSelections[categoryIndex]])
 	end
 	self.CurrentSelections[categoryIndex] = optionIndex
-	self:AddEquipment(category[optionIndex])
+	if ( category ) then
+		self:AddEquipment(category[optionIndex])
+	end
 	self:SetupComponentArrays()
 end
 

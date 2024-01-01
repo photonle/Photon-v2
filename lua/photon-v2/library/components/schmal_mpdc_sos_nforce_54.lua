@@ -37,18 +37,22 @@ COMPONENT.Segments = {
 
 COMPONENT.Inputs = {
 	["Emergency.Marker"] = {
-		["CRUISE"] = {
-			All = UNSET,
+		["ON"] = {
+			-- All = UNSET,
 			MPDC = "CRUISE"
 		}
 	},
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			All = UNSET,
-			MPDC = "MODE1",
-		},
-		["MODE3"] = {
-			MPDC = "MODE3"
-		}
+		-- ["MODE1"] = {
+		-- 	-- All = UNSET,
+		-- 	MPDC = "MODE1",
+		-- },
+		-- ["MODE2"] = {
+		-- 	All = UNSET,
+		-- 	MPDC = "MODE1",
+		-- },
+		-- ["MODE3"] = {
+		-- 	MPDC = "MODE1"
+		-- }
 	}
 }

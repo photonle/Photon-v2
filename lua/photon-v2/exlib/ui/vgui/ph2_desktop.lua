@@ -39,12 +39,14 @@ function PANEL:Setup()
 	end
 
 	self:SetupMainPage()
+	self:SetupRenderOptions()
 
 	local propertySheet = vgui.Create( "DPropertySheet", container )
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	self.Tabs = propertySheet
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
+	propertySheet:AddSheet( "Rendering", self.RenderPage )
 end
 
 function PANEL:Init()
@@ -65,6 +67,24 @@ function PANEL:SetupMenuBar()
 	-- local menubar = self:GetOrBuildMenuBar()
 	
 	-- local fileMenu = menubar:AddMenu("File")
+end
+
+function PANEL:SetupRenderOptions()
+	local panel = vgui.Create( "DScrollPanel", self )
+	self.RenderPage = panel
+	panel:Dock( FILL )
+	local label = vgui.Create( "DLabel", panel )
+	label:Dock( TOP )
+	panel:DockMargin( 8, 0, 8, 4 )
+	label:SetWrap( true )
+	label:SetAutoStretchVertical( true )
+	label:SetText( "Rendering options can be accessed from the top menu bar (press and hold C) under the Photon 2 menu, then the Render Options selection. More rendering options are being added and they will eventually be accessible from this menu.")
+	
+	local img = vgui.Create( "DImage", panel )
+	img:SetPos( 8, 60 )
+	img:SetImage( "photon/ui/misc/render_options.png")
+	img:SetWidth( 203 )
+	img:SetHeight( 202 )
 end
 
 function PANEL:SetupMainPage()

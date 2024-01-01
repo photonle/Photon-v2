@@ -8,6 +8,13 @@ local util_pixvis = util.PixelVisible
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
+local mpEnabledConVar = GetConVar( "ph2_enable_projectedtextures_mp" )
+local game = game
+
+local function renderEnabled()
+	return game.SinglePlayer() or mpEnabledConVar:GetBool()
+end
+
 ---@type PhotonElementProjected 
 local Light = exmeta.New()
 
@@ -122,6 +129,7 @@ function Light:Activate()
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true
 	manager.Active[#manager.Active+1] = self
+	if ( not renderEnabled() ) then return end
 	local projectedTexture = ProjectedTexture()
 	projectedTexture:SetTexture( self.Texture )
 	projectedTexture:SetFarZ( self.FarZ )
@@ -146,6 +154,7 @@ function Light:DoPreRender()
 	if ( #self.SortedInputActions < 1 ) and ( self.CurrentStateId == "OFF" ) then self.Deactivate = true end
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return end
+	if ( not renderEnabled() ) then return end
 
 	self:UpdateProxyState()
 

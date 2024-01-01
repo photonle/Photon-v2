@@ -307,6 +307,10 @@ function PANEL:PostAutoRefresh()
 	self:Setup()
 end
 
+function PANEL:DoClose()
+	cookie.Set( "Photon2.WelcomeScreenSeen", 1 )
+	self:Close()
+end
 
 derma.DefineControl( class, "Photon 2 welcome window.", PANEL, base )
 

@@ -158,9 +158,12 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			All = "FLASH_2"
+			All = "ALT"
 		},
 		["MODE2"] = {
+			All = "ALT"
+		},
+		["MODE3"] = {
 			All = "ALT"
 		}
 	},

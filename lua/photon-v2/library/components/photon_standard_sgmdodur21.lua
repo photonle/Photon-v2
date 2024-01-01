@@ -164,8 +164,8 @@ COMPONENT.Inputs = {
 	},
 	["Vehicle.Brake"] = {
 		["BRAKE"] = {
-			["Brake_R"] = "ON",
-			["Brake_L"] = "ON",
+			-- ["Brake_R"] = "ON",
+			-- ["Brake_L"] = "ON",
 		}
 	},
 	["Vehicle.Transmission"] = {

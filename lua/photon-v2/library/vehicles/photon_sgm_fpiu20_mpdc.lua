@@ -34,6 +34,8 @@ VEHICLE.SubMaterials = {
 	[3] = "photon/common/blank"
 }
 
+VEHICLE.Siren = { "sos_nergy400" }
+
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
@@ -315,6 +317,24 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
 					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-11, 115, 38),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 1
+					},
 				}
 			}
 		}

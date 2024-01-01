@@ -35,6 +35,8 @@ VEHICLE.Schema = {
 	}
 }
 
+VEHICLE.Siren = { "fedsig_omega90" }
+
 VEHICLE.Equipment = {
 	{
 		Category = "Livery",
@@ -216,6 +218,23 @@ VEHICLE.Equipment = {
 						Angles = Angle(),
 						Scale = 1.1
 					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-11, 110, 25),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						Siren = 1
+					},
 				}
 			}
 		}
