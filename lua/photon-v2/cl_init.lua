@@ -26,3 +26,29 @@ include("sh_index.lua")
 if CLIENT then
 	hook.Add("Initialize", "Photon2:Initialize", LoadPhoton2MetaFiles)
 end
+
+function Photon2.FreezeFrame()
+	PHOTON2_FREEZE = true
+end
+
+function Photon2.ResumeFrame()
+	PHOTON2_FREEZE = false
+end
+
+function Photon2.NextFrame()
+	for _, ent in pairs(ents.FindByClass("photon_controller")) do
+		ent:DoNextFrame()
+	end
+end
+
+concommand.Add( "ph2_toggle_freeze", function()
+	if ( PHOTON2_FREEZE ) then
+		Photon2.ResumeFrame()
+		return
+	end
+	Photon2.FreezeFrame()
+end)
+
+concommand.Add( "ph2_next_frame", function()
+	Photon2.NextFrame()
+end)

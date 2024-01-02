@@ -12,6 +12,8 @@ COMPONENT.PrintName = [[SoundOff Signal Universal Undercover]]
 
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 
+COMPONENT.States = { "R", "B", "W" }
+
 COMPONENT.Templates = {
 	["2D"] = {
 		Mid = {
@@ -54,6 +56,8 @@ COMPONENT.Elements = {
 
 local sequence = Photon2.SequenceBuilder.New
 
+COMPONENT.StateMap = "[1/2/3] 1"
+
 COMPONENT.Segments = {
 	Undercover = {
 		Frames = {
@@ -72,6 +76,16 @@ COMPONENT.Segments = {
 			-- ["FLASH1"] = sequence():Alternate( 1, 0, 5 )
 			-- ["FLASH1"] = sequence():Flash( 1, 0, 3 ):Add( 0 ):Do( 4 )
 		}
+	},
+	Light = {
+		Frames = {
+			[1] = "1 2 3",
+			[2] = "[W] 1 2 3"
+		},
+		Sequences = {
+			["MARKER"] = { 1 },
+			["SCENE"] = { 2 }
+		}
 	}
 }
 
@@ -82,6 +96,11 @@ COMPONENT.Inputs = {
 		},
 		["MODE2"] = {
 			Undercover = "FLASH1"
+		}
+	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			Light = "MARKER"
 		}
 	}
 }

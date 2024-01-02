@@ -138,6 +138,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			Generated = true,
 			Segments = entry.Segments,
 			Inputs = entry.InputActions or entry.Inputs,
+			InputPriorities = entry.InputPriorities,
 			ElementGroups = entry.ElementGroups,
 			ElementStates = entry.ElementStates,
 			Siren = entry.Siren,

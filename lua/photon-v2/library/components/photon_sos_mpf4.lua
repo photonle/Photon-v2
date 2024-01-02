@@ -32,13 +32,11 @@ COMPONENT.Templates = {
 			Scale = 1.4,
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.1,
-			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			-- LightMatrixScaleMultiplier = 0.6
 		}
 	}
 }
 
-COMPONENT.StateMap = "[R] 1"
+COMPONENT.StateMap = "[1/2/3] 1"
 
 COMPONENT.Elements = {
 	[1] = { "Light", Vector(0.5, 0, 0), Angle(0, -90, 0) },
@@ -50,7 +48,8 @@ COMPONENT.Segments = {
 			[1] = "[1] 1",
 			[2] = "[2] 1",
 			[3] = "[3] 1",
-			[4] = "[W] 1"
+			[4] = "[W] 1",
+			[5] = "[R] 1"
 			-- [1] = { { 1, 4 } },
 		},
 		Sequences = {
@@ -59,21 +58,28 @@ COMPONENT.Segments = {
 				2, 2, 2, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0,
 				3, 3, 0, 3, 3, 0, 3, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0,
 			},
-			["W"] = { 4 }
+			["MODE1"] = { 1 },
+			["W"] = { 4 },
+			["R"] = { 5 },
+			["1"] = { 1 },
+			["2"] = { 2 },
+			["3"] = { 3 },
 		}
 	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
+		["MODE1"] = {
+			Light = "MODE1"
+		},
 		["MODE3"] = {
 			Light = "TEST"
-			-- All = "STEADY"
 		}
 	},
-	-- ["Emergency.SceneForward"] = {
-	-- 	["ON"] = {
-	-- 		Light = "W"
-	-- 	}
-	-- }
+	["Emergency.Marker"] = {
+		["ON"] = {
+			Light = "1"
+		}
+	}
 }

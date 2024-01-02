@@ -74,3 +74,13 @@ if SERVER then LoadPhoton2MetaFiles() end
 if CLIENT then
 	hook.Add("Initialize", "Photon2:Initialize", LoadPhoton2MetaFiles)
 end
+
+--[[
+	Essential Global Functions
+--]]
+
+-- Prevents a table from inheriting any of its values
+function Photon2.NoInherit( tbl )
+	tbl["__no_inherit"] = true
+	return tbl
+end

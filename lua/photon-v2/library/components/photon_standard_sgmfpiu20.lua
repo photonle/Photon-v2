@@ -8,6 +8,11 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
+
 COMPONENT.PrintName = "2020 Ford Police Interceptor Utility"
 
 COMPONENT.IsVirtual = true
@@ -125,7 +130,7 @@ COMPONENT.ElementGroups = {
 	["Brake"] = { 17, 18, 19, 20, 21 }
 }
 
-COMPONENT.StateMap = "[DIM] TailL TailR [W] HeadL HeadR HighL HighR RevL RevR [R] 21 [A] SigRL SigRR SigFL SigFR"
+COMPONENT.StateMap = "[DIM] TailL TailR [W] HeadL HeadR HighL HighR [W/1/2] RevL [W/2/1] RevR [R] 21 [A] SigFL SigFR [A/1/2] SigRL [A/2/1] SigRR"
 
 COMPONENT.Elements = {	
 	-- Headlights
@@ -195,28 +200,38 @@ COMPONENT.Segments = {
 	},
 	Reverse = {
 		Frames = {
-			[1] = "Reverse"
+			[1] = "Reverse",
+			[2] = "[2] Reverse"
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			CRUISE = { 2 }
 		}
 	},
 	RearSignalL = {
 		Frames = {
 			[0] = "[PASS] SigRL",
-			[1] = "SigRL"
+			[1] = "SigRL",
+			[2] = "[2] SigRL",
+			[3] = "[3] SigRL",
+			[4] = "[W] SigRL",
 		},
 		Sequences = {
-			SIGNAL = sequence():Alternate( 1, 0, 8 )
+			SIGNAL = sequence():Alternate( 1, 0, 8 ),
+			CRUISE = { 2 }
 		}
 	},
 	RearSignalR = {
 		Frames = {
 			[0] = "[PASS] SigRR",
-			[1] = "SigRR"
+			[1] = "SigRR",
+			[2] = "[2] SigRR",
+			[3] = "[3] SigRR",
+			[4] = "[W] SigRR",
 		},
 		Sequences = {
-			SIGNAL = sequence():Alternate( 1, 0, 8 )
+			SIGNAL = sequence():Alternate( 1, 0, 8 ),
+			CRUISE = { 2 }
 		}
 	},
 	ForwardSignalL = {
@@ -294,6 +309,11 @@ COMPONENT.Inputs = {
 		["MODE3"] = {
 			HighBeamL = "WIGWAG",
 			HighBeamR = "WIGWAG",
+		}
+	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			Reverse = "CRUISE"
 		}
 	}
 }

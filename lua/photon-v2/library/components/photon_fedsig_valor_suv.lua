@@ -192,9 +192,32 @@ COMPONENT.Segments = {
 		}
 	},
 	["SteadyBurn"] = {
-		Frames = { [1] = "[1] 9 10 11 12" },
+		Frames = { 
+			[1] = "[1] 9 10 11 12",
+			[2] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28"
+		},
 		Sequences = {
-			["STEADY"] = { 1 }
+			["STEADY"] = { 1 },
+			["FULL"] = { 2 }
+		}
+	},
+	["Flood"] = {
+		Frames = {
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14"
+		},
+		Sequences = {
+			["FLOOD"] = { 1 }
+		}
+	},
+	-- Takedown and flood should not be in the same segment
+	-- or else the unused flood lights in takedown mode
+	-- will be forcefully turned off
+	["Takedown"] = {
+		Frames = {
+			[1] = "[W] 9 10 11 12",
+		},
+		Sequences = {
+			["ON"] = { 1 },
 		}
 	}
 }
@@ -248,6 +271,14 @@ COMPONENT.Inputs = {
 	["Emergency.Marker"] = {
 		["ON"] = {
 			Cruise = "CRUISE"
+		}
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = {
+			Takedown = "ON"
+		},
+		["FLOOD"] = {
+			Flood = "FLOOD"
 		}
 	}
 }

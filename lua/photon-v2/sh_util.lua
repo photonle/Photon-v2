@@ -36,12 +36,27 @@ function Photon2.Util.Inherit( target, base )
 
 	for key, value in pairs( base ) do
 		local raw = rawget( target, key )
+		
+		if ( raw == nil ) then
+			local magicKey = "!" .. key
+			if ( rawget( target, magicKey ) ) then
+				raw = rawget( target, magicKey )
+				target[key] = raw
+				target[key]["__no_inherit"] = true
+				target[magicKey] = nil
+			end
+		end
+		
 		if ( raw == nil ) then
 			target[key] = value
 		elseif ( raw == PHOTON2_UNSET ) then
 			target[key] = nil
 		elseif ( istable( raw ) and istable( value ) ) then
-			Photon2.Util.Inherit( raw, value )
+			if ( not raw["__no_inherit"] ) then
+				Photon2.Util.Inherit( raw, value )
+			else
+				raw["__no_inherit"] = nil
+			end
 		end
 	end
 	

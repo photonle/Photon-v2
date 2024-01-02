@@ -233,6 +233,10 @@ Photon2.RegisterCommand({
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "TOGGLE", Channel = "Emergency.SceneForward", Value = "ON" },
 	},
+	OnHold = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "SET", Channel = "Emergency.SceneForward", Value = "FLOOD" },
+	},
 	OnRelease = {
 		{ Action = "SOUND", Sound = "Controller" },
 	}

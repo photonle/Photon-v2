@@ -14,6 +14,7 @@ ENT.FrameDuration = 1/24
 ENT.FrameCountEnabled = true
 ENT.NextFrameTime = 0
 
+PHOTON2_FREEZE = false
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Initialize()
@@ -102,6 +103,21 @@ end
 local RealTime = RealTime
 local IsValid = IsValid
 
+function ENT:DoNextFrame()
+	self.Frame = self.Frame + 1
+	self.NextFrameTime = RealTime() + self.FrameDuration
+	local componentArray = self.ComponentArray
+	for i=1,#componentArray do
+		if ( componentArray[i].FrameTick) then componentArray[i]:FrameTick() end -- ***rebuild component array on equipment change *** 
+	end
+	for i=1, #self.VirtualComponentArray do
+		self.VirtualComponentArray[i]:FrameTick()
+	end
+	for i=1, #self.UIComponentArray do
+		self.UIComponentArray[i]:FrameTick()
+	end
+end
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Think()
 	if (not self.IsSuspended) then
@@ -117,19 +133,8 @@ function ENT:Think()
 	if (not self.IsSuspended) then
 		-- print("invalidating bone cache")
 		-- self:GetParent():InvalidateBoneCache()
-		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime()) then
-			self.Frame = self.Frame + 1
-			self.NextFrameTime = RealTime() + self.FrameDuration
-			local componentArray = self.ComponentArray
-			for i=1,#componentArray do
-				if ( componentArray[i].FrameTick) then componentArray[i]:FrameTick() end -- ***rebuild component array on equipment change *** 
-			end
-			for i=1, #self.VirtualComponentArray do
-				self.VirtualComponentArray[i]:FrameTick()
-			end
-			for i=1, #self.UIComponentArray do
-				self.UIComponentArray[i]:FrameTick()
-			end
+		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime() and ( not PHOTON2_FREEZE )) then
+			self:DoNextFrame()
 		end
 	end
 	-- for id, component in pairs(self.Components) do

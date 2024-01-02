@@ -16,16 +16,17 @@ VEHICLE.Author		= "Schmal"
 VEHICLE.Equipment = {}
 
 VEHICLE.Siren = {
-	-- [1] = {
-	-- 	T1 = "fedsig_touchmaster_delta/wail",
-	-- 	T2 = "fedsig_touchmaster_delta/yelp",
-	-- 	T3 = "fedsig_smartsiren/priority",
-	-- 	T4 = "fedsig_touchmaster_delta/scan",
-	-- 	AIR = "fedsig_touchmaster_delta/airhorn",
-	-- 	MAN = "fedsig_touchmaster_delta/manual",
-	-- },
-	[1] = "fedsig_touchmaster_delta",
-	[2] = "fedsig_smartsiren"
+	-- This an example of using mixed siren tones (also a real-world recreation)
+	[1] = {
+		T1 = "fedsig_touchmaster_delta/wail",
+		T2 = "fedsig_touchmaster_delta/yelp",
+		T3 = "fedsig_smartsiren/priority",
+		T4 = "fedsig_smartsiren/hilo",
+		AIR = "fedsig_smartsiren/airhorn",
+		MAN = "fedsig_touchmaster_delta/manual",
+	},
+	-- [1] = "fedsig_touchmaster_delta",
+	-- [2] = "fedsig_smartsiren"
 }
 
 local livery = PhotonMaterial.New({
@@ -101,6 +102,37 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
+		Category = "Hide-Aways",
+		Options = {
+			{
+				Option = "SOS Undercover",
+				Components = {
+					{
+						Name = "@forward_hideaway",
+						Component = "photon_sos_undercover",
+						Position = Vector( -41.4, 90, 51.5 ),
+						Angles = Angle( 0, 74, -76 ),
+						Scale = 0.4,
+						States = { "B", "R" },
+						Inputs = {
+							["Emergency.SceneForward"] = {
+								["FLOOD"] = { Light = "SCENE" }
+							}
+						}
+					},
+					{
+						Inherit = "@forward_hideaway",
+						Component = "photon_sos_undercover",
+						Position = Vector( 41.4, 90, 51.5 ),
+						Angles = Angle( 0, -74, -76 ),
+						Scale = 0.4,
+						States = { "R", "W" }
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Pushbar",
 		Options = {
 			{
@@ -108,6 +140,46 @@ VEHICLE.Equipment = {
 				BodyGroups = {
 					{ BodyGroup = "pushbar", Value = 1 }
 				},
+				Components = {
+					{
+						Name = "@pushbar_mpf4",
+						Component = "photon_sos_mpf4",
+						Position = Vector( -15, 128, 34 ),
+						Angles = Angle( 0, 90, 0),
+						Inputs = {
+							["Emergency.SceneForward"] = {
+								["ON"] = { Light = "W" },
+								["FLOOD"] = { Light = "W" }
+							}
+						},
+						Phase = "A",
+					},
+					{
+						Inherit = "@pushbar_mpf4",
+						Position = Vector( 15, 128, 34 ),
+						States = { "B", "R", "W" },
+						Phase = "B"
+					},
+					{
+						Name = "@pushbar_mp4_side",
+						Component = "photon_sos_mpf4",
+						Position = Vector( -20.5, 124.5, 36 ),
+						Angles = Angle( 0, 180, 0),
+						Phase = "A",
+						Inputs = {
+							["Emergency.SceneForward"] = {
+								["FLOOD"] = { Light = "W" }
+							}
+						},
+					},
+					{
+						Inherit = "@pushbar_mp4_side",
+						Position = Vector( 20.5, 124.5, 36 ),
+						Angles = Angle( 0, 0, 0 ),
+						States = { "B", "R", "W" },
+						Phase = "B"
+					}
+				}
 			},
 			{
 				Option = "None",
@@ -145,6 +217,21 @@ VEHICLE.Equipment = {
 						},
 						States = {
 							[1] = "R", [2] = "B", [3] = "W"
+						},
+						Segments = {},
+						Inputs = {
+							["Emergency.Marker"] = {
+								["ON"] = { SteadyBurn = "FULL" }
+							},
+							["Emergency.Warning"] = {
+								["!MODE1"] = {
+									-- ["__no_inherit"] = true
+									-- P26_EDGE = PHOTON2_UNSET,
+									-- P26_FRONT = PHOTON2_UNSET,
+									-- P26_REAR = PHOTON2_UNSET,
+									All = "MIX"
+								}
+							}
 						}
 					}
 				}
@@ -174,19 +261,6 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Standard",
-		Options = {
-			{
-				Option = "Standard Lighting",
-				VirtualComponents = {
-					{
-						Component = "photon_standard_sgmfpiu20"
-					}
-				}
-			}
-		}
-	},
-	{
 		Category = "Spotlights (Decorative)",
 		Options = {
 			{
@@ -204,42 +278,6 @@ VEHICLE.Equipment = {
 						Position = Vector( 39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Wheel Lights",
-		Options = {
-			{
-				Option = "Demo",
-				Components = {
-					{
-						Component = "photon_sos_mpf4_lic_h",
-						Angles = Angle( 0, -90, 0 ),
-						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96,
-						
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "mpower Test",
-		Options = {
-			{
-				Option = "None"
-			},
-			{
-				Option = "Test",
-				Components = {
-					{
-						Component = "photon_sos_mpf4",
-						Angles = Angle( 0, 0, 0 ),
-						Position = Vector( 0, 0, 100 ),
-						Scale = 2
 					}
 				}
 			}
@@ -275,101 +313,87 @@ VEHICLE.Equipment = {
 						-- Siren = "fedsig_smartsiren"
 						Siren = 1
 					},
-					{
-						Component = "photon_siren_secondary",
-						Position = Vector(11, 125, 35),
-						Angles = Angle(1.5, -90, 0),
-						Scale = 1.4,
-						-- Siren = "fedsig_smartsiren"
-						Siren = 2
-					},
 					-- {
-					-- 	Component = "siren_prototype",
+					-- 	Component = "photon_siren_secondary",
 					-- 	Position = Vector(11, 125, 35),
 					-- 	Angles = Angle(1.5, -90, 0),
 					-- 	Scale = 1.4,
-					-- 	-- StateMap = "[ON+5] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(11, 125, 35),
-					-- 	Angles = Angle(1.5, -90, 0),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-5] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(-9, 125, 35),
-					-- 	Angles = Angle(1.5, -90, 180),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON+10] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(9, 125, 35),
-					-- 	Angles = Angle(1.5, -90, 180),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-10] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(-21, 123, 42),
-					-- 	Angles = Angle(14, -90, 90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON+15] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(21, 123, 42),
-					-- 	Angles = Angle(14, -90, -90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-15] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(-21, 124.1, 33),
-					-- 	Angles = Angle(3, -90, 90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON+20] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(21, 124.1, 33),
-					-- 	Angles = Angle(3, -90, -90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-20] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(-21, 124.1, 24),
-					-- 	Angles = Angle(-5, -90, 90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON+25] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(21, 124.1, 24),
-					-- 	Angles = Angle(-5, -90, -90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-25] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(-20.2, 124.1, 24),
-					-- 	Angles = Angle(-5, -90, -90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON+30] 1 2 3"
-					-- },
-					-- {
-					-- 	Component = "siren_prototype",
-					-- 	Position = Vector(20.2, 124.1, 24),
-					-- 	Angles = Angle(-5, -90, 90),
-					-- 	Scale = 1.4,
-					-- 	StateMap = "[ON-30] 1 2 3"
+					-- 	-- Siren = "fedsig_smartsiren"
+					-- 	Siren = 2
 					-- },
 				}
 			}
 		}
+	},
+	{
+		Category = "Rear",
+		Options = {
+			{
+				Option = "Default",
+				Components = {
+					{
+						-- Unique name
+						Name = "@rear_mpf4",
+						Component = "photon_sos_mpf4",
+						Position = Vector( -10, -128.7, 56.4 ),
+						Angles = Angle( 0, -96, 0),
+						Phase = "A",
+						Inputs = {
+							-- Lights will turn RED when braking
+							["Vehicle.Brake"] = {
+								["BRAKE"] = { Light = "R" }
+							},
+							-- Lights will turn WHITE when reversing
+							["Vehicle.Transmission"] = {
+								["REVERSE"] = { Light ="W" }
+							}
+						},
+						-- Raises the Vehicle.Transmission input priority so
+						-- the reverse mode will override the braking mode
+						InputPriorities = {
+							["Vehicle.Transmission"] = 200
+						}
+					},
+					{
+						-- Inherits from the entry above
+						Inherit = "@rear_mpf4",
+						Position = Vector( 10, -128.7, 56.4 ),
+						Angles = Angle( 0, -84, 0),
+						-- Assigns B to slot #1, and R to slot #2 because
+						-- by default they are opposite.
+						States = { [1] = "B", [2] = "R" },
+						Phase = "B",
+					},
+				}
+			}
+		},
+	},
+	{
+		Category = "Side",
+		Options = {
+			{
+				Option = "XStream Duo",
+				Components = {
+					{
+						Name = "@xstream_side",
+						Component = "photon_fedsig_xstream_duo",
+						Position = Vector( -37.6, -95, 63.4 ),
+						Angles = Angle( 0, 180+7, 180),
+						BodyGroups = {
+							["Mount"] = 1,
+							["Shroud"] = 1
+						},
+						Phase = "A",
+					},
+					{
+						Inherit = "@xstream_side",
+						Position = Vector( 37.6, -95, 63.4 ),
+						Angles = Angle( 0, -7, 180 ),
+						Phase = "B"
+					}
+				}
+			}
+		},
 	},
 	{
 		Category = "Standard",
@@ -384,121 +408,6 @@ VEHICLE.Equipment = {
 			}
 		}
 	},
-	{
-		Category = "Grille",
-		Options = {
-			{
-				Option = "Intersectors",
-				Components = {
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( -11, 116.2, 48 ),
-						Angles = Angle( 0, 7, 12 ),
-						Scale = 1
-					},
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( 11, 116.2, 48 ),
-						Angles = Angle( 0, -7, 12 ),
-						Scale = 1
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Hide-Aways",
-		Options = {
-			{
-				Option = "SOS Undercover",
-				Components = {
-					{
-						Component = "photon_sos_undercover",
-						Position = Vector( -41.4, 90, 51.5 ),
-						Angles = Angle( 0, 74, -76 ),
-						Scale = 0.4
-					},
-					{
-						Component = "photon_sos_undercover",
-						Position = Vector( 41.4, 90, 51.5 ),
-						Angles = Angle( 0, -74, -76 ),
-						Scale = 0.4
-					}
-				}
-			}
-		}
-	},
-	{
-		Category = "Mirror",
-		Options = {
-			{
-				Option = "Intersectors (Surface)",
-				Components = {
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( -45.5, 34.5, 57.3 ),
-						Angles = Angle( 1, 90, 2 ),
-						Scale = 1,
-						Bones = {
-							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
-						},
-					},
-					{
-						Component = "photon_sos_intersector_surf",
-						Position = Vector( 45.5, 34.5, 57.3 ),
-						Angles = Angle( -1, -90, 2 ),
-						Scale = 1,
-						Bones = {
-							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
-						},
-					},
-				}
-			}
-		}
-	},
-	-- {
-	-- 	Category = "Forward Lightbar",
-	-- 	Options = {
-	-- 		{ Option = "SoundOff Signal nForce", 
-	-- 			Variants = {
-	-- 				{
-	-- 					Variant = "Default",
-	-- 					Components = {
-	-- 						{
-	-- 							Name = "@nforce54",
-	-- 							Component = "photon_sos_nforce_54",
-	-- 							Position = Vector( 0, -15, 87.55 ),
-	-- 							Angles = Angle( 0, 0, -1 ),
-	-- 							Scale = 1.029
-	-- 						}
-	-- 					}
-	-- 				},
-	-- 			},
-	-- 		},
-	-- 	},
-	-- }
-	-- },
-	-- {
-	-- 	Category = "Rear Lightbar",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "None",
-	-- 			Components = {}
-	-- 		},
-	-- 		{
-	-- 			Option = "JetSolaris",
-	-- 			Components = {
-	-- 				{
-	-- 					Inherit 	= "@jetsolaris_front",
-	-- 					Position	= Vector(0, -65, 91),
-	-- 				}
-	-- 			}
-	-- 		},
-			
-			
-			
-	-- 	}
-	-- },
 }
 
 -- PHOTON2_DEBUG_VEHICLE_HARDRELOAD = false

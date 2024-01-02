@@ -1,4 +1,7 @@
-Photon2.Debug = {}
+Photon2.Debug = {
+	Output = {},
+
+}
 
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)
@@ -6,6 +9,10 @@ local blk = Color(0, 0, 0)
 local whi = Color(255, 255, 255)
 local sv = Color(137, 222, 255)
 local cl = Color(255, 222, 102)
+
+function Photon2.Debug.Log( type, section, message )
+	Photon2.Debug[#Photon2.Debug+1] = ""
+end
 
 function Photon2.Debug.Print( text )
 	local col = sv
@@ -22,6 +29,12 @@ end
 
 function Photon2.Debug.PrintD( type, text, ... )
 	Photon2.Debug.Print( "[" .. tostring( type ) .. "] " .. string.format( text, ... ) )
+end
+
+local warnings = {}
+
+function Photon2.Debug.Warn( type, text, ... )
+
 end
 
 local printf = Photon2.Debug.PrintF

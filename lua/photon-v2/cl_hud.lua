@@ -2,6 +2,10 @@ Photon2.HUD = Photon2.HUD or {
 
 }
 
+local print = Photon2.Debug.Print
+local printf = Photon2.Debug.PrintF
+local warn = Photon2.Debug.Warn
+
 local hudMaterial = Material("photon/ui/hud")
 
 local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512, 
@@ -572,7 +576,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				end
 
 				if (sirenDisplay) then
-					icon = icons[sirenDisplay.Icon]
+					icon = icons[sirenDisplay.Icon] or icons["siren"]
 					label = sirenDisplay.Label
 				end
 
@@ -635,7 +639,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, nextY, vehicleIcon, 
 				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
-				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
+				target.CurrentModes["Emergency.SceneForward"] == "FLOOD", 
 				target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
 				target.CurrentModes["Emergency.SceneRear"] ~= "OFF", 
 				target.CurrentModes["Emergency.SceneLeft"] ~= "OFF" 
