@@ -13,8 +13,6 @@ VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Equipment = {}
-
 VEHICLE.Siren = {
 	-- This an example of using mixed siren tones (also a real-world recreation)
 	[1] = {
@@ -43,6 +41,8 @@ local livery = PhotonMaterial.New({
 		["$nodecal"] = 1
 	}
 })
+
+local sequence = Photon2.SequenceBuilder.New
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
@@ -117,6 +117,9 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "SCENE" }
+							},
+							["Emergency.Warning"] = {
+								["!MODE1"] = {}
 							}
 						}
 					},
@@ -150,6 +153,9 @@ VEHICLE.Equipment = {
 							["Emergency.SceneForward"] = {
 								["ON"] = { Light = "W" },
 								["FLOOD"] = { Light = "W" }
+							},
+							["Emergency.Warning"] = {
+								["!MODE1"] = {}
 							}
 						},
 						Phase = "A",
@@ -169,6 +175,10 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "W" }
+							},
+							-- Disables MODE1
+							["Emergency.Warning"] = {
+								["!MODE1"] = {}
 							}
 						},
 					},
@@ -223,13 +233,14 @@ VEHICLE.Equipment = {
 							["Emergency.Marker"] = {
 								["ON"] = { SteadyBurn = "FULL" }
 							},
+							-- !MODE1 is the same as MODE1, but indicates that
+							-- the table should NOT be inherited.
+							--
+							-- This is a Photon-specific feature built into its
+							-- core inheritance logic.
 							["Emergency.Warning"] = {
 								["!MODE1"] = {
-									-- ["__no_inherit"] = true
-									-- P26_EDGE = PHOTON2_UNSET,
-									-- P26_FRONT = PHOTON2_UNSET,
-									-- P26_REAR = PHOTON2_UNSET,
-									All = "MIX"
+									RE_Rear = "MODE1"
 								}
 							}
 						}
@@ -338,6 +349,18 @@ VEHICLE.Equipment = {
 						Position = Vector( -10, -128.7, 56.4 ),
 						Angles = Angle( 0, -96, 0),
 						Phase = "A",
+						Segments = {
+							-- Creates a new segment
+							Override = {
+								Frames = {
+									[1] = "1"
+								},
+								Sequences = {
+									["MODE1:A"] = sequence():FlashHold( 1, 2, 5 ):Add( 0 ):Do( 10 ),
+									["MODE1:B"] = sequence():Add( 0 ):Do( 10 ):FlashHold( 1, 2, 5 ),
+								}
+							}
+						},
 						Inputs = {
 							-- Lights will turn RED when braking
 							["Vehicle.Brake"] = {
@@ -346,6 +369,12 @@ VEHICLE.Equipment = {
 							-- Lights will turn WHITE when reversing
 							["Vehicle.Transmission"] = {
 								["REVERSE"] = { Light ="W" }
+							},
+							["Emergency.Warning"] = {
+								["!MODE1"] = {
+									-- Light = 
+									Override = "MODE1"
+								}
 							}
 						},
 						-- Raises the Vehicle.Transmission input priority so
@@ -384,6 +413,12 @@ VEHICLE.Equipment = {
 							["Shroud"] = 1
 						},
 						Phase = "A",
+						Inputs = {
+							["Emergency.Warning"] = {
+								-- Disables MODE1
+								["!MODE1"] = {}
+							}
+						}
 					},
 					{
 						Inherit = "@xstream_side",

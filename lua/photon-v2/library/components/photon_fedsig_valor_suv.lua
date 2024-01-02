@@ -219,6 +219,17 @@ COMPONENT.Segments = {
 		Sequences = {
 			["ON"] = { 1 },
 		}
+	},
+	["RE_Rear"] = {
+		Frames = {
+			[1] = "17 19 21 28 26 24",
+			[2] = "23 25 27 22 20 18",
+			[3] = "17 21 25 28 24 20",
+			[4] = "19 23 27 26 22 18"
+		},
+		Sequences = {
+			["MODE1"] = sequence():FlashHold( { 3, 4, 3, 4, }, 2, 5 ):Alternate( 1, 2, 10 ):Do( 2 )
+		}
 	}
 }
 
@@ -236,12 +247,6 @@ COMPONENT.Inputs = {
 			P26_FRONT = "P26",
 			P26_REAR = "P26",
 		},
-		
-		
-		
-		
-		
-		
 		["MODE3"] = {
 			-- White override segment
 			P26_WOR = { "P26", Order = 6 },

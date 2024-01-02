@@ -13,8 +13,6 @@ VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Equipment = {}
-
 local livery = PhotonMaterial.New({
 	Name = "schmal_fpiu20_mpdc",
 	Shader = "VertexLitGeneric",

@@ -177,6 +177,24 @@ function Photon2.SequenceBuilder:Hold( length )
 	return self
 end
 
+-- Blinks a frame X times, then ends by holding for Y frames. When multiple frames
+-- are passed in a table to the frames parameter, these actions are chained.
+function Photon2.SequenceBuilder:FlashHold( frames, flashes, hold )
+	local result = {}
+	if ( not istable( frames ) ) then frames = { frames } end
+	for _, frame in pairs( frames ) do
+		for i=0, flashes-1 do
+			result[#result+1] = frame
+			result[#result+1] = 0
+		end
+		for i=1, hold do
+			result[#result+1] = frame
+		end
+		result[#result+1] = 0
+	end
+	return self:Append( result )
+end
+
 -- Repeats the previous *section* for number of times specified.
 ---@param times integer Number of times to repeat the previous section.
 function Photon2.SequenceBuilder:Do( times )
