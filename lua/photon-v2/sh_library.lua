@@ -209,6 +209,7 @@ local sirens = {
 	Name = "Sirens",
 	Folder = "sirens",
 	Singular = "Siren",
+	-- EagerLoading = true,
 	DoCompile = function( self, siren )
 		return Photon2.Index.CompileSiren( siren )
 	end
@@ -297,7 +298,7 @@ function Photon2.LoadVehicleFile( filePath, isReload )
 	-- Photon2.Debug.Print("Loading vehicle file: " .. filePath)
 	local nameStart = string.len(vehiclesRoot) + 1
 	local nameEnd = string.len(vehiclesRoot) - nameStart - 4
-	local name = filePath:sub(nameStart, nameEnd)
+	local name = string.lower(filePath:sub(nameStart, nameEnd))
 	-- Photon2.Debug.Print("Vehicle name: " .. name)
 	---@type PhotonLibraryVehicle
 	PHOTON2_LIBRARY_VEHICLE = {}

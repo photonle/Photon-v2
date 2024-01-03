@@ -22,8 +22,6 @@ function Component:Initialize( ent, controller )
 	if ( component.Siren ) then
 		if ( isnumber( component.Siren ) ) then
 			local sirenName = controller.CurrentProfile.Siren[component.Siren]
-			-- print(" ************ SIREN NAME ************\n")
-			-- ErrorNoHaltWithStack( sirenName)
 			component.Siren = sirenName
 		end
 	end

@@ -219,12 +219,9 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 
 	if (isReload) then
 		currentEquipmentSignature = buildEquipmentSignature( current.Equipment )
-		-- Build Selections signature of current table
 		if (current.EquipmentSelections) then
 			currentSelectionsSignature = buildSelectionSignature( current.EquipmentSelections )
-			-- print("currentSelectionSignature: " .. tostring(currentSelectionsSignature))
 		end
-		
 	end
 
 	Photon2.Index.Vehicles[name] = PhotonVehicle.New( inputVehicle )
@@ -236,7 +233,6 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		-- Build new Equipment signature
 		newEquipmentSignature = buildEquipmentSignature( newVehicle.Equipment )
 		
-		-- printf("EQUIPMENT SIGNATURE\nOld: %s\nNew:%s", currentEquipmentSignature, newEquipmentSignature)
 		if (currentEquipmentSignature == newEquipmentSignature) then
 			hardSet = false
 		end
@@ -245,9 +241,7 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		-- (any modifications of the Selections tree needs to require a hard reload)
 		if (currentSelectionsSignature) then
 			if ( newVehicle.EquipmentSelections ) then
-				newSelectionsSignature = buildSelectionSignature( newVehicle.EquipmentSelections )
-				-- print("newSelectionSignature: " .. tostring(currentSelectionsSignature))
-				
+				newSelectionsSignature = buildSelectionSignature( newVehicle.EquipmentSelections )				
 				if (newSelectionsSignature ~= currentSelectionsSignature) then
 					hardSet = true
 				end
@@ -359,7 +353,17 @@ function index.ProcessSirenLibrary()
 end
 
 function Photon2.GetSirenTone( name )
-	return Photon2.Index.Tones[name]
+	local result = Photon2.Index.Tones[name]
+	if ( result ) then return result end
+	
+	local split = string.Split( name, "/" )
+	local siren = Photon2.GetSiren( split[1] )
+	if ( siren ) and siren.Tones[split[2]] then 
+		return Photon2.GetSirenTone( name )
+	else
+		ErrorNoHalt( "Unable to find siren tone: " .. tostring (name ) )
+	end
+	return nil
 end
 
 

@@ -204,6 +204,8 @@ function meta:Register( data )
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end
 	if ( self.Loaded ) then
 		self:OnReload( data )
+	elseif ( self.EagerLoading ) then
+		self:Compile( data )
 	end
 end
 

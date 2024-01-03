@@ -198,7 +198,6 @@ function Photon2.ClientInput.Initialize()
 	if ( not Photon2.Library.InputConfigurations:Get( "user" ) ) then
 		local config = Photon2.Library.InputConfigurations:GetCopy( "default" )
 		if ( not config ) then
-			print("Failed to retrieve default input configuration (this may indicate initialization errors or addon conflicts). Trying again in five seconds...")
 			timer.Simple( 5, Photon2.ClientInput.Initialize )
 			return
 		end

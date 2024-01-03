@@ -234,10 +234,11 @@ VEHICLE.Equipment = {
 								["ON"] = { SteadyBurn = "FULL" }
 							},
 							-- !MODE1 is the same as MODE1, but indicates that
-							-- the table should NOT be inherited.
+							-- the table should NOT be inherited. This prevents
+							-- the other sequences from playing in MODE1.
 							--
 							-- This is a Photon-specific feature built into its
-							-- core inheritance logic.
+							-- underlying inheritance functionality.
 							["Emergency.Warning"] = {
 								["!MODE1"] = {
 									RE_Rear = "MODE1"
@@ -353,11 +354,14 @@ VEHICLE.Equipment = {
 							-- Creates a new segment
 							Override = {
 								Frames = {
+									-- Element 1 assigned to state 1 (its primary color)
 									[1] = "1"
 								},
 								Sequences = {
-									["MODE1:A"] = sequence():FlashHold( 1, 2, 5 ):Add( 0 ):Do( 10 ),
-									["MODE1:B"] = sequence():Add( 0 ):Do( 10 ):FlashHold( 1, 2, 5 ),
+									["MODE1:A"] = sequence():Add( 1 ):Do( 10 ):Add( 0 ):Do( 10 ),
+									["MODE1:B"] = sequence():Add( 0 ):Do( 10 ):Add( 1 ):Do( 10 ),
+									["MODE2:A"] = sequence():FlashHold( 1, 2, 5 ):Add( 0 ):Do( 10 ),
+									["MODE2:B"] = sequence():Add( 0 ):Do( 10 ):FlashHold( 1, 2, 5 ),
 								}
 							}
 						},
@@ -384,13 +388,14 @@ VEHICLE.Equipment = {
 						}
 					},
 					{
-						-- Inherits from the entry above
+						-- Inherits from the entry above so you don't have to copy
+						-- all of the code again
 						Inherit = "@rear_mpf4",
 						Position = Vector( 10, -128.7, 56.4 ),
 						Angles = Angle( 0, -84, 0),
-						-- Assigns B to slot #1, and R to slot #2 because
-						-- by default they are opposite.
+						-- Assigns BLUE to slot #1, and RED to slot #2
 						States = { [1] = "B", [2] = "R" },
+						-- Use alternate phase from component above
 						Phase = "B",
 					},
 				}
@@ -415,7 +420,7 @@ VEHICLE.Equipment = {
 						Phase = "A",
 						Inputs = {
 							["Emergency.Warning"] = {
-								-- Disables MODE1
+								-- Disables MODE1 on parent component by prepending !
 								["!MODE1"] = {}
 							}
 						}
@@ -437,12 +442,33 @@ VEHICLE.Equipment = {
 				Option = "Standard Lighting",
 				VirtualComponents = {
 					{
-						Component = "photon_standard_sgmfpiu20"
+						Component = "photon_standard_sgmfpiu20",
+						-- Add custom segments to to flash the vehicle lights
+						Segments = {
+							-- Create new segment for reverse flashers
+							ReverseFlasher = {
+								-- RevL and RevR and element groups defined in photon_standard_sgmfpiu20
+								Frames = {
+									[1] = "[2] RevL",
+									[2] = "[2] RevR"
+								},
+								Sequences = {
+									-- Slow left-right pattern (10 frames per side)
+									["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 )
+								}
+							}
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {
+									-- Assign reverse left-right flash to MODE1
+									["ReverseFlasher"] = "MODE1"
+								}
+							}
+						}
 					}
 				}
 			}
 		}
 	},
 }
-
--- PHOTON2_DEBUG_VEHICLE_HARDRELOAD = false
