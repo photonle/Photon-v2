@@ -358,7 +358,7 @@ function Photon2.GetSirenTone( name )
 	
 	local split = string.Split( name, "/" )
 	local siren = Photon2.GetSiren( split[1] )
-	if ( siren ) and siren.Tones[split[2]] then 
+	if ( siren ) and siren.Sounds[split[2]] then 
 		return Photon2.GetSirenTone( name )
 	else
 		ErrorNoHalt( "Unable to find siren tone: " .. tostring (name ) )

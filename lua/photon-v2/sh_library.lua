@@ -39,7 +39,7 @@ local inputConfigurations = {
 	end,
 	OnReload = function( self, profile )
 		if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == profile.Name ) ) then
-			Photon2.Index.CompileInputConfiguration( profile )
+			Photon2.ClientInput.Active = Photon2.Index.CompileInputConfiguration( profile )
 		else
 			Photon2.Index.InputConfigurations[profile.Name] = nil
 		end

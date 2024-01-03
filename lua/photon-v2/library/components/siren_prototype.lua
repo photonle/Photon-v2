@@ -60,7 +60,7 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.InputPriorities = {
-	["Virtual.SirenOverride"] = 52
+	["Virtual.SirenOverride"] = 62
 }
 
 COMPONENT.VirtualOutputs = {

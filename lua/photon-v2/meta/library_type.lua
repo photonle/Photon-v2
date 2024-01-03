@@ -32,6 +32,8 @@ meta.Template = {}
 
 function meta.New( properties )
 	local result = setmetatable( properties, { __index = meta } )
+	result.Loaded = false
+	if ( Photon2.Index[result.Name] ) then result.Loaded = true end
 	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
 	Photon2["Register" .. result.Singular] = function( entry )
 		if ( not result.IsValidRealm ) then return nil end
@@ -52,7 +54,6 @@ function meta.New( properties )
 	Photon2["Get" .. tostring( result.Singular ) ] = function( name )
 		return result:GetFromIndex( name )
 	end
-	result.Loaded = false
 	
 	return result
 end

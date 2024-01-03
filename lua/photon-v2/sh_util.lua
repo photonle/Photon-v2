@@ -20,7 +20,11 @@ function Photon2.Util.ReferentialCopy( target, meta )
 	setmetatable( target, { __index = meta } )
 end
 
-function Photon2.Util.Inherit( target, base )
+---@param target table
+---@param base table
+---@param level? number Leave as nil. Stack level used internally.
+function Photon2.Util.Inherit( target, base, level )
+	level = level or 1
 	local metaTable = getmetatable( target )
 	if ( not metaTable ) then
 		setmetatable( target, {} )
@@ -37,7 +41,7 @@ function Photon2.Util.Inherit( target, base )
 	for key, value in pairs( base ) do
 		local raw = rawget( target, key )
 		
-		if ( raw == nil ) then
+		if ( raw == nil and isstring( key ) ) then
 			local magicKey = "!" .. key
 			if ( rawget( target, magicKey ) ) then
 				raw = rawget( target, magicKey )
@@ -53,13 +57,21 @@ function Photon2.Util.Inherit( target, base )
 			target[key] = nil
 		elseif ( istable( raw ) and istable( value ) ) then
 			if ( not raw["__no_inherit"] ) then
-				Photon2.Util.Inherit( raw, value )
+				Photon2.Util.Inherit( raw, value, level + 1 )
 			else
 				raw["__no_inherit"] = nil
 			end
 		end
 	end
 	
+	for key, value in pairs ( target ) do
+		if ( isstring( key ) and string.StartsWith( key, "!" ) ) then
+			-- print("found extra non-inherited key: " .. tostring( key))
+			-- print("should be: " .. string.sub(key, 2))
+			target[string.sub(key, 2)] = value
+		end
+	end
+
 	metaTable.Inherits = base
 end
 

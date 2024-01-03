@@ -215,6 +215,10 @@ function Photon2.SequenceBuilder:Stretch( amount )
 	return self:OverwriteLast( result )
 end
 
+function Photon2.SequenceBuilder:Replace( oldNewPair, ... )
+
+end
+
 -- Adds all consecutive frame numbers between `startFrame` and `endFrame`. (Example: `:Sequential( 1, 5 )` becomes `{ 1, 2, 3, 4, 5 }`). Frame sequence will be done in reverse if `endFrame` is lower than `startFrame`.
 function Photon2.SequenceBuilder:Sequential( startFrame, endFrame )
 	local result = {}

@@ -24,7 +24,7 @@ VEHICLE.Siren = {
 		MAN = "fedsig_touchmaster_delta/manual",
 	},
 	-- [1] = "fedsig_touchmaster_delta",
-	-- [2] = "fedsig_smartsiren"
+	-- [1] = "fedsig_smartsiren"
 }
 
 local livery = PhotonMaterial.New({
@@ -360,8 +360,8 @@ VEHICLE.Equipment = {
 								Sequences = {
 									["MODE1:A"] = sequence():Add( 1 ):Do( 10 ):Add( 0 ):Do( 10 ),
 									["MODE1:B"] = sequence():Add( 0 ):Do( 10 ):Add( 1 ):Do( 10 ),
-									["MODE2:A"] = sequence():FlashHold( 1, 2, 5 ):Add( 0 ):Do( 10 ),
-									["MODE2:B"] = sequence():Add( 0 ):Do( 10 ):FlashHold( 1, 2, 5 ),
+									["MODE2:A"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 9 ),
+									["MODE2:B"] = sequence():Add( 0 ):Do( 9 ):FlashHold( 1, 1, 5 ),
 								}
 							}
 						},
@@ -375,10 +375,8 @@ VEHICLE.Equipment = {
 								["REVERSE"] = { Light ="W" }
 							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {
-									-- Light = 
-									Override = "MODE1"
-								}
+								["!MODE1"] = { Override = "MODE1" },
+								["!MODE2"] = { Override = "MODE2" },
 							}
 						},
 						-- Raises the Vehicle.Transmission input priority so
