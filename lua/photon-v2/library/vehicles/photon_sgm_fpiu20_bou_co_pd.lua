@@ -3,6 +3,11 @@
 	Vehicle file for Photon 2
 --------------------------------]]
 
+--[[
+	VERY IMPORTANT!!!!! 2024-01-03
+	DO NOT USE THE ! INHERITANCE STRING UTILIZED BELOW.
+	THIS WAS A CONCEPT TEST AND IT WON'T 
+--]]
 
 
 if (Photon2.ReloadVehicleFile()) then return end
@@ -46,6 +51,19 @@ local sequence = Photon2.SequenceBuilder.New
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				UIComponents = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}
+	},
 	{
 		Category = "Liveries",
 		Options = {
@@ -113,13 +131,33 @@ VEHICLE.Equipment = {
 						Position = Vector( -41.4, 90, 51.5 ),
 						Angles = Angle( 0, 74, -76 ),
 						Scale = 0.4,
-						States = { "B", "R" },
+						Phase = "A",
+						States = { "R", "B" },
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "SCENE" }
 							},
+							["Emergency.SirenOverride"] = {
+								["AIR"] = { Light = "SCENE" }
+							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {}
+								["!MODE1"] = {},
+								["!MODE2"] = { Override = "MODE2" },
+								["!MODE3"] = { Override = "MODE3" },
+							}
+						},
+						Segments = {
+							Override = {
+								Frames = {
+									[1] = "1 2 3",
+									[2] = "[W] 1 2 3",
+								},
+								Sequences = {
+									["MODE2:A"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 8 ),
+									["MODE2:B"] = sequence():Add( 0 ):Do( 8 ):FlashHold( 1, 1, 5 ),
+									["MODE3:A"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 ),
+									["MODE3:B"] = sequence():FlashHold( 2, 2, 3 ):FlashHold( 1, 2, 3 )
+								}
 							}
 						}
 					},
@@ -129,7 +167,8 @@ VEHICLE.Equipment = {
 						Position = Vector( 41.4, 90, 51.5 ),
 						Angles = Angle( 0, -74, -76 ),
 						Scale = 0.4,
-						States = { "R", "W" }
+						States = { "B", "R" },
+						Phase = "B"
 					}
 				}
 			}
@@ -149,13 +188,33 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4",
 						Position = Vector( -15, 128, 34 ),
 						Angles = Angle( 0, 90, 0),
+						Segments = {
+							-- Creates a new segment
+							Override = {
+								Frames = {
+									[1] = "1",
+									[2] = "[W] 1"
+								},
+								Sequences = {
+									["MODE2:A"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 8 ),
+									["MODE2:B"] = sequence():Add( 0 ):Do( 8 ):FlashHold( 1, 1, 5 ),
+									["MODE3:A"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 ),
+									["MODE3:B"] = sequence():FlashHold( 2, 2, 3 ):FlashHold( 1, 2, 3 )
+								}
+							}
+						},
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["ON"] = { Light = "W" },
 								["FLOOD"] = { Light = "W" }
 							},
+							["Emergency.SirenOverride"] = {
+								["AIR"] = { Light = "W" }
+							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {}
+								["!MODE1"] = {},
+								["!MODE2"] = { Override = "MODE2" },
+								["!MODE3"] = { Override = "MODE3" },
 							}
 						},
 						Phase = "A",
@@ -172,14 +231,40 @@ VEHICLE.Equipment = {
 						Position = Vector( -20.5, 124.5, 36 ),
 						Angles = Angle( 0, 180, 0),
 						Phase = "A",
+						Segments = {
+							-- Creates a new segment
+							Override = {
+								Frames = {
+									[1] = "1",
+									[2] = "[W] 1"
+								},
+								Sequences = {
+									["MODE2:B"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 8 ),
+									["MODE2:A"] = sequence():Add( 0 ):Do( 8 ):FlashHold( 1, 1, 5 ),
+									["MODE3:B"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 ),
+									["MODE3:A"] = sequence():FlashHold( 2, 2, 3 ):FlashHold( 1, 2, 3 ),
+									["LEFT:A"] = { 2 },
+									["LEFT:B"] = {},
+									["RIGHT:A"] = {},
+									["RIGHT:B"] = { 2 },
+								}
+							}
+						},
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "W" }
 							},
-							-- Disables MODE1
+							["Emergency.SirenOverride"] = {
+								["AIR"] = { Light = "W" }
+							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {}
-							}
+								-- Disables MODE1
+								["!MODE1"] = {},
+								["!MODE2"] = { Override = "MODE2" },
+								["!MODE3"] = { Override = "MODE3" },
+							},
+							["Emergency.SceneLeft"] = { ["ON"] = { Override = "LEFT" } },
+							["Emergency.SceneRight"] = { ["ON"] = { Override = "RIGHT" } },
 						},
 					},
 					{
@@ -187,7 +272,7 @@ VEHICLE.Equipment = {
 						Position = Vector( 20.5, 124.5, 36 ),
 						Angles = Angle( 0, 0, 0 ),
 						States = { "B", "R", "W" },
-						Phase = "B"
+						Phase = "B",
 					}
 				}
 			},
@@ -241,9 +326,28 @@ VEHICLE.Equipment = {
 							-- underlying inheritance functionality.
 							["Emergency.Warning"] = {
 								["!MODE1"] = {
-									RE_Rear = "MODE1"
+									RE_Rear = "MODE1",
+									-- RE_Traffic = "LEFT"
+								},
+								["!MODE2"] = {
+									RE_Rear = "MODE2",
+									RE_Front = "MODE2",
+								},
+								["!MODE3"] = {
+									-- The R/B pattern needs to override white lighting
+									-- so the white only occupies otherwise "off" lights (defined using the "PASS" state).
+									Pursuit = { "PURSUIT", Order = 10 },
+									PursuitWO = "PURSUIT"
 								}
-							}
+							},
+							["Emergency.Directional"] = {
+								["LEFT"] = { RE_Traffic = "LEFT" },
+								["RIGHT"] = { RE_Traffic = "RIGHT" },
+								["CENOUT"] = { RE_Traffic = "CENOUT" },
+							},
+							["Emergency.SirenOverride"] = {
+								["AIR"] = { Flood = "ALERT" }
+							},
 						}
 					}
 				}
@@ -273,8 +377,28 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Spotlights (Decorative)",
+		Category = "Spotlights",
 		Options = {
+			{
+				Option = "Spotlights",
+				Components = {
+					{
+						Component = "photon_whe_par46_left",
+						Position = Vector( -39.4, 37, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1
+					}
+				},
+				-- TODO
+				Props = {
+					{
+						Model = "models/sentry/props/spotlightpar46_right_down.mdl",
+						Position = Vector( 39.4, 37, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1
+					}
+				}
+			},
 			{
 				Option = "Decorative",
 				Props = {
@@ -355,13 +479,15 @@ VEHICLE.Equipment = {
 							Override = {
 								Frames = {
 									-- Element 1 assigned to state 1 (its primary color)
-									[1] = "1"
+									[1] = "[1] 1",
+									[2] = "[2] 1"
 								},
 								Sequences = {
 									["MODE1:A"] = sequence():Add( 1 ):Do( 10 ):Add( 0 ):Do( 10 ),
 									["MODE1:B"] = sequence():Add( 0 ):Do( 10 ):Add( 1 ):Do( 10 ),
-									["MODE2:A"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 9 ),
-									["MODE2:B"] = sequence():Add( 0 ):Do( 9 ):FlashHold( 1, 1, 5 ),
+									["MODE2:A"] = sequence():FlashHold( 1, 1, 5 ):Add( 0 ):Do( 8 ):FlashHold( 2, 1, 5 ):Add( 0 ):Do( 8 ),
+									["MODE2:B"] = sequence():Add( 0 ):Do( 8 ):FlashHold( 1, 1, 5 ):Add( 0 ):Do( 8 ):FlashHold( 2, 1, 5 ),
+									["MODE3"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 ),
 								}
 							}
 						},
@@ -377,6 +503,7 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["!MODE1"] = { Override = "MODE1" },
 								["!MODE2"] = { Override = "MODE2" },
+								["!MODE3"] = { Override = "MODE3" },
 							}
 						},
 						-- Raises the Vehicle.Transmission input priority so
@@ -416,10 +543,24 @@ VEHICLE.Equipment = {
 							["Shroud"] = 1
 						},
 						Phase = "A",
+						Segments = {
+							Override = {
+								Frames = {
+									[1] = "1",
+									[2] = "2"
+								},
+								Sequences = {
+									["MODE2"] = sequence():FlashHold( 1, 1, 5 ):FlashHold( 2, 1, 5 ),
+									["MODE3"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 )
+								}
+							}
+						},
 						Inputs = {
 							["Emergency.Warning"] = {
-								-- Disables MODE1 on parent component by prepending !
-								["!MODE1"] = {}
+								-- Disable inheritance from parent component by prepending !
+								["!MODE1"] = {},
+								["!MODE2"] = { Override = "MODE2" },
+								["!MODE3"] = { Override = "MODE3" }
 							}
 						}
 					},
@@ -448,11 +589,15 @@ VEHICLE.Equipment = {
 								-- RevL and RevR and element groups defined in photon_standard_sgmfpiu20
 								Frames = {
 									[1] = "[2] RevL",
-									[2] = "[2] RevR"
+									[2] = "[2] RevR",
+									[3] = "[2] RevL [W] RevR",
+									[4] = "[W] RevL [2] RevR",
 								},
 								Sequences = {
 									-- Slow left-right pattern (10 frames per side)
-									["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 )
+									["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 ),
+									["MODE2"] = sequence():FlashHold( 2, 1, 5 ):FlashHold( 1, 1, 5 ),
+									["MODE3"] = sequence():FlashHold( 3, 2, 3 ):FlashHold( 4, 2, 3 )
 								}
 							}
 						},
@@ -460,8 +605,10 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									-- Assign reverse left-right flash to MODE1
-									["ReverseFlasher"] = "MODE1"
-								}
+									ReverseFlasher = "MODE1"
+								},
+								["MODE2"] = { ReverseFlasher = "MODE2" },
+								["MODE3"] = { ReverseFlasher = "MODE3" },
 							}
 						}
 					}

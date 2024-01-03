@@ -177,6 +177,10 @@ COMPONENT.Elements = {
 
 local sequence = Photon2.SequenceBuilder.New
 
+COMPONENT.InputPriorities = {
+
+}
+
 COMPONENT.Segments = {
 	Headlights = {
 		Frames = {
@@ -252,12 +256,37 @@ COMPONENT.Segments = {
 			SIGNAL = sequence():Alternate( 1, 0, 8 )
 		}
 	},
+	HeadlightL = {
+		Frames = {
+			-- Use PASS so the the headlight won't turn off
+			-- if the vehicle's headlights are already on.
+			[0] = "[PASS] HeadL",
+			[1] = "HeadL"
+		},
+		Sequences = {
+			WIGWAG = sequence():Alternate( 1, 0, 8, 2 ),
+			ON = { 1 }
+		}
+	},
+	HeadlightR = {
+		Frames = {
+			-- Use PASS so the the headlight won't turn off
+			-- if the vehicle's headlights are already on.
+			[0] = "[PASS] HeadR",
+			[1] = "HeadR"
+		},
+		Sequences = {
+			WIGWAG = sequence():Alternate( 0, 1, 8, 2 ),
+			ON = { 1 }
+		}
+	},
 	HighBeamL = {
 		Frames = {
 			[1] = "HighL"
 		},
 		Sequences = {
-			WIGWAG = sequence():Alternate( 1, 0, 8 )
+			WIGWAG = sequence():Alternate( 1, 0, 8, 2 ),
+			ON = { 1 }
 		}
 	},
 	HighBeamR = {
@@ -265,7 +294,8 @@ COMPONENT.Segments = {
 			[1] = "HighR"
 		},
 		Sequences = {
-			WIGWAG = sequence():Alternate( 0, 1, 8 )
+			WIGWAG = sequence():Alternate( 0, 1, 8, 2 ),
+			ON = { 1 }
 		}
 	}
 }
@@ -309,6 +339,16 @@ COMPONENT.Inputs = {
 		["MODE3"] = {
 			HighBeamL = "WIGWAG",
 			HighBeamR = "WIGWAG",
+			HeadlightL = "WIGWAG",
+			HeadlightR = "WIGWAG",
+		}
+	},
+	["Emergency.SceneForward"] = {
+		["FLOOD"] = {
+			HighBeamL = "ON",
+			HighBeamR = "ON",
+			HeadlightL = "ON",
+			HeadlightR = "ON",
 		}
 	},
 	["Emergency.Marker"] = {

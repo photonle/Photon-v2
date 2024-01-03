@@ -43,7 +43,7 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
-			[1] = "1:W 2:W",
+			[1] = "1:W",
 			[2] = "1:R 2:R",
 			[3] = "1:B 2:B",
 		},
@@ -66,7 +66,14 @@ COMPONENT.Inputs = {
 	["Emergency.Illuminate"] = {
 		["SPOT"] = {
 			Light = "ON",
-			-- Rotating = "ROTATE"
-		}
+		},	
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = {
+			Light = "ON",
+		},
+		["FLOOD"] = {
+			Light = "ON",
+		},
 	}
 }

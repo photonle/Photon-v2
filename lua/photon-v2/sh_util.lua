@@ -20,6 +20,21 @@ function Photon2.Util.ReferentialCopy( target, meta )
 	setmetatable( target, { __index = meta } )
 end
 
+-- local function clearMarkers( tbl )
+-- 	local keys = {}
+-- 	for key, value in pairs( tbl ) do
+-- 		if isstring( key ) and ( string.StartsWith( key, "!" ) ) then
+-- 			keys[#keys+1] = key
+-- 		elseif ( istable( value ) ) then
+-- 			clearMarkers( tbl )
+-- 		end
+-- 	end
+-- 	for i=1, #keys do
+-- 		tbl[string.sub( key, 2)] = value
+-- 		tbl[key] = nil
+-- 	end
+-- end
+
 ---@param target table
 ---@param base table
 ---@param level? number Leave as nil. Stack level used internally.
@@ -71,6 +86,8 @@ function Photon2.Util.Inherit( target, base, level )
 			target[string.sub(key, 2)] = value
 		end
 	end
+
+	-- clearMarkers( target )
 
 	metaTable.Inherits = base
 end

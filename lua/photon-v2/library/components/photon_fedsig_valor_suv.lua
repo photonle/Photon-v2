@@ -13,9 +13,11 @@ COMPONENT.PrintName = [[Federal Signal Valor (51")]]
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
 COMPONENT.States = {
-	[1] = "A",
+	[1] = "R",
 	[2] = "B",
-	[3] = "W"
+	[3] = "W",
+	[4] = "A",
+	[5] = "A",
 }
 
 local s = 1.5
@@ -42,7 +44,22 @@ COMPONENT.Templates = {
 			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
 			LightMatrixScaleMultiplier = 1
 		}
-	}
+	},
+	["Projected"] = {
+		Illumination = {
+			States = {
+				TAKEDOWN = {
+					Color = PhotonColor( 105, 105, 125 )
+				},
+				FLOOD = {
+					Color = PhotonColor( 235, 235, 255 )
+				},
+				ALLEY = {
+					Color = PhotonColor( 105, 105, 125 )
+				}
+			}
+		}
+	},
 }
 
 local mult56 = 0.8
@@ -93,14 +110,18 @@ COMPONENT.Elements = {
 
 	[27] = { "Rear", Vector( -8.2, 2.35, 1.85 ), Angle( 0, 90, 0 ) },
 	[28] = { "Rear", Vector( -8.2, -2.35, 1.85 ), Angle( 0, 90, 0 ) },
+
+	[29] = { "Illumination", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -90, 0 ) },
+	
+	-- [30] = { "Illumination", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -90, 0 ) },
+	-- [31] = { "Illumination", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -90, 0 ) },
 }
 
 -- COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
 
-COMPONENT.StateMap = "[1/2/3]  3 5 7 9 11 13 15 17 19 21 23 25 27 [2/1/3] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
+COMPONENT.StateMap = "[1/2/3]  3 5 7 9 11 13 15 [1/2/4] 21 23 25 27  [2/1/3] 2 4 6 8 10 12 14 16 [2/1/5] 22 24 26 28 [1/2/1] 17 19 [2/1/2] 18 20"
 
 local sequence = Photon2.SequenceBuilder.New
-
 
 COMPONENT.Segments = {
 	["All"] = {
@@ -203,10 +224,14 @@ COMPONENT.Segments = {
 	},
 	["Flood"] = {
 		Frames = {
-			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14"
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 [FLOOD] 29",
+			[2] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
 		},
 		Sequences = {
-			["FLOOD"] = { 1 }
+			["FLOOD"] = { 1 },
+			-- Identical to flood but intended to skip illumination
+			-- for performance.
+			["ALERT"] = { 2 },
 		}
 	},
 	-- Takedown and flood should not be in the same segment
@@ -214,12 +239,22 @@ COMPONENT.Segments = {
 	-- will be forcefully turned off
 	["Takedown"] = {
 		Frames = {
-			[1] = "[W] 9 10 11 12",
+			[1] = "[W] 9 10 11 12 [TAKEDOWN] 29",
 		},
 		Sequences = {
 			["ON"] = { 1 },
 		}
 	},
+	["AlleyLeft"] = {
+		Frames = { [1] = "[W] 13 15", },
+		Sequences = { ["ON"] = { 1 } }
+	},
+	["AlleyRight"] = {
+		Frames = { [1] = "[W] 14 16", },
+		Sequences = { ["ON"] = { 1 } }
+	},
+	-- RE = Recreational Electrical, an actual outfitter.
+	-- These patterns are based on their setups.
 	["RE_Rear"] = {
 		Frames = {
 			[1] = "17 19 21 28 26 24",
@@ -228,10 +263,99 @@ COMPONENT.Segments = {
 			[4] = "19 23 27 26 22 18"
 		},
 		Sequences = {
-			["MODE1"] = sequence():FlashHold( { 3, 4, 3, 4, }, 2, 5 ):Alternate( 1, 2, 10 ):Do( 2 )
+			["MODE1"] = sequence():FlashHold( { 3, 4, 3, 4, }, 2, 5 ):Alternate( 1, 2, 10 ):Do( 2 ),
+			["MODE2"] = sequence():FlashHold( 4, 1, 5 ):FlashHold( 3, 1, 5 )
 		}
+	},
+	["RE_Front"] = {
+		Frames = {
+			[1] = "2 6 10 14 3 7 11 15",
+			[2] = "16 12 8 4 1 5 9 13",
+		},
+		Sequences = {
+			["MODE2"] = sequence():FlashHold( 1, 1, 5 ):FlashHold( 2, 1, 5 )
+		}
+	},
+	["RE_Traffic"] = {
+		Frames = {
+			-- LEFT AND RIGHT
+			[1] = "[3] 19 21 23 25 27",
+			[2] = "[3] 21 23 25 27 28",
+			[3] = "[3] 23 25 27 28 26",
+			[4] = "[3] 25 27 28 26 24",
+			[5] = "[3] 27 28 26 24 22",
+			[6] = "[3] 28 26 24 22 20",
+			[7] = "[3] 26 24 22 20 19",
+			[8] = "[3] 24 22 20 19 21",
+			[9] = "[3] 22 20 19 21 23",
+			[10] = "[3] 20 19 21 23 25",
+			-- CENTER OUT
+			[11] = "[3] 23 25 27 28 26 24",
+			[12] = "[3] 21 23 25 26 24 22",
+			[13] = "[3] 19 21 23 24 22 20",
+			[14] = "[3] 27 19 21 22 20 28",
+			[15] = "[3] 25 27 19 20 28 26",
+
+		},
+		Sequences = {
+			["RIGHT"] = sequence():Sequential( 1, 10 ):Stretch( 2 ),
+			["LEFT"] = sequence():Sequential( 10, 1 ):Stretch( 2 ),
+			["CENOUT"] = sequence():Sequential( 11, 15 ):Stretch( 3 ),
+		}
+	},
+	-- Dedicated to the "Pursuit" pattern
+	["Pursuit"] = {
+		Frames = {
+			[0] = "[PASS] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28",
+			[1] = "1 5 9 13 17 21 25 4 8 12 16 20 24 28",
+			[2] = "3 7 11 15 19 23 27 2 6 10 14 18 22 26",
+			[3] = "1 3 5 7 9 11 13 15 17 19 21 23 25 27",
+			[4] = "2 4 6 8 10 12 14 16 18 20 22 24 26 28"
+		},
+		Sequences = {
+			["PURSUIT"] = sequence()
+							:Alternate( 3, 4, 6 )
+							:Alternate( 3, 4, 3 ):Do( 5 )
+							:Alternate( 1, 2, 3 ):Do( 3 )
+							:Alternate( 3, 4, 3 ):Do( 5 )
+							:FlashHold( 1, 3, 2 )
+							:FlashHold( 2, 3, 2 )
+						}
+	},
+	-- Pursuit - white override
+	["PursuitWO"] = {
+		Frames = {
+			[1] = "[W] 1 5 9 13 4 8 12 16",
+			[2] = "[W] 3 7 11 15 2 6 10 14",
+			[3] = "[W] 1 3 5 7 9 11 13 15",
+			[4] = "[W] 2 4 6 8 10 12 14 16"
+		},
+		Sequences = {
+			["PURSUIT"] = sequence()
+							:Alternate( 4, 3, 6 ):Add( 0 )
+							:Alternate( 4, 3, 3 ):Add( 0 ):Do( 5 )
+							:Alternate( 2, 1, 3 ):Add( 0 ):Do( 3 )
+							:Alternate( 4, 3, 3 ):Add( 0 ):Do( 5 )
+							:FlashHold( 2, 3, 1 ):Add( 0 )
+							:FlashHold( 1, 3, 1 ):Add( 0 )
+						}
 	}
 }
+
+--[[
+		THIS IS A CONCEPT PROTOTYPE ONLY
+		IT IS NOT FULLY IMPLEMENTED AND MAY NOT EVER BE
+--]]
+COMPONENT.Patterns = {
+	-- Patterns would be a group of sequences that could be
+	-- inserted into .Inputs by using only the pattern's name...
+	-- e.g. { Pattern = "Pursuit", Order = 10 }
+	Pursuit = {
+		["Pursuit"] = "PURSUIT",
+		["PursuitWO"] = "PURSUIT"
+	}
+}
+
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
@@ -273,11 +397,7 @@ COMPONENT.Inputs = {
 		-- 	Demo = "2",
 		-- }
 	},
-	["Emergency.Marker"] = {
-		["ON"] = {
-			Cruise = "CRUISE"
-		}
-	},
+	["Emergency.Marker"] = { ["ON"] = { Cruise = "CRUISE" } },
 	["Emergency.SceneForward"] = {
 		["ON"] = {
 			Takedown = "ON"
@@ -285,5 +405,7 @@ COMPONENT.Inputs = {
 		["FLOOD"] = {
 			Flood = "FLOOD"
 		}
-	}
+	},
+	["Emergency.SceneLeft"] = { ["ON"] = { AlleyLeft = "ON" } },
+	["Emergency.SceneRight"] = { ["ON"] = { AlleyRight = "ON" } },
 }

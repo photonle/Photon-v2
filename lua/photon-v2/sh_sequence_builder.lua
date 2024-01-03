@@ -66,16 +66,24 @@ end
 ---@param frameA integer First frame index.
 ---@param frameB integer Second frame index.
 ---@param length? integer (Default = `1`) Length (in frames) of each frame.
+---@param gap? integer (Default = `0`) Off period between each flash.
 ---@return PhotonSequenceBuilder
-function Photon2.SequenceBuilder:Alternate( frameA, frameB, length )
+function Photon2.SequenceBuilder:Alternate( frameA, frameB, length, gap )
 	local result = {}
 
+	gap = gap or 0
 	length = length or 1
 	for i=1, length do
 		result[#result+1] = frameA
 	end
+	for i=1, gap do
+		result[#result+1] = 0
+	end
 	for i=1, length do
 		result[#result+1] = frameB
+	end
+	for i=1, gap do
+		result[#result+1] = 0
 	end
 
 	return self:Append( result )
@@ -227,7 +235,7 @@ function Photon2.SequenceBuilder:Sequential( startFrame, endFrame )
 			result[#result+1] = i
 		end
 	else
-		for i=endFrame, startFrame, -1 do
+		for i=startFrame, endFrame, -1 do
 			result[#result+1] = i
 		end
 	end
