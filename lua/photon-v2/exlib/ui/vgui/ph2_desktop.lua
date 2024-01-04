@@ -47,6 +47,7 @@ function PANEL:Setup()
 	self.Tabs = propertySheet
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
 	propertySheet:AddSheet( "Rendering", self.RenderPage )
+
 end
 
 function PANEL:Init()

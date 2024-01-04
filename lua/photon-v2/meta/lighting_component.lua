@@ -48,16 +48,28 @@ local dumpLibraryData = false
 ---@return PhotonLightingComponent
 function Component.New( name, data )
 	
-
-
 	data = table.Copy( data )
 
 	local ancestors = { [name] = true }
 
+	
 	if ( data.Base ) then
+		-- More special handling for Input sequence assignments (there must be a better way to do this)
+		local dataInputs
+		if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
+
 		Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
 		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 		Photon2.Library.ComponentsGraph[data.Base][name] = true
+
+		if ( dataInputs ) then
+			for channel, modes in pairs( dataInputs ) do
+				if ( not istable( modes ) ) then continue end
+				for mode, sequences in pairs( modes ) do
+					data.Inputs[channel][mode] = sequences
+				end
+			end
+		end
 
 		-- if ( Photon2.Library.Components[data.Base] ) then
 		-- 	Photon2.Library.Components[data.Base].Children[name] = true

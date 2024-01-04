@@ -1,5 +1,6 @@
 if (exmeta.ReloadFile()) then return end
 
+-- UNUSED FILE
 -- IComponent
 
 NAME = "PhotonComponent"

@@ -239,6 +239,8 @@ function Photon2.UI.PopulateMenuBar()
 
 		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu", function()
 			local form = vgui.Create ( "Photon2UIDesktop" )
+			form:MakePopup()
+			form:SetKeyBoardInputEnabled( false )
 		end)
 
 		local openWelcome = menu:AddOption( "Open Welcome Menu", function()

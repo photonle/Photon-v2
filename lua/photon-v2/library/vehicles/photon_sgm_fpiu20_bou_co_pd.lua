@@ -141,9 +141,9 @@ VEHICLE.Equipment = {
 								["AIR"] = { Light = "SCENE" }
 							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {},
-								["!MODE2"] = { Override = "MODE2" },
-								["!MODE3"] = { Override = "MODE3" },
+								["MODE1"] = {},
+								["MODE2"] = { Override = "MODE2" },
+								["MODE3"] = { Override = "MODE3" },
 							}
 						},
 						Segments = {
@@ -212,9 +212,9 @@ VEHICLE.Equipment = {
 								["AIR"] = { Light = "W" }
 							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = {},
-								["!MODE2"] = { Override = "MODE2" },
-								["!MODE3"] = { Override = "MODE3" },
+								["MODE1"] = {},
+								["MODE2"] = { Override = "MODE2" },
+								["MODE3"] = { Override = "MODE3" },
 							}
 						},
 						Phase = "A",
@@ -259,9 +259,9 @@ VEHICLE.Equipment = {
 							},
 							["Emergency.Warning"] = {
 								-- Disables MODE1
-								["!MODE1"] = {},
-								["!MODE2"] = { Override = "MODE2" },
-								["!MODE3"] = { Override = "MODE3" },
+								["MODE1"] = {},
+								["MODE2"] = { Override = "MODE2" },
+								["MODE3"] = { Override = "MODE3" },
 							},
 							["Emergency.SceneLeft"] = { ["ON"] = { Override = "LEFT" } },
 							["Emergency.SceneRight"] = { ["ON"] = { Override = "RIGHT" } },
@@ -325,15 +325,15 @@ VEHICLE.Equipment = {
 							-- This is a Photon-specific feature built into its
 							-- underlying inheritance functionality.
 							["Emergency.Warning"] = {
-								["!MODE1"] = {
+								["MODE1"] = {
 									RE_Rear = "MODE1",
 									-- RE_Traffic = "LEFT"
 								},
-								["!MODE2"] = {
+								["MODE2"] = {
 									RE_Rear = "MODE2",
 									RE_Front = "MODE2",
 								},
-								["!MODE3"] = {
+								["MODE3"] = {
 									-- The R/B pattern needs to override white lighting
 									-- so the white only occupies otherwise "off" lights (defined using the "PASS" state).
 									Pursuit = { "PURSUIT", Order = 10 },
@@ -501,9 +501,9 @@ VEHICLE.Equipment = {
 								["REVERSE"] = { Light ="W" }
 							},
 							["Emergency.Warning"] = {
-								["!MODE1"] = { Override = "MODE1" },
-								["!MODE2"] = { Override = "MODE2" },
-								["!MODE3"] = { Override = "MODE3" },
+								["MODE1"] = { Override = "MODE1" },
+								["MODE2"] = { Override = "MODE2" },
+								["MODE3"] = { Override = "MODE3" },
 							}
 						},
 						-- Raises the Vehicle.Transmission input priority so
@@ -558,9 +558,9 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Warning"] = {
 								-- Disable inheritance from parent component by prepending !
-								["!MODE1"] = {},
-								["!MODE2"] = { Override = "MODE2" },
-								["!MODE3"] = { Override = "MODE3" }
+								["MODE1"] = {},
+								["MODE2"] = { Override = "MODE2" },
+								["MODE3"] = { Override = "MODE3" }
 							}
 						}
 					},
