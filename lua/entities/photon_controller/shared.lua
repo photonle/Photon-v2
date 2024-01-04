@@ -753,6 +753,7 @@ end
 
 function ENT:RefreshParentSubMaterials()
 	-- print("REFRESHING PARENT SUB MATERIALS @ " .. tostring( CurTime() ) )
+	if ( not IsValid( self ) or not ( IsValid( self:GetParent() ) ) ) then return end
 	for i=1, #self.SubMaterialArray do
 		-- printf("ID: %s Material: %s", self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material)
 		self:GetParent():SetSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
