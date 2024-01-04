@@ -102,8 +102,17 @@ function Equipment.InheritEntry( entry, parentName, equipmentTable, nameTable, l
 	end
 
 	local isAnonymous = not entry.Name
-	table.Inherit( entry, parent )
+	-- table.Inherit( entry, parent )
+	-- Photon2.Util.Inherit( entry, parent )
+	-- if ( entry.Inputs and parent.Inputs ) then
+	-- 	table.Inherit( entry.Inputs, parent.Inputs )
+	-- end
+	-- table.Inherit( entry, parent )
 
+	local entryInputs
+	if ( istable( entry.Inputs ) ) then entryInputs = table.Copy( entry.Inputs ) end
+	Photon2.Util.SimpleInherit( entry, parent )
+	Photon2.ComponentBuilder.InheritInputs( entryInputs, entry.Inputs )
 	-- This is to prevent the parent name from applying
 	if (isAnonymous) then
 		entry.Name = ""
@@ -114,7 +123,7 @@ end
 
 function Equipment.ProcessInheritance( equipmentTable, nameTable, loadedParents )
 	for index, entry in pairs( equipmentTable ) do
-		if (( entry.Inherit ) and ( not entry.BaseClass )) then
+		if (( entry.Inherit ) and ( not getmetatable( entry ) )) then
 			Equipment.InheritEntry( entry, entry.Inherit, equipmentTable, nameTable, loadedParents )
 		end
 	end

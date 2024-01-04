@@ -243,10 +243,6 @@ VEHICLE.Equipment = {
 									["MODE2:A"] = sequence():Add( 0 ):Do( 8 ):FlashHold( 1, 1, 5 ),
 									["MODE3:B"] = sequence():FlashHold( 1, 2, 3 ):FlashHold( 2, 2, 3 ),
 									["MODE3:A"] = sequence():FlashHold( 2, 2, 3 ):FlashHold( 1, 2, 3 ),
-									["LEFT:A"] = { 2 },
-									["LEFT:B"] = {},
-									["RIGHT:A"] = {},
-									["RIGHT:B"] = { 2 },
 								}
 							}
 						},
@@ -263,8 +259,7 @@ VEHICLE.Equipment = {
 								["MODE2"] = { Override = "MODE2" },
 								["MODE3"] = { Override = "MODE3" },
 							},
-							["Emergency.SceneLeft"] = { ["ON"] = { Override = "LEFT" } },
-							["Emergency.SceneRight"] = { ["ON"] = { Override = "RIGHT" } },
+							["Emergency.SceneLeft"] = { ["ON"] = { Light = "W" } },
 						},
 					},
 					{
@@ -273,6 +268,12 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 0 ),
 						States = { "B", "R", "W" },
 						Phase = "B",
+						Inputs = {
+							-- Clears SceneLeft from doing anything on this component.
+							["Emergency.SceneLeft"] = { ["ON"] = {} },
+							-- Configure SceneRight, which the parent component does not use.
+							["Emergency.SceneRight"] = { ["ON"] = { Light = "W" } },
+						}
 					}
 				}
 			},

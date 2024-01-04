@@ -281,15 +281,7 @@ function Photon2.BuildParentLibraryComponent( childId, parentId )
 	if ( parentLibraryComponent.Inputs ) then parentLibraryComponentInputs = table.Copy(  parentLibraryComponent.Inputs ) end
 	if ( parentLibraryComponent.Base ) then
 		Util.Inherit( parentLibraryComponent, Photon2.BuildParentLibraryComponent( parentId, parentLibraryComponent.Base ))
-		-- Special handling for Inputs so mode sequences won't get inherited
-		if ( parentLibraryComponentInputs ) then
-			for channel, modes in pairs( parentLibraryComponentInputs ) do
-				if ( not istable( modes ) ) then continue end
-				for mode, sequences in pairs( modes ) do
-					parentLibraryComponent.Inputs[channel][mode] = sequences
-				end
-			end
-		end
+		Photon2.ComponentBuilder.InheritInputs( parentLibraryComponentInputs, parentLibraryComponent.Inputs )
 	end
 	return parentLibraryComponent
 end

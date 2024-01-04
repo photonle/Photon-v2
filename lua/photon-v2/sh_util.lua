@@ -35,11 +35,22 @@ end
 -- 	end
 -- end
 
+function Photon2.Util.SimpleInherit( target, base )
+	base = table.Copy( base )
+	for key, value in pairs( base ) do
+		if ( target[key] == nil ) then
+			target[key] = value
+		elseif ( istable( value ) and istable( target[key] ) ) then
+			target[key] = Photon2.Util.SimpleInherit( target[key], value )
+		end
+	end
+	return setmetatable(target, { Inherited = true } )
+end
+
 ---@param target table
 ---@param base table
 ---@param level? number Leave as nil. Stack level used internally.
-function Photon2.Util.Inherit( target, base, level )
-	level = level or 1
+function Photon2.Util.Inherit( target, base )
 	local metaTable = getmetatable( target )
 	if ( not metaTable ) then
 		setmetatable( target, {} )
@@ -56,15 +67,15 @@ function Photon2.Util.Inherit( target, base, level )
 	for key, value in pairs( base ) do
 		local raw = rawget( target, key )
 		
-		if ( raw == nil and isstring( key ) ) then
-			local magicKey = "!" .. key
-			if ( rawget( target, magicKey ) ) then
-				raw = rawget( target, magicKey )
-				target[key] = raw
-				target[key]["__no_inherit"] = true
-				target[magicKey] = nil
-			end
-		end
+		-- if ( raw == nil and isstring( key ) ) then
+		-- 	local magicKey = "!" .. key
+		-- 	if ( rawget( target, magicKey ) ) then
+		-- 		raw = rawget( target, magicKey )
+		-- 		target[key] = raw
+		-- 		target[key]["__no_inherit"] = true
+		-- 		target[magicKey] = nil
+		-- 	end
+		-- end
 		
 		if ( raw == nil ) then
 			target[key] = value
@@ -72,20 +83,20 @@ function Photon2.Util.Inherit( target, base, level )
 			target[key] = nil
 		elseif ( istable( raw ) and istable( value ) ) then
 			if ( not raw["__no_inherit"] ) then
-				Photon2.Util.Inherit( raw, value, level + 1 )
+				Photon2.Util.Inherit( raw, value )
 			else
 				raw["__no_inherit"] = nil
 			end
 		end
 	end
 	
-	for key, value in pairs ( target ) do
-		if ( isstring( key ) and string.StartsWith( key, "!" ) ) then
-			-- print("found extra non-inherited key: " .. tostring( key))
-			-- print("should be: " .. string.sub(key, 2))
-			target[string.sub(key, 2)] = value
-		end
-	end
+	-- for key, value in pairs ( target ) do
+	-- 	if ( isstring( key ) and string.StartsWith( key, "!" ) ) then
+	-- 		-- print("found extra non-inherited key: " .. tostring( key))
+	-- 		-- print("should be: " .. string.sub(key, 2))
+	-- 		target[string.sub(key, 2)] = value
+	-- 	end
+	-- end
 
 	-- clearMarkers( target )
 

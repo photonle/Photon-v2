@@ -1,3 +1,4 @@
+-- Helper functions for compiling components
 Photon2.ComponentBuilder = {}
 
 local string = string
@@ -64,4 +65,19 @@ function Photon2.ComponentBuilder.StateMap( colorMap, lightGroups, stateSlots )
 	end
 
 	return result
+end
+
+-- Discards inherited sequences for each channel:mode the child explicitly declares. This is a
+-- special case where normal deep inheritance is rarely desired (for easier pattern overrding).
+---@param childInputs table Original input table from child.
+---@param mergedInputs table The merged input table created from inheritance.
+function Photon2.ComponentBuilder.InheritInputs( childInputs, mergedInputs )
+	if ( childInputs ) then
+		for channel, modes in pairs( childInputs ) do
+			if ( not istable( modes ) ) then continue end
+			for mode, sequences in pairs( modes ) do
+				mergedInputs[channel][mode] = sequences
+			end
+		end
+	end
 end

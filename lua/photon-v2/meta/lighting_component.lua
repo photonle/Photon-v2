@@ -62,14 +62,7 @@ function Component.New( name, data )
 		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 		Photon2.Library.ComponentsGraph[data.Base][name] = true
 
-		if ( dataInputs ) then
-			for channel, modes in pairs( dataInputs ) do
-				if ( not istable( modes ) ) then continue end
-				for mode, sequences in pairs( modes ) do
-					data.Inputs[channel][mode] = sequences
-				end
-			end
-		end
+		Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
 
 		-- if ( Photon2.Library.Components[data.Base] ) then
 		-- 	Photon2.Library.Components[data.Base].Children[name] = true
