@@ -59,6 +59,7 @@ Light.BoneParent = -1
 -- }
 
 local wScale = 0.9
+local swScale = 1.0
 local bScale = 0.66
 local rScale = 0.66
 local function reverseColor( color )
@@ -69,7 +70,7 @@ local function reverseColor( color )
 end
 
 local black = Color( 0, 0, 0 )
-local white = Color( 255, 255, 255 )
+-- local white = Color( 255, 255, 255 )
 
 --[[
 	Adding additional state colors:
@@ -78,6 +79,7 @@ local white = Color( 255, 255, 255 )
 --]] 
 
 local white = { r = 255, g = 255, b = 255 }
+local softWhite = { r = 255, g = 225, b = 225 }
 local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
@@ -162,6 +164,14 @@ Light.States = {
 		GlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
 		InnerGlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
 		ShapeGlowColor = PhotonColor(255, 255, 255):Blend(white):GetBlendColor(),
+	},
+	["SW"] = {
+		Blend = Color( 255, 200, 200 ),
+		SourceDetailColor = PhotonColor(255,255,255):Blend(softWhite):GetBlendColor(), 
+		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(softWhite):GetBlendColor(),
+		GlowColor = PhotonColor(255*swScale, 0*swScale, 0*swScale):Blend(softWhite):GetBlendColor(),
+		InnerGlowColor = PhotonColor(255*swScale, 150*swScale, 150*swScale):Blend(softWhite):GetBlendColor(),
+		ShapeGlowColor = PhotonColor(255, 255, 255):Blend(softWhite):GetBlendColor(),
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),

@@ -86,6 +86,9 @@ function Photon2.Index.ProcessComponentLibrary()
 			if ( not library.Components[component.Base] ) then
 				error("Attempted to inherit from [" .. tostring( component.Base ) .."], which could not found.")
 			end
+			if ( name == component.Base ) then
+				error("It appears you attempted to inherit a component from itself: [" .. tostring( name ) .. "]" )
+			end
 			Photon2.CompileComponent( name, component )
 			-- TODO: Component inheritance
 			--setMetaTable(component, index.Components[component.Base])

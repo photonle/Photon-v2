@@ -166,9 +166,9 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Spotlights",
-				Props = {
+				Components = {
 					{
-						Model = "models/sentry/props/spotlight_left_up.mdl",
+						Component = "photon_par46_left",
 						Position = Vector( -36, 28, 50 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
@@ -177,15 +177,28 @@ VEHICLE.Equipment = {
 						}
 					},
 					{
-						Model = "models/sentry/props/spotlight_right_up.mdl",
+						Component = "photon_par46_right",
 						Position = Vector( 36, 28, 50 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
 						SubMaterials = {
 							[5] = "sentry/shared/env_cubemap_model",
 							[7] = "photon/common/red_glass",
-						}
-					},
+						},
+						StateMap = "[R] 1"
+					}
+				},
+				Props = {
+					-- {
+					-- 	Model = "models/sentry/props/spotlight_right_up.mdl",
+					-- 	Position = Vector( 36, 28, 50 ),
+					-- 	Angles = Angle( 0, 0, 0 ),
+					-- 	Scale = 1,
+					-- 	SubMaterials = {
+					-- 		[5] = "sentry/shared/env_cubemap_model",
+					-- 		[7] = "photon/common/red_glass",
+					-- 	}
+					-- },
 				}
 			}
 		}

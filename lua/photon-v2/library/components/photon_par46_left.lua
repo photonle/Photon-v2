@@ -8,16 +8,15 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
--- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.PrintName = [[Whelen PAR46 LED Spotlight"]]
+COMPONENT.PrintName = [[PAR46 Spotlight (Left)]]
 
-COMPONENT.Model = "models/sentry/props/spotlightpar46_left_up.mdl"
+COMPONENT.Model = "models/sentry/props/spotlight_left_up.mdl"
 
 COMPONENT.Templates = {
 	["2D"] = {
 		Light = {
-			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_par46_shape.png").MaterialName,
-			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_par46_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
 			Width = 7.6,
 			Height = 7.6,
 			Scale = 2
@@ -33,6 +32,8 @@ COMPONENT.Templates = {
 	}
 }
 
+COMPONENT.StateMap = "[SW] 1"
+
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
 	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
@@ -43,13 +44,10 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
-			[1] = "1:W",
-			[2] = "1:R 2:R",
-			[3] = "1:B 2:B",
+			[1] = "1",
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["FLASH"] = { 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 3, 3, 3, 0, 0, 0 },
 		}
 	},
 	Rotating = {

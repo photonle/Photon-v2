@@ -609,7 +609,13 @@ VEHICLE.Equipment = {
 									ReverseFlasher = "MODE1"
 								},
 								["MODE2"] = { ReverseFlasher = "MODE2" },
-								["MODE3"] = { ReverseFlasher = "MODE3" },
+								["MODE3"] = { 
+									HighBeamL = "WIGWAG",
+									HighBeamR = "WIGWAG",
+									HeadlightL = "WIGWAG",
+									HeadlightR = "WIGWAG",
+									ReverseFlasher = "MODE3" 
+								},
 							}
 						}
 					}

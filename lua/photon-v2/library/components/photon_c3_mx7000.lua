@@ -198,9 +198,12 @@ COMPONENT.Segments = {
 			[0] = "[~OFF] 21 22 23 24",
 			[1] = "21 22",
 			[2] = "23 24",
+			[3] = "21 24",
+			[4] = "22 23",
 		},
 		Sequences = {
-			INOUT = sequence():Alternate( 1, 2, 7 )
+			INOUT = sequence():Alternate( 1, 2, 7 ),
+			WARN = sequence():Alternate( 3, 4, 7 ),
 		}
 	},
 	MirrorTesting = {
@@ -214,11 +217,14 @@ COMPONENT.Segments = {
 	},
 	ArrowStik = {
 		Frames = {
-			[0] = "[~OFF] 27 28 29 30 31 32",
-			[1] = "27 28 29 30 31 32"
+			[0] = "[~OFF] 25 27 29 31 32 30 28 26",
+			[1] = "25 27 29 31 32 30 28 26",
+			[2] = "25 29 32 28",
+			[3] = "27 31 30 26",
 		},
 		Sequences = {
-			FLASH = sequence():Alternate( 1, 0, 6 )
+			FLASH = sequence():Alternate( 1, 0, 6 ),
+			WARN = sequence():Alternate( 2, 3, 7 )
 		}
 
 	},
@@ -268,8 +274,8 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			RearWarning = "FLASH",
-			ArrowStik = "FLASH",
+			ArrowStik = "WARN",
+			LowerFront = "WARN"
 		},
 		["MODE2"] = {
 			MirrorTesting = "TEST",

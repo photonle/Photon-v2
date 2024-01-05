@@ -38,7 +38,7 @@ Controls in Photon 2 are highly customizable. You can use any button on a keyboa
 
 For advanced users, you can create multiple control profiles and assign them to specific vehicles. 
 
-Photon 2 will display the essential controls whenever you get in a vehicle. Once you're comfortable, you can check out the Input Configuration editor to view, adjust and manage your controls.
+Photon 2 will display only the essential controls whenever you get in a vehicle. Once you're comfortable, you can check out the Input Configuration editor to view, adjust and manage your controls. Photon 2 has dedicated controls for traffic advisors, scene lighting, cruise lighting, airhorns, manual sirens and more.
 ]]
 
 local controlsTextVCMod =
@@ -77,7 +77,7 @@ Press "Dismiss for Now" to close this window until next game load.
 
 Press "Close" to close this window and never see it on game load again. (You can always re-open it from the Photon 2 menus later.)
 
-Note: This window only appears automatically in single-player mode.
+Note: This window only appears automatically in single-player mode. (Server owners )
 ]]
 
 local function addContentLabel( panel, text )
