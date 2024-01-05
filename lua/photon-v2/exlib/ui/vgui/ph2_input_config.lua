@@ -1,5 +1,8 @@
 local class = "Photon2UIInputConfiguration"
 local base = "Photon2UIWindow"
+
+local print = Photon2.Debug.Print
+
 ---@class Photon2UIInputConfiguration : Photon2UIWindow
 ---@field EditPanel Panel
 ---@field CommandList EXDListView
@@ -101,7 +104,7 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 
 	self:SetTitleMain( inputConfig.Name or "untitled" )
 
-	print("Loading input configuration: " .. tostring( inputConfig ) )
+	-- print("Loading input configuration: " .. tostring( inputConfig ) )
 
 	local listView = self.CommandList
 	listView:Clear()

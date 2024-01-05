@@ -6,9 +6,9 @@ local subtractiveMaterial = Material( "pp/sub" )
 
 local storeRenderTarget = render.GetScreenEffectTexture( 0 )
 
-local rtBloomOuter = GetRenderTargetEx( "Photon2_RT1", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-local rtMeshSource = GetRenderTargetEx( "Photon2_RT2", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
-local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), 0, IMAGE_FORMAT_BGRA8888 )
+local rtBloomOuter = GetRenderTargetEx( "Photon2_RT1", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local rtMeshSource = GetRenderTargetEx( "Photon2_RT2", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
 
 local bloomEnabled = true
 
@@ -26,7 +26,8 @@ local bloomInnerBlurY		= GetConVar( "ph2_bloom_inner_blur_y" )
 
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive )
-	render.TurnOnToneMapping()
+	-- render.SuppressEngineLighting( true )
+	-- render.TurnOnToneMapping()
 	local scene = render.GetRenderTarget()
 	render.CopyRenderTargetToTexture( storeRenderTarget )
 
@@ -39,7 +40,6 @@ function Photon2.RenderBloom.Render( additive )
 	cam.Start3D()
 
 		render.SetStencilEnable( true )
-		render.SuppressEngineLighting( true )
 		render.SetStencilWriteMask( 1 )
 		render.SetStencilTestMask( 1 )
 		render.SetStencilReferenceValue( 1 )
@@ -59,24 +59,24 @@ function Photon2.RenderBloom.Render( additive )
 		render.SetStencilCompareFunction( STENCIL_EQUAL )
 		render.SetStencilPassOperation( STENCIL_KEEP )
 		
-		render.SuppressEngineLighting( false )
 		render.SetStencilEnable( false)
 	cam.End3D()
-
-	
+		
+		
 	render.CopyRenderTargetToTexture( rtBloomOuter )
 	render.CopyRenderTargetToTexture( rtBloomInner )
 	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX:GetFloat(), bloomOuterBlurY:GetFloat(), bloomOuterBlurPasses:GetInt() )
 	render.CopyRenderTargetToTexture( rtBloomOuter )
 	
 	render.BlurRenderTarget( rtBloomInner, bloomInnerBlurX:GetFloat(), bloomInnerBlurY:GetFloat(), bloomInnerBlurPasses:GetInt() )
-
-
+	
+	
 	render.SetRenderTarget( scene )
 	copyMaterial:SetTexture( "$basetexture", storeRenderTarget )
 	copyMaterial:SetVector( "$color", Vector(1,1,1) )
 	render.SetMaterial( copyMaterial )
 	render.DrawScreenQuad()
+	-- render.SuppressEngineLighting( false )
 
 	-- render.SetStencilEnable( !additive )
 	-- 	render.SetStencilCompareFunction( STENCIL_NOTEQUAL )

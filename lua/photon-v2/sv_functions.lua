@@ -35,20 +35,37 @@ end
 
 -- Photon2.RunVehicleListModification()
 
+---@param ply Entity
+---@param vehicle Vehicle
+---@param role any
 function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
-	-- local target = vehicle
-	-- if ( vehicle:IsPhoton2Seat() )
-	if ( IsValid( vehicle:GetPhotonControllerFromAncestor() ) ) then
-		vehicle:GetPhotonControllerFromAncestor():PlayerEnteredLinkedVehicle( ply, vehicle, role )
+	
+	local controller = vehicle:GetPhotonControllerFromAncestor() --[[@as sv_PhotonController]]
+	if ( not IsValid( controller ) ) then return end
+	
+	
+	if ( controller.IsLinkedToStandardVehicle and ( vehicle:GetPhotonController() == controller ) and ( vehicle:GetDriver() == ply ) ) then
+		controller:PlayerEnteredLinkedVehicle( ply, vehicle, role )
+	elseif ( not controller.IsLinkedToStandardVehicle ) then
+		controller:PlayerEnteredLinkedVehicle( ply, vehicle, role )
 	end
+
 end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
-	if ( IsValid( vehicle:GetPhotonControllerFromAncestor() ) ) then
-		vehicle:GetPhotonControllerFromAncestor():PlayerExitedLinkedVehicle( ply, vehicle )
-	end
+	local controller = vehicle:GetPhotonControllerFromAncestor()
 	
+	if ( IsValid( controller ) ) then
+		if ( controller.IsLinkedToStandardVehicle ) then
+			if ( vehicle:GetPhotonController() == controller ) then
+				vehicle:GetPhotonControllerFromAncestor():PlayerExitedLinkedVehicle( ply, vehicle )
+			end
+		else
+			vehicle:GetPhotonControllerFromAncestor():PlayerExitedLinkedVehicle( ply, vehicle )
+		end
+	end
+
 	Photon2.sv_Network.NotifyPlayerInputController( ply, nil )
 
 	-- TODO: needs to account for custom vehicle bases

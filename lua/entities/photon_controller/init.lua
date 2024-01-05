@@ -4,6 +4,7 @@ AddCSLuaFile("shared.lua")
 AddCSLuaFile("cl_init.lua")
 
 ---@class sv_PhotonController : PhotonController
+---@field IsLinkedToStandardVehicle boolean
 ENT = ENT
 
 function ENT:Initialize()

@@ -67,7 +67,9 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 
 	controller:SetProfileName( profile )
 
-	vehicle:SetNW2Entity( "Photon2:Controller", controller )
+	if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
+
+	vehicle:SetPhotonController( controller )
 
 	return controller
 end

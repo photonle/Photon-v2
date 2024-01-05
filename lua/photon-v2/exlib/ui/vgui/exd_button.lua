@@ -147,9 +147,9 @@ function PANEL:GenerateExample( ClassName, PropertySheet, Width, Height )
 
 end
 
-local PANEL = derma.DefineControl( "DButton", "A standard Button", PANEL, "DLabel" )
+-- local PANEL = derma.DefineControl( "DButton", "A standard Button", PANEL, "DLabel" )
 
-PANEL = table.Copy( PANEL )
+-- PANEL = table.Copy( PANEL )
 
 function PANEL:SetActionFunction( func )
 
