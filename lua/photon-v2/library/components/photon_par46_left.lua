@@ -19,7 +19,21 @@ COMPONENT.Templates = {
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
 			Width = 7.6,
 			Height = 7.6,
-			Scale = 2
+			Scale = 2,
+			IntensityGainFactor = 8,
+			IntensityLossFactor = 2,
+			DeactivationState = "~OFF",
+			Intensity = 0,
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true,
+				},
+				["~HR"] = {
+					Inherit = "HR",
+					IntensityTransitions = true,
+				}
+			}
 		}
 	},
 	["Projected"] = {
@@ -32,7 +46,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[SW] 1"
+COMPONENT.StateMap = "[~SW] 1"
 
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
@@ -44,6 +58,7 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
+			[0] = "[~OFF] 1",
 			[1] = "1",
 		},
 		Sequences = {

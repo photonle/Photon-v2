@@ -40,7 +40,7 @@ COMPONENT.Templates = {
 			Height = 3.4,
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sgm_fpiu20_headlight_detail.png").MaterialName,
-			Scale = 0.5,
+			Scale = 0.75,
 			LightMatrix = {
 				Vector( 1 * 1, 0, 0 ), Vector( -1 * 1, 0, 0 ), 
 			},

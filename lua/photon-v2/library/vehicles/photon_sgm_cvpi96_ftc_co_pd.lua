@@ -185,7 +185,16 @@ VEHICLE.Equipment = {
 							[5] = "sentry/shared/env_cubemap_model",
 							[7] = "photon/common/red_glass",
 						},
-						StateMap = "[R] 1"
+						StateMap = "[~HR] 1",
+						Inputs = {
+							-- Clear the default illumination mode
+							["Emergency.SceneForward"] = { ["ON"] = {} },
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "ON" },
+								["MODE2"] = { Light = "ON" },
+								["MODE3"] = { Light = "ON" },
+							}
+						}
 					}
 				},
 				Props = {
@@ -213,7 +222,19 @@ VEHICLE.Equipment = {
 						Component = "photon_c3_mx7000",
 						Position = Vector( 0, -17, 66.9 ),
 						Angles = Angle( 0, 180, 0 ),
-						Scale = 1.14
+						Scale = 1.14,
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {
+									ArrowStik = "WARN",
+									-- RotatorLeftOuter = "ON",
+									-- RotatorRightOuter = "ON",
+									-- RotatorCenter = "ON",
+									-- RotatorLeftInner = "ON",
+									-- RotatorRightInner = "ON",
+								}
+							}
+						}
 					}
 				}
 			}

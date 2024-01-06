@@ -49,6 +49,10 @@ end
 
 function Photon2.ClientInput.SetActiveConfiguration( name )
 	Photon2.ClientInput.Active = Photon2.GetInputConfiguration( name )
+	if not ( Photon2.ClientInput.Active ) then
+		ErrorNoHaltWithStack( "Failed to retrieve input configuration [" .. name .. "]. Using default instead.")
+		Photon2.ClientInput.Active = Photon2.GetInputConfiguration( "default" )
+	end
 end
 
 

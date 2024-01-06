@@ -40,9 +40,10 @@ Light.QuadRotation = Angle( 0, 90, 90 )
 Light.TranslatedLocalAngles = Angle( 0, 0, 0 )
 
 Light.Intensity = 1
-Light.IntensityGainFactor = 10
+Light.IntensityGainFactor = 1
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1
+Light.IntensityTransitions = false
 
 Light.LightMatrixEnabled = false
 Light.LightMatrixScaleMultiplier = 1
@@ -81,6 +82,7 @@ local black = Color( 0, 0, 0 )
 local white = { r = 255, g = 255, b = 255 }
 local softWhite = { r = 255, g = 225, b = 225 }
 local red = { r = 255, g = 0, b = 0 }
+local redHalogen = { r = 255, g = 50, b = 70 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
 local amber = { r = 255, g = 0, b = 0 }
@@ -100,7 +102,8 @@ Light.States = {
 		InnerGlowColor = black,
 		BloomColor = black,
 		SourceIntensity = black,
-		PeakColor = black
+		PeakColor = black,
+		Intensity = 0
 	},
 	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
@@ -161,17 +164,28 @@ Light.States = {
 		Blend = Color( 200, 200, 255 ),
 		SourceDetailColor = PhotonColor(255,255,255):Blend(white):GetBlendColor(), 
 		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(white):GetBlendColor(),
-		GlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
+		GlowColor = PhotonColor(200*wScale, 200*wScale, 255*wScale):Negative(true):Blend(white):GetBlendColor(),
 		InnerGlowColor = PhotonColor(150*wScale, 150*wScale, 255*wScale):Blend(white):GetBlendColor(),
 		ShapeGlowColor = PhotonColor(255, 255, 255):Blend(white):GetBlendColor(),
 	},
 	["SW"] = {
 		Blend = Color( 255, 200, 200 ),
 		SourceDetailColor = PhotonColor(255,255,255):Blend(softWhite):GetBlendColor(), 
-		SourceFillColor = PhotonColor( 255, 255, 255 ):Blend(softWhite):GetBlendColor(),
-		GlowColor = PhotonColor(255*swScale, 0*swScale, 0*swScale):Blend(softWhite):GetBlendColor(),
-		InnerGlowColor = PhotonColor(255*swScale, 150*swScale, 150*swScale):Blend(softWhite):GetBlendColor(),
+		SubtractiveMid = PhotonColor( 0, 0, 255 ):Negative(true):Blend(softWhite):GetBlendColor(),
+		SourceFillColor = PhotonColor( 255, 255, 255 ):Negative(false):Blend(softWhite):GetBlendColor(),
+		GlowColor = PhotonColor(255*swScale, 255*swScale, 200*swScale):Negative(true):Blend(softWhite):GetBlendColor(),
+		InnerGlowColor = PhotonColor(255*swScale, 175*swScale, 150*swScale):Blend(softWhite):GetBlendColor(),
 		ShapeGlowColor = PhotonColor(255, 255, 255):Blend(softWhite):GetBlendColor(),
+	},
+	["HR"] = {
+		Title = "Halogen Red",
+		Blend = PhotonColor( 255, 50, 50 ),
+		SourceFillColor = PhotonColor( 255, 0, 0 ):Negative(true):Blend( redHalogen ):GetBlendColor(),
+		GlowColor = PhotonColor( 255, 0, 0 ):Negative(true):Blend(redHalogen):Scale(0.6):GetBlendColor(),
+		SubtractiveMid = PhotonColor( 255, 0, 0 ):Negative(true):Blend(redHalogen):Scale(0.6):GetBlendColor(),
+		SourceDetailColor = PhotonColor( 255,225,0 ):Blend(redHalogen):GetBlendColor(), 
+		InnerGlowColor = PhotonColor(255, 50, 50):Blend(redHalogen):Scale( rScale ):GetBlendColor(),
+		ShapeGlowColor = PhotonColor(255, 48, 48):Blend(redHalogen):GetBlendColor()
 	},
 	["#DEBUG"] = {
 		SourceDetailColor = Color( 255, 255, 255 ),
@@ -440,7 +454,7 @@ function Light:DoPreRender()
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
-			self.Intensity = self.Intensity - (RealFrameTime() * state.IntensityLossFactor)
+			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
 			if (self.Intensity < self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 				
@@ -450,7 +464,7 @@ function Light:DoPreRender()
 				end
 			end
 		else
-			self.Intensity = self.Intensity + (RealFrameTime() * state.IntensityGainFactor)
+			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 			end
@@ -481,6 +495,8 @@ function Light:OnStateChange( state )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
+	self.IntensityGainFactor = state.IntensityGainFactor
+	self.IntensityLossFactor = state.IntensityLossFactor
 
 	if ( state.IntensityTransitions ) then
 

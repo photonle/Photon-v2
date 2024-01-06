@@ -69,7 +69,7 @@ function PANEL:Init()
 
 	self.SelectedButtonNodes = {}
 
-	if ( Photon2.ClientInput.Active.Name ) then
+	if ( Photon2.ClientInput.Active and Photon2.ClientInput.Active.Name ) then
 		local current = Photon2.ClientInput.Active.Name
 		local entry = Photon2.Library.InputConfigurations:Get( current )
 		local asNew = false

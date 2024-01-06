@@ -27,10 +27,12 @@ Light.IntensityGainFactor = 2
 Light.IntensityLossFactor = 2
 Light.TargetIntensity = 1
 Light.IntensityTransitions = false
+
 Light.Scale = Vector( 1, 1, 1 )
 Light.BoneParent = -1
 
 local white = { r = 255, g = 255, b = 255 }
+local softWhite = { r = 255, g = 235, b = 205 }
 local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
@@ -68,8 +70,8 @@ Light.States = {
 		DrawColor = PhotonColor( 255, 255, 255 ):Blend( white ):GetBlendColor(),
 	},
 	["SW"] = {
-		BloomColor = PhotonColor( 255, 235, 205 ):Blend( white ):GetBlendColor(),
-		DrawColor = PhotonColor( 255, 245, 205 ):Blend( white ):GetBlendColor(),
+		BloomColor = PhotonColor( 255, 195, 175 ):Blend( softWhite ):GetBlendColor(),
+		DrawColor = PhotonColor( 255, 245, 205 ):Blend( softWhite ):GetBlendColor(),
 	},
 }
 
@@ -229,7 +231,6 @@ function Light:DoPreRender()
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
-			-- print(state.IntensityLossFactor)
 			if (self.Intensity < self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 

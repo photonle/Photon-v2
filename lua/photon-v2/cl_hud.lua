@@ -449,6 +449,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 	if ( not target ) then hudStartTime = 0 return end
 
+	if ( not Photon2.ClientInput.Active ) then return end
+
 	local keyHints = {}
 
 	hudMaterial:SetTexture( "$basetexture", hudRT )

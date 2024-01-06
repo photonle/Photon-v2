@@ -127,6 +127,12 @@ COMPONENT.Elements = {
 
 COMPONENT.StateMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
 
+COMPONENT.ElementGroups = {
+	["TailL"] = { 17, 21 },
+	["TailR"] = { 18, 22 },
+	["BrakeC"] = { 23 }
+}
+
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
@@ -179,20 +185,12 @@ COMPONENT.Segments = {
 			DIM = { 2 },
 		}
 	},
-	["Tail"] = {
-		Frames = {
-			[1] = "[~RD] 17 18 21 22"
-		},
-		Sequences = {
-			ON = { 1 }
-		}
-	},
 	["Signal_L"] = {
 		Frames = {
-			[0] = "[~OFF] 15 21",
-			[1] = "15 21",
-			[2] = "[~RD] 21",
-			[3] = "[PASS] 15 21"
+			[0] = "[~OFF] 15",
+			[1] = "15",
+			[2] = "[~RD]",
+			[3] = "[PASS] 15"
 		},
 		Sequences = {
 			ON = { 1 },
@@ -202,10 +200,10 @@ COMPONENT.Segments = {
 	},
 	["Signal_R"] = {
 		Frames = {
-			[0] = "[~OFF] 16 22",
-			[1] = "16 22",
-			[2] = "[~RD] 22",
-			[3] = "[PASS] 16 22",
+			[0] = "[~OFF] 16",
+			[1] = "16",
+			[2] = "[~RD]",
+			[3] = "[PASS] 16",
 		},
 		Sequences = {
 			ON = { 1 },
@@ -235,53 +233,93 @@ COMPONENT.Segments = {
 	},
 	["Brake"] = {
 		Frames = {
-			[1] = "17 18 23"
+			[1] = "23"
 		},
 		Sequences = {
 			ON = { 1 }
 		}
-	}
+	},
+	["Tail"] = {
+		Frames = {
+			[1] = "[~RD] TailL TailR"
+		},
+		Sequences = {
+			DIM = { 1 }
+		}
+	},
+	["TailL"] = {
+		Frames = {
+			[0] = "[~OFF] TailL 19",
+			[1] = "[~RD] TailL",
+			[2] = "[~R] TailL",
+			[3] = "[PASS] TailL",
+			[4] = "[~SW] 19 [PASS] TailL",
+		},
+		Sequences = {
+			DIM = { 1 },
+			ON = { 2 },
+			SIGNAL = sequence():Alternate( 2, 3, 12 ),
+			FLASH = sequence():Alternate( 2, 4, 8 ),
+		}
+	},
+	["TailR"] = {
+		Frames = {
+			[0] = "[~OFF] TailR 20",
+			[1] = "[~RD] TailR",
+			[2] = "[~R] TailR",
+			[3] = "[PASS] TailR",
+			[4] = "[~SW] 20 [PASS] TailR"
+		},
+		Sequences = {
+			DIM = { 1 },
+			ON = { 2 },
+			SIGNAL = sequence():Alternate( 2, 3, 12 ),
+			FLASH = sequence():Alternate( 2, 4, 8 ),
+		}
+	},
+
 }
 
 COMPONENT.Inputs = {
 	["Vehicle.Lights"] = {
 		["ON"] = {
+			Tail = "DIM",
 			Headlights = "ON",
-			Tail = "ON",
 			Marker_L = "ON",
 			Marker_R = "ON",
 			Brake = "ON",
 		},
 		["HEADLIGHTS"] = {
+			Tail = "DIM",
 			Marker_L = "DIM",
 			Marker_R = "DIM",
 			Headlights = "ON",
-			Tail = "ON",
 		},
 		["PARKING"] = {
+			Tail = "DIM",
 			Marker_L = "DIM",
 			Marker_R = "DIM",
-			Tail = "ON",
-		}
-	},
-	["Emergency.Warning"] = {
-		["MODE3"] = {
-			HighBeams = "WIGWAG"
 		}
 	},
 	["Vehicle.Brake"] = {
 		["BRAKE"] = {
-			Brake = "ON"
+			Brake = "ON",
+			TailL = "ON",
+			TailR = "ON",
 		}
 	},
 	["Vehicle.Signal"] = {
 		["LEFT"] = {
+			TailL = "SIGNAL",
 			Signal_L = "SIGNAL"
 		},
 		["RIGHT"] = {
+			TailR = "SIGNAL",
 			Signal_R = "SIGNAL"
 		},
 		["HAZARD"] = {
+			TailL = "SIGNAL",
+			TailR = "SIGNAL",
 			Signal_L = "SIGNAL",
 			Signal_R = "SIGNAL"
 		}
@@ -290,6 +328,13 @@ COMPONENT.Inputs = {
 		["REVERSE"] = {
 			Reverse_L = "REVERSE",
 			Reverse_R = "REVERSE",
+		}
+	},
+	["Emergency.Warning"] = {
+		["MODE3"] = {
+			HighBeams = "WIGWAG",
+			TailL = "FLASH",
+			TailR = "FLASH",
 		}
 	}
 }

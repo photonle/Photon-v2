@@ -74,10 +74,31 @@ COMPONENT.Templates = {
 			IntensityLossFactor = 5,
 			DeactivationState = "OFF"
 		}
+	},
+	["Projected"] = {
+		Projected = {
+			-- FOV = 120,
+			HorizontalFOV = 45,
+			VerticalFOV = 45,
+			NearZ = 200,
+			FarZ = 800,
+			Brightness = 0.25,
+			States = {
+				["~R"] = {
+					Color = PhotonColor( 255, 48, 48 )
+				},
+				["~B"] = {
+					Color = PhotonColor( 64, 96, 255 )
+				},
+				["~SW"] = {
+					Inherit = "W"
+				}
+			}
+		}
 	}
 }
 
-COMPONENT.StateMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 [~R] 7 9 21 23 35 37 39 41 43 45 [~B] 8 10 22 24 36 38 40 42 44 46 [~A] 25 26 27 28 29 30 31 32"
+COMPONENT.StateMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 51 [~R] 7 9 21 23 35 37 39 41 43 45 49 [~B] 8 10 22 24 36 38 40 42 44 46 50 [~A] 25 26 27 28 29 30 31 32"
 
 local fov = 180
 
@@ -151,6 +172,9 @@ COMPONENT.Elements = {
 	[47] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m15", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 75, fov } },
 	[48] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m16", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 325, fov } },
 
+	[49] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 4 },
+	[50] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 6 },
+	[51] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 2 },
 }
 
 local BoneLightMirror = {
@@ -160,12 +184,61 @@ local BoneLightMirror = {
 }
 
 COMPONENT.ElementGroups = {
-	["RC"] = { 1, 6, 33, 34, 47, 48 }
+	-- Center
+	["RC"] = { 1, 6, 33, 34, 47, 48, 51 },
+	-- Left Outer
+	["RLO"] = { 3, 39, 41, 9, 49 },
+	-- Left Inner
+	["RLI"] = { 2, 7, 35, 37, 43, 45 },
+	-- Right Outer
+	["RRO"] = { 5, 40, 42, 10, 50 },
+	-- Right Inner
+	["RRI"] = { 4, 8, 36, 38, 44, 46 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
+	RotatorCenter = {
+		Frames = {
+			[1] = "RC"
+		},
+		Sequences = {
+			ON = { 1 }
+		}
+	},
+	RotatorLeftOuter = {
+		Frames = {
+			[1] = "RLO"
+		},
+		Sequences = {
+			ON = { 1 }
+		}
+	},
+	RotatorLeftInner = {
+		Frames = {
+			[1] = "RLI"
+		},
+		Sequences = {
+			ON = { 1 }
+		}
+	},
+	RotatorRightOuter = {
+		Frames = {
+			[1] = "RRO"
+		},
+		Sequences = {
+			ON = { 1 }
+		}
+	},
+	RotatorRightInner = {
+		Frames = {
+			[1] = "RRI"
+		},
+		Sequences = {
+			ON = { 1 }
+		}
+	},
 	Rotators = {
 		Frames = {
 			[1] = "1 2 3 4 5 6 7 8 9 10"
@@ -190,7 +263,8 @@ COMPONENT.Segments = {
 			[3] = "[~SW] 11 12",
 		},
 		Sequences = {
-			TEST = sequence():Alternate( 1, 2, 8 )
+			TEST = sequence():Alternate( 1, 2, 11 ),
+			ON = { 3 }
 		}
 	},
 	LowerFront = {
@@ -200,15 +274,18 @@ COMPONENT.Segments = {
 			[2] = "23 24",
 			[3] = "21 24",
 			[4] = "22 23",
+			[5] = "21 22 23 24",
 		},
 		Sequences = {
 			INOUT = sequence():Alternate( 1, 2, 7 ),
 			WARN = sequence():Alternate( 3, 4, 7 ),
+			FLASH = sequence():Alternate( 5, 0, 7 ),
+			ON = { 5 }
 		}
 	},
 	MirrorTesting = {
 		Frames = {
-			[1] = "1 6 33 34 2 7 37 4 8 38 3 9 39 5 10 40 45 46 47 48 44 36 42 35 41 43",
+			[1] = "1 6 33 34 2 7 37 4 8 38 3 9 39 5 10 40 45 46 47 48 44 36 42 35 41 43 49 50 51",
 			[2] = "1 6 33 34",
 		},
 		Sequences = {
@@ -221,10 +298,38 @@ COMPONENT.Segments = {
 			[1] = "25 27 29 31 32 30 28 26",
 			[2] = "25 29 32 28",
 			[3] = "27 31 30 26",
+			[4] = "25 26 27 28",
+			-- RIGHT
+			[5] = "25",
+			[6] = "25 27",
+			[7] = "25 27 29",
+			[8] = "25 27 29 31",
+			[9] = "25 27 29 31 32",
+			[10] = "25 27 29 31 32 30",
+			[11] = "25 27 29 31 32 30 28",
+			[12] = "25 27 29 31 32 30 28 26",
+			-- LEFT
+			[13] = "26",
+			[14] = "26 28",
+			[15] = "26 28 30",
+			[16] = "26 28 30 32",
+			[17] = "26 28 30 32 31",
+			[18] = "26 28 30 32 31 29",
+			[19] = "26 28 30 32 31 29 27",
+			[20] = "26 28 30 32 31 29 27 25",
+			-- CEN/OUT
+			[21] = "31 32",
+			[22] = "29 31 32 30",
+			[23] = "27 29 31 32 30 28",
+			[24] = "25 27 29 31 32 30 28 26",
 		},
 		Sequences = {
 			FLASH = sequence():Alternate( 1, 0, 6 ),
-			WARN = sequence():Alternate( 2, 3, 7 )
+			WARN = sequence():Alternate( 2, 3, 7 ),
+			MARKER = { 4 },
+			LEFT = sequence():Sequential( 13, 20 ):Stretch( 6 ):Hold( 12 ):Add( 0 ):Hold( 6 ),
+			RIGHT = sequence():Sequential( 5, 12 ):Stretch( 6 ):Hold( 12 ):Add( 0 ):Hold( 6 ),
+			CENOUT = sequence():Sequential( 21, 24 ):Stretch( 8 ):Hold( 12 ):Add( 0 ):Hold( 6 ),
 		}
 
 	},
@@ -275,25 +380,56 @@ COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			ArrowStik = "WARN",
-			LowerFront = "WARN"
+			LowerFront = "WARN",
+			RotatorCenter = "ON"
 		},
 		["MODE2"] = {
-			MirrorTesting = "TEST",
-			RearWarning = "FLASH",
-			ArrowStik = "FLASH",
+			ArrowStik = "WARN",
+			RotatorLeftOuter = "ON",
+			RotatorRightOuter = "ON",
+			RotatorLeftInner = "ON",
+			RotatorRightInner = "ON",
+			LowerFront = "WARN"
 		},
 		["MODE3"] = {
 			Takedown = "TEST",
-			LowerFront = "INOUT",
-			-- Rotators = "ON",
-			-- Rotators = "ON",
-			-- Mesh = "ON"
-			MirrorTesting = "TEST",
+			LowerFront = "WARN",
+			RotatorLeftOuter = "ON",
+			RotatorRightOuter = "ON",
+			RotatorCenter = "ON",
+			RotatorLeftInner = "ON",
+			RotatorRightInner = "ON",
 			RearWarning = "FLASH",
 			ArrowStik = "FLASH",
 			Alley_L = "WARN",
 			Alley_R = "WARN",
 			CenterFlashers = "WARN"
+		}
+	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			LowerFront = "ON",
+			ArrowStik = "MARKER"
+		}
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = {
+			Takedown = "ON",
+		},
+		["FLOOD"] = {
+			CenterFlashers = "ON",
+			Takedown = "ON",
+		}
+	},
+	["Emergency.Directional"] = {
+		["LEFT"] = {
+			ArrowStik = "LEFT"
+		},
+		["RIGHT"] = {
+			ArrowStik = "RIGHT"
+		},
+		["CENOUT"] = {
+			ArrowStik = "CENOUT"
 		}
 	}
 }
