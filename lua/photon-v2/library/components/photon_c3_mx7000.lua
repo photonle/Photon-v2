@@ -83,6 +83,10 @@ COMPONENT.Templates = {
 			NearZ = 200,
 			FarZ = 800,
 			Brightness = 0.25,
+			DeactivationState = "~OFF",
+			-- TODO:
+			-- This is required to prevent the lights from starting ON then fading off..?
+			Intensity = 0,
 			States = {
 				["~R"] = {
 					Color = PhotonColor( 255, 48, 48 )
@@ -91,29 +95,68 @@ COMPONENT.Templates = {
 					Color = PhotonColor( 64, 96, 255 )
 				},
 				["~SW"] = {
-					Inherit = "W"
+					Color = PhotonColor( 255, 225, 200)
+				},
+				ProxyC = {
+					Proxy = { Type = "FROM_LIGHT", Key = 1, Value = "AngleOutput" }
+				},
+				ProxyLI = {
+					Proxy = { Type = "FROM_LIGHT", Key = 2, Value = "AngleOutput" }
+				},
+				ProxyLO = {
+					Proxy = { Type = "FROM_LIGHT", Key = 3, Value = "AngleOutput" }
+				},
+				ProxyRI = {
+					Proxy = { Type = "FROM_LIGHT", Key = 4, Value = "AngleOutput" }
+				},
+				ProxyRO = {
+					Proxy = { Type = "FROM_LIGHT", Key = 5, Value = "AngleOutput" }
+				}
+			}
+		},
+		ForwardIllumination = {
+			HorizontalFOV = 90,
+			VerticalFOV = 10,
+			NearZ = 10,
+			FarZ = 800,
+			Brightness = 0.5,
+			DeactivationState = "~OFF",
+			-- TODO:
+			-- This is required to prevent the lights from starting ON then fading off..?
+			Intensity = 0,
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true,
+					Intensity = 0.6
+
+				},
+				["~BRIGHT"] = {
+					Color = PhotonColor( 255, 225, 200),
+					IntensityTransitions = true,
+					Intensity = 1
 				}
 			}
 		}
 	}
 }
 
-COMPONENT.StateMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 51 [~R] 7 9 21 23 35 37 39 41 43 45 49 [~B] 8 10 22 24 36 38 40 42 44 46 50 [~A] 25 26 27 28 29 30 31 32"
+COMPONENT.StateMap = "[ROT] 1 2 3 4 5 [~SW] 6 11 12 13 14 15 16 17 18 19 20 33 34 47 48 54 55 56 [~R] 7 9 21 23 35 37 39 41 43 45 [~B] 8 10 22 24 36 38 40 42 44 46 [~A] 25 26 27 28 29 30 31 32 [ProxyC] 53 [ProxyLI] 51 [ProxyRI] 52 [ProxyLO] 49 [ProxyRO] 50"
 
 local fov = 180
 
 COMPONENT.Elements = {
-	[1] = { "Rotator", BoneId = 2, Axis = "z", Speed = 700 },
-	[2] = { "Rotator", BoneId = 3, Axis = "z", Speed = 710 },
-	[3] = { "Rotator", BoneId = 4, Axis = "z", Speed = 440 },
-	[4] = { "Rotator", BoneId = 5, Axis = "z", Speed = 690 },
-	[5] = { "Rotator", BoneId = 6, Axis = "z", Speed = 450 },
+	[1] = { "Rotator", BoneId = 2, Axis = "z", Speed = 700, AngleOutputMap = { { 0, "~SW" }, { 45, "OFF" }, { 135, "~SW" }, { 225, "OFF" }, { 315, "~SW" } } },
+	[2] = { "Rotator", BoneId = 3, Axis = "z", Speed = 710, AngleOutputMap = { { 0, "~R" }, { 45, "OFF" }, { 135, "~R" }, { 225, "OFF" }, { 315, "~R" } } },
+	[3] = { "Rotator", BoneId = 4, Axis = "z", Speed = 440, AngleOutputMap = { { 0, "~R" }, { 225, "OFF" }, { 315, "~R" } } },
+	[4] = { "Rotator", BoneId = 5, Axis = "z", Speed = 690, AngleOutputMap = { { 0, "~B" }, { 45, "OFF" }, { 135, "~B" }, { 225, "OFF" }, { 315, "~B" } } },
+	[5] = { "Rotator", BoneId = 6, Axis = "z", Speed = 450, AngleOutputMap = { { 0, "~B" }, { 45, "OFF" }, { 135, "~B" } } },
 
-	[6] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/rc", DrawMaterial = "photon/common/glow_gradient_a", BoneParent = 2 },
-	[7] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r1l", DrawMaterial = "photon/common/glow_gradient_a", BoneParent = 3 },
-	[8] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r1r", DrawMaterial = "photon/common/glow_gradient_a", BoneParent = 5 },
-	[9] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r2l", DrawMaterial = "photon/common/glow_gradient_a", BoneParent = 4 },
-	[10] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r2r", DrawMaterial = "photon/common/glow_gradient_a", BoneParent = 6 },
+	[6] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/rc", BoneParent = 2, DrawMaterial = "photon/common/glow_gradient_a" },
+	[7] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r1l", BoneParent = 3, DrawMaterial = "photon/common/glow_gradient_a" },
+	[8] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r1r", BoneParent = 5, DrawMaterial = "photon/common/glow_gradient_a" },
+	[9] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r2l", BoneParent = 4, DrawMaterial = "photon/common/glow_gradient_a" },
+	[10] = { "Mesh", Vector( 0.3, 0, 0.1 ), Angle( 0, 90, 90 ), "photon/generic/r2r", BoneParent = 6, DrawMaterial = "photon/common/glow_gradient_a" },
 
 	[11] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/h1", DrawMaterial = "photon/common/glow_gradient_a" },
 	[12] = { "Mesh", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/h2", DrawMaterial = "photon/common/glow_gradient_a" },
@@ -172,9 +215,25 @@ COMPONENT.Elements = {
 	[47] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m15", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 75, fov } },
 	[48] = { "Reflector", Vector( 0, 0.1, 0 ), Angle( 0, 0, 0 ), "photon/generic/m16", DrawMaterial = "photon/common/glow_gradient_a", Proxies = { R = { 1, "Value" } }, Mirror2 = { 325, fov } },
 
+	-- Left Outer
 	[49] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 4 },
+	-- Right Outer
 	[50] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 6 },
-	[51] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 2 },
+
+	-- Left Inner
+	[51] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 3 },
+	-- Right Inner
+	[52] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 5 },
+
+	-- Center
+	[53] = { "Projected", Vector( 0, 0, 0 ), Angle( 90, 0, 0 ), BoneParent = 2 },
+
+	-- Illumination Center
+	[54] = { "ForwardIllumination", Vector( 0, -60, 10 ), Angle( 10, 180, 0 ) },
+	-- Left Alley
+	[55] = { "ForwardIllumination", Vector( 0, 0, 0 ), Angle( 10, 90, 0 ) },
+	-- Right Alley
+	[56] = { "ForwardIllumination", Vector( 0, 0, 0 ), Angle( 10, -90, 0 ) },
 }
 
 local BoneLightMirror = {
@@ -185,20 +244,38 @@ local BoneLightMirror = {
 
 COMPONENT.ElementGroups = {
 	-- Center
-	["RC"] = { 1, 6, 33, 34, 47, 48, 51 },
+	["RC"] = { 1, 6, 33, 34, 47, 48, 53 },
 	-- Left Outer
 	["RLO"] = { 3, 39, 41, 9, 49 },
 	-- Left Inner
-	["RLI"] = { 2, 7, 35, 37, 43, 45 },
+	["RLI"] = { 2, 7, 35, 37, 43, 51 },
 	-- Right Outer
 	["RRO"] = { 5, 40, 42, 10, 50 },
 	-- Right Inner
-	["RRI"] = { 4, 8, 36, 38, 44, 46 },
+	["RRI"] = { 4, 8, 36, 38, 44, 52 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
+	Illumination = {
+		Frames = { 
+			[1] = "54", 
+			[2] = "[~BRIGHT] 54" 
+	},
+		Sequences = { ON = { 1 }, FLOOD = { 2 } }
+	},
+	LeftAlley = {
+		Frames = { 
+			-- [0] = "[~OFF] 55", 
+			[1] = "55" 
+		},
+		Sequences = { ON = { 1 } }
+	},
+	RightAlley = {
+		Frames = { [0] = "[~OFF] 56", [1] = "56" },
+		Sequences = { ON = { 1 } }
+	},
 	RotatorCenter = {
 		Frames = {
 			[1] = "RC"
@@ -264,7 +341,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			TEST = sequence():Alternate( 1, 2, 11 ),
-			ON = { 3 }
+			ON = { 3 },
 		}
 	},
 	LowerFront = {
@@ -350,7 +427,8 @@ COMPONENT.Segments = {
 			[3] = "[~SW] 15",
 		},
 		Sequences = {
-			WARN = sequence():Alternate( 2, 3, 9 )
+			WARN = sequence():Alternate( 2, 3, 9 ),
+			ON = { 1 },
 		}
 	},
 	Alley_R = {
@@ -361,7 +439,8 @@ COMPONENT.Segments = {
 			[3] = "[~SW] 16",
 		},
 		Sequences = {
-			WARN = sequence():Alternate( 2, 3, 9 )
+			WARN = sequence():Alternate( 2, 3, 9 ),
+			ON = { 1 },
 		}
 	},
 	CenterFlashers = {
@@ -415,9 +494,11 @@ COMPONENT.Inputs = {
 	["Emergency.SceneForward"] = {
 		["ON"] = {
 			Takedown = "ON",
+			Illumination = "ON",
 		},
 		["FLOOD"] = {
 			CenterFlashers = "ON",
+			Illumination = "FLOOD",
 			Takedown = "ON",
 		}
 	},
@@ -431,5 +512,17 @@ COMPONENT.Inputs = {
 		["CENOUT"] = {
 			ArrowStik = "CENOUT"
 		}
-	}
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = {
+			Alley_L = "ON",
+			RightAlley = "ON",
+		}
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = {
+			Alley_R = "ON",
+			LeftAlley = "ON",
+		}
+	},
 }

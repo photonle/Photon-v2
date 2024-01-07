@@ -26,11 +26,14 @@ Light.States = {
 		IntensityTransitions = true
 	},
 	["OFF"] = {
-		Color = PhotonColor( 0, 0, 0 ),
+		-- Color = PhotonColor( 0, 0, 0 ),
 		-- Brightness = 0
 	},
 	["W"] = {
 		Color = PhotonColor( 235, 235, 255 )
+	},
+	["SW"] = {
+		Color = PhotonColor( 255, 225, 200)
 	},
 	["R"] = {
 		Color = PhotonColor( 255, 0, 0 )
@@ -128,6 +131,7 @@ function Light:Activate()
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end
 	self.IsActivated = true
+	if ( SERVER ) then return end
 	manager.Active[#manager.Active+1] = self
 	if ( not renderEnabled() ) then return end
 	local projectedTexture = ProjectedTexture()

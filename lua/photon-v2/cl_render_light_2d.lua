@@ -173,6 +173,8 @@ function Photon2.RenderLight2D.Render()
 			if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" ) then continue end
 
 			if ( light.Detail and drawDetail ) then
+				-- render.PushFilterMag( TEXFILTER.POINT )
+				-- render.PushFilterMin( TEXFILTER.POINT )
 				render.SetMaterial( light.Detail --[[@as IMaterial]] )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
 				
@@ -181,6 +183,8 @@ function Photon2.RenderLight2D.Render()
 				render.OverrideBlend( false, 0, 0, 0 )
 				
 				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+				-- render.PopFilterMag()
+				-- render.PopFilterMin()
 			end
 
 			if ( light.Shape and drawShape ) then

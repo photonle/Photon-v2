@@ -35,6 +35,9 @@ Element.States = {
 	},
 	["W"] = { 
 		Color = PhotonColor( 255, 255, 255 ),
+	},
+	["SW"] = { 
+		Color = PhotonColor( 255, 215, 185 ),
 	}
 }
 

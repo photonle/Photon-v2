@@ -32,7 +32,6 @@ COMPONENT.Templates = {
 			Scale 		= 1.2,
 			Ratio 		= 2,
 			Inverse		= Angle(0, 180, 0),
-
 		},
 		Rear = {
 			Width 		= 5.8,

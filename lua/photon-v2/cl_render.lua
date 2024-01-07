@@ -18,6 +18,8 @@ local mat_Blank 	= Material("photon/common/blank")
 local rt_Store		= GetRenderTarget( "photon2/rt/store/" .. math.Round( CurTime() ), ScrW(), ScrH() )
 local rt_Scene		= nil
 
+local overlayConVar = GetConVar("ph2_debug_light_overlay")
+
 -- function Photon2.Render.RunQueue( domain, alternateTable )
 -- 	local activeLights = domain.Active
 -- 	local nextTable = alternateTable
@@ -107,8 +109,9 @@ function Photon2.Render.GenerateBlurredTexture( texture, blurSize, passes )
 	return blurredTexture
 end
 
+
 --[[
-		Dynamic Light Manager
+	Dynamic Light Manager
 --]]
 
 Photon2.Render.DynamicLighting = Photon2.Render.DynamicLighting or {
@@ -128,37 +131,42 @@ end
 function DynamicLighting.Update()
 	local activeLights = DynamicLighting.Active
 	local nextTable = dynamicLightAlternatveActive
-
+	
 	for i=1, #activeLights do 
 		if ( activeLights[i] ) then
 			nextTable[#nextTable+1] = activeLights[i]:DoPreRender()
 		end
 		activeLights[i] = nil
 	end
-
+	
 	dynamicLightAlternatveActive = activeLights
 	DynamicLighting.Active = nextTable
+	
+	DynamicLighting.DrawDebug()
+	
 end
 hook.Add( "PreRender", "Photon2.ElementDynamicLight:Update", DynamicLighting.Update )
 
 function DynamicLighting.DrawDebug()
 	if ( not overlayConVar:GetBool() ) then return end
-
+	
 	local activeLights = DynamicLighting.Active
 	
 	local light
 	cam.Start3D()
-		for i=1, #activeLights do 
-			light = activeLights[i]
-			local angles = light.Angles
-			local position = light.Position
-			render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))
-			render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
-			render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
-			debugoverlay.Text( position, light.Id, 0, false )
-		end
+	for i=1, #activeLights do 
+		light = activeLights[i]
+		local angles = light.Angles
+		local position = light.Position
+		render.DrawLine(position, position + angles:Up() * 3, Color(0,0,255))
+		render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
+		render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
+		debugoverlay.Text( position, light.Id, 0, false )
+	end
 	cam.End3D()
 end
+
+hook.Add( "HUDPaint", "Photon2.DrawDynamicLightOverlay", DynamicLighting.DrawDebug )
 
 local defaultBloomOptions = {
 	HighPerformance = {

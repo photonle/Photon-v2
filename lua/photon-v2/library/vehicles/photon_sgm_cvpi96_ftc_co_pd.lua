@@ -39,6 +39,19 @@ VEHICLE.Siren = { "fedsig_omega90" }
 
 VEHICLE.Equipment = {
 	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				UIComponents = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Livery",
 		Options = {
 			{
@@ -88,6 +101,7 @@ VEHICLE.Equipment = {
 	{
 		Category = "License Plate",
 		Options = {
+			
 			{
 				Option = "Visible",
 				Props = {

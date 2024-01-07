@@ -4,11 +4,10 @@ local copyMaterial = Material( "pp/copy" )
 local additiveMaterial = Material( "pp/add" )
 local subtractiveMaterial = Material( "pp/sub" )
 
-local storeRenderTarget = render.GetScreenEffectTexture( 0 )
-
-local rtBloomOuter = GetRenderTargetEx( "Photon2_RT1", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
-local rtMeshSource = GetRenderTargetEx( "Photon2_RT2", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
-local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, bit.bor(2, 256), CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local rtBloomOuter = GetRenderTargetEx( "Photon2_RT1", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, 16, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local rtMeshSource = GetRenderTargetEx( "Photon2_RT2", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, 16, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, 16, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+local storeRenderTarget = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, 16, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
 
 local bloomEnabled = true
 

@@ -44,12 +44,20 @@ COMPONENT.Templates = {
 			Brightness = 1,
 			IntensityGainFactor = 10,
 			IntensityLossFactor = 5,
+			DeactivationState = "~OFF",
+			-- TODO:
+			-- This is required to prevent the lights from starting ON then fading off..?
+			Intensity = 0,
 		}
 	},
 	["DynamicLight"] = {
 		Dynamic1 = {
 			Brightness = 50,
 			Size = 512,
+		},
+		LicensePlateLight = {
+			Brightness = 0.01,
+			Size = 80,
 		}
 	}
 }
@@ -123,9 +131,11 @@ COMPONENT.Elements = {
 
 	[26] = { "HighBeams", Vector( -17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
 	[27] = { "HighBeams", Vector( 17.5, 111, 31.9 ), Angle( 20, 0, 0 ) },
+
+	[28] = { "LicensePlateLight", Vector( 0, -127, 34 ), Angle( 0, 0, 0 ) },
 }
 
-COMPONENT.StateMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27"
+COMPONENT.StateMap = "[Glow] 1 2 7 8 9 10 [Amber] 3 4 5 6 [~R] 17 18 21 22 23 25 27 [~SW] 11 12 19 20 24 25 [~A] 13 14 15 16 [~W] 26 27 [SW] 28"
 
 COMPONENT.ElementGroups = {
 	["TailL"] = { 17, 21 },
@@ -144,6 +154,10 @@ COMPONENT.Segments = {
 		Sequences = {
 			ON = { 1 }
 		}
+	},
+	["LicensePlate"] = {
+		Frames = { [1] = "28" },
+		Sequences = { ON = { 1 } }
 	},
 	["Headlights"] = {
 		Frames = {
@@ -218,7 +232,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			ON = { 1 },
-			REVERSE = { 1 }
+			REVERSE = { 1 },
+			FLASH = sequence():Alternate( 0, 1, 8 ),
 		}
 	},
 	["Reverse_R"] = {
@@ -228,7 +243,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			ON = { 1 },
-			REVERSE = { 1 }
+			REVERSE = { 1 },
+			FLASH = sequence():Alternate( 0, 1, 8 ),
 		}
 	},
 	["Brake"] = {
@@ -249,32 +265,31 @@ COMPONENT.Segments = {
 	},
 	["TailL"] = {
 		Frames = {
-			[0] = "[~OFF] TailL 19",
+			[0] = "[~OFF] TailL",
 			[1] = "[~RD] TailL",
 			[2] = "[~R] TailL",
 			[3] = "[PASS] TailL",
-			[4] = "[~SW] 19 [PASS] TailL",
 		},
 		Sequences = {
 			DIM = { 1 },
 			ON = { 2 },
 			SIGNAL = sequence():Alternate( 2, 3, 12 ),
-			FLASH = sequence():Alternate( 2, 4, 8 ),
+			FLASH = sequence():Alternate( 2, 3, 8 ),
 		}
 	},
 	["TailR"] = {
 		Frames = {
-			[0] = "[~OFF] TailR 20",
+			[0] = "[~OFF] TailR",
 			[1] = "[~RD] TailR",
 			[2] = "[~R] TailR",
 			[3] = "[PASS] TailR",
-			[4] = "[~SW] 20 [PASS] TailR"
+			[4] = "[PASS] TailR"
 		},
 		Sequences = {
 			DIM = { 1 },
 			ON = { 2 },
 			SIGNAL = sequence():Alternate( 2, 3, 12 ),
-			FLASH = sequence():Alternate( 2, 4, 8 ),
+			FLASH = sequence():Alternate( 2, 3, 8 ),
 		}
 	},
 
@@ -288,17 +303,20 @@ COMPONENT.Inputs = {
 			Marker_L = "ON",
 			Marker_R = "ON",
 			Brake = "ON",
+			LicensePlate = "ON"
 		},
 		["HEADLIGHTS"] = {
 			Tail = "DIM",
 			Marker_L = "DIM",
 			Marker_R = "DIM",
 			Headlights = "ON",
+			LicensePlate = "ON"
 		},
 		["PARKING"] = {
 			Tail = "DIM",
 			Marker_L = "DIM",
 			Marker_R = "DIM",
+			LicensePlate = "ON"
 		}
 	},
 	["Vehicle.Brake"] = {
@@ -328,13 +346,15 @@ COMPONENT.Inputs = {
 		["REVERSE"] = {
 			Reverse_L = "REVERSE",
 			Reverse_R = "REVERSE",
-		}
+		},
 	},
 	["Emergency.Warning"] = {
 		["MODE3"] = {
 			HighBeams = "WIGWAG",
 			TailL = "FLASH",
 			TailR = "FLASH",
+			Reverse_L = "FLASH",
+			Reverse_R = "FLASH",
 		}
 	}
 }
