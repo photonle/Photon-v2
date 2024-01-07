@@ -292,7 +292,6 @@ end
 
 -- Internal
 function Light:OnStateChange( state )
-
 	self.DrawColor:SetTarget( state.DrawColor )
 	self.BloomColor:SetTarget( state.BloomColor )
 

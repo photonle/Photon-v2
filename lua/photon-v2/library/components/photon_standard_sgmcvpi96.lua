@@ -47,14 +47,10 @@ COMPONENT.Templates = {
 			DeactivationState = "~OFF",
 			-- TODO:
 			-- This is required to prevent the lights from starting ON then fading off..?
-			Intensity = 0,
+			-- Intensity = 1,
 		}
 	},
 	["DynamicLight"] = {
-		Dynamic1 = {
-			Brightness = 50,
-			Size = 512,
-		},
 		LicensePlateLight = {
 			Brightness = 0.01,
 			Size = 80,
@@ -83,7 +79,7 @@ COMPONENT.ElementStates = {
 		["~AD"] = { Inherit = "~A", Intensity = 0.5, IntensityTransitions = true },
 	},
 	["Projected"] = {
-		["~W"] = { Inherit = "W", IntensityTransitions = true }
+		["~W"] = { Inherit = "SW", IntensityTransitions = true }
 	}
 }
 

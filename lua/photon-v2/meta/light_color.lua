@@ -112,6 +112,10 @@ function LightColor:GetVector()
 	return result
 end
 
+function LightColor:GetColor()
+	return Color( self.r, self.g, self.b )
+end
+
 ---@param data PhotonElementColor
 function LightColor:__call( data )
 	data = data or {}

@@ -20,29 +20,35 @@ local Light = exmeta.New()
 
 Light.Class = "Projected"
 
+local white = { r = 255, g = 255, b = 255 }
+local softWhite = { r = 255, g = 235, b = 205 }
+local red = { r = 255, g = 0, b = 0 }
+local blue = { r = 0, g = 0, b = 255 }
+local green = { r = 0, g = 255, b = 0 }
+local amber = { r = 255, g = 210, b = 0 }
+
 Light.States = {
 	["~OFF"] = {
 		Intensity = 0,
-		IntensityTransitions = true
+		IntensityTransitions = true,
 	},
 	["OFF"] = {
 		Color = PhotonColor( 0, 0, 0 ),
-		-- Brightness = 0
 	},
 	["W"] = {
-		Color = PhotonColor( 235, 235, 255 )
+		Color = PhotonColor( 235, 235, 255 ):Blend( white ):GetBlendColor()
 	},
 	["SW"] = {
-		Color = PhotonColor( 255, 225, 200)
+		Color = PhotonColor( 255, 225, 200):Blend( softWhite ):GetBlendColor()
 	},
 	["R"] = {
-		Color = PhotonColor( 255, 0, 0 )
+		Color = PhotonColor( 255, 0, 0 ):Blend( red ):GetBlendColor()
 	},
 	["B"] = {
-		Color = PhotonColor( 0, 0, 255 )
+		Color = PhotonColor( 0, 0, 255 ):Blend( blue ):GetBlendColor()
 	},
 	["A"] = {
-		Color = PhotonColor( 255, 180, 0 )
+		Color = PhotonColor( 255, 180, 0 ):Blend( amber ):GetBlendColor()
 	}
 }
 
@@ -100,17 +106,17 @@ function Light:Initialize( id, component )
 	self.Matrix = Matrix()
 	self.HorizontalFOV = self.HorizontalFOV or self.FOV
 	self.VerticalFOV = self.VerticalFOV or self.FOV
+	self.Color = PhotonElementColor()
 	return self
 end
 
 ---@param state PhotonElementProjectedState
 function Light:OnStateChange( state )
-
 	if ( state.Name ~= "OFF" ) and ( not self.IsActivated ) then
 		self:Activate()
 	end
 	
-	self.Color = state.Color
+	self.Color:SetTarget( state.Color )
 
 	self.IntensityTransitions = state.IntensityTransitions
 	self.TargetIntensity = state.Intensity
@@ -121,8 +127,10 @@ function Light:OnStateChange( state )
 
 	elseif ( self.TargetIntensity ~= 1 or (self.TargetIntensity ~= self.Intensity) ) then
 		self.Intensity = self.TargetIntensity
+		self.Color:SetIntensity( self.Intensity)
 	else
 		self.Intensity = self.TargetIntensity
+		self.Color:SetIntensity( self.Intensity)
 	end
 end
 
@@ -162,6 +170,7 @@ function Light:DoPreRender()
 
 	self:UpdateProxyState()
 
+	
 	if ( self.BoneParent < 0 ) then
 		self.Position = self.Parent:LocalToWorld( self.LocalPosition )
 		self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
@@ -171,9 +180,14 @@ function Light:DoPreRender()
 		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
 		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
+	
+	-- print("self.Color: " .. tostring( self.Color:GetColor() ))
+	
+	self.ProjectedTexture:SetColor( self.Color:GetColor() )
+	
+	print( self.Id )
 
-	self.ProjectedTexture:SetColor( self.Color )
-
+	
 	if ( self.IntensityTransitions ) then
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
@@ -181,6 +195,7 @@ function Light:DoPreRender()
 				self.Intensity = self.TargetIntensity
 				-- Fade out support
 				if ( self.CurrentStateId == self.DeactivationState ) then
+					print("DEACTIVATING")
 					self.Deactivate = true
 				end
 			end
@@ -192,6 +207,8 @@ function Light:DoPreRender()
 		end
 		
 	end
+
+	self.Color:SetIntensity( self.Intensity )
 
 	local fovIntensity = ( ( self.Intensity * ( 1 - self.IntensityFOVFloor ) ) + self.IntensityFOVFloor )
 	local disanceIntensity = ( math.Clamp( self.Intensity * self.IntensityDistanceFactor, 0, 1 ) )

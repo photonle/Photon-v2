@@ -405,17 +405,27 @@ function Photon2.ReloadVehicleFile()
 	return false
 end
 
-hook.Add("Initialize", "Photon2:InitializeLibrary", function()
+function Photon2.Library.Initialize()
 	Photon2.LoadLibraries( { "Sirens" })
 	Photon2.LoadComponentLibrary()
 	Photon2.LoadLibraries( { "Schemas" })
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadLibraries( { "InteractionSounds", "Commands", "InputConfigurations" } )
-
-	if CLIENT then
-		-- Photon2.ClientInput.SetActiveConfiguration( "default" )
-	end
 	hook.Run( "Photon2.PostInitializeLibrary" )
+end
+
+local initializationErrorDisplayed = false
+
+hook.Add("Initialize", "Photon2:InitializeLibrary", function()
+	Photon2.Library.Initialize()
+
+	-- Temporary code to troubleshoot library loading problems
+	if ( not Photon2.GetInputConfiguration( "default" ) ) then
+		if ( not initializationErrorDisplayed ) then
+			print( "[CRITICAL] The Photon 2 libraries failed to initialize correctly. This is most likely caused by a conflicting addon. Photon 2 will try to reload the libraries again in 10 seconds." )
+		end
+		timer.Simple( 10, Photon2.Library.Initialize )
+	end
 end)
 
 ---@param types string[]

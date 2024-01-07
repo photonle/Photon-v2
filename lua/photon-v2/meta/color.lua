@@ -99,6 +99,10 @@ function meta:Blend( blendColor )
 	return self
 end
 
+function meta:GetColor()
+	return Color( 255, 0, 255 )
+end
+
 function meta:GetBlendColor()
 	local blendColor = self.BlendColor
 

@@ -1,7 +1,7 @@
 ---@meta
 
 ---@class PhotonElementProjectedStateProperties : PhotonElementPropertiesIntensityTransitions
----@field Color? PhotonColor
+---@field Color? PhotonElementColor
 ---@field Brightness? number
 
 ---@class PhotonElementProjectedProperties : PhotonElementPositionalProperties, PhotonElementProjectedStateProperties
