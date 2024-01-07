@@ -26,7 +26,7 @@ Light.States = {
 		IntensityTransitions = true
 	},
 	["OFF"] = {
-		-- Color = PhotonColor( 0, 0, 0 ),
+		Color = PhotonColor( 0, 0, 0 ),
 		-- Brightness = 0
 	},
 	["W"] = {
