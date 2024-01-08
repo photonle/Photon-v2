@@ -304,11 +304,11 @@ function PANEL:Init()
 end
 
 function PANEL:PreAutoRefresh()
-	print("auto")
+	print("[PRE] IF YOU ARE SEEING THIS TEXT THEN AUTO REFRESH IS WORKING CORRECTLY")
 end
 
 function PANEL:PostAutoRefresh()
-	print("auto")
+	print("[POST] IF YOU ARE SEEING THIS TEXT THEN AUTO REFRESH IS WORKING CORRECTLY")
 	self:Setup()
 end
 
@@ -317,7 +317,6 @@ function PANEL:DoClose()
 	self:Close()
 end
 
-derma.DefineControl( class, "Photon 2 welcome window.", PANEL, base )
 
 hook.Add( "HUDPaint", "Photon2.ShowWelcomeScreen", function()
 	hook.Remove("HUDPaint", "Photon2.ShowWelcomeScreen")
@@ -328,3 +327,5 @@ hook.Add( "HUDPaint", "Photon2.ShowWelcomeScreen", function()
 		window:MakePopup()
 	end)
 end)
+
+derma.DefineControl( class, "Photon 2 welcome window.", PANEL, base )
