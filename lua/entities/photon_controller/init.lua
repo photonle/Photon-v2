@@ -21,6 +21,11 @@ function ENT:Initialize()
 	if ( IsValid( phys ) ) then
 		phys:Wake()
 	end
+	
+	-- Absurdly stupid but is necessary.
+	hook.Add( "Think", self, function()
+		self:Think()
+	end)
 end
 
 function ENT:SetProfileName( name )
@@ -58,4 +63,10 @@ function ENT:ParentSubMaterialChanged()
 	if ( self.LastSubMaterialUpdate and self.LastSubMaterialUpdate >= CurTime() ) then return end
 	Photon2.sv_Network.NotifySubMaterialChange( self )
 	self.LastSubMaterialUpdate = CurTime()
+end
+
+function ENT:Think()
+	if ( self.DoHardReload ) then
+		self:HardReload()
+	end
 end

@@ -13,10 +13,13 @@
 ---@field SetLinkedToVehicle fun(self: PhotonController, linked: boolean)
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ---@field AttemptingComponentSetup boolean (Internal) Set to true when controller sets up a component. Used to 
+---@field DoHardReload boolean (Internal) Triggers a hard reload on the next tick.
 ENT = ENT
 
-local print = Photon2.Debug.Print
-local printf = Photon2.Debug.PrintF
+local info, warn = Photon2.Debug.Declare( "Controller" )
+
+local print = info
+local printf = info
 
 ENT.Type = "anim"
 ENT.Base = "base_gmodentity"
@@ -189,6 +192,8 @@ function ENT:InitializeShared()
 	self.CurrentSelections = {}
 	self.Schema = {}
 
+	self.LastHardReload = 0
+
 	--self.CurrentConfiguration = {}
 	-- self.EquipmentConfiguration = {}
 	self:SetupChannels()
@@ -210,8 +215,15 @@ end
 
 function ENT:AttemptComponentReload( id )
 	local success, code = pcall( self.OnComponentReloaded, self, id )
-	-- print( "Reload result: " .. tostring( success ) .. " [" .. tostring( code ) .. "]" )
-	if ( not success ) then self.LastReloadFailed = true end
+	if ( not success ) then 
+		warn( "ERROR in [%s]: \n\t\t\t[%s]", id, code )
+		ErrorNoHalt( "\n[" .. id .."]:\n\t" .. code .. "\n" )
+		self.LastReloadFailed = true
+	else
+		if ( self:GetActiveComponents()[id] ) then
+			info( "Component [%s] was successfully reloaded.", id )
+		end
+	end
 end
 
 function ENT:GetOperator()
@@ -437,7 +449,8 @@ end
 
 
 function ENT:HardReload()
-	print("Controller is executing HARD reload...")
+	print( "Controller performing HARD reload..." )
+	self.DoHardReload = false
 	self:SetupProfile()
 end
 
@@ -1012,17 +1025,44 @@ function ENT:GetSelectionsString()
 	return self:GetNW2String( "Photon2:Selections" )
 end
 
+function ENT:GetActiveComponents()
+	
+	if ( self.ActiveComponentMap ) then return self.ActiveComponentMap end
+	local result = {}
+
+	for categoryIndex, selectionIndex in pairs( self.CurrentSelections ) do
+		local map = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
+		if ( map and map[selectionIndex] ) then
+			for _, componentIndex in pairs( map[selectionIndex].Components ) do
+				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+			end
+			for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
+				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+			end
+			for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
+				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+			end
+		end
+	end
+
+	self.ActiveComponentMap = result
+	return result
+end
+
 ---@param categoryIndex integer
 ---@param optionIndex integer
 function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- print(string.format("Selection: [%s] option: [%s]", categoryIndex, optionIndex))
 	-- print("Controller:OnSelectionChanged() - Selections:")
 	-- PrintTable( self.CurrentProfile.EquipmentSelections )
+	self.ActiveComponentMap = nil
 	if ( not self.CurrentProfile.EquipmentSelections[categoryIndex] ) then
 		print("Category index " .. tostring( categoryIndex ) .. " is invalid. Vehicle respawn may be necessary.")
 		return
 	end
+	-- this forces the input schema to rebuild
 	self.CurrentInputSchema = nil
+
 	local category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map 
 	if ( istable(category[self.CurrentSelections[categoryIndex]]) ) then 
 		category = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
@@ -1057,7 +1097,9 @@ end
 function ENT:OnComponentReloaded( componentId )
 	-- self:SetupComponentArrays()
 	-- if true then return end
+	-- if ( not self:GetActiveComponents()[componentId] ) then return end
 	local matched = false
+	local shouldExist = self:GetActiveComponents()[componentId]
 	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
@@ -1083,14 +1125,20 @@ function ENT:OnComponentReloaded( componentId )
 			matched = true
 		end
 	end
-	
+
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end
 
-	if ( self.LastReloadFailed ) then
-		self:HardReload()
+	if ( not matched ) and ( shouldExist ) then
+		print( "Queueing hard reload because component [%s] is not currently spawned...", componentId )
+		self.DoHardReload = true
 	end
+
+	-- if ( self.LastReloadFailed ) then
+	-- 	self.DoHardReload = true
+	-- end
+
 	self.LastReloadFailed = false
 end
 

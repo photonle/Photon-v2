@@ -137,6 +137,11 @@ function ENT:Think()
 			self:DoNextFrame()
 		end
 	end
+
+	if ( self.DoHardReload ) then
+		self:HardReload()
+	end
+
 	-- for id, component in pairs(self.Components) do
 	-- 	if (not IsValid(component:GetParent())) then
 	-- 		self:RemoveAllComponents()

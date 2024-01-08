@@ -25,12 +25,14 @@ file.CreateDir( "photon_v2" )
 
 function Photon2.Debug.Log( type, section, message )
 	local time = os.date( "%H:%M:%S", os.time() )
-	Photon2.Debug.Output[#Photon2.Debug.Output+1] = {
-		Time = time,
-		Type = type,
-		Section = section,
-		Message = message
-	}
+	if ( Photon2.Debug.PrintType[type] ) then
+		Photon2.Debug.Output[#Photon2.Debug.Output+1] = {
+			Time = time,
+			Type = type,
+			Section = section,
+			Message = message
+		}
+	end
 	if ( SERVER ) then
 		file.Append( Photon2.Debug.ServerLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
 	else
@@ -74,7 +76,7 @@ end
 local warnings = {}
 
 function Photon2.Debug.Warn( section, text, ... )
-	if ( arg ) then
+	if ( ... ) then
 		text = string.format( text, ... )
 	end
 	Photon2.Debug.Log( "WARN", section, text )
