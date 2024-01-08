@@ -169,7 +169,6 @@ function Light:DoPreRender()
 	if ( not renderEnabled() ) then return end
 
 	self:UpdateProxyState()
-
 	
 	if ( self.BoneParent < 0 ) then
 		self.Position = self.Parent:LocalToWorld( self.LocalPosition )
@@ -180,13 +179,8 @@ function Light:DoPreRender()
 		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
 		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
-	
-	-- print("self.Color: " .. tostring( self.Color:GetColor() ))
-	
+		
 	self.ProjectedTexture:SetColor( self.Color:GetColor() )
-	
-	print( self.Id )
-
 	
 	if ( self.IntensityTransitions ) then
 		if ( self.Intensity > self.TargetIntensity ) then
@@ -195,7 +189,6 @@ function Light:DoPreRender()
 				self.Intensity = self.TargetIntensity
 				-- Fade out support
 				if ( self.CurrentStateId == self.DeactivationState ) then
-					print("DEACTIVATING")
 					self.Deactivate = true
 				end
 			end
@@ -203,6 +196,9 @@ function Light:DoPreRender()
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
+				if ( self.CurrentStateId == self.DeactivationState ) then
+					self.Deactivate = true
+				end
 			end
 		end
 		

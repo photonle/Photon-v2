@@ -2,8 +2,11 @@ if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLibraryType"
 
-local print = Photon2.Debug.Print
-local printf = Photon2.Debug.PrintF
+local info, warn = Photon2.Debug.Declare( "Library" )
+
+local print = info
+local printf = info
+
 
 ---@class PhotonLibraryType
 ---@field Name string Primary type name. Example: `InputConfigurations`
@@ -94,6 +97,7 @@ function meta:SaveToData( data )
 	data.ReadOnly = nil
 	local json = self:ToJson( data )
 	local path = string.format( "%s%s/%s.json", dataPath, self.Folder, data.Name )
+	info( "Saving %s library entry to data: %s", self.Name, data.Name )
 	file.Write( path, json )
 end
 
@@ -111,17 +115,16 @@ end
 -- Loads library objects that were created in Lua
 function meta:LoadLuaLibrary()
 	local path = luaPath .. self.Folder .. "/"
-	-- print( "PATH: " .. tostring( path ) )
+	print( "\tPath: " .. tostring( path ) )
 	local files, folders = file.Find( path .. "*.lua", "LUA" )
-	-- print( "Result: " .. tostring(#files) .. " files found." )
+	print( "\tResult: " .. tostring(#files) .. " file(s) found." )
 	for _, fil in pairs( files ) do
-		-- print( "Loading file: " .. path .. fil )
 		self:LoadLuaFile( path .. fil )
 	end
 end
 
 function meta:LoadLuaFile( path )
-	-- print("\tIncluding Lua file: " .. tostring( path ) )
+	print("\t\tIncluding Lua file: " .. tostring( path ) )
 	self.CurrentLoadSource = "Lua"
 	local result = include( path )
 	self.CurrentLoadSource = nil
@@ -131,19 +134,21 @@ end
 -- Loads library objects that were created using JSON in the `data` folder.
 function meta:LoadDataLibary()
 	local path = string.format( "%s%s/*.json", dataPath, self.Folder )
+	print( "\tPath: " .. path)
 	local files, folders = file.Find( path, "DATA" )
+	print( "\tResult: " .. tostring(#files) .. " file(s) found." )
 	for _, fil in pairs( files ) do
 		self:LoadDataJsonFile( fil )
 	end
 end
 
 function meta:LoadLibrary()
-	-- print( "Loading library type [" .. tostring( self.Name ) .. "]...")
+	print( "Loading [%s] library...", self.Name )
 	if ( not self.IsValidRealm ) then return end
 	self.IsLoading = true
-	-- print("\t Loading Lua library...")
+	print("\tLoading Lua files...")
 	self:LoadLuaLibrary()
-	-- print("\t Loading data library...")
+	print("\tLoading data files...")
 	self:LoadDataLibary()
 	self.IsLoading = false
 	self.Loaded = true
@@ -154,7 +159,7 @@ end
 
 function meta:LoadDataJsonFile( fileName )
 	local path = string.format( "photon_v2/library/%s/%s", self.Folder, fileName)
-	-- print( "Loading JSON file from data [" .. path .. "]" )
+	print( "\t\tLoading JSON file [%s]", path  )
 	
 	local json = file.Read( path, "DATA" )
 	
@@ -199,7 +204,7 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
-	-- print("\t Registering library entry [" .. tostring( data.Name ) .. "]" )
+	info( "\t\t\tRegistering [%s] library entry [%s]", self.Name, data.Name )
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end

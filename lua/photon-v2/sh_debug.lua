@@ -1,7 +1,18 @@
-Photon2.Debug = {
+Photon2.Debug = Photon2.Debug or {
 	Output = {},
-
+	PrintType = {
+		WARN = true,
+		ERROR = true
+	},
+	ServerLog = "photon_v2/sv_log.txt",
+	ClientLog = "photon_v2/cl_log.txt"
 }
+
+if ( not Photon2.Debug.Initialized ) then
+	file.Write( Photon2.Debug.ServerLog, "Start of SERVER log file [Photon " .. Photon2.Version .. "]\n\n" )
+	file.Write( Photon2.Debug.ClientLog, "Start of CLIENT log file [Photon " .. Photon2.Version .. "]\n\n" )
+	Photon2.Debug.Initialized = true
+end
 
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)
@@ -10,16 +21,45 @@ local whi = Color(255, 255, 255)
 local sv = Color(137, 222, 255)
 local cl = Color(255, 222, 102)
 
+file.CreateDir( "photon_v2" )
+
 function Photon2.Debug.Log( type, section, message )
-	Photon2.Debug[#Photon2.Debug+1] = ""
+	local time = os.date( "%H:%M:%S", os.time() )
+	Photon2.Debug.Output[#Photon2.Debug.Output+1] = {
+		Time = time,
+		Type = type,
+		Section = section,
+		Message = message
+	}
+	if ( SERVER ) then
+		file.Append( Photon2.Debug.ServerLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+	else
+		file.Append( Photon2.Debug.ClientLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+	end
 end
 
 function Photon2.Debug.Print( text )
 	local col = sv
 	if CLIENT then col = cl end
 	MsgC( col, "[", red, "PHO", blu, "TON", whi, "2", col, "] ", col, text .. "\n")
+	Photon2.Debug.Log( "INFO", "PRINT", text )
 end
 
+function Photon2.Debug.Declare( section )
+	return function( text, ... )
+		Photon2.Debug.Info( section, text, ... )
+	end,
+	function( text, ... )
+		Photon2.Debug.Warn( section, text, ... )
+	end
+end
+
+function Photon2.Debug.Info( section, text, ... )
+	if ( ... ) then
+		text = string.format( text, ... )
+	end
+	Photon2.Debug.Log( "INFO", section, text )
+end
 
 -- Prints the string with the [PHOTON2] identifier while also calling
 -- string.format( x ) on the supplied text.
@@ -33,8 +73,11 @@ end
 
 local warnings = {}
 
-function Photon2.Debug.Warn( type, text, ... )
-
+function Photon2.Debug.Warn( section, text, ... )
+	if ( arg ) then
+		text = string.format( text, ... )
+	end
+	Photon2.Debug.Log( "WARN", section, text )
 end
 
 local printf = Photon2.Debug.PrintF

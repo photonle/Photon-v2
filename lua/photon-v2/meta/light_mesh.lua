@@ -227,18 +227,20 @@ function Light:DoPreRender()
 	self.Matrix:SetAngles( self.Angles )
 	self.Matrix:SetScale( self.FinalScale )
 
+	
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
-			if (self.Intensity < self.TargetIntensity) then
+			if ( (self.Intensity < self.TargetIntensity) or (self.Intensity == self.TargetIntensity) ) then
 				self.Intensity = self.TargetIntensity
-
+				
 				-- Fade out support
 				if ( self.CurrentStateId == self.DeactivationState ) then
 					self.Deactivate = true
 				end
-
+			else
+				-- print( "self.Intensity = " .. tostring( self.Intensity ) .. " / self.TargetIntensity = " .. tostring( self.TargetIntensity ) )
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
@@ -273,7 +275,11 @@ function Light:DoPreRender()
 			-- print("Ang: " .. math.Round(ang) .. " Min: " .. tostring( min ) .. " Max: " .. tostring( max ) )
 
 			-- print("Progress:" .. calculateProgress( peak, fov, ang ) )
+			
+			-- TODO: Proxy checking is causing meshes to stay in the render queue when they should be off.
+			-- (low priority because actual impact seems negligible)
 			self.Intensity = interpolateY( ang, min, max )
+			-- print("proxy is overriding intensity: " .. tostring( self.Intensity ))
 			-- self.Intensity = calculateProgress( peak, fov, ang )
 		
 		elseif ( self.Mirror ) then

@@ -228,9 +228,16 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["FLOOD"] = { 1 },
-			-- Identical to flood but intended to skip illumination
-			-- for performance.
-			["ALERT"] = { 2 },
+		}
+	},
+	-- Identical to flood but intended to skip illumination
+	-- for performance.
+	["Alert"] = {
+		Frames = {
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
+		},
+		Sequences = {
+			["ALERT"] = { 1 },
 		}
 	},
 	-- Takedown and flood should not be in the same segment

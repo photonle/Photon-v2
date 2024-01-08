@@ -9,7 +9,7 @@ Photon2.ClientInput = Photon2.ClientInput or {
 	---@type PhotonController | boolean
 	TargetController = false,
 	KeyActivities = { "OnPress", "OnHold", "OnRelease" },
-	ProfileMap = { ["#global"] = "user" },
+	ProfileMap = { ["#global"] = "default" },
 	-- Duration (in seconds) that a key needs to be pressed before the "hold" action is executed.
 	HoldThreshold = 1
 }
@@ -20,12 +20,13 @@ local mouseKeys = {
 	[MOUSE_RIGHT] = true
 }
 
-local print = Photon2.Debug.PrintF
-local printf = Photon2.Debug.PrintF
+local info, warn = Photon2.Debug.Declare( "InputConfig" )
+
+local print, printf = info, info
 
 ---@param controller PhotonController
 function Photon2.ClientInput.SetTargetController( controller )
-	-- print( "Setting input controller: (" .. tostring( controller ) .. ")" )
+	print( "Setting input controller: (" .. tostring( controller ) .. ")" )
 	if IsValid( controller ) then
 		Photon2.ClientInput.TargetController = controller
 		Photon2.ClientInput.SetActiveConfiguration( Photon2.ClientInput.GetProfilePreference( controller:GetProfileName() ) )
@@ -50,7 +51,7 @@ end
 function Photon2.ClientInput.SetActiveConfiguration( name )
 	Photon2.ClientInput.Active = Photon2.GetInputConfiguration( name )
 	if not ( Photon2.ClientInput.Active ) then
-		ErrorNoHaltWithStack( "Failed to retrieve input configuration [" .. name .. "]. Using default instead.")
+		warn( "Failed to retrieve input configuration [" .. name .. "]. Using default instead.")
 		Photon2.ClientInput.Active = Photon2.GetInputConfiguration( "default" )
 	end
 end
@@ -198,10 +199,12 @@ end
 hook.Add( "Think", "Photon2.ClientInput:Scan", Photon2.ClientInput.ScanPressed )
 
 function Photon2.ClientInput.Initialize()
+	info("Initializing client input...")
 	Photon2.ClientInput.LoadPreferencesFile()
 	if ( not Photon2.Library.InputConfigurations:Get( "user" ) ) then
 		local config = Photon2.Library.InputConfigurations:GetCopy( "default" )
 		if ( not config ) then
+			warn( "Unable to retrieve default input configuration! This may indicate a library load failure!" )
 			timer.Simple( 5, Photon2.ClientInput.Initialize )
 			return
 		end
@@ -209,21 +212,30 @@ function Photon2.ClientInput.Initialize()
 		config.Title = "Default (User)"
 		config.Author = "user"
 		Photon2.Library.InputConfigurations:SaveToDataAndRegister( config )
+	else
+		info("\tInitialization complete.")
 	end
 end
 
 function Photon2.ClientInput.LoadPreferencesFile()
-	local prefs = util.JSONToTable( file.Read( "photon_v2/user/profile_input_map.json" ) or "" )
+	info("\tLoading user preferences file (photon_v2/user/profile_input_map.json)...")
+	local raw = file.Read( "photon_v2/user/profile_input_map.json" )
+	local prefs = util.JSONToTable( raw or "" )
+	if ( not prefs ) then
+		info("\tPreferences file does not exist or is corrupt. A new file will be created.")
+	end
 	Photon2.ClientInput.ProfileMap = prefs or { ["#global"] = "user" }
+	if ( not prefs ) then Photon2.ClientInput.SavePreferencesFile() end
 end
 
 function Photon2.ClientInput.SavePreferencesFile()
+	info("Saving preferences file.")
 	file.Write( "photon_v2/user/profile_input_map.json", util.TableToJSON( Photon2.ClientInput.ProfileMap ) )
 end
 
 function Photon2.ClientInput.SetProfilePreference( profileName, configName )
 	Photon2.ClientInput.LoadPreferencesFile()
-	printf( "Setting profile [%s] to use input configuration [%s]", profileName, configName )
+	info( "Setting profile [%s] to use input configuration [%s]", profileName, configName )
 	if ( configName == "user" and profileName ~= "#global" ) then configName = nil end
 	Photon2.ClientInput.ProfileMap[profileName] = configName
 	Photon2.ClientInput.SavePreferencesFile()
@@ -263,6 +275,10 @@ end
 
 function Photon2.ClientInput.ImportProfileFromJson( jsonText )
 	local profile = util.JSONToTable( jsonText )
+	if not ( profile ) then
+		warn( "Failed convert JSON to table. There is either a syntax error or the source file was corrupt. Default configuration is being returned instead." )
+		return Photon2.GetInputConfiguration( "default" )
+	end
 	local newBinds = {}
 	for key, commands in pairs( profile.Binds ) do
 		local keyCode = input.GetKeyCode( key )

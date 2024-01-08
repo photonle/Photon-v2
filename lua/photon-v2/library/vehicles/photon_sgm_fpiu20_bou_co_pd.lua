@@ -347,7 +347,7 @@ VEHICLE.Equipment = {
 								["CENOUT"] = { RE_Traffic = "CENOUT" },
 							},
 							["Emergency.SirenOverride"] = {
-								["AIR"] = { Flood = "ALERT" }
+								["AIR"] = { Alert = "ALERT" }
 							},
 						}
 					}
