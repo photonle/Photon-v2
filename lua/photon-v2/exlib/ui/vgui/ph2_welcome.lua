@@ -77,7 +77,7 @@ Press "Dismiss for Now" to close this window until next game load.
 
 Press "Close" to close this window and never see it on game load again. (You can always re-open it from the Photon 2 menus later.)
 
-Note: This window only appears automatically in single-player mode. (Server owners )
+Note: This window only appears automatically in single-player mode. (For server owners, this means your users will NOT see this window when they join.)
 ]]
 
 local function addContentLabel( panel, text )
@@ -303,7 +303,12 @@ function PANEL:Init()
 	self:Setup()
 end
 
+function PANEL:PreAutoRefresh()
+	print("auto")
+end
+
 function PANEL:PostAutoRefresh()
+	print("auto")
 	self:Setup()
 end
 

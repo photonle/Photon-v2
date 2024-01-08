@@ -107,22 +107,27 @@ function Photon2.CompileComponent( name, inputComponent )
 
 	-- local component = _G[class].New( name, inputComponent, class )
 	local component = PhotonLightingComponent.New( name, inputComponent )
+
 	component.CompileTime = RealTime()
-	if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
-		table.Merge(Photon2.Index.Components[name], component)
-	else
-		Photon2.Index.Components[name] = component
+
+	if ( not component.NewLibrary ) then
+		if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
+			table.Merge(Photon2.Index.Components[name], component)
+		else
+			Photon2.Index.Components[name] = component
+		end
 	end
 
 	-- Rebuild child components
 	for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-		if Photon2.Library.Components[id] then
-			Photon2.CompileComponent( id, Photon2.Library.Components[id] )
+		local child = Photon2.GetLibraryComponent( id )
+		if Photon2.GetLibraryComponent( id ) then
+			Photon2.CompileComponent( id, Photon2.GetLibraryComponent( id ) )
 		end
 	end
 
 	hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )
-	return Photon2.Index.Components[name]
+	return component
 end
 
 

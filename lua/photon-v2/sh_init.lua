@@ -58,7 +58,6 @@ function LoadPhoton2MetaFiles()
 
 	exmeta.LoadFile("photon-v2/meta/base_entity.lua")
 
-	exmeta.LoadFile("photon-v2/meta/component.lua")
 	exmeta.LoadFile("photon-v2/meta/lighting_component.lua")
 	exmeta.LoadFile("photon-v2/meta/lighting_segment.lua")
 	exmeta.LoadFile("photon-v2/meta/sequence.lua")
@@ -83,4 +82,20 @@ end
 function Photon2.NoInherit( tbl )
 	tbl["__no_inherit"] = true
 	return tbl
+end
+
+-- Temporary functions for new library transition
+
+function Photon2.GetCompiledComponent( name )
+	if ( Photon2.Index.Components[name] ) then
+		return Photon2.Index.Components[name]
+	end
+	return Photon2.GetNewComponent( name )
+end
+
+function Photon2.GetLibraryComponent( name )
+	if ( Photon2.Library.Components[name] ) then
+		return Photon2.Library.Components[name]
+	end
+	return Photon2.Library.NewComponents:Get( name )
 end

@@ -47,7 +47,8 @@ local libraries = {
 	"interaction_sounds",
 	"commands",
 	"input_configurations",
-	"schemas"
+	"schemas",
+	"new_components"
 }
 
 local function autoInclude( fol )

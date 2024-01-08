@@ -3,13 +3,6 @@
 	Vehicle file for Photon 2
 --------------------------------]]
 
---[[
-	VERY IMPORTANT!!!!! 2024-01-03
-	DO NOT USE THE ! INHERITANCE STRING UTILIZED BELOW.
-	THIS WAS A CONCEPT TEST AND IT WON'T 
---]]
-
-
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 

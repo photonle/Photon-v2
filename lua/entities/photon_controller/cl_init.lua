@@ -78,28 +78,6 @@ function ENT:OnResumed()
 	self:SetupProfile(self:GetProfileName())
 end
 
-
--- function ENT:SetupComponent( id )
--- 	local data = self.Equipment[id]
--- 	if (not data) then
--- 		print(string.format("Unable to locate equipment ID [%s]", id))
--- 		return
--- 	end
--- 	print(string.format("Setting up component [%s]", id))
--- 	if (data.Component) then
--- 		---@type PhotonLightingComponent
--- 		local component = Photon2.Index.Components[data.Component]
--- 		local ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
--- 		ent:SetMoveType( MOVETYPE_NONE )
--- 		ent:SetParent( self:GetComponentParent() )
--- 		component:SetPropertiesFromEquipment( data )
--- 		if (IsValid(self.Components[id])) then
--- 			self.Components[id]:Remove()
--- 		end
--- 		self.Components[id] = ent
--- 	end	
--- end
-
 local RealTime = RealTime
 local IsValid = IsValid
 

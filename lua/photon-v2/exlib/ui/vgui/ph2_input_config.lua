@@ -55,7 +55,7 @@ end
 
 function PANEL:Init()
 	self.BaseClass.Init( self )
-
+	self.AllowAutoRefresh = true
 	local this = self
 
 	self:SetTitle("Input Configuration - Photon 2")
@@ -348,11 +348,12 @@ function PANEL:Setup()
 end
 
 function PANEL:PreAutoRefresh()
+	print("sdfs")
 end
 
 function PANEL:PostAutoRefresh()
 	self:Setup()
-
+	print("sdfs")
 	if ( self.WorkingCopy ) then
 		self:LoadInputConfiguration( self.WorkingCopy )
 	end

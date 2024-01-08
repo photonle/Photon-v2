@@ -281,6 +281,7 @@ function Photon2.UI.PopulateMenuBar()
 
 		renderOptionsMenu:AddCVar( "Enable Projected Textures in MP", "ph2_enable_projectedtextures_mp", "1", "0" )
 		renderOptionsMenu:AddCVar( "Enable Subtractive Rendering", "ph2_enable_subtractive_sprites", "1", "0" )
+		renderOptionsMenu:AddCVar( "Enable 2D Lighting", "ph2_draw_light2d", "1", "0" )		
 
 		local bloomOptionsMenuOption = renderOptionsMenu:AddOption( "Bloom Options" )
 		local bloomOptionsMenu = bloomOptionsMenuOption:AddSubMenu()
@@ -367,8 +368,17 @@ function Photon2.UI.PopulateMenuBar()
 			end)
 		end
 
+		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
+		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
+		newComponentPrintOptionMenu:SetDeleteSelf( false )
+
+		for id, entry in pairs( Photon2.Library.NewComponents ) do
+			newComponentPrintOptionMenu:AddOption( id, function() 
+				PrintTable( Photon2.GetNewComponent( id ) )
+			end)
+		end
+
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
-		local drawLight2d = debugMenu:AddCVar( "Draw 2D Lighting", "ph2_draw_light2d", "1", "0" )		
 		local drawInput = debugMenu:AddCVar( "Display Button Inputs", "ph2_display_input", "1", "0" )
 
 		debugMenu:AddOption( "Clear Mesh Cache", function()

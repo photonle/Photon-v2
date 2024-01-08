@@ -215,10 +215,28 @@ local sirens = {
 	end
 }
 
+---@type PhotonLibraryType
 local schemas = {
 	Name = "Schemas",
 	Folder = "schemas",
-	Singular = "Schema"
+	Singular = "Schema",
+}
+
+---@type PhotonLibraryType
+local newComponents = {
+	Name = "NewComponents",
+	Folder = "new_components",
+	Singular = "NewComponent",
+	DoCompile = function( self, data )
+		local component = PhotonLightingComponent.New( data.Name, data )
+		hook.Run( "Photon2:ComponentReloaded", name, component )
+		return component
+	end,
+	PostCompile = function( self, name )
+		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
+			self:OnReload( self:Get( name ) )
+		end
+	end
 }
 
 ---@param entry PhotonLibraryType
@@ -231,6 +249,7 @@ Photon2.Library.AddType( inputConfigurations )
 Photon2.Library.AddType( commands )
 Photon2.Library.AddType( interactionSounds )
 Photon2.Library.AddType( schemas )
+Photon2.Library.AddType( newComponents )
 
 function Photon2.LoadComponentFile( filePath, isReload )
 	-- Photon2.Debug.Print("Loading component file: " .. filePath)
@@ -271,7 +290,8 @@ end
 
 function Photon2.BuildParentLibraryComponent( childId, parentId )
 	---@type PhotonLibraryComponent
-	local parentLibraryComponent = Photon2.Library.Components[parentId]
+	local parentLibraryComponent = Photon2.GetLibraryComponent( parentId )
+	-- local parentLibraryComponent = Photon2.Library.Components[parentId]
 	-- local libraryComponent = table.Copy(Photon2.Library.Components[parentId])
 	if ( not parentLibraryComponent ) then
 		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
@@ -407,6 +427,7 @@ end
 
 function Photon2.Library.Initialize()
 	Photon2.LoadLibraries( { "Sirens" })
+	Photon2.LoadLibraries( { "NewComponents" } )
 	Photon2.LoadComponentLibrary()
 	Photon2.LoadLibraries( { "Schemas" })
 	Photon2.LoadVehicleLibrary()
@@ -420,6 +441,8 @@ hook.Add("Initialize", "Photon2:InitializeLibrary", function()
 	Photon2.Library.Initialize()
 
 	-- Temporary code to troubleshoot library loading problems
+	if ( SERVER ) then return end
+	
 	if ( not Photon2.GetInputConfiguration( "default" ) ) then
 		if ( not initializationErrorDisplayed ) then
 			print( "[CRITICAL] The Photon 2 libraries failed to initialize correctly. This is most likely caused by a conflicting addon. Photon 2 will try to reload the libraries again in 10 seconds." )

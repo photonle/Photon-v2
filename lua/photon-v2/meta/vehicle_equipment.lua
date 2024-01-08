@@ -152,7 +152,8 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			ElementStates = entry.ElementStates,
 			Siren = entry.Siren,
 			States = entry.States,
-			RenderGroup = entry.RenderGroup
+			RenderGroup = entry.RenderGroup,
+			NewLibrary = entry.NewLibrary
 		}
 
 		-- for 
@@ -162,9 +163,16 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		-- for key, value in pairs( entry ) do
 		-- 	if ( not  )
 		-- end
-		Photon2.Library.Components[componentId] = component
-		Photon2.CompileComponent( componentId, component )
+		if ( component.NewLibrary ) then
+			component.Name = componentId
+			Photon2.CompileNewComponent( component )
+		else
+			Photon2.Library.Components[componentId] = component
+			Photon2.CompileComponent( componentId, component )
+		end
+		
 		entry.Component = componentId
+		
 		-- print("NEW Component ID: [" .. componentId .. "]" )
 		-- print("Equipment key: " .. tostring(key) )
 		-- PrintTable( entry )

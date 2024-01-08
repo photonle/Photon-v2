@@ -226,11 +226,16 @@ function meta:Compile( data )
 	if ( isstring( data ) ) then data = self:Get( data ) end
 	local result = self:DoCompile( table.Copy( data --[[@as table]]) )
 	self.Index[result.Name] = result
+	self:PostCompile( result.Name )
 	return result
 end
 
 function meta:DoCompile( data )
 	return data
+end
+
+function meta:PostCompile( name )
+
 end
 
 -- Not implemented
