@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"noble/photon/fedsig_mb1_controller/buttons"
+	"$bumpmap"		"photon/common/flat"
+	"$phong"		"1"
+	"$phongexponent"	"10"
+	"$phongboost"	"2"
+	"$rimlight"	"1"
+	"$rimlightexponent"	"0"
+	"$rimlightboost"	"3"
+	"$phongfresnelranges"	"[0.05 0.05 0]"
+}

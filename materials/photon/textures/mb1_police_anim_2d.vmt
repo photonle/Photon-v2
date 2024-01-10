@@ -1,0 +1,71 @@
+"UnlitGeneric"
+{
+	"$basetexture"		"photon/textures/mb1_police_anim"
+	
+	"$nocull" 1
+	"$additive" 1
+	"$vertexalpha" 1
+	"$vertexcolor" 1
+
+
+	$angle          "0"
+	$translate      "[0.0 0.0]"
+	$center         "[1 .5]"
+	$scale          "[.222721 1]"
+
+	$ramp			"0"
+	$frac			"0"
+
+	$step			"431"
+
+	$mult			"0"
+	$int			"0"
+	$divide			"0"
+
+	Proxies
+	{
+        LinearRamp
+        {
+            "rate"                ".135"
+            "initialValue"        "0"
+            "resultVar"           "$ramp"
+        }
+
+//	The Frac proxy does not return the fractional part of the input number, but the integer part. The documentation lied.
+//		Frac
+//		{
+//			"srcVar1"			"$ramp"
+//			"resultVar"			"$frac"
+//		}
+
+		Multiply
+		{
+			"srcVar1"			"$ramp"
+			"srcVar2"			"$step"
+			"resultVar"			"$mult"
+		}
+
+		Int
+		{
+			"srcVar1"			"$mult"
+			"resultVar"			"$int"
+		}
+
+		Divide
+		{
+			"srcVar1"			"$int"
+			"srcVar2"			"$step"
+			"resultVar"			"$translate[0]"
+		}
+
+        TextureTransform
+        {
+			"translateVar"     "$translate"
+			"rotateVar"        "$angle"
+			"centerVar"        "$center"
+	       	"scaleVar"         "$scale"
+			"resultVar"        "$basetexturetransform"
+        }
+	}
+
+}

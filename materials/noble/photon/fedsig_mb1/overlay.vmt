@@ -1,0 +1,18 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "noble/photon/fedsig_mb1/overlay"
+	"$bumpmap"    "noble/photon/fedsig_mb1/overlay_nm"
+	"$envmap" env_cubemap
+	"$translucent" 1
+	"$phong" "1" 
+	"$phongboost" "1" 
+	"$phongexponent" "10"
+	"$phongfresnelranges" "[1 10 1]"
+	"$envmaptint" "[0.1 0.1 0.1]"
+	"$envmapfresnel" "[0 5 10]"
+	"$color"	"[1 1 1]"
+
+	"$translucent" "1"
+	"$decal" "1"
+}
+

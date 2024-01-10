@@ -1,0 +1,13 @@
+"UnlitGeneric"
+{
+	"$basetexture"		"photon/textures/mb1_back"
+
+	"$alphatest" "1"
+
+	"$nocull" 1
+	//"$additive" 1
+	"$vertexalpha" 1
+	"$vertexcolor" 1
+
+	"$basetexturetransform"	"center .5 .5 scale 1 4 rotate 0 translate -.0005 0"
+}

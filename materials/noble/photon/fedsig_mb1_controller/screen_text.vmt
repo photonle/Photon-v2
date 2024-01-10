@@ -1,0 +1,12 @@
+"UnlitGeneric"
+{
+	"$basetexture"	"noble/photon/fedsig_mb1_controller/screen_text"
+	"$basetexturetransform" "center .5 .5 scale 1 2 rotate 0 translate 0 0"
+	
+	//"$nocull"		"1"	
+
+	"$translucent"	"1"
+	"$decal"		"1"
+}
+
+

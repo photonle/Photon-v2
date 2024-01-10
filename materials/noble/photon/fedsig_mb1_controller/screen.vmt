@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"noble/photon/fedsig_mb1_controller/screen_off"
+	"$bumpmap"	"photon/common/flat"
+	"$basetexturetransform" "center .5 .5 scale 1 2 rotate 0 translate 0 0"
+	//"$envmap"	"[.02 .02 .02]"
+	//"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"1"
+	"$rimlight"	"1"
+	//"$rimlightexponent"	"17"
+	"$rimlightboost"	"1.2"
+	"$phongfix"	"[1 1 1]"
+	"$nocull"		"1"	
+}
+
+
