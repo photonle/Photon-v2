@@ -165,7 +165,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		-- end
 		if ( component.NewLibrary ) then
 			component.Name = componentId
-			Photon2.CompileNewComponent( component )
+			Photon2.RegisterNewComponent( component )
 		else
 			Photon2.Library.Components[componentId] = component
 			Photon2.CompileComponent( componentId, component )

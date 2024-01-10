@@ -1,9 +1,9 @@
--- Photon2._acceptFileReload = true
--- if (Photon2.ReloadNewComponentFile()) then return end
--- local COMPONENT = Photon2.LibraryNewComponent()
-local COMPONENT = {}
+print( "photon_newcom_b.lua" )
+-- if true then return end
+if (Photon2.ReloadNewComponentFile()) then return end
+local COMPONENT = Photon2.LibraryNewComponent()
 
-COMPONENT.Name = "photon_newcom_liberty"
+-- COMPONENT.Name = "photon_newcom_liberty"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -259,7 +259,7 @@ COMPONENT.Inputs = {
 			All = "MODE1"
 		},
 		["MODE2"] = {
-			All = "ALT2"
+			All = "MODE1"
 		},
 		["MODE3"] = {
 			All = "ALT3"
@@ -291,5 +291,3 @@ COMPONENT.Inputs = {
 		}
 	},
 }
-
-Photon2.RegisterNewComponent( COMPONENT )

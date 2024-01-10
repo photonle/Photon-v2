@@ -33,6 +33,7 @@ function Photon2.Debug.Log( type, section, message )
 			Message = message
 		}
 	end
+	Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
 	if ( SERVER ) then
 		file.Append( Photon2.Debug.ServerLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
 	else
@@ -40,10 +41,14 @@ function Photon2.Debug.Log( type, section, message )
 	end
 end
 
-function Photon2.Debug.Print( text )
+function Photon2.Debug.PrintOnly( text )
 	local col = sv
 	if CLIENT then col = cl end
 	MsgC( col, "[", red, "PHO", blu, "TON", whi, "2", col, "] ", col, text .. "\n")
+end
+
+function Photon2.Debug.Print( text )
+	-- Photon2.Debug.PrintOnly( text )
 	Photon2.Debug.Log( "INFO", "PRINT", text )
 end
 

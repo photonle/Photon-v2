@@ -372,7 +372,7 @@ function Photon2.UI.PopulateMenuBar()
 		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
 		newComponentPrintOptionMenu:SetDeleteSelf( false )
 
-		for id, entry in pairs( Photon2.Library.NewComponents ) do
+		for id, entry in pairs( Photon2.Library.NewComponents.Repository ) do
 			newComponentPrintOptionMenu:AddOption( id, function() 
 				PrintTable( Photon2.GetNewComponent( id ) )
 			end)

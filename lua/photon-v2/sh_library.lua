@@ -22,6 +22,18 @@ local vehiclesRoot = "photon-v2/library/vehicles/"
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
 
+function Photon2.SetAcceptReload( val )
+	Photon2._acceptFileReload = val
+	-- debug.Trace()
+	-- print("Set accept file reload => " .. tostring( val ) )
+end
+
+function Photon2.GetAcceptReload()
+	-- print("Get accept file reload => " .. tostring( Photon2._acceptFileReload ) )
+	-- debug.Trace()
+	return Photon2._acceptFileReload
+end
+
 ---@class PhotonInputConfigurationLibrary : PhotonLibraryType
 local inputConfigurations = {
 	Name = "InputConfigurations",
@@ -229,13 +241,16 @@ local newComponents = {
 	Singular = "NewComponent",
 	DoCompile = function( self, data )
 		local component = PhotonLightingComponent.New( data.Name, data )
-		hook.Run( "Photon2:ComponentReloaded", name, component )
 		return component
 	end,
 	PostCompile = function( self, name )
 		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-			self:OnReload( self:Get( name ) )
+			print( "Should reload child: " .. id )
+			self:Register( self:Get( id ) )
 		end
+	end,
+	PostRegister = function( self, name )
+		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
 	end
 }
 
@@ -261,9 +276,9 @@ function Photon2.LoadComponentFile( filePath, isReload )
 	_UNSET = UNSET
 	UNSET = PHOTON2_UNSET
 	PHOTON_LIBRARY_COMPONENT = {}
-	Photon2._acceptFileReload = false
+	Photon2.SetAcceptReload( false )
 	include( filePath )
-	Photon2._acceptFileReload = true
+	Photon2.SetAcceptReload( true )
 	-- if (istable(library.Components[name])) then
 	-- 	Photon2.Debug.Print("Component '" .. name .. "' already exists. Overwriting.")
 	-- end
@@ -306,15 +321,6 @@ function Photon2.BuildParentLibraryComponent( childId, parentId )
 	return parentLibraryComponent
 end
 
-function Photon2.ReloadComponent( id )
-	if (Photon2._acceptFileReload) then
-		Photon2.Debug.Print( "Reloading component: " .. tostring(id) )
-		Photon2.LoadComponentFile( componentsRoot .. id .. ".lua", true )
-		return true
-	end
-	return false
-end
-
 ---@param filePath string
 ---@param isReload? boolean
 function Photon2.LoadVehicleFile( filePath, isReload )
@@ -325,9 +331,9 @@ function Photon2.LoadVehicleFile( filePath, isReload )
 	-- Photon2.Debug.Print("Vehicle name: " .. name)
 	---@type PhotonLibraryVehicle
 	PHOTON2_LIBRARY_VEHICLE = {}
-	Photon2._acceptFileReload = false
+	Photon2.SetAcceptReload( false )
 	include( filePath )
-	Photon2._acceptFileReload = true
+	Photon2.SetAcceptReload( true )
 	-- if (istable(library.Vehicles[name])) then
 	-- 	Photon2.Debug.Print("Vehicle '" .. name .. "' already exists. Overwriting.")
 	-- end
@@ -367,7 +373,7 @@ function Photon2.LoadVehicleLibrary( folderPath )
 end
 
 function Photon2.ReloadComponentFile()
-	if (Photon2._acceptFileReload) then
+	if ( Photon2.GetAcceptReload() ) then
 		local source = debug.getinfo(2, "S").source
 		if source:sub(1, 1) == "@" then
 			source = source:sub(2)
@@ -392,7 +398,7 @@ function Photon2.ReloadComponentFile()
 end
 
 function Photon2.ReloadVehicle( id )
-	if (Photon2._acceptFileReload) then
+	if ( Photon2.GetAcceptReload() ) then
 		Photon2.Debug.Print("Reloading vehicle: " .. tostring(id))
 		Photon2.LoadVehicleFile(vehiclesRoot .. id .. ".lua")
 		return true
@@ -401,7 +407,7 @@ function Photon2.ReloadVehicle( id )
 end
 
 function Photon2.ReloadVehicleFile()
-	if (Photon2._acceptFileReload) then
+	if ( Photon2.GetAcceptReload() ) then
 		local source = debug.getinfo(2, "S").source
 		if source:sub(1, 1) == "@" then
 			source = source:sub(2)

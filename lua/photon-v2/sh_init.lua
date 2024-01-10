@@ -8,6 +8,8 @@ include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
 include("sh_vcmod.lua")
 
+local info, warn = Photon2.Debug.Declare("Init")
+
 ---@return PhotonColor
 function PhotonColor( r, g, b, a )
 	return _PhotonColor.New( r, g, b, a )
@@ -90,6 +92,7 @@ function Photon2.GetCompiledComponent( name )
 	if ( Photon2.Index.Components[name] ) then
 		return Photon2.Index.Components[name]
 	end
+	info( "getting new component: " .. tostring( name ) )
 	return Photon2.GetNewComponent( name )
 end
 

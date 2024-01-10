@@ -24,6 +24,10 @@ local printf = info
 ---@field Template? table
 ---@field Unsaved? boolean
 ---@field ReadOnly? boolean
+---@field LuaPath? string (Internal) Full Lua path to file library.
+---@field GlobalName? string (Internal) Global variable name used for dedicated files.
+---@field IncludingDedicatedFile? boolean (Internal) If a newly loaded file is actually a dedicated file.
+---@field LoadingDedicatedFile? boolean (Internal)
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -35,13 +39,29 @@ meta.Template = {}
 
 function meta.New( properties )
 	local result = setmetatable( properties, { __index = meta } )
+	
 	result.Loaded = false
+	result.LuaPath = luaPath .. result.Folder .. "/"
+	result.GlobalName = "PHOTON_LIBRARY_" .. string.upper( result.Singular )
+
 	if ( Photon2.Index and Photon2.Index[result.Name] ) then result.Loaded = true end
 	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
 	Photon2["Register" .. result.Singular] = function( entry )
 		if ( not result.IsValidRealm ) then return nil end
 		return result:Register( entry )
 	end
+	Photon2["Library" .. result.Singular] = function()
+		_G[result.GlobalName] = {
+			LibraryToken = "asdf"
+		}
+		return _G[result.GlobalName]
+	end
+	Photon2["Reload" .. result.Singular .. "File"] = function()
+		print("global reload called")
+		result.IncludingDedicatedFile = true
+		return result:ReloadDedicatedLuaFile()
+	end
+
 	if ( not result.IsValidRealm ) then return end
 
 	file.CreateDir( "photon_v2/library/" .. result.Folder )
@@ -54,6 +74,9 @@ function meta.New( properties )
 	Photon2.Index = Photon2.Index or {}
 	Photon2.Index[result.Name] = Photon2.Index[result.Name] or {}
 	result.Index = Photon2.Index[result.Name]
+
+	
+
 	Photon2["Get" .. tostring( result.Singular ) ] = function( name )
 		return result:GetFromIndex( name )
 	end
@@ -126,9 +149,75 @@ end
 function meta:LoadLuaFile( path )
 	print("\t\tIncluding Lua file: " .. tostring( path ) )
 	self.CurrentLoadSource = "Lua"
+	self.SupressDedicatedLoad = true
 	local result = include( path )
+	self.SupressDedicatedLoad = false
+	if ( self.IncludingDedicatedFile ) then
+		self.IncludingDedicatedFile = false
+		self:LoadDedicatedLuaFile( path )
+	end
 	self.CurrentLoadSource = nil
 	return result
+end
+
+-- When a dedicated file is reloaded. Requires a special function because
+-- the component name needs to be parsed from the file using the debug library.
+function meta:ReloadDedicatedLuaFile( )
+	info("Reloading dedicated lua file...")
+
+	-- return true to terminate include
+	if ( self.SupressDedicatedLoad ) then return true end
+	if ( self.LoadingDedicatedFile ) then return false end
+	-- if ( self.SupressDedicatedLoad ) then
+		local source = debug.getinfo(2, "S").source
+		info("Source: " .. tostring( source ))
+		if source:sub(1, 1) == "@" then
+			source = source:sub(2)
+		else
+			return false
+		end
+
+		local startPos, endPos = source:find( self.LuaPath, 1, true )
+
+		if ( startPos ) then
+			local path = source:sub(startPos)
+			self:LoadDedicatedLuaFile( path )
+		else
+			Photon2.Debug.Print("Attempted to reload library entry from an invalid file location [" .. tostring(source) .."]")
+			return false
+		end
+
+		-- return true
+	-- end
+	-- print("reload blocked by _acceptFileReload")
+	-- return false
+end
+
+function meta:GetNameFromLuaFile( path )
+	local nameStart = string.len( self.LuaPath ) + 1
+	local nameEnd = string.len( self.LuaPath ) - nameStart -4
+	return string.sub( path, nameStart, nameEnd )
+end
+
+-- Loads a file dedicated to a single entry. 
+function meta:LoadDedicatedLuaFile( path )
+	info( "Loading dedicated file [%s]", path )
+	local name = self:GetNameFromLuaFile( path )
+	info( "Name [%s]", name )
+	_UNSET = UNSET
+	UNSET = PHOTON2_UNSET
+	-- Photon2.SetAcceptReload( false )
+	self.LoadingDedicatedFile = true
+	include( path )
+	self.LoadingDedicatedFile = false
+
+	local entry = _G[self.GlobalName]
+	-- Photon2.SetAcceptReload( true )
+	
+	entry.Name = name
+	UNSET = _UNSET
+	self:Register( table.Copy( entry ) )
+	entry = {}
 end
 
 -- Loads library objects that were created using JSON in the `data` folder.
@@ -209,10 +298,16 @@ function meta:Register( data )
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end
 	if ( self.Loaded ) then
+		info("\t\t\t\tReloading...")
 		self:OnReload( data )
 	elseif ( self.EagerLoading ) then
 		self:Compile( data )
 	end
+	self:PostRegister( data.Name )
+end
+
+function meta:PostRegister( name )
+
 end
 
 -- Called when an entry is reloaded.
