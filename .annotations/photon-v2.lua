@@ -156,7 +156,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Sequences table<string, table<integer, integer>>
 
 ---@class PhotonLibraryVehicle
----@field ID string (Internal) Overwritten by the filename. Cannot be set by user.
+---@field Name string (Internal) Overwritten by the filename. Cannot be set by user.
 ---@field Vehicle string The original vehicle name this is based on (e.g. "20fpiu_new_sgm").
 ---@field Title string The printed name of the vehicle.
 ---@field Category string The default spawn category of the vehicle.

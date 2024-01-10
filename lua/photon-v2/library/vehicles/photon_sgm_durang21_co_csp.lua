@@ -184,6 +184,7 @@ VEHICLE.Equipment = {
 	{
 		Category = "Lightbar",
 		Options = {
+			-- { Option = "None" },
 			{
 				Option = "Liberty II",
 				Components = {

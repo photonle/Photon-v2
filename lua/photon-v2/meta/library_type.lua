@@ -28,6 +28,8 @@ local printf = info
 ---@field GlobalName? string (Internal) Global variable name used for dedicated files.
 ---@field IncludingDedicatedFile? boolean (Internal) If a newly loaded file is actually a dedicated file.
 ---@field LoadingDedicatedFile? boolean (Internal)
+---@field HardReloadThreshold? number (Internal) Time between reloads that should trigger a hard reload.
+---@field Signatures? string[] Table keys used as signatures for change detection.
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -36,7 +38,7 @@ local luaPath = "photon-v2/library/"
 meta.OnServer = true
 meta.OnClient = true
 meta.Template = {}
-
+meta.HardReloadThreshold = 1
 function meta.New( properties )
 	local result = setmetatable( properties, { __index = meta } )
 	
@@ -46,16 +48,19 @@ function meta.New( properties )
 
 	if ( Photon2.Index and Photon2.Index[result.Name] ) then result.Loaded = true end
 	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
+	
 	Photon2["Register" .. result.Singular] = function( entry )
 		if ( not result.IsValidRealm ) then return nil end
 		return result:Register( entry )
 	end
+
 	Photon2["Library" .. result.Singular] = function()
 		_G[result.GlobalName] = {
 			LibraryToken = "asdf"
 		}
 		return _G[result.GlobalName]
 	end
+	
 	Photon2["Reload" .. result.Singular .. "File"] = function()
 		print("global reload called")
 		result.IncludingDedicatedFile = true
@@ -163,34 +168,26 @@ end
 -- When a dedicated file is reloaded. Requires a special function because
 -- the component name needs to be parsed from the file using the debug library.
 function meta:ReloadDedicatedLuaFile( )
-	info("Reloading dedicated lua file...")
-
 	-- return true to terminate include
 	if ( self.SupressDedicatedLoad ) then return true end
 	if ( self.LoadingDedicatedFile ) then return false end
-	-- if ( self.SupressDedicatedLoad ) then
-		local source = debug.getinfo(2, "S").source
-		info("Source: " .. tostring( source ))
-		if source:sub(1, 1) == "@" then
-			source = source:sub(2)
-		else
-			return false
-		end
 
-		local startPos, endPos = source:find( self.LuaPath, 1, true )
+	local source = debug.getinfo(2, "S").source
+	if source:sub(1, 1) == "@" then
+		source = source:sub(2)
+	else
+		return false
+	end
 
-		if ( startPos ) then
-			local path = source:sub(startPos)
-			self:LoadDedicatedLuaFile( path )
-		else
-			Photon2.Debug.Print("Attempted to reload library entry from an invalid file location [" .. tostring(source) .."]")
-			return false
-		end
+	local startPos, endPos = source:find( self.LuaPath, 1, true )
 
-		-- return true
-	-- end
-	-- print("reload blocked by _acceptFileReload")
-	-- return false
+	if ( startPos ) then
+		local path = source:sub(startPos)
+		self:LoadDedicatedLuaFile( path )
+	else
+		Photon2.Debug.Print("Attempted to reload library entry from an invalid file location [" .. tostring(source) .."]")
+		return false
+	end
 end
 
 function meta:GetNameFromLuaFile( path )
@@ -204,19 +201,21 @@ function meta:LoadDedicatedLuaFile( path )
 	info( "Loading dedicated file [%s]", path )
 	local name = self:GetNameFromLuaFile( path )
 	info( "Name [%s]", name )
+
 	_UNSET = UNSET
 	UNSET = PHOTON2_UNSET
-	-- Photon2.SetAcceptReload( false )
+	
 	self.LoadingDedicatedFile = true
 	include( path )
 	self.LoadingDedicatedFile = false
 
 	local entry = _G[self.GlobalName]
-	-- Photon2.SetAcceptReload( true )
-	
 	entry.Name = name
+
 	UNSET = _UNSET
+	
 	self:Register( table.Copy( entry ) )
+	
 	entry = {}
 end
 
@@ -241,9 +240,6 @@ function meta:LoadLibrary()
 	self:LoadDataLibary()
 	self.IsLoading = false
 	self.Loaded = true
-	-- print("\tDone loading. Repository:")
-	-- PrintTable( self.Repository )
-	-- print( "===========================================================" )
 end
 
 function meta:LoadDataJsonFile( fileName )
@@ -312,24 +308,43 @@ end
 
 -- Called when an entry is reloaded.
 function meta:OnReload( data )
-	self:Compile( data )
+	local old = self.Index[data.Name]
+	local hardReload = ( ( old ) and old.CompileTime + self.HardReloadThreshold >= CurTime() )
+	self:Compile( data, hardReload )
 end
 
 -- Compilation wrapper. Actual compilation overrides should be done in `TYPE:DoCompile( data )`
 ---@param data table | string
-function meta:Compile( data )
+---@param hardReload? boolean
+function meta:Compile( data, hardReload )
 	if ( isstring( data ) ) then data = self:Get( data ) end
 	local result = self:DoCompile( table.Copy( data --[[@as table]]) )
+	result.CompileTime = CurTime()
+	hardReload = hardReload or ( self:MatchSignatures( self.Index[result.Name], result ) == false )
 	self.Index[result.Name] = result
-	self:PostCompile( result.Name )
+	self:PostCompile( result.Name, hardReload )
 	return result
+end
+
+-- Compares signatures
+function meta:MatchSignatures( oldEntry, newEntry )
+	if not ( self.Signatures ) then return false end
+	if not ( oldEntry ) then return true end
+	for i, key in ipairs( self.Signatures ) do
+		if ( newEntry[key] ~= oldEntry[key] ) then
+			print("SIGNATURE DOES NOT MATCH")
+			return false
+		end
+		print("SIGNATURE MATCHES: %s", tostring( newEntry[key]))
+	end
+	return true
 end
 
 function meta:DoCompile( data )
 	return data
 end
 
-function meta:PostCompile( name )
+function meta:PostCompile( name, hardReload )
 
 end
 

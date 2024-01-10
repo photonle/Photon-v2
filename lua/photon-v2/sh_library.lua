@@ -16,11 +16,13 @@ local library = Photon2.Library
 local _g = _G
 local Util = Photon2.Util
 
+local info, warn = Photon2.Debug.Declare( "Library" )
+
 -- local componentsRoot = "photon-v2/library/components/"
 local vehiclesRoot = "photon-v2/library/vehicles/"
 
-local printf = Photon2.Debug.PrintF
-local print = Photon2.Debug.Print
+local printf = info
+local print = info
 
 function Photon2.SetAcceptReload( val )
 	Photon2._acceptFileReload = val
@@ -254,6 +256,25 @@ local components = {
 	end
 }
 
+---@type PhotonLibraryType
+local vehicles = {
+	Name = "NewVehicles",
+	Folder = "new_vehicles",
+	Singular = "NewVehicle",
+	EagerLoading = true,
+	Signatures = { "EquipmentSignature", "SelectionsSignature" },
+	DoCompile = function( self, data )
+		local vehicle = PhotonVehicle.New( data )
+		return vehicle
+	end,
+	PostCompile = function( self, name, hardReload )
+		hook.Run( "Photon2.VehicleCompiled", name, nil, hardReload )
+	end,
+	PostRegister = function( self, name )
+		-- hook.Run( "Photon2.VehicleCompiled", name, nil, true )
+	end
+}
+
 ---@param entry PhotonLibraryType
 function Photon2.Library.AddType( entry )
 	entry = PhotonLibraryType.New( entry )
@@ -265,6 +286,7 @@ Photon2.Library.AddType( commands )
 Photon2.Library.AddType( interactionSounds )
 Photon2.Library.AddType( schemas )
 Photon2.Library.AddType( components )
+Photon2.Library.AddType( vehicles )
 
 function Photon2.BuildParentLibraryComponent( childId, parentId )
 	---@type PhotonLibraryComponent
@@ -304,7 +326,7 @@ function Photon2.LoadVehicleFile( filePath, isReload )
 	-- if (istable(library.Vehicles[name])) then
 	-- 	Photon2.Debug.Print("Vehicle '" .. name .. "' already exists. Overwriting.")
 	-- end
-	PHOTON2_LIBRARY_VEHICLE.ID = name
+	PHOTON2_LIBRARY_VEHICLE.Name = name
 	library.Vehicles[name] = PHOTON2_LIBRARY_VEHICLE
 	PHOTON2_LIBRARY_VEHICLE = nil
 	-- printf("END of LoadVehicleFile() filepath: %s", filePath)
@@ -371,8 +393,8 @@ end
 function Photon2.Library.Initialize()
 	Photon2.LoadLibraries( { "Sirens" })
 	Photon2.LoadLibraries( { "Components" } )
-	-- Photon2.LoadComponentLibrary()
-	Photon2.LoadLibraries( { "Schemas" })
+	Photon2.LoadLibraries( { "Schemas" } )
+	Photon2.LoadLibraries( { "NewVehicles" } )
 	Photon2.LoadVehicleLibrary()
 	Photon2.LoadLibraries( { "InteractionSounds", "Commands", "InputConfigurations" } )
 	hook.Run( "Photon2.PostInitializeLibrary" )
@@ -400,7 +422,10 @@ function Photon2.LoadLibraries( types )
 		---@type PhotonLibraryType
 		local libraryType = Photon2.Library[types[i]]
 		if ( libraryType ) then
-			libraryType:LoadLibrary()
+			local success, code = pcall( libraryType.LoadLibrary, libraryType )
+			if ( not success ) then
+				warn("ERROR: %s", code )
+			end
 		end
 	end
 end

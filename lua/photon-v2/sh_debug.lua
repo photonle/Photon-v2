@@ -34,10 +34,15 @@ function Photon2.Debug.Log( type, section, message )
 		}
 	end
 	Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
+
+	-- Blanks out "[INFO]" tag so non-normal tags stand out in the log file
+	local typeLabel = "      "
+	if ( type ~= "INFO" ) then typeLabel = "[" .. section .. "]" end
+	
 	if ( SERVER ) then
-		file.Append( Photon2.Debug.ServerLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+		file.Append( Photon2.Debug.ServerLog, string.format("%s %s (%s)  %s\n", time, typeLabel, section, message ) )
 	else
-		file.Append( Photon2.Debug.ClientLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+		file.Append( Photon2.Debug.ClientLog, string.format("%s %s (%s)  %s\n", time, typeLabel, section, message ) )
 	end
 end
 

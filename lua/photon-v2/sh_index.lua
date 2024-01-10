@@ -85,74 +85,34 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		isReload = false
 	end
 
-	local currentEquipmentCount, newEquipmentCount
 	local currentEquipmentSignature, newEquipmentSignature
-
 	local currentSelectionsSignature, newSelectionsSignature
 
 	local hardSet = true
 
-	local function buildEquipmentSignature( tbl )
-		local sig = ""
-		for equipmentType, entries in pairs( tbl ) do
-			if (equipmentTypeMap[equipmentType]) then
-				sig = sig .. string.format("[%s]=>{", equipmentType)
-				for index, entry in ipairs( entries ) do
-					local baseClassName = ""
-					if (istable(entry.BaseClass)) then
-						baseClassName = entry.BaseClass.Name
-					end
-					sig = sig .. string.format("<%s:%s(%s/%s)>", index, entry[equipmentTypeMap[equipmentType]], baseClassName, entry.Name)
-				end
-				sig = sig .. "}"
-			end
-		end
-		return sig
-	end
-
-	local function buildSelectionSignature( tbl )
-		local sig = ""
-		for key, category in ipairs(tbl) do
-			sig = sig .. string.format("[%s]", key)
-			for mapKey, option in pairs(category.Map) do
-				sig = sig .. tostring(mapKey) .. "("
-					if (option.Option) then
-						sig = sig .. string.format("<%s>*%s,", mapKey, option.Option)
-
-					elseif (option.Variant) then
-						sig = sig .. string.format("<%s>^%s,", mapKey, option.Variant)
-					end
-				sig = sig .. ")"
-			end
-		end
-		return sig
-	end
-
 	if (isReload) then
-		currentEquipmentSignature = buildEquipmentSignature( current.Equipment )
+		currentEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( current.Equipment )
 		if (current.EquipmentSelections) then
-			currentSelectionsSignature = buildSelectionSignature( current.EquipmentSelections )
+			currentSelectionsSignature = PhotonVehicle.BuildSelectionSignature( current.EquipmentSelections )
 		end
 	end
 
-	Photon2.Index.Vehicles[name] = PhotonVehicle.New( inputVehicle )
-
-	local newVehicle = Photon2.Index.Vehicles[name]
-
+	local newVehicle =  PhotonVehicle.New( inputVehicle )
 
 	if (isReload) then
 		-- Build new Equipment signature
-		newEquipmentSignature = buildEquipmentSignature( newVehicle.Equipment )
-		
+		newEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( newVehicle.Equipment )
+		print("new equipment signature: " .. tostring( newEquipmentSignature ))
 		if (currentEquipmentSignature == newEquipmentSignature) then
 			hardSet = false
 		end
-
+		
 		-- Build new Selections signature
 		-- (any modifications of the Selections tree needs to require a hard reload)
 		if (currentSelectionsSignature) then
 			if ( newVehicle.EquipmentSelections ) then
-				newSelectionsSignature = buildSelectionSignature( newVehicle.EquipmentSelections )				
+				newSelectionsSignature = PhotonVehicle.BuildSelectionSignature( newVehicle.EquipmentSelections )				
+				print("new selections signature: " .. tostring( newEquipmentSignature ))
 				if (newSelectionsSignature ~= currentSelectionsSignature) then
 					hardSet = true
 				end
@@ -170,19 +130,11 @@ function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
 		lastSave = SysTime()
 	end
 
-	if (PHOTON2_DEBUG_VEHICLE_HARDRELOAD) then
-		print("Debug global PHOTON2_DEBUG_VEHICLE_HARDRELOAD is currently true.")
-		hardSet = true
-	end
+	Photon2.Index.Vehicles[name] = newVehicle
 
-	hook.Run("Photon2.VehicleCompiled", name, Photon2.Index.Vehicles[name], hardSet)
-	return Photon2.Index.Vehicles[name]
+	hook.Run("Photon2.VehicleCompiled", name, nil, hardSet)
+	return newVehicle
 end
-
-hook.Add("Photon2.VehicleCompiled", "Photon2:OnVehicleCompiled", function(name, vehicle)
-	-- print("Vehicle compiled (%s)", name)
-end)
-
 
 local toneNameToNumber = {}
 local toneNumberToName = {}
