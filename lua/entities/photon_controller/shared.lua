@@ -535,7 +535,7 @@ function ENT:SetupUIComponent( id )
 		return
 	end
 
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 	local uiEnt = component:CreateOn( self, self )
 	self.UIComponents[id] = uiEnt
 	uiEnt:ApplyModeUpdate()
@@ -550,7 +550,7 @@ function ENT:SetupVirtualComponent( id )
 		return
 	end
 
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
 	self.VirtualComponents[id] = virtualEnt
 	virtualEnt:ApplyModeUpdate()
@@ -633,7 +633,7 @@ function ENT:SetupComponent( id )
 	-- print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 
 	local ent
 

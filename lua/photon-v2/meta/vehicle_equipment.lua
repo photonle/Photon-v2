@@ -153,23 +153,10 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			Siren = entry.Siren,
 			States = entry.States,
 			RenderGroup = entry.RenderGroup,
-			NewLibrary = entry.NewLibrary
 		}
 
-		-- for 
-
-		-- Distinguish Component/Entity properties from equipment-only metadata (necessary?)
-
-		-- for key, value in pairs( entry ) do
-		-- 	if ( not  )
-		-- end
-		if ( component.NewLibrary ) then
-			component.Name = componentId
-			Photon2.RegisterNewComponent( component )
-		else
-			Photon2.Library.Components[componentId] = component
-			Photon2.CompileComponent( componentId, component )
-		end
+		component.Name = componentId
+		Photon2.RegisterComponent( component )
 		
 		entry.Component = componentId
 		

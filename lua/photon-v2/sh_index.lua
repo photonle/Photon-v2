@@ -1,5 +1,5 @@
 Photon2.Index = Photon2.Index or {}
-Photon2.Index.Components = Photon2.Index.Components or {}
+-- Photon2.Index.Components = Photon2.Index.Components or {}
 Photon2.Index.Vehicles = Photon2.Index.Vehicles or {}
 Photon2.Index.Tones = Photon2.Index.Tones or {}
 Photon2.Index.Profiles = Photon2.Index.Profiles or { Map = {}, Vehicles = {} }
@@ -33,103 +33,6 @@ local debug = Photon2.Debug
 --[[---------------------
 		Config
 --]]---------------------
-local mergeComponentReloads = false
-
-
---[[---------------------
-	Component Index
------------------------]]
-
-function Photon2.Index.ProcessComponentLibrary()	
-	local dependencyList = {}
-	-- High-level dependency check
-	for name, component in pairs(library.Components) do
-		table.insert(dependencyList, { name, component.Base })
-		if (component.Base) and (not library.Components[component.Base]) then
-			debug.Print("Component [" .. tostring(name) .. "] is based on [" .. tostring(component.Base) .. "], which could not be found. Aborting.")
-			error()
-		end
-	end
-
-	local loadOrder = {}
-	-- Determines load order by dependencies
-	while (not table.IsEmpty(dependencyList)) do
-		for i, entry in pairs( dependencyList ) do
-			if ((not entry[2]) or table.HasValue(loadOrder, entry[2])) then
-				loadOrder[#loadOrder + 1] = entry[1]
-				dependencyList[i] = nil
-			end
-		end
-	end
-
-	local function setMetaTable(targ, meta)
-		for k, v in pairs(meta) do
-			if istable(v) then
-				if (targ[k] == nil) then
-					targ[k] = meta[k]
-				end
-				setMetaTable(targ[k], meta[k])
-			end
-		end
-		debug.setmetatable(targ, { __index = meta })
-	end
-
-	for i = 1, #loadOrder do
-		local name = loadOrder[i]
-		local component = library.Components[name]
-		if (not component.Base) then
-			-- debug.setmetatable( component, { __index = PhotonLightingComponent } )
-			Photon2.CompileComponent( name, component )
-
-			-- exmeta.SetMetaTable(component, PhotonLightingComponent)
-		else
-			if ( not library.Components[component.Base] ) then
-				error("Attempted to inherit from [" .. tostring( component.Base ) .."], which could not found.")
-			end
-			if ( name == component.Base ) then
-				error("It appears you attempted to inherit a component from itself: [" .. tostring( name ) .. "]" )
-			end
-			Photon2.CompileComponent( name, component )
-			-- TODO: Component inheritance
-			--setMetaTable(component, index.Components[component.Base])
-			-- exmeta.SetMetaTable(component, Index.Components[component.Base])
-		end
-	end
-
-end
-
-
----@param name string
----@param inputComponent PhotonLibraryComponent
----@return PhotonComponent
-function Photon2.CompileComponent( name, inputComponent )
-	-- print("Compiling component [" .. name .. "]")
-
-	-- local component = _G[class].New( name, inputComponent, class )
-	local component = PhotonLightingComponent.New( name, inputComponent )
-
-	component.CompileTime = RealTime()
-
-	if ( not component.NewLibrary ) then
-		if ( mergeComponentReloads and istable(Photon2.Index.Components[name] ) ) then
-			table.Merge(Photon2.Index.Components[name], component)
-		else
-			Photon2.Index.Components[name] = component
-		end
-	end
-
-	-- Rebuild child components
-	for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-		local child = Photon2.GetLibraryComponent( id )
-		if Photon2.GetLibraryComponent( id ) then
-			Photon2.CompileComponent( id, Photon2.GetLibraryComponent( id ) )
-		end
-	end
-
-	hook.Run( "Photon2:ComponentReloaded", name, library.Components[name] )
-	return component
-end
-
 
 --[[---------------------
 	Vehicle Index
@@ -140,7 +43,7 @@ function Photon2.Index.ProcessVehicleLibrary()
 	for name, vehicle in pairs(library.Vehicles) do
 		dependencyList[#dependencyList+1] = { name, vehicle.Base }
 		if (vehicle.Base) and (not library.Vehicles[vehicle.Base]) then
-			debug.Print("Vehicle [" .. tostring(name) .. "] is based on [" .. tostring(component.Base) .. "], which could not be found. Aborting.")
+			debug.Print("Vehicle [" .. tostring(name) .. "] is based on [" .. tostring(vehicle.Base) .. "], which could not be found. Aborting.")
 			error()
 		end
 	end

@@ -359,20 +359,12 @@ function Photon2.UI.PopulateMenuBar()
 		debugMenu:AddOption( "Reload Vehicles", function()
 			Photon2.LoadVehicleLibrary()
 		end)
-		local printOption = debugMenu:AddOption( "Print to Console" )
-		local printMenu = printOption:AddSubMenu()
-		printMenu:SetDeleteSelf( false )
-		for id, entry in pairs( Photon2.Index.Components ) do
-			printMenu:AddOption( id, function()
-				PrintTable( Photon2.Index.Components[id] )
-			end)
-		end
 
 		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
 		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
 		newComponentPrintOptionMenu:SetDeleteSelf( false )
 
-		for id, entry in pairs( Photon2.Library.NewComponents.Repository ) do
+		for id, entry in pairs( Photon2.Library.Components.Repository ) do
 			newComponentPrintOptionMenu:AddOption( id, function() 
 				PrintTable( Photon2.GetNewComponent( id ) )
 			end)

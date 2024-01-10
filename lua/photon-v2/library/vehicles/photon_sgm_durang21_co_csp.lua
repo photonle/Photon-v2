@@ -188,11 +188,10 @@ VEHICLE.Equipment = {
 				Option = "Liberty II",
 				Components = {
 					{
-						Component = "photon_newcom_inherit",
+						Component = "photon_sm_liberty_ii_suv",
 						Position = Vector( 0, -14, 86.7 ),
 						Angles = Angle( 2, 90, 0 ),
 						Scale = 1.1,
-						NewLibrary = true
 					}
 				},
 				
