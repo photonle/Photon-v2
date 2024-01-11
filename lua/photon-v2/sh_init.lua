@@ -85,10 +85,3 @@ function Photon2.NoInherit( tbl )
 	tbl["__no_inherit"] = true
 	return tbl
 end
-
-function Photon2.GetCompiledVehicle( name )
-	if ( Photon2.Index.Vehicles[name] ) then
-		return Photon2.Index.Vehicles[name]
-	end
-	return Photon2.GetNewVehicle( name )
-end

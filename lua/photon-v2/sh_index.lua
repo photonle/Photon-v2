@@ -38,103 +38,103 @@ local debug = Photon2.Debug
 	Vehicle Index
 -----------------------]]
 
-function Photon2.Index.ProcessVehicleLibrary()
-	local dependencyList = {}
-	for name, vehicle in pairs(library.Vehicles) do
-		dependencyList[#dependencyList+1] = { name, vehicle.Base }
-		if (vehicle.Base) and (not library.Vehicles[vehicle.Base]) then
-			debug.Print("Vehicle [" .. tostring(name) .. "] is based on [" .. tostring(vehicle.Base) .. "], which could not be found. Aborting.")
-			error()
-		end
-	end
+-- function Photon2.Index.ProcessVehicleLibrary()
+-- 	local dependencyList = {}
+-- 	for name, vehicle in pairs(library.Vehicles) do
+-- 		dependencyList[#dependencyList+1] = { name, vehicle.Base }
+-- 		if (vehicle.Base) and (not library.Vehicles[vehicle.Base]) then
+-- 			debug.Print("Vehicle [" .. tostring(name) .. "] is based on [" .. tostring(vehicle.Base) .. "], which could not be found. Aborting.")
+-- 			error()
+-- 		end
+-- 	end
 
-	local loadOrder = {}
-	while (not table.IsEmpty(dependencyList)) do
-		for i, entry in pairs( dependencyList ) do
-			if ( ( not entry[2] ) or ( table.HasValue(loadOrder, entry[2]) ) ) then
-				loadOrder[#loadOrder+1] = entry[1]
-				dependencyList[i] = nil
-			end
-		end
-	end
+-- 	local loadOrder = {}
+-- 	while (not table.IsEmpty(dependencyList)) do
+-- 		for i, entry in pairs( dependencyList ) do
+-- 			if ( ( not entry[2] ) or ( table.HasValue(loadOrder, entry[2]) ) ) then
+-- 				loadOrder[#loadOrder+1] = entry[1]
+-- 				dependencyList[i] = nil
+-- 			end
+-- 		end
+-- 	end
 
-	for i=1, #loadOrder do
-		local name = loadOrder[i]
-		local vehicle = library.Vehicles[name]
-		if (not vehicle.Base) then
-			Photon2.Index.CompileVehicle( name, vehicle )
-		else
-			-- TODO: Vehicle inheritance
-		end
-	end
+-- 	for i=1, #loadOrder do
+-- 		local name = loadOrder[i]
+-- 		local vehicle = library.Vehicles[name]
+-- 		if (not vehicle.Base) then
+-- 			Photon2.Index.CompileVehicle( name, vehicle )
+-- 		else
+-- 			-- TODO: Vehicle inheritance
+-- 		end
+-- 	end
 
-end
+-- end
 
-local equipmentTypeMap = {
-	["Components"] = "Component",
-	["Props"] = "Prop"
-}
+-- local equipmentTypeMap = {
+-- 	["Components"] = "Component",
+-- 	["Props"] = "Prop"
+-- }
 
----@param name string The name of the vehicle profile.
----@param inputVehicle PhotonLibraryVehicle The library vehicle instance to compile.
----@param isReload? boolean If the component is being reloaded (i.e. the file was just saved).
-function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
-	local current = Photon2.Index.Vehicles[name]
+-- ---@param name string The name of the vehicle profile.
+-- ---@param inputVehicle PhotonLibraryVehicle The library vehicle instance to compile.
+-- ---@param isReload? boolean If the component is being reloaded (i.e. the file was just saved).
+-- function Photon2.Index.CompileVehicle( name, inputVehicle, isReload )
+-- 	local current = Photon2.Index.Vehicles[name]
 
-	if (not current) then
-		isReload = false
-	end
+-- 	if (not current) then
+-- 		isReload = false
+-- 	end
 
-	local currentEquipmentSignature, newEquipmentSignature
-	local currentSelectionsSignature, newSelectionsSignature
+-- 	local currentEquipmentSignature, newEquipmentSignature
+-- 	local currentSelectionsSignature, newSelectionsSignature
 
-	local hardSet = true
+-- 	local hardSet = true
 
-	if (isReload) then
-		currentEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( current.Equipment )
-		if (current.EquipmentSelections) then
-			currentSelectionsSignature = PhotonVehicle.BuildSelectionSignature( current.EquipmentSelections )
-		end
-	end
+-- 	if (isReload) then
+-- 		currentEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( current.Equipment )
+-- 		if (current.EquipmentSelections) then
+-- 			currentSelectionsSignature = PhotonVehicle.BuildSelectionSignature( current.EquipmentSelections )
+-- 		end
+-- 	end
 
-	local newVehicle =  PhotonVehicle.New( inputVehicle )
+-- 	local newVehicle =  PhotonVehicle.New( inputVehicle )
 
-	if (isReload) then
-		-- Build new Equipment signature
-		newEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( newVehicle.Equipment )
-		print("new equipment signature: " .. tostring( newEquipmentSignature ))
-		if (currentEquipmentSignature == newEquipmentSignature) then
-			hardSet = false
-		end
+-- 	if (isReload) then
+-- 		-- Build new Equipment signature
+-- 		newEquipmentSignature = PhotonVehicle.BuildEquipmentSignature( newVehicle.Equipment )
+-- 		print("new equipment signature: " .. tostring( newEquipmentSignature ))
+-- 		if (currentEquipmentSignature == newEquipmentSignature) then
+-- 			hardSet = false
+-- 		end
 		
-		-- Build new Selections signature
-		-- (any modifications of the Selections tree needs to require a hard reload)
-		if (currentSelectionsSignature) then
-			if ( newVehicle.EquipmentSelections ) then
-				newSelectionsSignature = PhotonVehicle.BuildSelectionSignature( newVehicle.EquipmentSelections )				
-				print("new selections signature: " .. tostring( newEquipmentSignature ))
-				if (newSelectionsSignature ~= currentSelectionsSignature) then
-					hardSet = true
-				end
-			else
-				hardSet = true
-			end
-		elseif ((newVehicle.EquipmentSelections) and (not currentSelectionsSignature)) then
-			hardSet = true
-		end
+-- 		-- Build new Selections signature
+-- 		-- (any modifications of the Selections tree needs to require a hard reload)
+-- 		if (currentSelectionsSignature) then
+-- 			if ( newVehicle.EquipmentSelections ) then
+-- 				newSelectionsSignature = PhotonVehicle.BuildSelectionSignature( newVehicle.EquipmentSelections )				
+-- 				print("new selections signature: " .. tostring( newEquipmentSignature ))
+-- 				if (newSelectionsSignature ~= currentSelectionsSignature) then
+-- 					hardSet = true
+-- 				end
+-- 			else
+-- 				hardSet = true
+-- 			end
+-- 		elseif ((newVehicle.EquipmentSelections) and (not currentSelectionsSignature)) then
+-- 			hardSet = true
+-- 		end
 
-		-- Saving a file twice within the specified threshold forces a hard-reload of the profile
-		if ( ( lastSave + doubleSaveThreshold ) >= SysTime() ) then 
-			hardSet = true 
-		end
-		lastSave = SysTime()
-	end
+-- 		-- Saving a file twice within the specified threshold forces a hard-reload of the profile
+-- 		if ( ( lastSave + doubleSaveThreshold ) >= SysTime() ) then 
+-- 			hardSet = true 
+-- 		end
+-- 		lastSave = SysTime()
+-- 	end
 
-	Photon2.Index.Vehicles[name] = newVehicle
+-- 	Photon2.Index.Vehicles[name] = newVehicle
 
-	hook.Run("Photon2.VehicleCompiled", name, nil, hardSet)
-	return newVehicle
-end
+-- 	hook.Run("Photon2.VehicleCompiled", name, nil, hardSet)
+-- 	return newVehicle
+-- end
 
 local toneNameToNumber = {}
 local toneNumberToName = {}

@@ -270,7 +270,7 @@ end
 
 
 function ENT:GetProfile( )
-	return Photon2.GetCompiledVehicle( self:GetProfileName() )
+	return Photon2.GetVehicle( self:GetProfileName() )
 end
 
 ENT.UserCommands = {

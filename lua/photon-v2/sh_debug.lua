@@ -14,6 +14,8 @@ if ( not Photon2.Debug.Initialized ) then
 	Photon2.Debug.Initialized = true
 end
 
+local printToConsole = false
+
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)
 local blk = Color(0, 0, 0)
@@ -33,7 +35,10 @@ function Photon2.Debug.Log( type, section, message )
 			Message = message
 		}
 	end
-	Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
+	
+	if ( printToConsole ) then
+		Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
+	end
 
 	-- Blanks out "[INFO]" tag so non-normal tags stand out in the log file
 	local typeLabel = "      "
