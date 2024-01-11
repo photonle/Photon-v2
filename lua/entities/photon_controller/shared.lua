@@ -634,6 +634,7 @@ function ENT:SetupComponent( id )
 	---@type PhotonLightingComponent
 	local component = Photon2.GetComponent( data.Component )
 
+
 	local ent
 
 	if (SERVER and data.OnServer) then
@@ -826,6 +827,11 @@ function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
 	---@type PhotonVehicle
 	local profile = self:GetProfile()
+
+	if ( profile.InvalidVehicle ) then 
+		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
+		return 
+	end
 
 	self:SetSchema( profile.Schema )
 

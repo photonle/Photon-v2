@@ -62,7 +62,6 @@ function meta.New( properties )
 	end
 	
 	Photon2["Reload" .. result.Singular .. "File"] = function()
-		print("global reload called")
 		result.IncludingDedicatedFile = true
 		return result:ReloadDedicatedLuaFile()
 	end

@@ -1,5 +1,7 @@
 if (exmeta.ReloadFile()) then return end
 
+local info, warn = Photon2.Debug.Declare( "Vehicle" )
+
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
@@ -23,6 +25,7 @@ NAME = "PhotonVehicle"
 ---@field Schema table<string, table<table>>
 ---@field EquipmentSignature string (Internal)
 ---@field SelectionsSignature string (Internal)
+---@field InvalidVehicle? boolean (Internal) If vehicle base is invalid or missing.
 local Vehicle = exmeta.New() --[[@as PhotonVehicle]]
 
 Vehicle.SubMaterials = {}
@@ -64,6 +67,16 @@ local equipmentTypeMap = {
 	["Components"] = "Component",
 	["Props"] = "Prop"
 }
+
+function Vehicle.GetError()
+	return {
+		Model = "models/error.mdl",
+		Class = "prop_physics",
+		KeyValues = {
+			-- ["vehiclescript"] = "scripts/vehicles/jeep_test.txt"
+		}
+	}
+end
 
 function Vehicle.BuildEquipmentSignature( tbl )
 	local sig = ""
@@ -157,11 +170,16 @@ function Vehicle.New( data )
 		schema = PhotonVehicle.Schema
 	end
 
+	local title = data.Title
+	local invalidVehicle = false
+
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
-		ErrorNoHalt("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
-		return {}
+		warn("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
+		target = Vehicle.GetError()
+		invalidVehicle = true
+		title = "[ERROR] " .. title
 	end
 
 	-- Handle vehicle itself
@@ -178,6 +196,7 @@ function Vehicle.New( data )
 		Siren				= sirenConfig,
 		InteractionSounds	= data.InteractionSounds,
 		Schema 				= schema,
+		InvalidVehicle 		= invalidVehicle
 	}
 
 
@@ -297,7 +316,7 @@ function Vehicle.New( data )
 	-- Generate table for Vehicles list table
 	local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
 	vehicleTable.Category			 = data.Category or target.Category
-	vehicleTable.Name				 = data.Title
+	vehicleTable.Name				 = title
 	vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
 	vehicleTable.IsPhoton2Generated  = true
 	list.Set( "Vehicles", vehicleListId, vehicleTable )
@@ -332,7 +351,7 @@ local ignoredLegacyParams = {
 ---@param name string Vehicle index.
 ---@return VehicleTable
 function Vehicle.CopyVehicle( name )
-	local entry = list.GetForEdit( "Vehicles" )[name]
+	local entry = list.GetForEdit( "Vehicles" )[name] or Vehicle.GetError()
 	---@type VehicleTable
 	local copy = {}
 	for k, v in pairs(entry) do

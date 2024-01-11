@@ -42,7 +42,7 @@ function Photon2.Debug.Log( type, section, message )
 
 	-- Blanks out "[INFO]" tag so non-normal tags stand out in the log file
 	local typeLabel = "      "
-	if ( type ~= "INFO" ) then typeLabel = "[" .. section .. "]" end
+	if ( type ~= "INFO" ) then typeLabel = "[" .. type .. "]" end
 	
 	if ( SERVER ) then
 		file.Append( Photon2.Debug.ServerLog, string.format("%s %s (%s)  %s\n", time, typeLabel, section, message ) )
