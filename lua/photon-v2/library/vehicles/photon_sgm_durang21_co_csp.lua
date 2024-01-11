@@ -184,6 +184,7 @@ VEHICLE.Equipment = {
 	{
 		Category = "Lightbar",
 		Options = {
+			-- { Option = "None" },
 			{
 				Option = "Liberty II",
 				Components = {
@@ -192,7 +193,6 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -14, 86.7 ),
 						Angles = Angle( 2, 90, 0 ),
 						Scale = 1.1,
-						
 					}
 				},
 				

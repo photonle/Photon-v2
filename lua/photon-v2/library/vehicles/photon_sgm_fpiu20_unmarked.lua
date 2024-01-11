@@ -18,6 +18,24 @@ VEHICLE.Siren = { "fedsig_smartsiren", "fedsig_touchmaster_delta" }
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
+		Category = "Lightbar",
+		Options = {
+			{
+				Option = "Liberty II",
+				Components = {
+					{
+						Component = "photon_sm_liberty_ii_suv",
+						Position = Vector( 0, -14, 86.7 ),
+						Angles = Angle( 2, 90, 0 ),
+						Scale = 1.1,
+						
+					}
+				},
+				
+			}
+		}
+	},
+	{
 		Category = "License Plate",
 		Options = {
 			{

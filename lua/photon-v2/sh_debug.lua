@@ -14,6 +14,8 @@ if ( not Photon2.Debug.Initialized ) then
 	Photon2.Debug.Initialized = true
 end
 
+local printToConsole = false
+
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)
 local blk = Color(0, 0, 0)
@@ -33,17 +35,30 @@ function Photon2.Debug.Log( type, section, message )
 			Message = message
 		}
 	end
+	
+	if ( printToConsole ) then
+		Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
+	end
+
+	-- Blanks out "[INFO]" tag so non-normal tags stand out in the log file
+	local typeLabel = "      "
+	if ( type ~= "INFO" ) then typeLabel = "[" .. section .. "]" end
+	
 	if ( SERVER ) then
-		file.Append( Photon2.Debug.ServerLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+		file.Append( Photon2.Debug.ServerLog, string.format("%s %s (%s)  %s\n", time, typeLabel, section, message ) )
 	else
-		file.Append( Photon2.Debug.ClientLog, string.format("%s [%s] (%s)  %s\n", time, type, section, message ) )
+		file.Append( Photon2.Debug.ClientLog, string.format("%s %s (%s)  %s\n", time, typeLabel, section, message ) )
 	end
 end
 
-function Photon2.Debug.Print( text )
+function Photon2.Debug.PrintOnly( text )
 	local col = sv
 	if CLIENT then col = cl end
 	MsgC( col, "[", red, "PHO", blu, "TON", whi, "2", col, "] ", col, text .. "\n")
+end
+
+function Photon2.Debug.Print( text )
+	-- Photon2.Debug.PrintOnly( text )
 	Photon2.Debug.Log( "INFO", "PRINT", text )
 end
 

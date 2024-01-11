@@ -239,15 +239,6 @@ COMPONENT.Segments = {
 	}
 }
 
--- Concept
-COMPONENT.CompoundInputActions = {
-	-- [{"Emergency.Warning", "Vehicle.Brake"}] = {
-	-- 	[{"MODE1", "BRAKE"}], [{}] = {
-	-- 		LightbarBrake = "ER_BRAKE"
-	-- 	}
-	-- }
-}
-
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {

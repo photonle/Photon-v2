@@ -9,7 +9,7 @@ NAME = "PhotonVehicle"
 ---| "Static" # Uses all defined equipment and does not support any options.
 
 ---@class PhotonVehicle
----@field ID string
+---@field Name string
 ---@field Title string
 ---@field ControllerType? string Not implemented.
 ---@field EquipmentMode? EquipmentMode Not implemented.
@@ -21,6 +21,8 @@ NAME = "PhotonVehicle"
 ---@field EquipmentSelections? {}
 ---@field SubMaterials table<integer, string>
 ---@field Schema table<string, table<table>>
+---@field EquipmentSignature string (Internal)
+---@field SelectionsSignature string (Internal)
 local Vehicle = exmeta.New() --[[@as PhotonVehicle]]
 
 Vehicle.SubMaterials = {}
@@ -58,6 +60,47 @@ Vehicle.Schema = {
 -- Override if using your own modified controller entity.
 Vehicle.ControllerType = "photon_controller"
 
+local equipmentTypeMap = {
+	["Components"] = "Component",
+	["Props"] = "Prop"
+}
+
+function Vehicle.BuildEquipmentSignature( tbl )
+	local sig = ""
+	for equipmentType, entries in pairs( tbl ) do
+		if (equipmentTypeMap[equipmentType]) then
+			sig = sig .. string.format("[%s]=>{", equipmentType)
+			for index, entry in ipairs( entries ) do
+				local baseClassName = ""
+				if (istable(entry.BaseClass)) then
+					baseClassName = entry.BaseClass.Name
+				end
+				sig = sig .. string.format("<%s:%s(%s/%s)>", index, entry[equipmentTypeMap[equipmentType]], baseClassName, entry.Name)
+			end
+			sig = sig .. "}"
+		end
+	end
+	return sig
+end
+
+function Vehicle.BuildSelectionSignature( tbl )
+	local sig = ""
+	for key, category in ipairs(tbl) do
+		sig = sig .. string.format("[%s]", key)
+		for mapKey, option in pairs(category.Map) do
+			sig = sig .. tostring(mapKey) .. "("
+				if (option.Option) then
+					sig = sig .. string.format("<%s>*%s,", mapKey, option.Option)
+
+				elseif (option.Variant) then
+					sig = sig .. string.format("<%s>^%s,", mapKey, option.Variant)
+				end
+			sig = sig .. ")"
+		end
+	end
+	return sig
+end
+
 ---@param data PhotonLibraryVehicle
 ---@return PhotonVehicle
 function Vehicle.New( data )
@@ -76,7 +119,7 @@ function Vehicle.New( data )
 		sirenConfig = {}
 		for i, siren in pairs( data.Siren ) do
 			if ( istable( siren ) ) then
-				local sirenId = string.format( "%s[%s]", data.ID, i )
+				local sirenId = string.format( "%s[%s]", data.Name, i )
 
 				local tones = {}
 				
@@ -124,7 +167,8 @@ function Vehicle.New( data )
 	-- Handle vehicle itself
 	---@type PhotonVehicle
 	local vehicle = {
-		ID 					= data.ID,
+		Name				= data.Name,
+		ID 					= data.Name,
 		Title 				= data.Title,
 		Model 				= target.Model,
 		EntityClass 		= target.Class,
@@ -234,31 +278,46 @@ function Vehicle.New( data )
 		)
 	end
 
-	Equipment.BuildComponents( vehicle.Equipment, "Components", data.ID )
-	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.ID )
-	Equipment.BuildComponents( vehicle.Equipment, "UIComponents", data.ID )
+	Equipment.BuildComponents( vehicle.Equipment, "Components", data.Name )
+	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.Name )
+	Equipment.BuildComponents( vehicle.Equipment, "UIComponents", data.Name )
 
-	local vehicleListId = "photon2:".. data.ID --[[@as string]]
+	local vehicleListId = "photon2:".. data.Name --[[@as string]]
 
 	-- Populate entry in Map table
 	local profiles = Photon2.Index.Profiles
 	local map = profiles.Map
 	map[vehicle.EntityClass] 								= map[vehicle.EntityClass] or {}
 	map[vehicle.EntityClass][vehicle.Model] 				= map[vehicle.EntityClass][vehicle.Model] or {}
-	map[vehicle.EntityClass][vehicle.Model][vehicleListId] 	= data.ID
+	map[vehicle.EntityClass][vehicle.Model][vehicleListId] 	= data.Name
 
 	-- Populate entry in Vehicles table
-	profiles.Vehicles[vehicleListId] = data.ID
+	profiles.Vehicles[vehicleListId] = data.Name
 
 	-- Generate table for Vehicles list table
 	local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
 	vehicleTable.Category			 = data.Category or target.Category
 	vehicleTable.Name				 = data.Title
-	vehicleTable.IconOverride		 = "entities/" .. data.ID .. ".png"
+	vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
 	vehicleTable.IsPhoton2Generated  = true
 	list.Set( "Vehicles", vehicleListId, vehicleTable )
 
-	return setmetatable( vehicle, { __index = PhotonVehicle } )
+	setmetatable( vehicle, { __index = PhotonVehicle } )
+
+	-- Generate Signatures (used for soft/hard reload functionality)
+	if ( vehicle.Equipment ) then
+		vehicle.EquipmentSignature = PhotonVehicle.BuildEquipmentSignature( vehicle.Equipment )
+	else
+		vehicle.EquipmentSignature = ""
+	end
+
+	if ( vehicle.EquipmentSelections ) then
+		vehicle.SelectionsSignature = PhotonVehicle.BuildSelectionSignature( vehicle.EquipmentSelections )
+	else
+		vehicle.SelectionsSignature = ""
+	end
+
+	return vehicle
 end
 
 
@@ -282,10 +341,4 @@ function Vehicle.CopyVehicle( name )
 		end
 	end
 	return copy
-end
-
-
--- Development function for change detection
-function Vehicle.BuildEquipmentSignature()
-	--- ?????
 end

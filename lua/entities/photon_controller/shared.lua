@@ -270,7 +270,7 @@ end
 
 
 function ENT:GetProfile( )
-	return Photon2.Index.Vehicles[self:GetProfileName()]
+	return Photon2.GetVehicle( self:GetProfileName() )
 end
 
 ENT.UserCommands = {
@@ -449,6 +449,7 @@ end
 
 
 function ENT:HardReload()
+	-- ErrorNoHaltWithStack()
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
 	self:SetupProfile()
@@ -479,11 +480,9 @@ end
 ---@param vehicle PhotonVehicle
 ---@param hardReload boolean
 function ENT:OnVehicleCompiled( name, vehicle, hardReload )
-	if (not self:GetProfileName() == name) then
-		print(string.format("Controller detected vehicle compilation but the profile did not match. (%s =/= %s [this])", name, self:GetProfileName()))
+	if not ( self:GetProfileName() == name ) then
 		return
 	end
-	print(string.format("Controller's vehicle profile was just recompiled (%s). Updating.", name))
 	
 	local currentSelections
 	
@@ -535,7 +534,7 @@ function ENT:SetupUIComponent( id )
 		return
 	end
 
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 	local uiEnt = component:CreateOn( self, self )
 	self.UIComponents[id] = uiEnt
 	uiEnt:ApplyModeUpdate()
@@ -550,7 +549,7 @@ function ENT:SetupVirtualComponent( id )
 		return
 	end
 
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
 	self.VirtualComponents[id] = virtualEnt
 	virtualEnt:ApplyModeUpdate()
@@ -633,7 +632,7 @@ function ENT:SetupComponent( id )
 	-- print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
-	local component = Photon2.GetCompiledComponent( data.Component )
+	local component = Photon2.GetComponent( data.Component )
 
 	local ent
 
@@ -826,7 +825,7 @@ end
 function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
 	---@type PhotonVehicle
-	local profile = Photon2.Index.Vehicles[name]
+	local profile = self:GetProfile()
 
 	self:SetSchema( profile.Schema )
 
@@ -847,7 +846,7 @@ function ENT:SetupProfile( name, isReload )
 		return
 	end
 	
-	-- print( string.format( "Setting up %s (%s)...", profile.Title, profile.ID ) )
+	-- print( string.format( "Setting up %s (%s)...", profile.Title, profile.Name ) )
 	
 	self.Equipment = profile.Equipment
 

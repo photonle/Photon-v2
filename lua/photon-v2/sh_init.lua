@@ -8,6 +8,8 @@ include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
 include("sh_vcmod.lua")
 
+local info, warn = Photon2.Debug.Declare("Init")
+
 ---@return PhotonColor
 function PhotonColor( r, g, b, a )
 	return _PhotonColor.New( r, g, b, a )
@@ -82,20 +84,4 @@ end
 function Photon2.NoInherit( tbl )
 	tbl["__no_inherit"] = true
 	return tbl
-end
-
--- Temporary functions for new library transition
-
-function Photon2.GetCompiledComponent( name )
-	if ( Photon2.Index.Components[name] ) then
-		return Photon2.Index.Components[name]
-	end
-	return Photon2.GetNewComponent( name )
-end
-
-function Photon2.GetLibraryComponent( name )
-	if ( Photon2.Library.Components[name] ) then
-		return Photon2.Library.Components[name]
-	end
-	return Photon2.Library.NewComponents:Get( name )
 end

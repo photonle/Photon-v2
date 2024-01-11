@@ -1,10 +1,5 @@
 Photon2.Library = Photon2.Library or {
-	Components = {},
-	-- Stores copies of raw components 
 	ComponentsGraph = {},
-	Vehicles = {},
-	---@type table<string, PhotonLibrarySiren>
-
 	-- New Library system
 	Types = {},
 	Repository = {},
@@ -16,11 +11,10 @@ local library = Photon2.Library
 local _g = _G
 local Util = Photon2.Util
 
-local componentsRoot = "photon-v2/library/components/"
-local vehiclesRoot = "photon-v2/library/vehicles/"
+local info, warn = Photon2.Debug.Declare( "Library" )
 
-local printf = Photon2.Debug.PrintF
-local print = Photon2.Debug.Print
+local printf = info
+local print = info
 
 ---@class PhotonInputConfigurationLibrary : PhotonLibraryType
 local inputConfigurations = {
@@ -223,19 +217,41 @@ local schemas = {
 }
 
 ---@type PhotonLibraryType
-local newComponents = {
-	Name = "NewComponents",
-	Folder = "new_components",
-	Singular = "NewComponent",
+local components = {
+	Name = "Components",
+	Folder = "components",
+	Singular = "Component",
 	DoCompile = function( self, data )
 		local component = PhotonLightingComponent.New( data.Name, data )
-		hook.Run( "Photon2:ComponentReloaded", name, component )
 		return component
 	end,
 	PostCompile = function( self, name )
 		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-			self:OnReload( self:Get( name ) )
+			print( "Should reload child: " .. id )
+			self:Register( self:Get( id ) )
 		end
+	end,
+	PostRegister = function( self, name )
+		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
+	end
+}
+
+---@type PhotonLibraryType
+local vehicles = {
+	Name = "Vehicles",
+	Folder = "vehicles",
+	Singular = "Vehicle",
+	EagerLoading = true,
+	Signatures = { "EquipmentSignature", "SelectionsSignature" },
+	DoCompile = function( self, data )
+		local vehicle = PhotonVehicle.New( data )
+		return vehicle
+	end,
+	PostCompile = function( self, name, hardReload )
+		hook.Run( "Photon2.VehicleCompiled", name, nil, hardReload )
+	end,
+	PostRegister = function( self, name )
+		-- hook.Run( "Photon2.VehicleCompiled", name, nil, true )
 	end
 }
 
@@ -249,189 +265,41 @@ Photon2.Library.AddType( inputConfigurations )
 Photon2.Library.AddType( commands )
 Photon2.Library.AddType( interactionSounds )
 Photon2.Library.AddType( schemas )
-Photon2.Library.AddType( newComponents )
-
-function Photon2.LoadComponentFile( filePath, isReload )
-	-- Photon2.Debug.Print("Loading component file: " .. filePath)
-	local nameStart = string.len(componentsRoot) + 1
-	local nameEnd = string.len(componentsRoot) - nameStart - 4
-	local name = string.sub(filePath, nameStart, nameEnd)
-	-- Photon2.Debug.Print("Component name: " .. name)
-	-- _COMPONENT = COMPONENT
-	_UNSET = UNSET
-	UNSET = PHOTON2_UNSET
-	PHOTON_LIBRARY_COMPONENT = {}
-	Photon2._acceptFileReload = false
-	include( filePath )
-	Photon2._acceptFileReload = true
-	-- if (istable(library.Components[name])) then
-	-- 	Photon2.Debug.Print("Component '" .. name .. "' already exists. Overwriting.")
-	-- end
-	PHOTON_LIBRARY_COMPONENT.Name = name
-	library.Components[name] = PHOTON_LIBRARY_COMPONENT
-	-- COMPONENT = _COMPONENT
-	PHOTON_LIBRARY_COMPONENT = nil
-	UNSET = _UNSET
-	if (isReload) then
-		Photon2.CompileComponent( name, library.Components[name] )
-	end
-end
-
-function Photon2.LoadComponentLibrary( folderPath )
-	folderPath = folderPath or ""
-	local search = componentsRoot .. folderPath
-	local files, folders = file.Find( search .. "*.lua", "LUA" )
-	for _, fil in pairs( files ) do
-		Photon2.LoadComponentFile( search .. fil )
-	end
-	hook.Run("Photon2.LoadComponentLibrary")
-	Photon2.Index.ProcessComponentLibrary()
-end
+Photon2.Library.AddType( components )
+Photon2.Library.AddType( vehicles )
 
 function Photon2.BuildParentLibraryComponent( childId, parentId )
 	---@type PhotonLibraryComponent
-	local parentLibraryComponent = Photon2.GetLibraryComponent( parentId )
-	-- local parentLibraryComponent = Photon2.Library.Components[parentId]
-	-- local libraryComponent = table.Copy(Photon2.Library.Components[parentId])
+	local parentLibraryComponent = Photon2.Library.Components:Get( parentId )
+
 	if ( not parentLibraryComponent ) then
 		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
 	end
+
 	parentLibraryComponent = table.Copy( parentLibraryComponent )
+	
 	local parentLibraryComponentInputs
+	
 	if ( parentLibraryComponent.Inputs ) then parentLibraryComponentInputs = table.Copy(  parentLibraryComponent.Inputs ) end
+	
 	if ( parentLibraryComponent.Base ) then
 		Util.Inherit( parentLibraryComponent, Photon2.BuildParentLibraryComponent( parentId, parentLibraryComponent.Base ))
 		Photon2.ComponentBuilder.InheritInputs( parentLibraryComponentInputs, parentLibraryComponent.Inputs )
 	end
+	
 	return parentLibraryComponent
 end
 
-function Photon2.ReloadComponent( id )
-	if (Photon2._acceptFileReload) then
-		Photon2.Debug.Print( "Reloading component: " .. tostring(id) )
-		Photon2.LoadComponentFile( componentsRoot .. id .. ".lua", true )
-		return true
-	end
-	return false
-end
-
----@param filePath string
----@param isReload? boolean
-function Photon2.LoadVehicleFile( filePath, isReload )
-	-- Photon2.Debug.Print("Loading vehicle file: " .. filePath)
-	local nameStart = string.len(vehiclesRoot) + 1
-	local nameEnd = string.len(vehiclesRoot) - nameStart - 4
-	local name = string.lower(filePath:sub(nameStart, nameEnd))
-	-- Photon2.Debug.Print("Vehicle name: " .. name)
-	---@type PhotonLibraryVehicle
-	PHOTON2_LIBRARY_VEHICLE = {}
-	Photon2._acceptFileReload = false
-	include( filePath )
-	Photon2._acceptFileReload = true
-	-- if (istable(library.Vehicles[name])) then
-	-- 	Photon2.Debug.Print("Vehicle '" .. name .. "' already exists. Overwriting.")
-	-- end
-	PHOTON2_LIBRARY_VEHICLE.ID = name
-	library.Vehicles[name] = PHOTON2_LIBRARY_VEHICLE
-	PHOTON2_LIBRARY_VEHICLE = nil
-	-- printf("END of LoadVehicleFile() filepath: %s", filePath)
-	-- printf("\tname: %s", name)
-	Photon2.Index.CompileVehicle( name, library.Vehicles[name], isReload )
-end
-
--- Returns the active library vehicle global when loading a vehicle file.
--- Workaround to ensure correct Lua annotation/suggestion behavior.
----@return PhotonLibraryVehicle
-function Photon2.LibraryVehicle()
-	return _g["PHOTON2_LIBRARY_VEHICLE"]
-end
-
----@return PhotonLibraryComponent
-function Photon2.LibraryComponent()
-	return _g["PHOTON_LIBRARY_COMPONENT"]
-end
-
-function Photon2.LoadVehicleLibrary( folderPath )
-	-- Photon2.Debug.Print("LoadVehicleLibrary() called")
-	folderPath = folderPath or ""
-	local search = vehiclesRoot .. folderPath
-	local files, folders = file.Find( search .. "*.lua", "LUA" )
-	for _, fil in pairs( files ) do
-		Photon2.LoadVehicleFile( search .. fil )
-	end
-	-- Photon2.Debug.Print("LoadVehicleLibrary hook")
-	
-	hook.Run("Photon2.LoadVehicleLibrary")
-	-- Photon2.Debug.Print("ProcessVehicleLibrary hook called()")
-	Photon2.Index.ProcessVehicleLibrary()
-end
-
-function Photon2.ReloadComponentFile()
-	if (Photon2._acceptFileReload) then
-		local source = debug.getinfo(2, "S").source
-		if source:sub(1, 1) == "@" then
-			source = source:sub(2)
-		else
-			return false
-		end
-		
-		local startPos, endPos = source:find(componentsRoot, 1, true)
-
-		if (startPos) then
-			local path = source:sub(startPos)
-			Photon2.Debug.Print("Reloading component: " .. tostring(path))
-			Photon2.LoadComponentFile( path, true )
-		else
-			Photon2.Debug.Print("Attempted to call ReloadComponentFile() from an invalid file location [" .. tostring(source) .."]")
-			return false
-		end
-
-		return true
-	end
-	return false
-end
-
-function Photon2.ReloadVehicle( id )
-	if (Photon2._acceptFileReload) then
-		Photon2.Debug.Print("Reloading vehicle: " .. tostring(id))
-		Photon2.LoadVehicleFile(vehiclesRoot .. id .. ".lua")
-		return true
-	end
-	return false
-end
-
-function Photon2.ReloadVehicleFile()
-	if (Photon2._acceptFileReload) then
-		local source = debug.getinfo(2, "S").source
-		if source:sub(1, 1) == "@" then
-			source = source:sub(2)
-		else
-			return false
-		end
-		
-		local startPos, endPos = source:find(vehiclesRoot, 1, true)
-
-		if (startPos) then
-			local path = source:sub(startPos)
-			Photon2.Debug.Print("Reloading vehicle: " .. tostring(path))
-			Photon2.LoadVehicleFile( path, true )
-		else
-			Photon2.Debug.Print("Attempted to call ReloadVehicleFile() from an invalid file location [" .. tostring(source) .."]")
-			return false
-		end
-
-		return true
-	end
-	return false
-end
-
 function Photon2.Library.Initialize()
-	Photon2.LoadLibraries( { "Sirens" })
-	Photon2.LoadLibraries( { "NewComponents" } )
-	Photon2.LoadComponentLibrary()
-	Photon2.LoadLibraries( { "Schemas" })
-	Photon2.LoadVehicleLibrary()
-	Photon2.LoadLibraries( { "InteractionSounds", "Commands", "InputConfigurations" } )
+	Photon2.LoadLibraries({
+		"Sirens",
+		"Components",
+		"Schemas",
+		"Vehicles",
+		"InteractionSounds",
+		"Commands",
+		"InputConfigurations"
+	})
 	hook.Run( "Photon2.PostInitializeLibrary" )
 end
 
@@ -457,7 +325,10 @@ function Photon2.LoadLibraries( types )
 		---@type PhotonLibraryType
 		local libraryType = Photon2.Library[types[i]]
 		if ( libraryType ) then
-			libraryType:LoadLibrary()
+			local success, code = pcall( libraryType.LoadLibrary, libraryType )
+			if ( not success ) then
+				warn("ERROR: %s", code )
+			end
 		end
 	end
 end
