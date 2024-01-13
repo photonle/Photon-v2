@@ -20,6 +20,19 @@ function Photon2.Util.ReferentialCopy( target, meta )
 	setmetatable( target, { __index = meta } )
 end
 
+-- A more expensive version of table.Copy that doesn't reuse 
+-- metatables, can cause issues with Photon's inheritance.
+function Photon2.Util.UniqueCopy( tbl )
+	local copy = {}
+	for k, v in pairs( tbl ) do
+		if ( istable( v ) ) then
+			copy[k] = Photon2.Util.UniqueCopy( v )
+		else
+			copy[k] = v
+		end
+	end
+	return copy
+end
 -- local function clearMarkers( tbl )
 -- 	local keys = {}
 -- 	for key, value in pairs( tbl ) do
@@ -49,7 +62,7 @@ end
 
 ---@param target table
 ---@param base table
----@param level? number Leave as nil. Stack level used internally.
+-- -@param override`
 function Photon2.Util.Inherit( target, base )
 	local metaTable = getmetatable( target )
 	if ( not metaTable ) then
@@ -57,11 +70,11 @@ function Photon2.Util.Inherit( target, base )
 		metaTable = getmetatable( target )
 	end
 
-	if ( metaTable.Inherits ) then
-		if ( metaTable.Inherits == base ) then
+	if ( metaTable.__inherits ) then
+		if ( metaTable.__inherits == base ) then
 			return
 		end
-		error("Attempt to setup inheritance on a table that has already been inherited. To preserve parent data integrity, this action is not allowed.")
+		error( "Target table has already inherited from a different base table. Ensure instances are being copied and consider using Photon2.Util.UniqueCopy if problems persist." )
 	end
 
 	for key, value in pairs( base ) do
@@ -83,7 +96,7 @@ function Photon2.Util.Inherit( target, base )
 			target[key] = nil
 		elseif ( istable( raw ) and istable( value ) ) then
 			if ( not raw["__no_inherit"] ) then
-				Photon2.Util.Inherit( raw, value )
+				target[key] = Photon2.Util.Inherit( raw, value )
 			else
 				raw["__no_inherit"] = nil
 			end
@@ -100,7 +113,9 @@ function Photon2.Util.Inherit( target, base )
 
 	-- clearMarkers( target )
 
-	metaTable.Inherits = base
+	metaTable.__inherits = base
+	metaTable.__inheritedAt = CurTime()
+	return target
 end
 
 -- function Photon2.Util.CacheModelMesh( model, meshes )

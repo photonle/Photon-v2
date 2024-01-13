@@ -226,6 +226,8 @@ local components = {
 		return component
 	end,
 	PostCompile = function( self, name )
+		-- TODO: lazy loading needs to be implemented to maintain
+		-- good compilation performance
 		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
 			print( "Should reload child: " .. id )
 			self:Register( self:Get( id ) )
@@ -275,9 +277,9 @@ function Photon2.BuildParentLibraryComponent( childId, parentId )
 	if ( not parentLibraryComponent ) then
 		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
 	end
-
-	parentLibraryComponent = table.Copy( parentLibraryComponent )
 	
+	parentLibraryComponent = table.Copy( parentLibraryComponent )
+
 	local parentLibraryComponentInputs
 	
 	if ( parentLibraryComponent.Inputs ) then parentLibraryComponentInputs = table.Copy(  parentLibraryComponent.Inputs ) end

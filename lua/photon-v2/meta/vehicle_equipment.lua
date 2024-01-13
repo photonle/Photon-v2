@@ -156,7 +156,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		}
 
 		component.Name = componentId
-		Photon2.RegisterComponent( component )
+		Photon2.RegisterComponent( Photon2.Util.UniqueCopy(component) )
 		
 		entry.Component = componentId
 		

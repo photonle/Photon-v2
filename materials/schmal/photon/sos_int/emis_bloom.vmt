@@ -1,0 +1,9 @@
+"UnLitGeneric"
+{
+	"$basetexture" "schmal/photon/sos_int/emis"
+	"$nocull" "1"
+	"$nodecal" "1"
+	"$color2" "{300 300 300}"
+
+}
+

@@ -279,7 +279,7 @@ function Segment:Initialize( componentInstance )
 		for lightId, stateId in pairs(self.Frames[i]) do
 			if ( isnumber( stateId ) ) then
 				if ( not segment.StateMap[lightId] ) then
-					error( "Light ID [" .. tostring( lightId ) .. "] could not be found in the StateMap.")
+					error( "Element [" .. tostring( lightId ) .. "] could not be found in the StateMap.")
 				end
 				stateId = segment.StateMap[lightId][stateId]
 				if ( not stateId ) then
@@ -287,7 +287,7 @@ function Segment:Initialize( componentInstance )
 				end
 			end
 			if (not segment.Component.Elements[lightId]) then
-				error("Light ID [" .. tostring(lightId) .. "] could not be found.")
+				error("Element [" .. tostring(lightId) .. "] could not be found.")
 			end
 			-- TODO: error handling -- this breaks if the frame 
 			-- references a non-existent light

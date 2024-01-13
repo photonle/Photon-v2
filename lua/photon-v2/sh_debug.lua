@@ -40,6 +40,12 @@ function Photon2.Debug.Log( type, section, message )
 		Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
 	end
 
+	if ( game.SinglePlayer() and CLIENT ) then
+		if ( Photon2.Debug.PrintType[type] ) then
+			chat.AddText( whi, "[", red, "PHO", blu, "TON", whi, string.format("2] %s", string.Replace(message, "\t", "") ) )
+		end
+	end
+
 	-- Blanks out "[INFO]" tag so non-normal tags stand out in the log file
 	local typeLabel = "      "
 	if ( type ~= "INFO" ) then typeLabel = "[" .. type .. "]" end

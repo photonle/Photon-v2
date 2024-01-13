@@ -57,7 +57,6 @@ function Component.New( name, data )
 		-- More special handling for Input sequence assignments (there must be a better way to do this)
 		local dataInputs
 		if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-
 		Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
 		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 		Photon2.Library.ComponentsGraph[data.Base][name] = true
@@ -95,6 +94,7 @@ function Component.New( name, data )
 		ElementGroups = data.ElementGroups,
 		SubMaterials = data.SubMaterials,
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
+		States = data.States
 	}
 
 	for key, value in pairs( data ) do

@@ -46,8 +46,6 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ElementStates = {}
-
 COMPONENT.Elements = {
 	[1] = { "LED", Indexes = { 2 } },
 	[2] = { "Lens", Indexes = { 3 } }, -- lens,
@@ -56,17 +54,21 @@ COMPONENT.Elements = {
 
 local sequence = Photon2.SequenceBuilder.New
 
-COMPONENT.StateMap = "[1/2/3] 1"
+COMPONENT.StateMap = "[1/2/3] Light"
+
+COMPONENT.ElementGroups = {
+	Light = { 1, 2, 3 }
+}
 
 COMPONENT.Segments = {
 	Undercover = {
 		Frames = {
 			-- [0] = "1:OFF 2:OFF 3:OFF",
-			[1] = "1:B 2:B 3:B",
-			[2] = "1:R 2:R 3:R",
-			[3] = "1:W 2:W 3:W",
-			[4] = "1:A 2:A 3:A",
-			[5] = "1:G 2:G 3:G",
+			[1] = "Light:B",
+			[2] = "Light:R",
+			[3] = "Light:W",
+			[4] = "Light:A",
+			[5] = "Light:G",
 		},
 		Sequences = {
 			-- ["FLASH1"] = { 1 },
@@ -79,8 +81,8 @@ COMPONENT.Segments = {
 	},
 	Light = {
 		Frames = {
-			[1] = "1 2 3",
-			[2] = "[W] 1 2 3"
+			[1] = "Light",
+			[2] = "[W] Light"
 		},
 		Sequences = {
 			["MARKER"] = { 1 },

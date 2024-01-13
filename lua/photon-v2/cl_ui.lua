@@ -365,9 +365,15 @@ function Photon2.UI.PopulateMenuBar()
 		newComponentPrintOptionMenu:SetDeleteSelf( false )
 
 		for id, entry in pairs( Photon2.Library.Components.Repository ) do
-			newComponentPrintOptionMenu:AddOption( id, function() 
-				PrintTable( Photon2.GetNewComponent( id ) )
-			end)
+			local innerOption = newComponentPrintOptionMenu:AddOption( id )
+			local innerOptionMenu = innerOption:AddSubMenu()
+			innerOptionMenu:SetDeleteSelf( false )
+			local printRepo = innerOptionMenu:AddOption( "Raw", function()
+				PrintTable( Photon2.Library.Components:Get( id ) )
+			end )
+			local printCompiled = innerOptionMenu:AddOption( "Compiled", function()
+				PrintTable( Photon2.GetComponent( id ) )
+			end )
 		end
 
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
