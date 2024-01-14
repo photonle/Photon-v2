@@ -62,7 +62,7 @@ end
 
 ---@param target table
 ---@param base table
--- -@param override`
+-- -@param override
 function Photon2.Util.Inherit( target, base )
 	local metaTable = getmetatable( target )
 	if ( not metaTable ) then

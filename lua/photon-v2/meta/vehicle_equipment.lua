@@ -152,6 +152,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			ElementStates = entry.ElementStates,
 			Siren = entry.Siren,
 			States = entry.States,
+			Templates = entry.Templates,
 			RenderGroup = entry.RenderGroup,
 		}
 

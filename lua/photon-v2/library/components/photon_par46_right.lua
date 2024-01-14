@@ -12,17 +12,49 @@ COMPONENT.PrintName = [[PAR46 Spotlight (Right)]]
 
 COMPONENT.Model = "models/sentry/props/spotlight_right_up.mdl"
 
-COMPONENT.Base = "photon_par46_left"
+COMPONENT.Base = "photon_whe_par46_right"
 
-COMPONENT.Templates = {}
-
-COMPONENT.Elements = {
-	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[3] = { "LightHead", BoneId = 4, Axis = 'y' },
-	[4] = { "LightHead", BoneId = 1, Axis = 'p' }
+COMPONENT.States = {
+	[1] = "~SW"
 }
 
-COMPONENT.Segments = {}
 
-COMPONENT.Inputs = {}
+COMPONENT.Templates = {
+	["2D"] = {
+		Light = {
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
+			Width = 7.6,
+			Height = 7.6,
+			Scale = 2,
+			IntensityGainFactor = 8,
+			IntensityLossFactor = 2,
+			DeactivationState = "~OFF",
+			Intensity = 0,
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true,
+				},
+				["~HR"] = {
+					Inherit = "HR",
+					IntensityTransitions = true,
+				}
+			}
+		}
+	},
+	["Projected"] = {
+		Projected = {
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true,
+				},
+				["~HR"] = {
+					Inherit = "R",
+					IntensityTransitions = true,
+				}
+			}
+		}
+	}
+}

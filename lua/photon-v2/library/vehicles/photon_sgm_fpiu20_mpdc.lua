@@ -302,20 +302,38 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Decorative",
-				Props = {
+				Components = {
 					{
-						Model = "models/sentry/props/spotlightpar46_left_up.mdl",
+						Component = "photon_whe_par46_left",
 						Position = Vector( -39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
-						Scale = 1.1
+						Scale = 1.1,
+						-- Model = "models/sentry/props/spotlightpar46_left_up.mdl",
+						-- Bones = {
+						-- 	["base"] = { Vector(0, 0, 0), Angle(0, 0, 0), 1 },
+						-- 	["shaft"] = { Vector(0, 0, 0), Angle(80, 0, 0), 1 },
+						-- 	["handle"] = { Vector(0, 0, 0), Angle(0, 0, 0), 1 },
+						-- 	["grip"] = { Vector(0, 0, 0), Angle(0, 0, 0), 1 },
+						-- 	["lamp"] = { Vector(0, 0, 0), Angle(0, 270, 0), 1 },
+
+						-- }
 					},
 					{
-						Model = "models/sentry/props/spotlightpar46_right_down.mdl",
+						Component = "photon_whe_par46_right",
 						Position = Vector( 39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
-						Scale = 1.1
+						Scale = 1.1,
 					}
-				}
+				},
+				-- Props = {
+
+				-- 	{
+				-- 		Model = "models/sentry/props/spotlightpar46_right_down.mdl",
+				-- 		Position = Vector( 39.4, 37, 63 ),
+				-- 		Angles = Angle( 0, 0, 0 ),
+				-- 		Scale = 1.1
+				-- 	}
+				-- }
 			}
 		}
 	},

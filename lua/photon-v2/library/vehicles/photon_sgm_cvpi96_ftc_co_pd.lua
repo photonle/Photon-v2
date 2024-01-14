@@ -199,7 +199,17 @@ VEHICLE.Equipment = {
 							[5] = "sentry/shared/env_cubemap_model",
 							[7] = "photon/common/red_glass",
 						},
-						StateMap = "[~HR] 1",
+						-- StateMap = "[~HR] 1",
+						States = {
+							"~HR"
+						},
+						Templates = {
+							Bone = {
+								Shaft = { DeactivationState = "UP" },
+								Lamp = { DeactivationState = "UP" },
+								Handle = { DeactivationState = "UP" },
+							}
+						},
 						Inputs = {
 							-- Clear the default illumination mode
 							["Emergency.SceneForward"] = { ["ON"] = {} },

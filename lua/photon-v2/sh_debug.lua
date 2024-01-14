@@ -14,7 +14,7 @@ if ( not Photon2.Debug.Initialized ) then
 	Photon2.Debug.Initialized = true
 end
 
-local printToConsole = false
+local printToConsole = true
 
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)

@@ -381,17 +381,14 @@ VEHICLE.Equipment = {
 						Position = Vector( -39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
-					}
-				},
-				-- TODO
-				Props = {
+					},
 					{
-						Model = "models/sentry/props/spotlightpar46_right_down.mdl",
+						Component = "photon_whe_par46_right",
 						Position = Vector( 39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
 					}
-				}
+				},
 			},
 			{
 				Option = "Decorative",

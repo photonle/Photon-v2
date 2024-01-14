@@ -26,9 +26,11 @@ function ENTITY:SetPhotonController( controller )
 end
 
 function ENTITY:LookUpBoneOrError( boneName )
+	self:SetupBones()
 	local result = self:LookupBone( boneName )
+	local model = self:GetModel() or "ERROR"
 	if ( not result ) then
-		ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( self:GetModel() .. "]."))
+		ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( model ) .. "].")
 	end
 	return result or -1
 end

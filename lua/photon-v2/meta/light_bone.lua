@@ -60,8 +60,16 @@ end
 
 function Element:Initialize( id, component )
 	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementBone]]
+	
 	local parentEntity = component.Entity
-	if ( isstring( self.Bone ) ) then self.Bone = parentEntity:LookUpBoneOrError( self.Bone ) end
+
+	if ( isstring( self.Bone ) ) then
+		parentEntity:SetupBones()
+		timer.Simple(0.1, function()
+			if ( not IsValid( parentEntity ) ) then return end
+			self.BoneId = parentEntity:LookUpBoneOrError( self.Bone )
+		end)
+	end
 	return self
 end
 
@@ -210,7 +218,7 @@ end
 function Element:DoPreRender()
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return end
-
+	if ( not self.BoneId or self.BoneId == -1 ) then return self end
 	-- Execute current activity function
 	self:UpdateCurrentActivity()
 

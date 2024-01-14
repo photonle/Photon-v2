@@ -139,26 +139,25 @@ VEHICLE.Equipment = {
 		},
 	},
 	{
-		Category = "Spotlights (Decorative)",
+		Category = "Spotlights",
 		Options = {
 			{
-				Option = "Decorative",
-				Props = {
+				Option = "Spotlights",
+				Components = {
 					{
-						Model = "models/sentry/props/spotlight_left_down.mdl",
+						Component = "photon_whe_par46_left",
 						Position = Vector( -39.4, 37, 63 ),
-						Angles = Angle( 20, 0, -10 ),
+						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
 					},
-					
 					{
-						Model = "models/sentry/props/spotlight_right_down.mdl",
+						Component = "photon_whe_par46_right",
 						Position = Vector( 39.4, 37, 63 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1
 					}
-				}
-			}
+				},
+			},
 		}
 	},
 	{

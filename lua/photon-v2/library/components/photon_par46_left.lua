@@ -3,6 +3,8 @@ local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Author = "Photon"
 
+COMPONENT.Base = "photon_whe_par46_left"
+
 COMPONENT.Credits = {
 	Model = "SGM",
 	Code = "Schmal"
@@ -11,6 +13,10 @@ COMPONENT.Credits = {
 COMPONENT.PrintName = [[PAR46 Spotlight (Left)]]
 
 COMPONENT.Model = "models/sentry/props/spotlight_left_up.mdl"
+
+COMPONENT.States = {
+	[1] = "~SW"
+}
 
 COMPONENT.Templates = {
 	["2D"] = {
@@ -38,55 +44,16 @@ COMPONENT.Templates = {
 	},
 	["Projected"] = {
 		Projected = {
-
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true,
+				},
+				["~HR"] = {
+					Inherit = "R",
+					IntensityTransitions = true,
+				}
+			}
 		}
-	},
-	["Bone"] = {
-		LightHead = {}
-	}
-}
-
-COMPONENT.StateMap = "[~SW] 1"
-
-COMPONENT.Elements = {
-	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[3] = { "LightHead", BoneId = 4, Axis = 'y' },
-	[4] = { "LightHead", BoneId = 1, Axis = 'p' }
-}
-
-COMPONENT.Segments = {
-	Light = {
-		Frames = {
-			[0] = "[~OFF] 1",
-			[1] = "1",
-		},
-		Sequences = {
-			["ON"] = { 1 },
-		}
-	},
-	Rotating = {
-		Frames = {
-			[1] = "3:ROT 4:ROT"
-		},
-		Sequences = {
-			["ROTATE"] = { 1 }
-		}
-	}
-}
-
-COMPONENT.Inputs = {
-	["Emergency.Illuminate"] = {
-		["SPOT"] = {
-			Light = "ON",
-		},	
-	},
-	["Emergency.SceneForward"] = {
-		["ON"] = {
-			Light = "ON",
-		},
-		["FLOOD"] = {
-			Light = "ON",
-		},
 	}
 }

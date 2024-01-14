@@ -13,6 +13,9 @@ COMPONENT.PrintName = [[Whelen PAR46 LED Spotlight"]]
 
 COMPONENT.Model = "models/sentry/props/spotlightpar46_left_up.mdl"
 
+local downSpeed = 100
+local upSpeed = 400
+
 COMPONENT.Templates = {
 	["2D"] = {
 		Light = {
@@ -25,39 +28,83 @@ COMPONENT.Templates = {
 	},
 	["Projected"] = {
 		Projected = {
-
+			NearZ = 200,
+			FOV = 30
 		}
 	},
 	["Bone"] = {
-		LightHead = {}
+		Shaft = {
+			Bone = "shaft",
+			Axis = "p",
+			States = {
+				["DOWN"] = { Activity = "Fixed", Target = 280, Speed = downSpeed, DeactivateOnTarget = true, Direction = -1 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = 1 }
+			},
+			DeactivationState = "DOWN"
+		},
+		Lamp = {
+			Bone = "lamp",
+			Axis = "y",
+			States = {
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
+				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
+				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = 300, Direction = 1 },
+			},
+			DeactivationState = "DOWN"
+		},
+		-- The handle does indeed rotate even though it's impossible to notice.
+		Handle = {
+			Bone = "grip",
+			Axis = "p",
+			States = {
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
+				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
+				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = upSpeed * 0.75, Direction = 1 },
+			},
+			DeactivationState = "DOWN"
+		}
 	}
 }
+
+COMPONENT.States = {
+	[1] = "W"
+}
+
+COMPONENT.StateMap = "[1] 1 2 [UP] 3 4 5"
 
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
 	[2] = { "Projected", Vector( 0, 2, 3.9 ), Angle = Angle( 0, 0, 0 ), BoneParent = 4 },
-	[3] = { "LightHead", BoneId = 4, Axis = 'y' },
-	[4] = { "LightHead", BoneId = 1, Axis = 'p' }
+	[3] = { "Shaft" },
+	[4] = { "Lamp" },
+	[5] = { "Handle" },
 }
+
+local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
-			[1] = "1:W",
-			[2] = "1:R 2:R",
-			[3] = "1:B 2:B",
+			[1] = "1",
+			[2] = "1 2",
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["FLASH"] = { 1, 1, 1, 0, 0, 0, 2, 2, 2, 0, 0, 0, 3, 3, 3, 0, 0, 0 },
+			["DELAY"] = sequence():Add( 1 ):Do( 6 ):Add( 2 ):SetRepeating( false )
 		}
 	},
-	Rotating = {
+	Lamp = {
 		Frames = {
-			[1] = "3:ROT 4:ROT"
+			[1] = "3 4 5",
+			[2] = "[UP] 3 [LEFT] 4",
+			[3] = "[UP] 3 [RIGHT] 4",
 		},
 		Sequences = {
-			["ROTATE"] = { 1 }
+			["UP"] = { 1 },
+			["LEFT"] = { 2 },
+			["RIGHT"] = { 3 },
 		}
 	}
 }
@@ -65,15 +112,24 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Illuminate"] = {
 		["SPOT"] = {
-			Light = "ON",
-		},	
+			Light = "DELAY",
+			Lamp = "UP"
+		},
 	},
 	["Emergency.SceneForward"] = {
 		["ON"] = {
-			Light = "ON",
+			Light = "DELAY",
+			Lamp = "UP"
 		},
 		["FLOOD"] = {
-			Light = "ON",
+			Light = "DELAY",
+			Lamp = "UP"
 		},
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = {
+			Light = "DELAY",
+			Lamp = "LEFT"
+		}
 	}
 }

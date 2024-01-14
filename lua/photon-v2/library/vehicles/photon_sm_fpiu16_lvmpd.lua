@@ -165,6 +165,26 @@ VEHICLE.Equipment = {
 		Category = "Spotlights",
 		Options = {
 			{
+				Option = "PAR46 LED",
+				Components = {
+					{
+						Component = "photon_whe_par46_left",
+						Position = Vector( -39, 41, 62 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1,
+					},
+					{
+						Component = "photon_whe_par46_right",
+						Position = Vector( 39, 41, 62 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1,
+					}
+				},
+				BodyGroups = {
+					{ BodyGroup = "Spotlights", Value = 0 }
+				}
+			},
+			{
 				Option = "Decorative (Body Group)",
 				BodyGroups = {
 					{ BodyGroup = "Spotlights", Value = 1 }
