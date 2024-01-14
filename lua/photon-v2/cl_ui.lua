@@ -322,6 +322,14 @@ function Photon2.UI.PopulateMenuBar()
 		-- 	end)
 		-- end
 
+		local loggingOption = menu:AddOption( "Logging & Errors" )
+		local loggingMenu = loggingOption:AddSubMenu()
+		loggingMenu:SetDeleteSelf( false )
+
+		local printLog = loggingMenu:AddCVar( "Display Log in Console", "ph2_enable_print_log", "1", "0" )
+		local errorChat = loggingMenu:AddCVar( "Display Errors in Chat", "ph2_enable_chat_errors", "1", "0" )
+
+
 		if not PHOTON2_STUDIO_ENABLED then return end
 
 		menu:AddSpacer()
@@ -336,28 +344,6 @@ function Photon2.UI.PopulateMenuBar()
 
 		debugMenu:AddOption( "Open Channel Controller", function() 
 			local form = vgui.Create( "Photon2ChannelController" )
-		end)
-
-		debugMenu:AddOption( "Print Profiles to Console", function()
-			PrintTable( Photon2.Index.Profiles )
-		end)
-		debugMenu:AddOption( "Print Vehicle Index to Console", function()
-			PrintTable( Photon2.Index.Vehicles )
-		end)
-		debugMenu:AddOption( "Print Siren Index to Console", function()
-			PrintTable( Photon2.Index.Sirens )
-		end)
-		debugMenu:AddOption( "Print Tones Index to Console", function()
-			PrintTable( Photon2.Index.Tones )
-		end)
-		debugMenu:AddOption( "Print Int. Sound Index to Console", function()
-			PrintTable( Photon2.Index.InteractionSounds )
-		end)
-		debugMenu:AddOption( "Reload Components", function()
-			Photon2.LoadComponentLibrary()
-		end)
-		debugMenu:AddOption( "Reload Vehicles", function()
-			Photon2.LoadVehicleLibrary()
 		end)
 
 		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
@@ -383,6 +369,7 @@ function Photon2.UI.PopulateMenuBar()
 			Photon2.MeshCache.ClearCache()
 		end)
 
+		debugMenu:AddSpacer()
 		debugMenu:AddOption( "Refresh Menubar", function()
 			Photon2.UI.ReloadMenubar()
 		end)

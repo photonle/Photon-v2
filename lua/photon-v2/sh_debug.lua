@@ -14,8 +14,6 @@ if ( not Photon2.Debug.Initialized ) then
 	Photon2.Debug.Initialized = true
 end
 
-local printToConsole = true
-
 local red = Color(255, 72, 0)
 local blu = Color(97, 160, 255)
 local blk = Color(0, 0, 0)
@@ -24,6 +22,13 @@ local sv = Color(137, 222, 255)
 local cl = Color(255, 222, 102)
 
 file.CreateDir( "photon_v2" )
+
+local shouldPrintLog, shouldChatErrors
+
+if CLIENT then
+	shouldPrintLog = CreateClientConVar( "ph2_enable_print_log", "0", true, false, "When enabled, Photon 2 log messages will be printed in the console." )
+	shouldChatErrors = CreateClientConVar( "ph2_enable_chat_errors", "0", true, false, "When enabled, Photon 2 errors will display in chat (experimental)." )
+end
 
 function Photon2.Debug.Log( type, section, message )
 	local time = os.date( "%H:%M:%S", os.time() )
@@ -36,11 +41,11 @@ function Photon2.Debug.Log( type, section, message )
 		}
 	end
 	
-	if ( printToConsole ) then
+	if ( CLIENT and shouldPrintLog:GetBool() ) then
 		Photon2.Debug.PrintOnly( "[" .. section .. "]  " .. string.Replace( message, "\t", "" ) )
 	end
 
-	if ( game.SinglePlayer() and CLIENT ) then
+	if ( CLIENT and shouldChatErrors:GetBool() ) then
 		if ( Photon2.Debug.PrintType[type] ) then
 			chat.AddText( whi, "[", red, "PHO", blu, "TON", whi, string.format("2] %s", string.Replace(message, "\t", "") ) )
 		end
