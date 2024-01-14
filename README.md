@@ -1,7 +1,4 @@
-# [Click here for the Photon 2 Wiki/Documentation](photon.lighting/docs)
-
-# Photon 2
- Photon 2 for Garry's Mod
+# [Click here for the Photon 2 Wiki/Documentation](https://photon.lighting/docs)
 
 # Default Key Binds
 * F: Toggle warning lights (MODE2)
@@ -93,18 +90,6 @@ A common theme throughout Photon 2 is the ability to inherit content. Inheritanc
 Sometimes this is want you want, and sometimes it's not. If you find that a parent value is appearing when you don't want it to, you must manually prevent the particular field/route from being inherited using the global `UNSET` variable.
 
 (See the `photon_siren_secondary` component for an example of this.)
-
-## Frames, StateMaps and State Slots
-One of the more significant creator changes in Photon 2 is the addition of frame strings. Using a very basic script-like syntax, frames can be constructed in a less-verbose and non-Lua manner.
-
-In Photon LE, frames written using table pairs that defined a light index and color, like: `{ { 1, R }, { 2, B }, { 3, R }, { 4, B } }`. This assigned the color red to lights 1 and 3, and the color blue to lights 2 and 4. 
-
-In Photon 2, this same frame can be simplified to `"[R] 1 3 [B] 2 4"` using the new frame syntax. The string is parsed in a linear, left-to-right process. The state, defined in brackets (`[R]`), is applied to all element IDs to the right (`1 3`). When the parser reaches another pair of brackets (`[B]`), that new state is then applied to elements to the right of that (`2 4`).
-
-### State Naming
-To distinguish between explicitly-defined states and slots, the rule is simple: strings are states, numbers are slots.
-
-`[R] 1` means element `1` is assigned to state `R`. `[1] 1` means element `1` is assigned the value of slot 1. (For this reason, custom states that have numeric names are not supported.)
 
 ## Compatibility
 While Photon 2 was intended to re-use many aspects of Photon LE for compatability, major changes in the addon architecture and a closer review of Photon LE's code eventually ruled this out. Photon 2 has been written from the ground-up and actually has very, very little in common with Photon LE.
