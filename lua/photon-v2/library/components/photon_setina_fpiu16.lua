@@ -80,7 +80,8 @@ COMPONENT.Inputs = {
 		["MODE3"] = { Upper = "FLASH", Side = "FLASH" },
 	},
 	["Emergency.SceneForward"] = {
-		["ON"] = { Upper = "ILLUM" }
+		["ON"] = { Upper = "ILLUM" },
+		["FLOOD"] = { Upper = "ILLUM" },
 	},
 	["Emergency.Marker"] = {
 		["ON"] = {

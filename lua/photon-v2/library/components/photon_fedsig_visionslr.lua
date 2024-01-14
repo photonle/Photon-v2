@@ -637,7 +637,8 @@ COMPONENT.Inputs = {
 		["ON"] = { SceneRight = "SCENE_RIGHT" }
 	},
 	["Emergency.SceneForward"] = {
-		["ON"] = { SceneForward = "SCENE_FORWARD" }
+		["ON"] = { SceneForward = "SCENE_FORWARD" },
+		["FLOOD"] = { SceneForward = "SCENE_FORWARD" },
 	},
 	["Virtual.Warning+Siren"] = {
 		["MODE3"] = {

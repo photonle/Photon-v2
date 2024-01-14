@@ -85,7 +85,11 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["MODE1"] = { Reverse_Flasher = "FLASH" },
 								["MODE2"] = { Reverse_Flasher = "FLASH" },
-								["MODE3"] = { Reverse_Flasher = "FLASH" },
+								["MODE3"] = { 
+									Reverse_Flasher = "FLASH",
+									HighBeam_L = "WIGWAG",
+									HighBeam_R = "WIGWAG",
+								},
 							},
 						}
 					}
