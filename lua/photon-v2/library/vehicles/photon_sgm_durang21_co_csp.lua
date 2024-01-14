@@ -71,6 +71,56 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
+		Category = "Mirror",
+		Options = {
+			{
+				Option = "Intersectors (Surface)",
+				Components = {
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( -45, 32.7, 56 ),
+						Angles = Angle( 1, 90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+					{
+						Component = "photon_sos_intersector_surf",
+						Position = Vector( 45, 32.7, 56 ),
+						Angles = Angle( -1, -90, 2 ),
+						Scale = 1,
+						Bones = {
+							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
+						},
+					},
+				}
+			}
+		}
+	},
+	{
+		Category = "Interior Lightbar",
+		Options = {
+			{
+				Option = "Whelen Inner Edge",
+				Components = {
+					{
+						Component = "photon_whe_inner_edge_left",
+						Position = Vector( -20, 19, 75.8 ),
+						Angles = Angle( 0, 96, 0 ),
+						-- Position = Vector( 0, 0, 110 ),
+						-- Angles = Angle( 0, 90, 0 ),
+					},
+					{
+						Component = "photon_whe_inner_edge_right",
+						Position = Vector( 20, 19, 75.8 ),
+						Angles = Angle( 0, 84, 0 )
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Body",
 		Options = {
 			{

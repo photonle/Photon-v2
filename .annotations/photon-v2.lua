@@ -334,6 +334,12 @@ function istable( object ) end
 ---@field IntensityLossFactor? number How quickly intensity decreases.
 ---@field Intensity? number State intensity.
 
+---@return PhotonLibraryComponent
+function Photon2.LibraryComponent() end
+
+---@return PhotonLibraryVehicle
+function Photon2.LibraryVehicle() end
+
 function isfunction( func )
 	if ( func ~= nil ) then return true end
 	return false
