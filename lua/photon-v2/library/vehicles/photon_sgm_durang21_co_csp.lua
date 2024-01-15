@@ -328,9 +328,27 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_whe_ion_surface",
-						Position = Vector( 0, 0, 100 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1
+						Position = Vector( -8, 108, 43 ),
+						Angles = Angle( 0, 4, 0 ),
+						Scale = 0.9
+					},
+					{
+						Component = "photon_whe_ion_surface",
+						Position = Vector( 8, 108, 43 ),
+						Angles = Angle( 0, -4, 0 ),
+						Scale = 0.9
+					},
+					{
+						Component = "photon_whe_ion_surface_bracket",
+						Position = Vector( -37.7, -82, 65.5 ),
+						Angles = Angle( 0, 93, 0 ),
+						Scale = 0.9
+					},
+					{
+						Component = "photon_whe_ion_surface_bracket",
+						Position = Vector( 37.7, -82, 65.5 ),
+						Angles = Angle( 0, -93, 0 ),
+						Scale = 0.9
 					}
 				}
 			}

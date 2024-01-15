@@ -132,3 +132,7 @@ function ENT:Think()
 	-- print("controller thinking")
 end
 
+function ENT:RenderOverride()
+	if ( not self.DrawController ) then return end
+	self:DrawModel()
+end

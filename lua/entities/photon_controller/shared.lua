@@ -14,6 +14,7 @@
 ---@field CurrentModes table Stores all channels and their current modes. Components have a direct reference to the table.
 ---@field AttemptingComponentSetup boolean (Internal) Set to true when controller sets up a component. Used to 
 ---@field DoHardReload boolean (Internal) Triggers a hard reload on the next tick.
+---@field DrawController boolean If the Photon Controller model should be visible.
 ENT = ENT
 
 local info, warn = Photon2.Debug.Declare( "Controller" )
