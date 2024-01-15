@@ -124,6 +124,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Inputs table
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
+---@field Name? string Component name (may be overwritten by filename).
 ---@field Author string Component author's name.
 ---@field Base string Base component ID if inheriting from an existing component.
 ---@field Credits table<string, string>
@@ -334,8 +335,13 @@ function istable( object ) end
 ---@field IntensityLossFactor? number How quickly intensity decreases.
 ---@field Intensity? number State intensity.
 
+-- Creates a new Photon 2 component table.
 ---@return PhotonLibraryComponent
 function Photon2.LibraryComponent() end
+
+-- Registers a table as a new Photon 2 component.
+---@param component PhotonLibraryComponent
+function Photon2.RegisterComponent( component ) end
 
 ---@return PhotonLibraryVehicle
 function Photon2.LibraryVehicle() end

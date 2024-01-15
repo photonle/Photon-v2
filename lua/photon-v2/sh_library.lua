@@ -275,7 +275,7 @@ function Photon2.BuildParentLibraryComponent( childId, parentId )
 	local parentLibraryComponent = Photon2.Library.Components:Get( parentId )
 
 	if ( not parentLibraryComponent ) then
-		error ("Component [" .. tostring(childId) .. "] attempted to inherit from parent component [" .. tostring( parentId ) .."], which could not be found." )
+		error ("Component [" .. tostring( parentId ) .."] could not be found." )
 	end
 	
 	parentLibraryComponent = table.Copy( parentLibraryComponent )

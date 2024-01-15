@@ -288,6 +288,14 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
+	local success, code = pcall( self.DoRegister, self, data )
+	if ( not success ) then
+		local name = data.Name or "(INVALID NAME)"
+		warn( "Failed to register [%s]: %s", name, code )
+	end
+end
+
+function meta:DoRegister( data )
 	info( "\t\t\tRegistering [%s] library entry [%s]", self.Name, data.Name )
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end

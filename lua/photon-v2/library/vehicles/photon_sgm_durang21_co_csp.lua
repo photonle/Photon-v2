@@ -304,4 +304,36 @@ VEHICLE.Equipment = {
 			}
 		}
 	},
+	{
+		Category = "Dominator",
+		Options = {
+			{
+				Option = "Dominator",
+				Components = {
+					{
+						Component = "photon_whe_dominator_8",
+						Position = Vector( 0, -111.5, 75.8 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.3
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Ions",
+		Options = {
+			{
+				Option = "Ions",
+				Components = {
+					{
+						Component = "photon_whe_ion_surface",
+						Position = Vector( 0, 0, 100 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1
+					}
+				}
+			}
+		}
+	},
 }
