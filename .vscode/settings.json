@@ -1,8 +1,9 @@
 {
     "Lua.diagnostics.disable": [
-        "undefined-global",
-        "lowercase-global"
-    ],
+		"undefined-global",
+		"lowercase-global",
+		"need-check-nil"
+	],
     "Lua.workspace.preloadFileSize": 8192,
     "Lua.runtime.nonstandardSymbol": [
         "//",

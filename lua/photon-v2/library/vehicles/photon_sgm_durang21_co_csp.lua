@@ -90,6 +90,7 @@ VEHICLE.Equipment = {
 						Position = Vector( 45, 32.7, 56 ),
 						Angles = Angle( -1, -90, 2 ),
 						Scale = 1,
+						States = { "B", "R" },
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
@@ -336,7 +337,8 @@ VEHICLE.Equipment = {
 						Component = "photon_whe_ion_surface",
 						Position = Vector( 8, 108, 43 ),
 						Angles = Angle( 0, -4, 0 ),
-						Scale = 0.9
+						Scale = 0.9,
+						States = { "B", "R" }
 					},
 					{
 						Component = "photon_whe_ion_surface_bracket",
@@ -348,7 +350,8 @@ VEHICLE.Equipment = {
 						Component = "photon_whe_ion_surface_bracket",
 						Position = Vector( 37.7, -82, 65.5 ),
 						Angles = Angle( 0, -93, 0 ),
-						Scale = 0.9
+						Scale = 0.9,
+						States = { "B", "R" }
 					}
 				}
 			}

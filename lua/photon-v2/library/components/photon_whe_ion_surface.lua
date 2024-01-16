@@ -27,7 +27,13 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[R] 1"
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B",
+	[3] = "W"
+}
+
+COMPONENT.StateMap = "[1/2/3] 1"
 
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }

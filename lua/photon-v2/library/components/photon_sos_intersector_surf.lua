@@ -12,6 +12,12 @@ COMPONENT.PrintName = [[SoundOff Signal Intersector (Surface)]]
 
 COMPONENT.Model = "models/schmal/sos_int_surf.mdl"
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B",
+	[3] = "W"
+}
+
 COMPONENT.Templates = {
 	["2D"] = {
 		LED_Main = {
@@ -66,8 +72,6 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.ElementStates = {}
-
 COMPONENT.Elements = {
 	[1] = { "Lens", Indexes = { 3 } }, -- lens,
 	[2] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, -90, 0 ), "schmal/photon/sos_int/reflector", DrawMaterial = "schmal/photon/sos_int/emis_bloom" }
@@ -79,7 +83,7 @@ COMPONENT.ElementGroups = {
 	["Intersector"] = { 1, 2 },
 }
 
-COMPONENT.StateMap = "[R] Intersector"
+COMPONENT.StateMap = "[1/2/3] Intersector"
 
 COMPONENT.Segments = {
 	Intersector = {
