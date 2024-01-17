@@ -194,14 +194,18 @@ COMPONENT.Segments = {
 			[13] = "20 18 16",
 			[14] = "18 16",
 			[15] = "16",
+			[16] = "21 22",
+			[17] = "21 22 19 20",
+			[18] = "21 22 19 20 17 18",
+			[19] = "21 22 19 20 17 18 15 16",
+			[20] = "19 20 17 18 15 16",
+			[21] = "17 18 15 16",
+			[22] = "15 16",
 		},
 		Sequences = {
-			["RIGHT"] = { 1, 1, 2, 2, 3, 3, 4, 5, 6, 6, 7, 7, 8, 8, 8, 8,
-						 9, 9, 10, 10, 11, 12, 13, 13, 14, 14, 15, 15, 0, 0, 0, 0 },
-			["LEFT"] = {
-				15, 15, 14, 14, 13, 13, 12, 11, 10, 10, 9, 9, 8, 8, 8, 8,
-				7, 7, 6, 6, 5, 4, 3, 3, 2, 2, 1, 1, 0, 0, 0, 0
-			}
+			["RIGHT"] = sequence():Sequential( 1, 8 ):Hold( 1 ):Sequential( 9, 15 ):StretchAll( 2 ):Steady( 0, 4 ),
+			["LEFT"] = sequence():Sequential( 15, 8 ):Hold( 1 ):Sequential( 7, 1 ):StretchAll( 2 ):Steady( 0, 4 ),
+			["CENOUT"] = sequence():Sequential( 16, 19 ):Sequential( 19, 22 ):StretchAll( 3 ):Steady( 0, 4 )
 		}
 	},
 	Corner = {
@@ -215,26 +219,36 @@ COMPONENT.Segments = {
 	},
 	Takedown = {
 		Frames = {
-			[1] = "5 6 31 32"
+			[1] = "5 6 31 32",
+			[2] = "5",
+			[3] = "6",
+			[4] = "5 6"
 		},
 		Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			-- ON but without the projected textures
+			["ON_CHEAP"] = { 4 },
+			["QUAD_FLASH"] = sequence():QuadFlash( 2, 3 )
 		}
 	},
 	LeftAlley = {
 		Frames = {
-			[1] = "11 33"
+			[1] = "11 33",
+			[2] = "11",
 		},
 		Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			["QUAD_FLASH"] = sequence():QuadFlash( 2, 0 ),
 		}
 	},
 	RightAlley = {
 		Frames = {
-			[1] = "12 34"
+			[1] = "12 34",
+			[2] = "12"
 		},
 		Sequences = {
-			["ON"] = { 1 }
+			["ON"] = { 1 },
+			["QUAD_FLASH"] = sequence():QuadFlash( 0, 2 ),
 		}
 	}
 }
@@ -248,32 +262,42 @@ COMPONENT.Inputs = {
 			All = "ALT2"
 		},
 		["MODE3"] = {
-			All = "ALT3"
+			All = "ALT3",
+			Takedown = "QUAD_FLASH",
+			LeftAlley = "QUAD_FLASH",
+			RightAlley = "QUAD_FLASH",
 		}
 	},
 	["Emergency.Directional"] = {
 		["RIGHT"] = {
 			Traffic = "RIGHT",
-			Corner = "ON"
+		},
+		["CENOUT"] = {
+			Traffic = "CENOUT",
 		},
 		["LEFT"] = {
 			Traffic = "LEFT",
-			Corner = "STFL"
 		}
 	},
 	["Emergency.SceneForward"] = {
-		["TAKEDOWN"] = {
+		["ON"] = {
+			Takedown = "ON"
+		},
+		["FLOOD"] = {
 			Takedown = "ON"
 		}
 	},
 	["Emergency.SceneLeft"] = {
-		["ALLEY"] = {
+		["ON"] = {
 			LeftAlley = "ON"
 		}
 	},
 	["Emergency.SceneRight"] = {
-		["ALLEY"] = {
+		["ON"] = {
 			RightAlley = "ON"
 		}
 	},
+	["Emergency.Marker"] = {
+		["ON"] = { Corner = "ON" }
+	}
 }

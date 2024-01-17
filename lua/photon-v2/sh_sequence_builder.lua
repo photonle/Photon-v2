@@ -1,4 +1,4 @@
----@class PhotonSequenceBuilder
+---@class PhotonSequenceBuilder : integer[]
 Photon2.SequenceBuilder = {}
 
 Photon2.SequenceBuilder.__index = Photon2.SequenceBuilder
@@ -40,7 +40,8 @@ function Photon2.SequenceBuilder:ToClipboard()
 	return self
 end
 
-
+-- Places the provided frames at the end of this sequence.
+---@param sequence integer[]
 function Photon2.SequenceBuilder:Append( sequence )
 	self._previous = sequence
 	for i=1, #sequence do
@@ -49,7 +50,37 @@ function Photon2.SequenceBuilder:Append( sequence )
 	return self
 end
 
--- (Internal) Replaces the previous block with the given sequence.
+-- Places the provided frames at the start of the entire sequence.
+---@param sequence integer[]
+function Photon2.SequenceBuilder:Prepend( sequence )
+	local temp = {}
+	for i=1, #sequence do
+		temp[#temp+1] = sequence[i]
+	end
+	for i=1, #self do
+		temp[#temp+1] = self[i]
+	end
+	for i=1, #temp do
+		self[i] = temp[i]
+	end
+	-- This will be unintuitive no matter what
+	self._previous = sequence
+	return self
+end
+
+-- Places the provided frames before the previously appended frames.
+function Photon2.SequenceBuilder:PrependPrevious( sequence )
+	local result = {}
+	for i=1, #sequence do
+		result[#result+1] = sequence[i]
+	end
+	for i=1, #self._previous do
+		result[#result+1] = self._previous[i]
+	end
+	return self:OverwriteLast( result )
+end
+
+-- Replaces the previous block with the given sequence.
 function Photon2.SequenceBuilder:OverwriteLast( sequence )
 	local startIndex = #self - #self._previous
 	for i=1, #sequence do
@@ -212,7 +243,8 @@ function Photon2.SequenceBuilder:Do( times )
 	return self
 end
 
--- Extends each frame from the previous _block_ by the amount specified. Value of `1` or less has no effect. (Example: `{ 1, 2, 3 }:Stretch( 2 )` becomes `{ 1, 1, 2, 2, 3, 3 }`)
+-- Extends each frame from the previous _block_ by the amount specified. Value of `1` or less has no effect. 
+-- Example: `{ 1, 2, 3 }:Stretch( 2 )` becomes `{ 1, 1, 2, 2, 3, 3 }`
 function Photon2.SequenceBuilder:Stretch( amount )
 	local result = {}
 	for i=1, #self._previous do
@@ -223,8 +255,37 @@ function Photon2.SequenceBuilder:Stretch( amount )
 	return self:OverwriteLast( result )
 end
 
-function Photon2.SequenceBuilder:Replace( oldNewPair, ... )
+function Photon2.SequenceBuilder:OverwriteAll( sequence )
+	if ( #sequence > #self ) then
+		for i=1, #sequence do
+			self[i] = sequence[i]
+		end
+	else
+		for i=1, #self do
+			self[i] = sequence[i]
+		end
+	end
+	self._previous = sequence
+	return self
+end
 
+-- Extends each frame from in the _entire sequence_ by the amount specified. Value of `1` or less has no effect. 
+function Photon2.SequenceBuilder:StretchAll( amount )
+	local result = {}
+	for i=1, #self do
+		for j=1, amount do
+			result[#result+1] = self[i]
+		end
+	end
+	return self:OverwriteAll( result )
+end
+
+-- Replaces frame values in the sequence using a map table { [OLD] = NEW }.
+-- Example: `Map({ [1] = 8, [2] = 9 })` will change `{ 1, 1, 2, 2 }` to `{ 8, 8, 9, 9 }`
+function Photon2.SequenceBuilder:Map( map )
+	for i=1, #self do
+		if ( map[self[i]] ) then self[i] = map[self[i]] end
+	end
 end
 
 -- Adds all consecutive frame numbers between `startFrame` and `endFrame`. (Example: `:Sequential( 1, 5 )` becomes `{ 1, 2, 3, 4, 5 }`). Frame sequence will be done in reverse if `endFrame` is lower than `startFrame`.
@@ -240,6 +301,33 @@ function Photon2.SequenceBuilder:Sequential( startFrame, endFrame )
 		end
 	end
 	return self:Append( result )
+end
+
+-- Simulates the Whelen Steady Flash pattern.
+function Photon2.SequenceBuilder:SteadyFlash( frame )
+	return self:Steady( frame, 64 ):TripleFlash( frame )
+end
+
+
+function Photon2.SequenceBuilder:AppendPhaseGap()
+	local count = 0
+	if ( self._previous ) then count = #self._previous end
+	local result = {}
+	for i=1, count do
+		result[#result+1] = 0
+	end
+	return self:Append( result )
+end
+
+-- Inserts 
+function Photon2.SequenceBuilder:PrependPhaseGap()
+	local count = 0
+	if ( self._previous ) then count = #self._previous end
+	local result = {}
+	for i=1, count do
+		result[#result+1] = 0
+	end
+	return self:Prepend( result )
 end
 
 setmetatable( Photon2.SequenceBuilder, {

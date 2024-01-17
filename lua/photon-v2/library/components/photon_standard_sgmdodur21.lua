@@ -11,6 +11,13 @@ COMPONENT.PrintName = "2021 Dodge Durango (PPV)"
 
 COMPONENT.IsVirtual = true
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
+
+COMPONENT.StateMap = "[1] 20 [2] 19"
+
 local red = { r = 255, g = 0, b = 0 }
 
 COMPONENT.Templates = {
@@ -48,7 +55,7 @@ COMPONENT.Templates = {
 				},
 				["~AD"] = {
 					Inherit = "A",
-					Intensity = 0.5,
+					Intensity = 0.6,
 					IntensityTransitions = true
 				},
 				["WD"] = {
@@ -198,7 +205,7 @@ COMPONENT.Segments = {
 	},
 	DRL = {
 		Frames = {
-			[1] = "[Hide] 1 2 [DW] 15 16",
+			[1] = "[Hide] 1 2 [WD] 15 16",
 			[2] = "[Hide] 1 [W] 15",
 			[3] = "[Hide] 2 [W] 16",
 		},
@@ -217,18 +224,24 @@ COMPONENT.Segments = {
 	},
 	Brake_R = {
 		Frames = {
-			[1] = "3:Ridges_Red 20:R"
+			[1] = "3:Hide [1] 19",
+			[2] = "3:Hide [W] 19"
 		 },
 		 Sequences = {
-			["ON"] = { 1 }
-		 }
+			["ON"] = { 1 },
+			["FLASH"] = sequence():Flash( 2, 1, 3 ),
+			["STEADY"] = { 1 },
+		}
 	},
 	Brake_L = {
 		Frames = {
-			[1] = "4:Ridges_Red 19:R"
-		 },
-		 Sequences = {
-			["ON"] = { 1 }
+			[1] = "4:Hide [1] 20",
+			[2] = "4:Hide [W] 20",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["FLASH"] = sequence():Flash( 1, 2, 3 ),
+			["STEADY"] = { 1 },
 		 }
 	},
 	Tail_L = {
@@ -237,7 +250,7 @@ COMPONENT.Segments = {
 		 },
 		 Sequences = {
 			["ON"] = { 1 },
-			["FLASH"] = sequence():Alternate( 0, 1, 8 )
+			["FLASH"] = sequence():Flash( 0, 1, 4 ):Do( 4 ):Alternate( 0, 1, 2 ):Do( 4 )
 		}
 	},
 	Tail_R = {
@@ -246,7 +259,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			 ["ON"] = { 1 },
-			 ["FLASH"]  = sequence():Alternate( 0, 1, 8 )
+			 ["FLASH"]  = sequence():Flash( 0, 1, 4 ):Do( 4 ):Alternate( 0, 1, 2 ):Do( 4 )
 		},
 	},
 	Tail_Center = {
@@ -255,7 +268,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["FLASH"] = sequence():Alternate( 0, 1, 8 )
+			["FLASH"] = sequence():Flash( 1, 0, 4 ):Do( 4 ):Alternate( 1, 0, 2 ):Do( 4 )
 		}
 	},
 	Reverse_L = {
@@ -284,6 +297,9 @@ COMPONENT.Inputs = {
 		},
 		["PARKING"] = {
 			Parking = "ON"
+		},
+		["DRL"] = {
+			DRL = "ON"
 		}
 	},
 	["Vehicle.Signal"] = {
@@ -311,17 +327,20 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.Warning"] = {
 		["MODE1"] = {
+			Brake_R = "STEADY",
+			Brake_L = "STEADY",
 		},
 		["MODE2"] = {
-			["Tail_L"] = "FLASH",
-			["Tail_R"] = "FLASH",
-			["Tail_Center"] = "FLASH",
+			Brake_R = "FLASH",
+			Brake_L = "FLASH",
 		},
 		["MODE3"] = {
 			["DRL"] = "FLASH",
-			["Tail_L"] = "FLASH",
-			["Tail_R"] = "FLASH",
-			["Tail_Center"] = "FLASH",
+			Brake_R = "FLASH",
+			Brake_L = "FLASH",
+			Tail_L = "FLASH",
+			Tail_R = "FLASH",
+			Tail_Center = "FLASH",
 		}
 	}
 }

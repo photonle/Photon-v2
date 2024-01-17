@@ -38,6 +38,8 @@ COMPONENT.Elements = {
 	[2] = { "Light", Vector( 2.04, 0.2, 0 ), Angle( 0, 180, 0 ) },
 }
 
+local sequence = Photon2.SequenceBuilder.New
+
 COMPONENT.Segments = {
 	All = {
 		Frames = {
@@ -99,7 +101,7 @@ COMPONENT.Segments = {
 		Sequences = {
 			ALL = { 1 }
 		}
-	}
+	},
 }
 Photon2.RegisterComponent( COMPONENT )
 
@@ -113,14 +115,64 @@ COMPONENT.Elements = {
 	[8] = { "Light", Vector( 14.7, 0.2, 0 ), Angle( 0, 180, 0 ) },
 }
 
+COMPONENT.ElementGroups = {
+	Left = { 1, 3, 5, 7 },
+	Right = { 2, 4, 6, 8 },
+}
+
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2 3 4 5 6 7 8"
+			[1] = "1 2 3 4 5 6 7 8",
+			[2] = "Left",
+			[3] = "Right",
 		},
 		Sequences = {
-			ALL = { 1 }
+			ALL = { 1 },
+			ALT_MED = sequence():Alternate( 3, 2, 8 ),
+			STEADY_FLASH = sequence():SteadyFlash( 1 ),
+			QUAD_FLASH = sequence():Flash( 3, 2, 4 )
+		}
+	},
+	Traffic = {
+		Frames = {
+			[1] = "7",
+			[2] = "7 5",
+			[3] = "7 5 3",
+			[4] = "7 5 3 1",
+			[5] = "7 5 3 1 2",
+			[6] = "7 5 3 1 2 4",
+			[7] = "7 5 3 1 2 4 6",
+			[8] = "7 5 3 1 2 4 6 8",
+			[9] = "5 3 1 2 4 6 8",
+			[10] = "3 1 2 4 6 8",
+			[11] = "1 2 4 6 8",
+			[12] = "2 4 6 8",
+			[13] = "4 6 8",
+			[14] = "6 8",
+			[15] = "8",
+			[16] = "1 2",
+			[17] = "1 2 3 4",
+			[18] = "1 2 3 4 5 6",
+			[19] = "1 2 3 4 5 6 7 8",
+			[20] = "3 4 5 6 7 8",
+			[21] = "5 6 7 8",
+			[22] = "7 8",
+		},
+		Sequences = {
+			["RIGHT"] = sequence():Sequential( 1, 8 ):Hold( 1 ):Sequential( 9, 15 ):StretchAll( 2 ):Steady( 0, 4 ),
+			["LEFT"] = sequence():Sequential( 15, 8 ):Hold( 1 ):Sequential( 7, 1 ):StretchAll( 2 ):Steady( 0, 4 ),
+			["CENOUT"] = sequence():Sequential( 16, 19 ):Sequential( 19, 22 ):StretchAll( 3 ):Steady( 0, 4 )
 		}
 	}
 }
+
+COMPONENT.Inputs = {
+	["Emergency.Directional"] = {
+		["LEFT"] = { Traffic = "LEFT" },
+		["RIGHT"] = { Traffic = "RIGHT" },
+		["CENOUT"] = { Traffic = "CENOUT" },
+	}
+}
+
 Photon2.RegisterComponent( COMPONENT )

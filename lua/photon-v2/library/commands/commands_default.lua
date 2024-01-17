@@ -80,7 +80,7 @@ Photon2.RegisterCommand({
 		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "PARKING" }
 	},
 	OnRelease = { 
-		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "HEADLIGHTS" } 
+		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = { "DRL", "HEADLIGHTS" } }
 	}
 })
 

@@ -307,6 +307,23 @@ function Component.New( name, data )
 	end	
 
 	--[[
+			Inject Segment Quick Inputs
+
+			(This idea may be abandoned)
+	--]]
+
+	-- for segmentName, segment in pairs( component.Segments ) do
+	-- 	for channelName, modes in pairs ( segment.QuickInputs ) do
+	-- 		data.Inputs[channelName] = data.Input[channelName] or {}
+	-- 		for modeName, sequenceName in pairs( modes ) do
+	-- 			data.Inputs[channelName][modeName] = data.Inputs[channelName][modeName] or {}
+	-- 			data.Inputs[channelName][modeName][segmentName] = segmentName
+	-- 		end
+	-- 	end
+	-- end
+
+
+	--[[
 			Compile Inputs
 	--]]
 

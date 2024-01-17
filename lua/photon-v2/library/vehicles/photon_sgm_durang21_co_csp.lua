@@ -64,7 +64,27 @@ VEHICLE.Equipment = {
 				Option = "Standard Lighting",
 				VirtualComponents = {
 					{
-						Component = "photon_standard_sgmdodur21"
+						Component = "photon_standard_sgmdodur21",
+						Inputs = {
+							["Emergency.Warning"] = {
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "Dome Light",
+		Options = {
+			{
+				Option = "SoundOff Signal obSERVE",
+				Components = {
+					{
+						Component = "photon_sos_observe",
+						Position = Vector( 0, 5, 81.9 ),
+						Angles = Angle( 9, 90, 180 ),
+						Scale = 1
 					}
 				}
 			}
@@ -77,6 +97,7 @@ VEHICLE.Equipment = {
 				Option = "Intersectors (Surface)",
 				Components = {
 					{
+						Name = "@intersector_mirror",
 						Component = "photon_sos_intersector_surf",
 						Position = Vector( -45, 32.7, 56 ),
 						Angles = Angle( 1, 90, 2 ),
@@ -84,16 +105,24 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								MODE1 = {
+									Light = "STEADY_FLASH"
+								},
+								MODE3 = {
+									Light = "QUAD_FLASH_DUO"
+								}
+							},
+						},
+						States = { "R", "W" }
 					},
 					{
-						Component = "photon_sos_intersector_surf",
+						Inherit = "@intersector_mirror",
 						Position = Vector( 45, 32.7, 56 ),
 						Angles = Angle( -1, -90, 2 ),
-						Scale = 1,
-						States = { "B", "R" },
-						Bones = {
-							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
-						},
+						States = { "B", "W" },
+						Phase = "B"
 					},
 				}
 			}
@@ -109,13 +138,17 @@ VEHICLE.Equipment = {
 						Component = "photon_whe_inner_edge_left",
 						Position = Vector( -20, 19, 75.8 ),
 						Angles = Angle( 0, 96, 0 ),
+						Phase = "B"
 						-- Position = Vector( 0, 0, 110 ),
 						-- Angles = Angle( 0, 90, 0 ),
+						
 					},
 					{
 						Component = "photon_whe_inner_edge_right",
 						Position = Vector( 20, 19, 75.8 ),
-						Angles = Angle( 0, 84, 0 )
+						Angles = Angle( 0, 84, 0 ),
+						States = { "B", "B" },
+						Phase = "A"
 					}
 				}
 			}
@@ -244,9 +277,14 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -14, 86.7 ),
 						Angles = Angle( 2, 90, 0 ),
 						Scale = 1.1,
+						Inputs = {
+							["Emergency.SceneForward"] = {
+								["ON"] = { Takedown = "ON_CHEAP" },
+								["FLOOD"] = { Takedown = "ON_CHEAP" },
+							}
+						}
 					}
 				},
-				
 			}
 		}
 	},
@@ -258,7 +296,7 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_whe_par46_left",
-						Position = Vector( -37, 34, 64 ),
+						Position = Vector( -37, 35, 64 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1.1,
 					}
@@ -315,7 +353,20 @@ VEHICLE.Equipment = {
 						Component = "photon_whe_dominator_8",
 						Position = Vector( 0, -111.5, 75.8 ),
 						Angles = Angle( 0, 0, 0 ),
-						Scale = 1.3
+						Scale = 1.3,
+						Inputs = {
+							["Emergency.Warning"] = {
+								MODE1 = {
+									All = "STEADY_FLASH"
+								},
+								MODE2 = {
+									All = "ALT_MED"
+								},
+								MODE3 = {
+									All = "QUAD_FLASH"
+								}
+							},
+						}
 					}
 				}
 			}
@@ -328,29 +379,58 @@ VEHICLE.Equipment = {
 				Option = "Ions",
 				Components = {
 					{
+						Name = "@grille_ion",
 						Component = "photon_whe_ion_surface",
-						Position = Vector( -8, 108, 43 ),
+						Position = Vector( -8, 106, 43 ),
 						Angles = Angle( 0, 4, 0 ),
-						Scale = 0.9
+						Phase = "A",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "STEADY_FLASH" },
+								["MODE2"] = { Light = "ALT_MED" },
+								["MODE3"] = { Light = "QUAD_FLASH" },
+							}
+						},
+						
 					},
 					{
+						Inherit = "@grille_ion",
 						Component = "photon_whe_ion_surface",
-						Position = Vector( 8, 108, 43 ),
+						Position = Vector( 8, 106, 43 ),
 						Angles = Angle( 0, -4, 0 ),
-						Scale = 0.9,
+						Phase = "B",
 						States = { "B", "R" }
 					},
 					{
+						Name = "@side_ion",
 						Component = "photon_whe_ion_surface_bracket",
 						Position = Vector( -37.7, -82, 65.5 ),
 						Angles = Angle( 0, 93, 0 ),
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "STEADY_FLASH" },
+								["MODE2"] = { Light = "ALT_MED_DUO" },
+								["MODE3"] = { Light = "QUAD_FLASH_DUO" },
+							}
+						},
+						Segments = {
+							---@diagnostic disable-next-line: missing-fields
+							Light = {
+								Sequences = {
+
+								},
+								Inputs = {
+									["Emergency.Warning:MODE1"] = "STEADY_FLASH"
+								}
+							}
+						},
 						Scale = 0.9
 					},
 					{
+						Inherit = "@side_ion",
 						Component = "photon_whe_ion_surface_bracket",
 						Position = Vector( 37.7, -82, 65.5 ),
 						Angles = Angle( 0, -93, 0 ),
-						Scale = 0.9,
 						States = { "B", "R" }
 					}
 				}

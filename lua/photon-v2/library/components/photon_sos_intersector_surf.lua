@@ -89,19 +89,34 @@ COMPONENT.Segments = {
 	Intersector = {
 		Frames = {
 			[1] = "Intersector",
-			[2] = "Intersector:B",
-			[3] = "Intersector:R",
+			[2] = "Intersector:2",
+			[3] = "Intersector:3",
 			[4] = "Intersector:W",
 			[5] = "Intersector:A",
 			[6] = "Intersector:G",
 		},
 		Sequences = {
 			["FLASH1"] = { 1 },
+			["STEADY_FLASH"] = sequence():SteadyFlash( 1 )
 			-- ["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Add( 1 ):Do(4):Add(0):Do(2):Add(2):Do(4):Add(0):Do(2):Add(3):Do(4):Add(0):Do(2):Add(4):Do(4):Add(0):Do(2):Add(5):Do(4):Add(0):Do(2)
 			-- ["FLASH1"] = sequence():Alternate( 1, 0, 5 )
 			-- ["FLASH1"] = sequence():Flash( 1, 0, 3 ):Add( 0 ):Do( 4 )
+		}
+	},
+	Light = {
+		Frames = {
+			[1] = "Intersector",
+			[2] = "Intersector:2",
+			[3] = "Intersector:3",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["FLASH"] = sequence():Alternate( 1, 0, 8 ),
+			["STEADY_FLASH"] = sequence():SteadyFlash( 1 ),
+			["QUAD_FLASH_DUO"] = sequence():QuadFlash( 1, 2 ),
+			["QUAD_FLASH_DUO:B"] = sequence():QuadFlash( 2, 1 )
 		}
 	}
 }
@@ -109,13 +124,13 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Intersector = "FLASH1"
+			Light = "ON"
 		},
 		["MODE2"] = {
-			Intersector = "FLASH1"
+			Light = "FLASH"
 		},
 		["MODE3"] = {
-			Intersector = "FLASH1"
+			Light = "FLASH"
 		}
 	}
 }

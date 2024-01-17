@@ -2,6 +2,8 @@ if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonElementingSegment"
 
+local info, warn = Photon2.Debug.Declare( "Segment" )
+
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
@@ -20,6 +22,7 @@ local printf = Photon2.Debug.PrintF
 ---@field InputActions table<string, { Sequence: string, Priority: number, Rank: number }>
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonElement, string>>
+---@field QuickInputs table
 ---@field Lights table Points to Component.Elements
 local Segment = exmeta.New()
 
@@ -43,8 +46,9 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		Sequences = {},
 		Frames = {},
 		Inputs = {},
+		QuickInputs = {},
 		InputActions = {},
-		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } )
+		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } ),
 	}
 
 	setmetatable( segment, { __index = PhotonElementingSegment } )
@@ -156,6 +160,43 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		end
 		return returnFrame
 	end
+
+	--[[
+			Input Quick Mapping
+			
+			Convenience feature that allows input channel-mode configurations
+			from the segment itself instead of using the Inputs table on the
+			component. Intended for Components in Equipment entries that 
+			use custom sequences/patterns.
+
+			** NOT IMPLEMENTED **
+			(After completing about 75% of this feature, I'm having second thoughts)
+	--]]
+
+	-- if ( segmentData.Inputs ) then
+	-- 	for channelMode, sequence in pairs( segmentData.Inputs ) do
+	-- 		local colonPos = string.find( channelMode, ":" )
+	-- 		if ( not colonPos ) then
+	-- 			Error( "Mode must be defined in [Channel:MODE] format.")
+	-- 			colonPos = 1
+	-- 		end
+	-- 		local channel = string.sub( channelMode, 1, colonPos - 1 )
+	-- 		local mode = string.sub( channelMode, colonPos + 1 )
+	-- 		info( "Channel: [%s] Mode: [%s]", channel, mode )
+
+	-- 		if ( istable( sequence ) ) then
+	-- 			segmentData.Sequences[channelMode] = sequence
+	-- 			sequence = channelMode
+	-- 		end
+
+	-- 		segment.QuickInputs[channel] = segment.QuickInputs[channel] or {}
+	-- 		segment.QuickInputs[channel][mode] = sequence
+	-- 	end
+	-- end
+
+	--[[
+			Frame Processing
+	--]]
 
 	local processedFrames = {}
 

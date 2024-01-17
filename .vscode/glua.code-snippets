@@ -15,10 +15,36 @@
 	// 	],
 	// 	"description": "Log output to console"
 	// }
+	
+		"New Angle": {
+			"prefix": ["ang"],
+			"body": ["Angle( 0, 0, 0 )"]
+		},
+		"New Vector": {
+			"prefix": ["vec"],
+			"body": ["Vector( 0, 0, 0 )"]
+		},
+		"Sequence Builder": {
+			"prefix": ["local sequence = local sequence = Photon2.SequenceBuilder.New"],
+			"body": ["local sequence = Photon2.SequenceBuilder.New"]
+		},
+		"New Segment": {
+			"prefix": ["/segment"],
+			"body": ["${1:All} = {", 
+						"\tFrames = {", 
+							"\t\t[1] = \"\",", 
+						"\t},", 
+						"\tSequences = {",
+							"\t\t[\"${2:ON}\"] = { 1 }," ,
+						"\t}", 
+					"}"]
+		},
+		"New Input Channel": {
+			"prefix": ["/channel"],
+			"body": ["[\"${1:Channel}\"] = {",
+						"\t${2:MODE} = {",
+							"\t\t${3:Segment} = \"${4:SEQUENCE}\"",
+						"\t}"
+					"},"]
+		},
 },
-{
-	"Angle": {
-		"prefix": ["Angle"],
-		"body": ["Angle( 0, 0, 0 )"]
-	}
-}

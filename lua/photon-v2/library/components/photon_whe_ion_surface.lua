@@ -39,13 +39,27 @@ COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }
 }
 
+local sequence = Photon2.SequenceBuilder.New
+
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
 			[1] = "1",
+			[2] = "[2] 1",
 		},
 		Sequences = {
-			ON = { 1 }
+			ON = { 1 },
+			["STEADY_FLASH"] = sequence():SteadyFlash( 1 ),
+			["QUAD_FLASH"] = sequence():QuadFlash( 1, 0 ),
+			["QUAD_FLASH:A"] = sequence():QuadFlash( 1, 0 ),
+			["QUAD_FLASH:B"] = sequence():QuadFlash( 0, 1 ),
+			["QUAD_FLASH_DUO"] = sequence():QuadFlash( 1, 2 ),
+			["QUAD_FLASH_DUO:A"] = sequence():QuadFlash( 1, 2 ),
+			["QUAD_FLASH_DUO:B"] = sequence():QuadFlash( 2, 1 ),
+			["ALT_MED"] = sequence():Alternate( 1, 0, 8 ),
+			["ALT_MED:B"] = sequence():Alternate( 0, 1, 8 ),
+			["ALT_MED_DUO"] = sequence():Alternate( 1, 2, 8 ),
+			["ALT_MED_DUO:B"] = sequence():Alternate( 2, 1, 8 ),
 		}
 	}
 }

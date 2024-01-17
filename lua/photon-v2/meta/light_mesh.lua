@@ -31,12 +31,12 @@ Light.IntensityTransitions = false
 Light.Scale = Vector( 1, 1, 1 )
 Light.BoneParent = -1
 
-local white = { r = 255, g = 255, b = 255 }
+local white = { r = 235, g = 235, b = 255 }
 local softWhite = { r = 255, g = 235, b = 205 }
 local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
-local amber = { r = 255, g = 210, b = 0 }
+local amber = { r = 255, g = 128, b = 0 }
 local black = { r = 0, g = 0, b = 0 }
 
 Light.States = {
@@ -59,7 +59,7 @@ Light.States = {
 	},
 	["B"] = {
 		BloomColor = PhotonColor( 0, 0, 255 ):Blend( blue ):GetBlendColor(),
-		DrawColor = PhotonColor( 0, 255, 255 ):Blend( blue ):GetBlendColor(),
+		DrawColor = PhotonColor( 0, 150, 255 ):Blend( blue ):GetBlendColor(),
 	},
 	["A"] = {
 		BloomColor = PhotonColor( 255, 100, 0 ):Blend( amber ):GetBlendColor(),

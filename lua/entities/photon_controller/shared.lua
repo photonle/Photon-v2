@@ -398,12 +398,19 @@ end
 
 function ENT:UserCommandToggle( action )
 	local currentMode = self.CurrentModes[action.Channel]
-	if ( currentMode == action.Value ) then
-		self:SetChannelMode( action.Channel, "OFF" )
+	-- TODO: should this be a schema thing?
+	local off = "OFF"
+	local on = action.Value
+	if ( istable( action.Value ) ) then
+		off = action.Value[2] or "OFF"
+		on = action.Value[1]
+	end
+	if ( currentMode == on ) then
+		self:SetChannelMode( action.Channel, off )
 	else
-		local value = action.Value
+		local value = on
 		if ( action.Query ) then 
-			value = self:QueryModeFromInputSchema( action.Channel, action.Query, action.Value ) 
+			value = self:QueryModeFromInputSchema( action.Channel, action.Query, value ) 
 		end
 		self:SetChannelMode( action.Channel, value )
 	end
@@ -1168,7 +1175,9 @@ function ENT:UpdateVehicleReversing( reversing )
 	if ( reversing ) then
 		self:SetChannelMode( "Vehicle.Transmission", "REVERSE" )
 	else
-		self:SetChannelMode( "Vehicle.Transmission", "OFF" )
+		if ( self:GetChannelMode( "Vehicle.Transmission" ) == "REVERSE" ) then
+			self:SetChannelMode( "Vehicle.Transmission", "DRIVE" )
+		end
 	end
 end
 
