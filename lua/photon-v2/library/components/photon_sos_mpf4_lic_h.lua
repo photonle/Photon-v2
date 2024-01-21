@@ -13,6 +13,11 @@ COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4" - Horizontal License Mo
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_horizontal.mdl"
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
+
 local s = 2
 
 COMPONENT.Templates = {
@@ -32,11 +37,11 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[R] 1 [B] 2"
+COMPONENT.StateMap = "[1/2] 1 [2/1] 2"
 
 COMPONENT.Elements = {
-	[1] = { "Full", Vector(0.5,0,0), Angle(0, -90, 0), BoneParent = 0 },
-	[2] = { "Full", Vector(0.5, 0,0), Angle(0, -90, 0), BoneParent = 1 }
+	[1] = { "Full", Vector(0.5,0,0), Angle(0, -90, 0), BoneParent = 1 },
+	[2] = { "Full", Vector(0.5, 0,0), Angle(0, -90, 0), BoneParent = 0 }
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -44,21 +49,23 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	Full = {
 		Frames = {
-			[1] = "1 2",
-			[2] = "1:B 2:R",
-			[3] = "1:R 2:B"
+			[1] = "[1] 1 2",
+			[2] = "[1] 1 2",
+			[3] = "[2] 1 2"
 		},
 		Sequences = {
 			["STEADY"] = { 1 },
-			["COLOR_ALT"] = sequence():Alternate( 2, 3, 5 )
+			["COLOR_ALT"] = sequence():Alternate( 2, 3, 5 ),
+			["DUO_ALT_MED"] = sequence():Alternate( 2, 3, 8 ),
+			["SOS_FLASH_DUO"] = sequence():FlashHold( { 2, 3 }, 3, 2 ),
 		}
 	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { Full = "COLOR_ALT" },
-		["MODE2"] = { Full = "COLOR_ALT" },
-		["MODE3"] = { Full = "COLOR_ALT" },
+		["MODE1"] = { Full = "STEADY" },
+		["MODE2"] = { Full = "DUO_ALT_MED" },
+		["MODE3"] = { Full = "SOS_FLASH_DUO" },
 	}
 }

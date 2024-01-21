@@ -82,11 +82,15 @@ COMPONENT.Segments = {
 	Light = {
 		Frames = {
 			[1] = "Light",
-			[2] = "[W] Light"
+			[2] = "[W] Light",
+			[3] = "Light:2"
 		},
 		Sequences = {
 			["MARKER"] = { 1 },
-			["SCENE"] = { 2 }
+			["SCENE"] = { 2 },
+			["DUO_ALT_MED"] = sequence():Alternate( 1, 3, 8 ),
+			["SOS_FLASH_TRIO"] = sequence():FlashHold( { 1, 3, 2, 3 }, 3, 2 ),
+			["SOS_FLASH_TRIO:B"] = sequence():FlashHold( { 3, 1, 3, 2 }, 3, 2 )
 		}
 	}
 }
@@ -94,10 +98,13 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Undercover = "FLASH1"
+			Light = "MARKER"
 		},
 		["MODE2"] = {
-			Undercover = "FLASH1"
+			Light = "DUO_ALT_MED"
+		},
+		["MODE3"] = {
+			Light = "SOS_FLASH_TRIO"
 		}
 	},
 	["Emergency.Marker"] = {

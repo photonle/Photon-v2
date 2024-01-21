@@ -297,6 +297,21 @@ COMPONENT.Segments = {
 			WIGWAG = sequence():Alternate( 0, 1, 8, 2 ),
 			ON = { 1 }
 		}
+	},
+	ReverseFlasher = {
+		-- RevL and RevR and element groups defined in photon_standard_sgmfpiu20
+		Frames = {
+			[1] = "[2] RevL",
+			[2] = "[2] RevR",
+			[3] = "[2] RevL [W] RevR",
+			[4] = "[W] RevL [2] RevR",
+		},
+		Sequences = {
+			-- Slow left-right pattern (10 frames per side)
+			["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 ),
+			["MODE2"] = sequence():FlashHold( 2, 1, 5 ):FlashHold( 1, 1, 5 ),
+			["MODE3"] = sequence():FlashHold( 3, 2, 3 ):FlashHold( 4, 2, 3 )
+		}
 	}
 }
 

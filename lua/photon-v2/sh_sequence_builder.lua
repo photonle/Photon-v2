@@ -308,6 +308,15 @@ function Photon2.SequenceBuilder:SteadyFlash( frame )
 	return self:Steady( frame, 64 ):TripleFlash( frame )
 end
 
+-- Adds frame [0] for the specified duration
+function Photon2.SequenceBuilder:Off( duration )
+	local result = {}
+	for i=0, duration do
+		result[#result+1] = 0
+	end
+	return self:Append( result )
+end
+
 
 function Photon2.SequenceBuilder:AppendPhaseGap()
 	local count = 0

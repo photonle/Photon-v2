@@ -12,6 +12,11 @@ COMPONENT.PrintName = [[SoundOff Signal nForce (54")]]
 
 COMPONENT.Model = "models/sentry/props/nforce_suv.mdl"
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
+
 local domeParameters = { 
 	Shader = "VertexLitGeneric",
 	["$basetexture"] 			= "sentry/props/nforce/top",
@@ -86,7 +91,7 @@ COMPONENT.Templates = {
 
 -- COMPONENT.StateMap = "[B] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26"
 
-COMPONENT.StateMap = "[R] 1 [R] 2 4 6 8 10 12 14 16 18 20 22 24 [B] 3 5 7 9 11 13 15 17 19 21 23 25 [R] 26"
+COMPONENT.StateMap = "[1/2/W] 1 2 4 6 8 10 12 14 16 18 [1/2/A] 20 22 24 26 [2/1/W] 3 5 7 9 11 13 15 17 19 [2/1/A] 21 23 25"
 
 COMPONENT.Elements = {
 	[1] = { "Main", Vector( 0, 6.6, -0.2 ), Angle( 0, 0, 0 ) },

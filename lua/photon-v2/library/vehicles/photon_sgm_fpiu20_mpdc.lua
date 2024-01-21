@@ -122,7 +122,8 @@ VEHICLE.Equipment = {
 				Option = "Standard Lighting",
 				VirtualComponents = {
 					{
-						Component = "photon_standard_sgmfpiu20"
+						Component = "photon_standard_sgmfpiu20",
+						States = { "B", "B" }
 					}
 				}
 			}
@@ -144,6 +145,8 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_intersector_surf",
 						Position = Vector( 11, 116.2, 48 ),
 						Angles = Angle( 0, -7, 12 ),
+						States = { "B", "R" },
+						Phase = "B",
 						Scale = 1
 					}
 				}
@@ -166,6 +169,7 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_undercover",
 						Position = Vector( 41.4, 90, 51.5 ),
 						Angles = Angle( 0, -74, -76 ),
+						States = { "B", "R" },
 						Scale = 0.4
 					}
 				}
@@ -192,6 +196,7 @@ VEHICLE.Equipment = {
 						Position = Vector( 45.5, 34.5, 57.3 ),
 						Angles = Angle( -1, -90, 2 ),
 						Scale = 1,
+						States = { "B", "R" },
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},

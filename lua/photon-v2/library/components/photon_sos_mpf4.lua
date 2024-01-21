@@ -42,6 +42,8 @@ COMPONENT.Elements = {
 	[1] = { "Light", Vector(0.5, 0, 0), Angle(0, -90, 0) },
 }
 
+local sequence = Photon2.SequenceBuilder.New
+
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
@@ -64,6 +66,8 @@ COMPONENT.Segments = {
 			["1"] = { 1 },
 			["2"] = { 2 },
 			["3"] = { 3 },
+			["DUO_ALT_MED"] = sequence():Alternate( 1, 2, 8 )
+
 		}
 	}
 }
@@ -71,10 +75,13 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Light = "MODE1"
+			Light = "1"
+		},
+		["MODE2"] = {
+			Light = "DUO_ALT_MED"
 		},
 		["MODE3"] = {
-			Light = "TEST"
+			Light = "DUO_ALT_MED"
 		}
 	},
 	["Emergency.Marker"] = {

@@ -37,7 +37,7 @@
 						"\tSequences = {",
 							"\t\t[\"${2:ON}\"] = { 1 }," ,
 						"\t}", 
-					"}"]
+					"},"]
 		},
 		"New Input Channel": {
 			"prefix": ["/channel"],
