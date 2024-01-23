@@ -57,7 +57,7 @@ COMPONENT.Segments = {
 			["STEADY"] = { 1 },
 			["COLOR_ALT"] = sequence():Alternate( 2, 3, 5 ),
 			["DUO_ALT_MED"] = sequence():Alternate( 2, 3, 8 ),
-			["SOS_FLASH_DUO"] = sequence():FlashHold( { 2, 3 }, 3, 2 ),
+			["SOS_FLASH_DUO"] = sequence():FlashHold( { 2, 3 }, 3, 2 ):Do( 8 ):Alternate( 2, 3, 2 ):Do( 4 ),
 		}
 	}
 }

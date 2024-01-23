@@ -89,8 +89,28 @@ COMPONENT.Segments = {
 			["MARKER"] = { 1 },
 			["SCENE"] = { 2 },
 			["DUO_ALT_MED"] = sequence():Alternate( 1, 3, 8 ),
-			["SOS_FLASH_TRIO"] = sequence():FlashHold( { 1, 3, 2, 3 }, 3, 2 ),
-			["SOS_FLASH_TRIO:B"] = sequence():FlashHold( { 3, 1, 3, 2 }, 3, 2 )
+			["SOS_FLASH_TRIO"] = sequence()
+						:FlashHold( { 1, 3, 2, 3 }, 3, 2 )
+						:Do( 4 )
+						:Alternate( 1, 3, 1 )
+						:Do( 2 )
+						:Alternate( 2, 3, 1 )
+						:Do( 2 )
+						:Alternate( 1, 3, 1 )
+						:Do( 2 )
+						:Alternate( 2, 3, 1 )
+						:Do( 2 ),
+			["SOS_FLASH_TRIO:B"] = sequence()
+						:FlashHold( { 3, 1, 3, 2 }, 3, 2 )
+						:Do( 4 )
+						:Alternate( 3, 1, 1 )
+						:Do( 2 )
+						:Alternate( 3, 2, 1 )
+						:Do( 2 )
+						:Alternate( 3, 1, 1 )
+						:Do( 2 )
+						:Alternate( 3, 2, 1 )
+						:Do( 2 )
 		}
 	}
 }

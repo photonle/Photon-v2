@@ -121,8 +121,28 @@ COMPONENT.Segments = {
 			["QUAD_FLASH_DUO"] = sequence():QuadFlash( 1, 2 ),
 			["QUAD_FLASH_DUO:B"] = sequence():QuadFlash( 2, 1 ),
 			["DUO_ALT_MED"] = sequence():Alternate( 1, 2, 8 ),
-			["SOS_FLASH_TRIO"] = sequence():FlashHold( { 1, 3, 2, 3 }, 3, 2 ),
-			["SOS_FLASH_TRIO:B"] = sequence():FlashHold( { 3, 1, 3, 2 }, 3, 2 )
+			["SOS_FLASH_TRIO"] = sequence()
+									:FlashHold( { 1, 3, 2, 3 }, 3, 2 )
+									:Do( 4 )
+									:Alternate( 1, 3, 1 )
+									:Do( 2 )
+									:Alternate( 2, 3, 1 )
+									:Do( 2 )
+									:Alternate( 1, 3, 1 )
+									:Do( 2 )
+									:Alternate( 2, 3, 1 )
+									:Do( 2 ),
+			["SOS_FLASH_TRIO:B"] = sequence()
+									:FlashHold( { 3, 1, 3, 2 }, 3, 2 )
+									:Do( 4 )
+									:Alternate( 3, 1, 1 )
+									:Do( 2 )
+									:Alternate( 3, 2, 1 )
+									:Do( 2 )
+									:Alternate( 3, 1, 1 )
+									:Do( 2 )
+									:Alternate( 3, 2, 1 )
+									:Do( 2 )
 		}
 	}
 }

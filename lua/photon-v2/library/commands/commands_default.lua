@@ -257,117 +257,38 @@ Photon2.RegisterCommand({
 	}
 })
 
-Photon2.RegisterCommand({
-	Name = "toggle_siren_1",
-	Title = "Tone 1",
-	Category = "Siren",
-	Description = "Toggles siren #1 (T1).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T1" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
+local function generateSirenToggle( tone, siren, sirenLabel )
+	local category = "Siren"
+	local description = "Toggles siren tone #" .. tostring( tone ) .. "."
+	if ( siren ) then
+		category = category .. " #" .. tostring( siren )
+	end
+	if ( sirenLabel ) then
+		description = "Toggles " .. sirenLabel .. " siren tone #" .. tostring( tone ) .. "."
+	end
+	siren = siren or ""
+	sirenLabel = sirenLabel or ""
+	tone = tostring( tone )
+	return Photon2.RegisterCommand({
+		Name = "toggle_siren" .. siren .. "_" .. tone,
+		Title = "Tone " .. tone,
+		Category = category,
+		Description = description,
+		OnPress = {
+			{ Action = "SOUND", Sound = "Controller" },
+			{ Action = "TOGGLE", Channel = "Emergency.Siren" .. siren, Value = "T" .. tone },
+		},
+		OnRelease = {
+			{ Action = "SOUND", Sound = "Controller" },
+		}
+	})
+end
 
-Photon2.RegisterCommand({
-	Name = "toggle_siren_2",
-	Title = "Tone 2",
-	Category = "Siren",
-	Description = "Toggles siren tone #2 (T2).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T2" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren_3",
-	Title = "Tone 3",
-	Category = "Siren",
-	Description = "Toggles siren tone #3 (T3).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T3" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren_4",
-	Title = "Tone 4",
-	Category = "Siren",
-	Description = "Toggles siren tone #4 (T4).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren", Value = "T4" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren2_1",
-	Title = "Tone 1",
-	Category = "Siren #2",
-	Description = "Toggles secondary siren tone #1 (T1).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T1" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren2_2",
-	Title = "Tone 2",
-	Category = "Siren #2",
-	Description = "Toggles siren tone #2 (T2).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T2" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren2_3",
-	Title = "Tone 3",
-	Category = "Siren #2",
-	Description = "Toggles secondary siren tone #3 (T3).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T3" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
-
-Photon2.RegisterCommand({
-	Name = "toggle_siren2_4",
-	Title = "Tone 4",
-	Category = "Siren #2",
-	Description = "Toggles secondary siren tone #4 (T4).",
-	OnPress = {
-		{ Action = "SOUND", Sound = "Controller" },
-		{ Action = "TOGGLE", Channel = "Emergency.Siren2", Value = "T4" },
-	},
-	OnRelease = {
-		{ Action = "SOUND", Sound = "Controller" },
-	}
-})
+-- Generates commands for siren tones 1-8
+for i=1, 8 do 
+	generateSirenToggle( i, nil, "main" )
+	generateSirenToggle( i, "2", "secondary" )
+end
 
 Photon2.RegisterCommand({
 	Name = "activate_lights_siren",

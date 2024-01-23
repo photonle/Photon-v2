@@ -123,7 +123,10 @@ VEHICLE.Equipment = {
 				VirtualComponents = {
 					{
 						Component = "photon_standard_sgmfpiu20",
-						States = { "B", "B" }
+						States = { "B", "B" },
+						Inputs = {
+							["Emergency.Marker"] = { ON = {} }
+						}
 					}
 				}
 			}
@@ -163,14 +166,20 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_undercover",
 						Position = Vector( -41.4, 90, 51.5 ),
 						Angles = Angle( 0, 74, -76 ),
-						Scale = 0.4
+						Scale = 0.4,
+						Inputs = {
+							["Emergency.Marker"] = { ON = {} }
+						}
 					},
 					{
 						Component = "photon_sos_undercover",
 						Position = Vector( 41.4, 90, 51.5 ),
 						Angles = Angle( 0, -74, -76 ),
 						States = { "B", "R" },
-						Scale = 0.4
+						Scale = 0.4,
+						Inputs = {
+							["Emergency.Marker"] = { ON = {} }
+						}
 					}
 				}
 			}

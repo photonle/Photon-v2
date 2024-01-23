@@ -370,6 +370,9 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 	local iconColor = white
 	local indicatorColor = dimColor
 	local backgroundColor =  Color( 16, 16, 16, 200 )
+	local rowMax = 5
+	local rows = math.ceil( count / rowMax )
+	local selectedIndicator = ( count + 1 ) - selected
 
 	if ( mode == 2 ) then
 		activeIcon = ellipseInactive
@@ -392,19 +395,53 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 	surface.SetMaterial( inactiveIcon )
 
-	selected = ( count + 1 ) - selected
+	if ( selected > 0 and rows > 1 ) then
+		-- print( selectedIndicator )
+		local max
+		local selectedRow = math.ceil( selected / rowMax )
+		local maxToRow
+
+		if ( selectedRow == rows ) then
+			maxToRow = count
+		else
+			maxToRow = selectedRow * rowMax
+		end
+		
+		local rowSelected = selected - ( ( selectedRow - 1 ) * rowMax )
+		selectedIndicator = maxToRow - rowSelected + 1
+
+		local lastRow = rowMax - ( ( rowMax * rows ) - count )
+
+		-- print( "last row: " .. tostring( lastRow ) )
+		-- print( selectedRow )
+		-- selectedIndicator = selected + rowMax
+	end
 
 	surface.SetDrawColor( indicatorColor )
 
+	-- for =1, rows do
+
+	-- end
+
+	local yOffset
+	
 	for i=1, count do
-		if ( i == selected ) then
+		local row = math.ceil( i/rowMax )
+
+		if ( rows == 1 ) then 
+			yOffset = 12
+		elseif ( rows == 2 ) then
+			yOffset = 6 + ( ( row - 1 ) * 12 )
+		end
+
+		if ( i == selectedIndicator ) then
 			surface.SetMaterial( activeIcon )
 			surface.SetDrawColor( white )
 		end
 
-		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 12, 8, 8 )
+		surface.DrawTexturedRect( x + width - 16 - ( ( ( ( i - 1 ) % rowMax ) ) * 12 ), y + yOffset, 8, 8 )
 
-		if ( i == selected ) then
+		if ( i == selectedIndicator ) then
 			surface.SetMaterial( inactiveIcon )
 			surface.SetDrawColor( indicatorColor )
 		end
