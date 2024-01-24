@@ -55,7 +55,7 @@ Photon2.RegisterSiren(
 		Sounds = {
 			["WAIL"] = { Sound = "photon/sirens/code3_z3/wail.wav", 	Default = "T1" },
 			["YELP"] = { Sound = "photon/sirens/code3_z3/yelp.wav", 	Default = "T2" },
-			["HYPER"] = { Sound = "photon/sirens/code3_z3/hyper_yelp_5.wav", 	Default = "T3" },
+			["HYPER"] = { Sound = "photon/sirens/code3_z3/hyper_yelp.wav", 	Default = "T3" },
 			["HILO"]  = { Sound = "photon/sirens/code3_z3/hilo.wav", Default = "T4" },
 			["AIRHORN"]  = { Sound = "photon/sirens/code3_z3/airhorn.wav", Default = "AIR", Label = "AIR" },
 			["MANUAL"]  = { Sound = "photon/sirens/code3_z3/wail.wav", 	Default = "MAN", Label = "MAN" },
@@ -82,18 +82,23 @@ Photon2.RegisterSiren(
 		Sounds = {
 			["WAIL"] = { Sound = "photon/sirens/sos_nergy400/wail.wav", 	Default = "T1" },
 			["WAIL2"] = { Sound = "photon/sirens/sos_nergy400/wail_short.wav", 	Default = "TS1" },
+			
 			["YELP"] = { Sound = "photon/sirens/sos_nergy400/yelp.wav", 	Default = "T2" },
 			-- Annoying clicking sound emerged when stretching the yelp, but luckily you can't tell
 			-- when both yelps are playing
 			["YELP2"] = { Sound = "photon/sirens/sos_nergy400/yelp_long.wav", 	Default = "TS2" },
+			
 			["PIERCER"] = { Sound = "photon/sirens/sos_nergy400/phaser.wav", Icon = "bolt",	Default = "T3", Label = "PRTY" },
 			["SUPER_HILO"] = { Sound = "photon/sirens/sos_nergy400/super_hilo.wav", Default = "TS3", Label = "S-HILO", Icon = "hilo" },
+			
 			["HILO"] = { Sound = "photon/sirens/sos_nergy400/hilo.wav", 	Default = "T4" },
 			["ALERT"] = { Sound = "photon/sirens/sos_nergy400/alert.wav", Default = "TS4", Label = "ALRT", Icon = "bolt" },
 			
 			["AIRHORN"]  = { Sound = "photon/sirens/sos_nergy400/airhorn.wav", Default = "AIR", Label = "AIR" },
 			["AIRHORN2"]  = { Sound = "photon/sirens/sos_nergy400/phaser.wav", Default = "SAIR" },
+			
 			["MANUAL"]  = { Sound = "photon/sirens/sos_nergy400/wail.wav", 	Default = "MAN", Label = "MAN" },
+			
 			["PCALL"] = { Sound = "photon/sirens/sos_nergy400/pcall.wav", 	icon = "pcall" },
 		}
 	}
@@ -126,10 +131,10 @@ Photon2.RegisterSiren(
 			["YELP"] = { Sound = "photon/sirens/whelen_epsilon/yelp.wav", 	Default = "T2" },
 			["PIERCER"] = { Sound = "photon/sirens/whelen_epsilon/piercer.wav", Icon = "bolt",	Default = "T3", Label = "PIER" },
 			["HILO"] = { Sound = "photon/sirens/whelen_epsilon/hilo.wav", 	Default = "T4" },
-			["WARB"] = { Sound = "photon/sirens/whelen_epsilon/warble.wav", 	Default = "T5" },
-			["WOOP"] = { Sound = "photon/sirens/whelen_epsilon/woop.wav", 	Default = "T6" },
-			["WAIL_ALT"] = { Sound = "photon/sirens/whelen_epsilon/wail_alt.wav", Label = "ALT W",	Default = "T7" },
-			["YELP_ALT"] = { Sound = "photon/sirens/whelen_epsilon/yelp_alt.wav", Label = "ALT Y",	Default = "T8" },
+			["WARB"] = { Sound = "photon/sirens/whelen_epsilon/warble.wav" },
+			["WOOP"] = { Sound = "photon/sirens/whelen_epsilon/woop.wav" },
+			["WAIL_ALT"] = { Sound = "photon/sirens/whelen_epsilon/wail_alt.wav", Label = "ALT W" },
+			["YELP_ALT"] = { Sound = "photon/sirens/whelen_epsilon/yelp_alt.wav", Label = "ALT Y" },
 			["AIRHORN"]  = { Sound = "photon/sirens/whelen_epsilon/airhorn.wav", Default = "AIR", Label = "AIR" },
 			["MANUAL"]  = { Sound = "photon/sirens/whelen_epsilon/wail.wav", 	Default = "MAN", Label = "MAN" },
 		}
