@@ -13,7 +13,7 @@ VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Siren = { "fedsig_smartsiren", "fedsig_touchmaster_delta" }
+VEHICLE.Siren = { "code3_z3" }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
@@ -25,7 +25,7 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_sm_liberty_ii_suv",
-						Position = Vector( 0, -14, 86.7 ),
+						Position = Vector( 0, -15, 88 ),
 						Angles = Angle( 2, 90, 0 ),
 						Scale = 1.1,
 						
@@ -154,14 +154,14 @@ VEHICLE.Equipment = {
 						-- Siren = "fedsig_smartsiren"
 						Siren = 1
 					},
-					{
-						Component = "photon_siren_secondary",
-						Position = Vector(11, 110, 35),
-						Angles = Angle(1.5, -90, 0),
-						Scale = 1.4,
-						-- Siren = "fedsig_smartsiren"
-						Siren = 2
-					},
+					-- {
+					-- 	Component = "photon_siren_secondary",
+					-- 	Position = Vector(11, 110, 35),
+					-- 	Angles = Angle(1.5, -90, 0),
+					-- 	Scale = 1.4,
+					-- 	-- Siren = "fedsig_smartsiren"
+					-- 	Siren = 2
+					-- },
 				}
 			}
 		}

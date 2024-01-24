@@ -22,12 +22,18 @@ COMPONENT.Templates = {
 	["Sound"] = { 
 		Tone = {
 			DSP = 118,
-			Pitch = 100
-		} 
+			Pitch = 100,
+			Volume = 0.9
+		},
+		Secondary = {
+			Pitch = 100,
+			Volume = 0.9,
+			DSP = 118,
+		}
 	}
 }
 
-COMPONENT.StateMap = "[ON] 1 2 3 4 5 6 7 8 9 10"
+COMPONENT.StateMap = "[ON] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19"
 
 COMPONENT.Elements = {
 	[1] = { "Tone", Tone = "T1" },
@@ -40,13 +46,34 @@ COMPONENT.Elements = {
 	[8] = { "Tone", Tone = "T8" },
 	[9] = { "Tone", Tone = "AIR" },
 	[10] = { "Tone", Tone = "MAN" },
+	[11] = { "Secondary", Tone = "TS1" },
+	[12] = { "Secondary", Tone = "TS2" },
+	[13] = { "Secondary", Tone = "TS3" },
+	[14] = { "Secondary", Tone = "TS4" },
+	[15] = { "Secondary", Tone = "T5" },
+	[16] = { "Secondary", Tone = "T6" },
+	[17] = { "Secondary", Tone = "T7" },
+	[18] = { "Secondary", Tone = "T8" },
+	[19] = { "Secondary", Tone = "SAIR" },
 }
 
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	Siren = {
-		Frames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
+		Frames = { 
+			[1] = "1 11", 
+			[2] = "2 12", 
+			[3] = "3 13", 
+			[4] = "4 14", 
+			[5] = "5", 
+			[6] = "6", 
+			[7] = "7", 
+			[8] = "8", 
+			[9] = "9 19", 
+			[10] = "10",
+			[11] = "1 11",
+		},
 		Sequences = {
 			["T1"] = { 1 },
 			["T2"] = { 2 },

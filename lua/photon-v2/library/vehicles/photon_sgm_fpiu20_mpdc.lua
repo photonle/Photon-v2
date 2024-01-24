@@ -358,7 +358,7 @@ VEHICLE.Equipment = {
 				Option = "Siren Prototype",
 				Components = {
 					{
-						Component = "siren_prototype",
+						Component = "photon_sos_siren",
 						Position = Vector(-11, 115, 38),
 						Angles = Angle(1.5, -90, 0),
 						Scale = 1.4,

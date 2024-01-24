@@ -12,7 +12,7 @@ VEHICLE.SubMaterials = {
 	[20] = "photon/common/blank", -- black_chrome
 }
 
-VEHICLE.Siren = { "whelen_gamma" }
+VEHICLE.Siren = { "whelen_epsilon" }
 
 VEHICLE.Equipment = {
 	{

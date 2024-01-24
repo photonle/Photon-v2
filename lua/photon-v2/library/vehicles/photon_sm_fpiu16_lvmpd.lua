@@ -7,7 +7,7 @@ VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
 VEHICLE.Siren = {
-	[1] = "fedsig_smartsiren",
+	[1] = "fedsig_pathfinder_ssp",
 	-- [1] = "fedsig_touchmaster_delta",
 }
 

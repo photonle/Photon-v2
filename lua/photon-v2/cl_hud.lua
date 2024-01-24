@@ -395,22 +395,25 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 	surface.SetMaterial( inactiveIcon )
 
+	-- The "selected" indicator calculation needs
+	-- special handling when there's more than one row.
 	if ( selected > 0 and rows > 1 ) then
-		-- print( selectedIndicator )
-		local max
 		local selectedRow = math.ceil( selected / rowMax )
-		local maxToRow
 
+		-- the highest value up to the end of the selected row
+		local maxToRow
 		if ( selectedRow == rows ) then
 			maxToRow = count
 		else
 			maxToRow = selectedRow * rowMax
 		end
 		
+		-- the intra-row index of the selected value (always between 1 and rowMax)
 		local rowSelected = selected - ( ( selectedRow - 1 ) * rowMax )
+		
 		selectedIndicator = maxToRow - rowSelected + 1
 
-		local lastRow = rowMax - ( ( rowMax * rows ) - count )
+		-- local lastRow = rowMax - ( ( rowMax * rows ) - count )
 
 		-- print( "last row: " .. tostring( lastRow ) )
 		-- print( selectedRow )
