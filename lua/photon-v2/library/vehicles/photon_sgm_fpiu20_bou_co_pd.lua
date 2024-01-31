@@ -13,16 +13,16 @@ VEHICLE.Author		= "Schmal"
 
 VEHICLE.Siren = {
 	-- This an example of using mixed siren tones (also a real-world recreation)
-	[1] = {
-		T1 = "fedsig_touchmaster_delta/wail",
-		T2 = "fedsig_touchmaster_delta/yelp",
-		T3 = "fedsig_smartsiren/priority",
-		T4 = "fedsig_smartsiren/hilo",
-		AIR = "fedsig_smartsiren/airhorn",
-		MAN = "fedsig_touchmaster_delta/manual",
-	},
+	-- [1] = {
+	-- 	T1 = "fedsig_touchmaster_delta/wail",
+	-- 	T2 = "fedsig_touchmaster_delta/yelp",
+	-- 	T3 = "fedsig_smartsiren/priority",
+	-- 	T4 = "fedsig_smartsiren/hilo",
+	-- 	AIR = "fedsig_smartsiren/airhorn",
+	-- 	MAN = "fedsig_touchmaster_delta/manual",
+	-- },
 	-- [1] = "fedsig_touchmaster_delta",
-	-- [1] = "fedsig_smartsiren"
+	[1] = "fedsig_pathfinder_ssp"
 }
 
 local livery = PhotonMaterial.New({

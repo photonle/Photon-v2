@@ -94,7 +94,7 @@ function Sound:Sync()
 	self:SetVolume( self.Volume, self.VolumeTransition )
 	self:SetLevel( self.Level )
 	self:SetPitch( self.Pitch, self.PitchTransition )
-	-- self:SetMute( self.Muted )
+	self:SetMute( self.Muted )
 	self:SetDSP( self.DSP )
 end
 
@@ -143,11 +143,13 @@ end
 function Sound:SetMute( mute )
 	if ( mute ) then
 		-- self.Muted = true
-		if ( self.Sound ) then self.Sound:ChangeVolume( 0, 0 ) end
+		-- if ( self.Sound ) then self.Sound:ChangeVolume( 0, 0 ) end
+			self:SetLevel( 0.0001 )
 		return
 	end
+	self:SetLevel( self.Level )
 	-- self.Muted = false
-	if ( self.Sound ) then self.Sound:ChangeVolume( self.Volume, 0 ) end
+	-- if ( self.Sound ) then self.Sound:ChangeVolume( self.Volume, 0 ) end
 end
 
 function Sound:SetPlay( play )

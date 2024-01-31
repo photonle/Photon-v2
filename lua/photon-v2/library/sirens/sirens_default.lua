@@ -63,6 +63,23 @@ Photon2.RegisterSiren(
 	}
 )
 
+Photon2.RegisterSiren(
+	{
+		Name = "dr_iqelitepro",
+		Make = "D&R",
+		Model = "IQ Elite Pro",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/dr_intimidator/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/dr_intimidator/yelp.wav", 	Default = "T2" },
+			["STINGER"] = { Sound = "photon/sirens/dr_intimidator/stinger.wav", Label = "STING", Default = "T3", Icon = "bolt" },
+			["HILO"]  = { Sound = "photon/sirens/dr_intimidator/hilo.wav", Default = "T4" },
+			["AIRHORN"]  = { Sound = "photon/sirens/dr_intimidator/airhorn.wav", Default = "AIR", Label = "AIR" },
+			["MANUAL"] = { Sound = "photon/sirens/dr_intimidator/wail.wav", Default = "MAN", Label = "MAN" },
+		}
+	}
+)
+
 -- ***************************
 -- NOTE: DUAL TONE CONFIGURATION IS EXPERIMENTAL
 -- 
@@ -171,6 +188,23 @@ Photon2.RegisterSiren(
 			["HILO"] = { Sound = "photon/sirens/fedsig_pathfinder/ssp_hilo.wav", 	Default = "T4" },
 			["AIRHORN"]  = { Sound = "photon/sirens/fedsig_pathfinder/ssp_airhorn.wav", Default = "AIR", Label = "AIR" },
 			["MANUAL"]  = { Sound = "photon/sirens/fedsig_pathfinder/ssp_wail.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)
+
+
+Photon2.RegisterSiren(
+	{
+		Name = "motorola_spectra",
+		Make = "Motorola",
+		Model = "Spectra",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/moto_spectra/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/moto_spectra/yelp.wav", 	Default = "T2" },
+			["HILO"] = { Sound = "photon/sirens/moto_spectra/hilo.wav", 	Default = "T3" },
+			["AIRHORN"]  = { Sound = "photon/sirens/moto_spectra/airhorn.wav", Default = "AIR", Label = "AIR" },
+			["MANUAL"]  = { Sound = "photon/sirens/moto_spectra/manual.wav", 	Default = "MAN", Label = "MAN" },
 		}
 	}
 )

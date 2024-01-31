@@ -559,7 +559,7 @@ end
 
 function Component:FrameTick()
 	-- Relays notification to each segment
-	-- TODO: consider sequence-based updates to reduce overhead
+	-- TODO: consider active sequence-based updates to reduce overhead
 	for segmentName, segment in pairs( self.Segments ) do 
 		segment:IncrementFrame( self.PhotonController.Frame )
 	end

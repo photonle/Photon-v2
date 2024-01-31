@@ -13,7 +13,9 @@ VEHICLE.Vehicle		= "20fpiu_new_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-VEHICLE.Siren = { "code3_z3" }
+-- VEHICLE.Siren = { "code3_z3" }
+-- VEHICLE.Siren = { "dr_iqelitepro" }
+VEHICLE.Siren = { "motorola_spectra" }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
