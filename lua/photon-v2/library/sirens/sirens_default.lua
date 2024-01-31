@@ -192,6 +192,26 @@ Photon2.RegisterSiren(
 	}
 )
 
+Photon2.RegisterSiren(
+	{
+		Name = "fedsig_pathfinder_unitrol",
+		Make = "Federal Signal",
+		Model = "PathFinder Unitrol",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_yelp.wav", 	Default = "T2" },
+			["FUTURA"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_futura.wav", Label = "FTRA",	Default = "T3", Icon = "bolt" },
+			["ULTRAHILO"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_ultrahilo.wav", Label = "UHILO",	Default = "T4", Icon = "hilo" },
+			["HETRO"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_hetro.wav",  Icon = "hilo" },
+			["HILO"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_hilo.wav", 	Default = "T5", Icon = "hilo" },
+			["ALARM"] = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_alarm.wav", Icon = "bolt" },
+			["PCALL"] = { Sound = "photon/sirens/fedsig_pathfinder/powercall.wav", Icon = "pcall" },
+			["AIRHORN"]  = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_airhorn.wav", Default = "AIR", Label = "AIR" },
+			["MANUAL"]  = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_manual.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)
 
 Photon2.RegisterSiren(
 	{

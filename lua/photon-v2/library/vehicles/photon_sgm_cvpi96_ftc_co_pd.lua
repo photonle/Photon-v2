@@ -35,7 +35,7 @@ VEHICLE.Schema = {
 	}
 }
 
-VEHICLE.Siren = { "fedsig_omega90" }
+VEHICLE.Siren = { "motorola_spectra" }
 
 VEHICLE.Equipment = {
 	{

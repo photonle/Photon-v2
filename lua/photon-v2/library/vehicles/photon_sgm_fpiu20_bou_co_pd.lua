@@ -22,7 +22,7 @@ VEHICLE.Siren = {
 	-- 	MAN = "fedsig_touchmaster_delta/manual",
 	-- },
 	-- [1] = "fedsig_touchmaster_delta",
-	[1] = "fedsig_pathfinder_ssp"
+	[1] = "fedsig_pathfinder_unitrol"
 }
 
 local livery = PhotonMaterial.New({
