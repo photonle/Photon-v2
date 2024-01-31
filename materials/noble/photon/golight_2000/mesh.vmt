@@ -1,0 +1,9 @@
+"UnlitGeneric"
+{
+	"$basetexture" "noble/photon/golight_2000/mesh"
+	"$translucent" "1"
+	"$nocull" "1"
+}
+
+
+
