@@ -223,7 +223,9 @@ Photon2.RegisterSiren(
 			["WAIL"] = { Sound = "photon/sirens/moto_spectra/wail.wav", 	Default = "T1" },
 			["YELP"] = { Sound = "photon/sirens/moto_spectra/yelp.wav", 	Default = "T2" },
 			["HILO"] = { Sound = "photon/sirens/moto_spectra/hilo.wav", 	Default = "T3" },
-			["AIRHORN"]  = { Sound = "photon/sirens/moto_spectra/airhorn.wav", Default = "AIR", Label = "AIR" },
+			-- TODO: Unitrol airhorn sounds much closer to the Spectra airhorn than my attempt...
+			["AIRHORN"]  = { Sound = "photon/sirens/fedsig_pathfinder/unitrol_airhorn.wav", Default = "AIR", Label = "AIR" },
+			-- ["AIRHORN"]  = { Sound = "photon/sirens/moto_spectra/airhorn.wav", Default = "AIR", Label = "AIR" },
 			["MANUAL"]  = { Sound = "photon/sirens/moto_spectra/manual.wav", 	Default = "MAN", Label = "MAN" },
 		}
 	}

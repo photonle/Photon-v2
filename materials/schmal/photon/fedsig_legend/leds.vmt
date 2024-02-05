@@ -1,0 +1,14 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/fedsig_legend/leds"
+	"$bumpmap"	"schmal/photon/fedsig_legend/leds-nm"
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[0.1 0.1 0.1]"
+	"$phong"		"1"
+	"$phongexponent"	"16"
+	"$phongboost"	"1"
+	"$rimlight"	"1"
+	"$rimlightexponent"	"1"
+	"$rimlightboost"	"1.2"
+	"$nocull"		"1"	
+}
