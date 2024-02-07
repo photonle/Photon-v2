@@ -212,7 +212,7 @@ PhotonMaterial = PhotonMaterial
 
 ---@class PhotonVehicleSelectionVariant
 ---@field Variant string
----@field Variants PhotonEquipmentTable[]
+---@field Variants? PhotonEquipmentTable[]
 
 ---@class PhotonEquipmentPositional
 
