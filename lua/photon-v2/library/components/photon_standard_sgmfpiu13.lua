@@ -10,27 +10,86 @@ COMPONENT.Credits = {
 COMPONENT.Templates = {
 	["Mesh"] = {
 		Mesh = {
-			Model = "models/schmal/sgm_fpiu13_emis.mdl"
+			Model = "models/schmal/sgm_fpiu13_emis.mdl",
+			IntensityGainFactor = 10,
+			IntensityLossFactor = 10,
+			States = {
+				RD = {
+					Inherit = "R",
+					Intensity = 0.7
+				},
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true
+				},
+				["~AD"] = {
+					IntensityTransitions = true,
+					Inherit = "A",
+					Intensity = 0.6
+				},
+				["~A"] = {
+					IntensityTransitions = true,
+					Inherit = "A",
+					Intensity = 1
+				}
+			}
+		}
+	},
+	["2D"] = {
+		Headlights = {
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/bulb_detail.png").MaterialName,
+			Width = 4,
+			Height = 4,
+			DeactivationState = "~OFF",
+			IntensityGainFactor = 10,
+			States = {
+				["~SW"] = {
+					Inherit = "SW",
+					IntensityTransitions = true
+				}
+			}
+		},
+		RearMarker = {
+			-- :-)
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_detail.png").MaterialName,
+			Width = 3.4,
+			Height = 1.6,
+			Intensity = 1,
+			Scale = 1,
+			States = {
+				RD = {
+					Inherit = "R",
+					Intensity = 0.9
+				}
+			}
 		}
 	}
 }
 
 COMPONENT.Elements = {
 	[1] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc" },
-	[2] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", DrawMaterial = "photon/common/glow_gradient_a" },
-	[3] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", DrawMaterial = "photon/common/glow_gradient_a" },
+	[2] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", DrawMaterial = "photon/common/glow_gradient_c" },
+	[3] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", DrawMaterial = "photon/common/glow_gradient_c" },
 
-	[4] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", DrawMaterial = "photon/common/glow_gradient_a" },
-	[5] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", DrawMaterial = "photon/common/glow_gradient_a" },
+	[4] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
+	[5] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
 	
-	[6] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DrawMaterial = "photon/common/glow_gradient_a" },
-	[7] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr" },
+	[6] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DrawMaterial = "photon/common/glow_gradient_d", DeactivationState = "~OFF" },
+	[7] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DrawMaterial = "photon/common/glow_gradient_d", DeactivationState = "~OFF" },
 	
-	[8] = { "Mesh", Vector( -0.3, 1.3, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a" },
-	[9] = { "Mesh", Vector( 0.3, 1.3, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a"  },
+	[8] = { "Mesh", Vector( -0.3, 0.8, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
+	[9] = { "Mesh", Vector( 0.3, 0.8, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF"  },
+
+	[10] = { "Headlights", Vector( -32.95, 105.5, 37.9 ), Angle( 0, 0, 0 ) },
+	[11] = { "Headlights", Vector( 32.95, 105.5, 37.9 ), Angle( 0, 0, 0 ) },
+
+	[12] = { "RearMarker", Vector( -40.35, -113, 49.92 ), Angle( -14, 117, 0 ) },
+	[13] = { "RearMarker", Vector( 40.35, -113, 49.92 ), Angle( -14, 180 + ( 180 - 117 ), 0 ) },
 }
 
-COMPONENT.StateMap = "[R] 1 2 3 [SW] 4 5 [A] 6 7 8 9"
+COMPONENT.StateMap = "[R] 1 2 3 12 13 [~SW] 4 5 10 11 [~A] 6 7 8 9"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -43,6 +102,17 @@ COMPONENT.Segments = {
 			["ON"] = { 1 },
 		}
 	},
+	Lights = {
+		Frames = {
+			[0] = "[OFF] 2 3 12 13 [~OFF] 6 7 8 9",
+			[1] = "[RD] 2 3 12 13 [~AD] 8 9",
+			[2] = "10 11 [RD] 2 3 12 13 [~AD] 8 9",
+		},
+		Sequences = {
+			["PARK"] = { 1 },
+			["HEADLIGHTS"] = { 2 }
+		}
+	},
 	Reverse = {
 		Frames = {
 			[1] = "4 5"
@@ -53,6 +123,7 @@ COMPONENT.Segments = {
 	},
 	Signal = {
 		Frames = {
+			[0] = "[PASS] 6 7 8 9",
 			[1] = "6 7 8 9",
 			[2] = "6 8",
 			[3] = "7 9"
@@ -87,6 +158,14 @@ COMPONENT.Inputs = {
 		},
 		["HAZARD"] = {
 			Signal = "HAZARD"
+		}
+	},
+	["Vehicle.Lights"] = {
+		["HEADLIGHTS"] = {
+			Lights = "HEADLIGHTS"
+		},
+		["PARKING"] = {
+			Lights = "PARK"
 		}
 	}
 }
