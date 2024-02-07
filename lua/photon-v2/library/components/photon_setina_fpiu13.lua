@@ -8,6 +8,11 @@ COMPONENT.Credits = {
 	Model = "Mighty, Schmal, et. al",
 }
 
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
+
 COMPONENT.PrintName = [[Setina Push Bumper - 2013 Ford Police Utility]]
 
 COMPONENT.Model = "models/schmal/fpiu13_setina.mdl"
@@ -31,32 +36,49 @@ COMPONENT.Elements = {
 	[4] = { "Impaxx", Vector( -22.31, -0.25, 9.95 ), Angle( 0, 90, 90 ) },
 }
 
-COMPONENT.StateMap = "[R] 1 3 [B] 2 4"
+COMPONENT.StateMap = "[1/2] 1 2 3 4"
 
 COMPONENT.ElementStates = {}
 
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
-	Upper = {
+	UpperLeft = {
 		Frames = {
-			[1] = "[R] 1",
-			[2] = "[B] 2",
-			[3] = "[W] 1",
-			[4] = "[W] 2",
-			[5] = "[W] 1 2",
-			[6] = "[R] 1 [B] 2",
+			[1] = "1:1",
+			[2] = "1:2",
 		},
 		Sequences = {
-			ALL = { 1 },
-			FLASH = sequence()
-					:Blink( 1, 4 ):Hold( 2 )
-					:Blink( 2, 4 ):Hold( 2 )
-					:Blink( 3, 4 ):Hold( 2 )
-					:Blink( 4, 4 ):Hold( 2 ),
-			ILLUM = { 5 },
-			STEADY = { 6 }
-			-- FLASH = sequence():Alternate( 1, 2, 8 ):Alternate( 3, 4, 8 )
+			["SPD"] = { 
+				1, 1, 0, 1, 1, 0, 2, 2, 0, 2, 2, 0,
+				1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2, 0
+			}
+		}
+	},
+	UpperRight = {
+		Frames = {
+			[1] = "2:1",
+			[2] = "2:2",
+		},
+		Sequences = {
+			["SPD"] = { 
+				0, 1, 1, 0, 2, 2, 0, 1, 1, 0, 2, 2,
+				0, 1, 1, 0, 1, 1, 0, 2, 2, 0, 2, 2,
+			}
+		}
+	},
+	Upper = {
+		Frames = {
+			[1] = "[1] 1 [OFF] 2",
+			[2] = "[1] 1 [1] 2",
+			[3] = "[OFF] 1 [1] 2",
+			[4] = "[2] 1 [1] 2",
+			[5] = "[2] 1 [OFF] 2",
+			[6] = "[2] 1 [2] 2",
+			[7] = "[OFF] 1 [2] 2",
+		},
+		Sequences = {
+
 		}
 	},
 	Side = {
@@ -67,8 +89,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			FLASH = sequence()
-			:TripleFlash( 1, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 )
-			:TripleFlash( 2, 0 ):Hold( 3 ):Add( 0 ):Hold( 5 ),
+			:TripleFlash( 1, 0 )
+			:TripleFlash( 2, 0 ),
 			STEADY = { 3 }
 		}
 	}
@@ -76,17 +98,25 @@ COMPONENT.Segments = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE2"] = { Upper = "FLASH", Side = "FLASH" },
-		["MODE3"] = { Upper = "FLASH", Side = "FLASH" },
+		["MODE1"] = { },
+		["MODE2"] = { 
+			UpperLeft = "SPD",
+			UpperRight = "SPD",
+			Side = "FLASH"
+		},
+		["MODE3"] = {
+			UpperLeft = "SPD",
+			UpperRight = "SPD",
+			Side = "FLASH"
+		},
 	},
 	["Emergency.SceneForward"] = {
-		["ON"] = { Upper = "ILLUM" },
-		["FLOOD"] = { Upper = "ILLUM" },
+		["ON"] = { },
+		["FLOOD"] = { },
 	},
 	["Emergency.Marker"] = {
 		["ON"] = {
-			Upper = "STEADY",
-			Side = "STEADY"
+
 		}
 	}
 }

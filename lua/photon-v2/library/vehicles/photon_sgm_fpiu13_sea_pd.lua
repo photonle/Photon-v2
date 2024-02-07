@@ -6,7 +6,7 @@ VEHICLE.Vehicle		= "13fpiu_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
-local legacyLivery = PhotonMaterial.New({
+local classicLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_legacy",
 	Shader = "VertexLitGeneric",
 	Parameters = {
@@ -25,6 +25,22 @@ local legacyLivery = PhotonMaterial.New({
 	}
 })
 
+local hybridLivery = PhotonMaterial.New({
+	Name = "schmal_fpiu13_seattlepd_hybrid",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_hybrid.png",
+	["$bumpmap"] = "photon/common/flat",
+	["$phong"] = 1,
+	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
+	["$envmap"] = "env_cubemap",
+	["$envmaptint"] = Vector(0.05, 0.05, 0.05),
+	["$phongboost"] = 5,
+	["$phongexponent"] = 64,
+	["$nodecal"] = 1
+	}
+})
+
 VEHICLE.WorkshopRequirements = {
 	[2798400972] = "2013 Ford Police Interceptor Utility"
 }
@@ -36,9 +52,15 @@ VEHICLE.Equipment = {
 		Category = "Liveries",
 		Options = {
 			{
-				Option = "Legacy (2014)",
+				Option = "Classic",
 				SubMaterials = {
-					{ Id = 8, Material = legacyLivery.MaterialName }
+					{ Id = 8, Material = classicLivery.MaterialName }
+				}
+			},
+			{
+				Option = "Hybrid",
+				SubMaterials = {
+					{ Id = 8, Material = hybridLivery.MaterialName }
 				}
 			},
 		}
@@ -181,12 +203,21 @@ VEHICLE.Equipment = {
 						Component = "photon_whe_ion_surface",
 						Position = Vector( -50, 35.5, 57.4 ),
 						Angles = Angle( 3, 27.9, 6.5 ),
-						Scale = 0.8
+						Scale = 0.8,
+						Phase = "A",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = { Light = "TRI_FLASH_HOLD" },
+								["MODE3"] = { Light = "TRI_FLASH_HOLD" },
+							}
+						}
 					},
 					{
 						Inherit = "@mirror_ion",
 						Position = Vector( 50, 35.5, 57.4 ),
 						Angles = Angle( -3, -27.9, 6.5 ),
+						Phase = "B",
+						States = { "B" }
 					}
 				}
 			},

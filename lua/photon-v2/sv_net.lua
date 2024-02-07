@@ -30,8 +30,6 @@ function Photon2.sv_Network.OnControllerSelectionChange( len, ply )
 		return
 	end
 
-	PrintTable( selections )
-
 	for i, selection in ipairs( selections ) do
 		controller:SetSelectionOption( selection[1], selection[2] )
 	end

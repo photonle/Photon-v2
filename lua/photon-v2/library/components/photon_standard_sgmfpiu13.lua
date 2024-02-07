@@ -43,6 +43,7 @@ COMPONENT.Templates = {
 			Height = 4,
 			DeactivationState = "~OFF",
 			IntensityGainFactor = 10,
+			Scale = 1.2,
 			States = {
 				["~SW"] = {
 					Inherit = "SW",
@@ -76,8 +77,8 @@ COMPONENT.Elements = {
 	[4] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
 	[5] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
 	
-	[6] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DrawMaterial = "photon/common/glow_gradient_d", DeactivationState = "~OFF" },
-	[7] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DrawMaterial = "photon/common/glow_gradient_d", DeactivationState = "~OFF" },
+	[6] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DrawMaterial = "photon/common/glow_gradient_b", DeactivationState = "~OFF" },
+	[7] = { "Mesh", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DrawMaterial = "photon/common/glow_gradient_b", DeactivationState = "~OFF" },
 	
 	[8] = { "Mesh", Vector( -0.3, 0.8, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF" },
 	[9] = { "Mesh", Vector( 0.3, 0.8, 0.2 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr", Scale = 0.995, DrawMaterial = "photon/common/glow_gradient_a", DeactivationState = "~OFF"  },
@@ -119,6 +120,38 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 }
+		}
+	},
+	ReverseFlasher = {
+		Frames = {
+			[1] = "[B] 4 5",
+			[2] = "[B] 4",
+			[3] = "[B] 5",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["FLASH"] = sequence():TripleFlash( 2, 3 )
+		}
+	},
+	SignalFlasher = {
+		Frames = {
+			[1] = "[R] 6 7",
+			[2] = "[R] 6",
+			[3] = "[R] 7",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["FLASH"] = sequence():FlashHold( { 2, 3 }, 2, 3 )
+		}
+	},
+	WigWag = {
+		Frames = {
+			[0] = "[~OFF] 10 11",
+			[1] = "10",
+			[2] = "11",
+		},
+		Sequences = {
+			["WIGWAG"] = sequence():Alternate( 1, 2, 9 ),
 		}
 	},
 	Signal = {
@@ -166,6 +199,17 @@ COMPONENT.Inputs = {
 		},
 		["PARKING"] = {
 			Lights = "PARK"
+		}
+	},
+	["Emergency.Warning"] = {
+		["MODE2"] = {
+			ReverseFlasher = "FLASH",
+			SignalFlasher = "FLASH"
+		},
+		["MODE3"] = {
+			ReverseFlasher = "FLASH",
+			SignalFlasher = "FLASH",
+			WigWag = "WIGWAG"
 		}
 	}
 }
