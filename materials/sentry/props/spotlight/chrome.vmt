@@ -9,12 +9,12 @@
 	"$phongexponent" "10"
 	"$phongboost" "2.5"	
 	"$phongfresnelranges"	"[.3 1 8]"
-	"$carpenisenabled" "[.2 .2 .2]"
+	"$carproxenabled" "[.2 .2 .2]"
 	Proxies // proxies are listed inside this block
 	{
-		Equals // a proxy which produces a penis
+		Equals // 
 		{
-			srcVar1 $carpenisenabled
+			srcVar1 $carproxenabled
 			resultVar	$color // The shader parameter to be manipulated
 
 		}

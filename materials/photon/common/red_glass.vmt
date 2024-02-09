@@ -6,12 +6,12 @@
 	"$phongboost" 10
 	"$mod2x" "1"
 	"$nocull" "1"
-	"$carpenisenabled" "[0.45 0.1 0.20]"
+	"$carproxenabled" "[0.45 0.1 0.20]"
 	Proxies // proxies are listed inside this block
 	{
-		Equals // a proxy which produces a penis
+		Equals // 
 		{
-			srcVar1 $carpenisenabled
+			srcVar1 $carproxenabled
 			resultVar	$color // The shader parameter to be manipulated
 
 		}

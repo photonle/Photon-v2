@@ -11,12 +11,12 @@
 	"$rimlight"               "1"
 	"$rimlightexponent"       "17"
 	"$rimlightboost"          "0.2"
-	"$carpenisenabled" "[0.125 0.125 0.125]"
+	"$carproxenabled" "[0.125 0.125 0.125]"
 	Proxies // proxies are listed inside this block
 	{
-		Equals // a proxy which produces a penis
+		Equals // 
 		{
-			srcVar1 $carpenisenabled
+			srcVar1 $carproxenabled
 			resultVar	$color // The shader parameter to be manipulated
 
 		}

@@ -39,6 +39,12 @@ COMPONENT.Templates = {
 				DW = { Inherit = "W", Intensity = 0.4 }
 			}
 		}
+	},
+	["Projected"] = {
+		TakedownIllumination = {
+			Brightness = 2
+		},
+		AlleyIllumination = {}
 	}
 }
 
@@ -90,6 +96,7 @@ COMPONENT.Elements = {
 	[29] = { "HotFoot", Vector( -4.5, 31, -2.4 ), Angle( 0, -10, 0 ) },
 	[30] = { "HotFoot", Vector( -4.5, -31, -2.4 ), Angle( 0, 190, 0 ) },
 
+
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -113,6 +120,15 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 4 )
+		}
+	},
+	Warning = {
+		Frames = {
+			[1] = "4 6 8 10 12 13 15 17 19 21 23 25",
+			[2] = "14 16 18 20 22 24 26 3 5 7 9 11 ",
+		},
+		Sequences = {
+			["P22"] = { 1, 0, 2, 0 }
 		}
 	},
 	Inner = {
@@ -139,7 +155,7 @@ COMPONENT.Segments = {
 			[2] = "14",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 3 )
+			["ALT"] = sequence():Alternate( 1, 2, 5 )
 		}
 	},
 	ForwardHotFeet = {
@@ -148,7 +164,7 @@ COMPONENT.Segments = {
 			[2] = "28",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 5 )
+			["ALT"] = sequence():Alternate( 1, 2, 2 )
 		}
 	},
 	AlleyHotFeet = {
@@ -157,7 +173,7 @@ COMPONENT.Segments = {
 			[2] = "30",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 2, 1, 5 )
+			["ALT"] = sequence():Alternate( 2, 1, 3 )
 		}
 	},
 	SceneForward = {
@@ -188,11 +204,12 @@ COMPONENT.Segments = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { All = "ON" },
+		["MODE1"] = { All = "ALT" },
 		["MODE2"] = { All = "ALT" },
 		["MODE3"] = { 
-			Corner = "ALT",
-			Inner = "ALT",
+			-- Corner = "ALT",
+			-- Inner = "ALT",
+			Warning = "P22",
 			Takedown = "ALT",
 			Alley = "ALT",
 			ForwardHotFeet = "ALT",

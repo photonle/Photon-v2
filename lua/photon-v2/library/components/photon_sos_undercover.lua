@@ -43,13 +43,19 @@ COMPONENT.Templates = {
 				["G"] = { Material = "schmal/photon/sos_underco/lens_gre" },
 			}
 		}
+	},
+	["Mesh"] = {
+		Model = {
+			Model = "models/schmal/sos_undercover.mdl"
+		}
 	}
 }
 
 COMPONENT.Elements = {
 	[1] = { "LED", Indexes = { 2 } },
 	[2] = { "Lens", Indexes = { 3 } }, -- lens,
-	[3] = { "Mid", Vector(0,0,1.2), Angle(-90,0,0) }
+	[3] = { "Mid", Vector(0,0,1.2), Angle(-90,0,0) },
+	[4] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "schmal/photon/sos_underco/glass", DrawMaterial = "photon/common/glow_gradient_additive_a" }
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -57,7 +63,7 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.StateMap = "[1/2/3] Light"
 
 COMPONENT.ElementGroups = {
-	Light = { 1, 2, 3 }
+	Light = { 1, 2, 3, 4 }
 }
 
 COMPONENT.Segments = {
@@ -88,6 +94,8 @@ COMPONENT.Segments = {
 		Sequences = {
 			["MARKER"] = { 1 },
 			["SCENE"] = { 2 },
+			["MED_ALT"] = sequence():Alternate( 1, 0, 2),
+			["MED_ALT:B"] = sequence():Alternate( 0, 1, 2),
 			["DUO_ALT_MED"] = sequence():Alternate( 1, 3, 8 ),
 			["SOS_FLASH_TRIO"] = sequence()
 						:FlashHold( { 1, 3, 2, 3 }, 3, 2 )

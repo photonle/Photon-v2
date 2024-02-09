@@ -54,7 +54,7 @@ COMPONENT.Templates = {
 		RearMarker = {
 			-- :-)
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_shape.png").MaterialName,
-			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_detail.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/fpiu13_rear_marker_detail.png").MaterialName,
 			Width = 3.4,
 			Height = 1.6,
 			Intensity = 1,
@@ -63,6 +63,18 @@ COMPONENT.Templates = {
 				RD = {
 					Inherit = "R",
 					Intensity = 0.9
+				}
+			}
+		},
+		ForwardMarker = {
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/fpiu13_forward_marker_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/fpiu13_forward_marker_detail.png").MaterialName,
+			Width = 2,
+			Height = 2,
+			States = {
+				AD = {
+					Inherit = "A",
+					Intensity = 0.7
 				}
 			}
 		}
@@ -88,9 +100,12 @@ COMPONENT.Elements = {
 
 	[12] = { "RearMarker", Vector( -40.35, -113, 49.92 ), Angle( -14, 117, 0 ) },
 	[13] = { "RearMarker", Vector( 40.35, -113, 49.92 ), Angle( -14, 180 + ( 180 - 117 ), 0 ) },
+
+	[14] = { "ForwardMarker", Vector( -38.84, 96, 44.3 ), Angle( -23, 65, 0 ) },
+	[15] = { "ForwardMarker", Vector( 38.84, 96, 44.3 ), Angle( -23, 180 + ( 180 - 65 ), 0 ) },
 }
 
-COMPONENT.StateMap = "[R] 1 2 3 12 13 [~SW] 4 5 10 11 [~A] 6 7 8 9"
+COMPONENT.StateMap = "[R] 1 2 3 12 13 [~SW] 4 5 10 11 [~A] 6 7 8 9 [AD] 14 15"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -105,9 +120,9 @@ COMPONENT.Segments = {
 	},
 	Lights = {
 		Frames = {
-			[0] = "[OFF] 2 3 12 13 [~OFF] 6 7 8 9",
-			[1] = "[RD] 2 3 12 13 [~AD] 8 9",
-			[2] = "10 11 [RD] 2 3 12 13 [~AD] 8 9",
+			[0] = "[OFF] 2 3 12 13 14 15 [~OFF] 6 7 8 9",
+			[1] = "14 15 [RD] 2 3 12 13 [~AD] 8 9",
+			[2] = "14 15 10 11 [RD] 2 3 12 13 [~AD] 8 9",
 		},
 		Sequences = {
 			["PARK"] = { 1 },

@@ -18,7 +18,7 @@ local classicLivery = PhotonMaterial.New({
 	["$phong"] = 1,
 	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
 	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.033, 0.066, 0.1),
+	["$envmaptint"] = Vector(0.1, 0.1, 0.15),
 	["$phongboost"] = 5,
 	["$phongexponent"] = 64,
 	["$nodecal"] = 1
@@ -34,7 +34,23 @@ local hybridLivery = PhotonMaterial.New({
 	["$phong"] = 1,
 	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
 	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.05, 0.05, 0.05),
+	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
+	["$phongboost"] = 5,
+	["$phongexponent"] = 64,
+	["$nodecal"] = 1
+	}
+})
+
+local newLivery = PhotonMaterial.New({
+	Name = "schmal_fpiu13_seattlepd_2015",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_2015.png",
+	["$bumpmap"] = "photon/common/flat",
+	["$phong"] = 1,
+	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
+	["$envmap"] = "env_cubemap",
+	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
 	["$phongboost"] = 5,
 	["$phongexponent"] = 64,
 	["$nodecal"] = 1
@@ -45,22 +61,42 @@ VEHICLE.WorkshopRequirements = {
 	[2798400972] = "2013 Ford Police Interceptor Utility"
 }
 
+VEHICLE.SubMaterials = {
+	[1] = "schmal/liveries/sgm_fpiu13/black_shiny"
+}
+
 VEHICLE.Siren = { [1] = "motorola_spectra" }
 
 VEHICLE.Equipment = {
 	{
 		Category = "Liveries",
 		Options = {
+			
 			{
-				Option = "Classic",
+				Option = "Classic (2013)",
 				SubMaterials = {
 					{ Id = 8, Material = classicLivery.MaterialName }
 				}
 			},
 			{
-				Option = "Hybrid",
+				Option = "Updated (2015)",
 				SubMaterials = {
 					{ Id = 8, Material = hybridLivery.MaterialName }
+				}
+			},
+			{
+				Option = "Redesign (2016)",
+				SubMaterials = {
+					{ Id = 8, Material = newLivery.MaterialName }
+				},
+				Props = {
+					{
+						Model = "models/schmal/sgm_fpiu13_spoiler.mdl",
+						Position = Vector( 0, 0, 0 ),
+						Angles = Angle( 0, -90, 0 ),
+						SubMaterials = {
+						},
+					},
 				}
 			},
 		}
@@ -72,7 +108,16 @@ VEHICLE.Equipment = {
 				Option = "Enabled",
 				VirtualComponents = {
 					{
-						Component = "photon_standard_sgmfpiu13"
+						Component = "photon_standard_sgmfpiu13",
+						Inputs = {
+							["Emergency.Warning"] = {
+								-- They apparently don't use headlight wig-wags
+								["MODE3"] = {
+									ReverseFlasher = "FLASH",
+									SignalFlasher = "FLASH"
+								}
+							}
+						}
 					}
 				}
 			},
@@ -119,7 +164,9 @@ VEHICLE.Equipment = {
 						Model = "models/schmal/sgm_fpiu13_glass.mdl",
 						Position = Vector( 0, 0, 0 ),
 						Angles = Angle( 0, -90, 0 ),
-						
+						SubMaterials = {
+							[2] = "schmal/liveries/sgm_fpiu13/seattlepd_glass"
+						}
 					},
 					-- {
 					-- 	Model = "models/schmal/sgm_fpiu13_emis.mdl",
@@ -145,7 +192,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 180, 0 ),
 						Scale = 0.98,
 						BodyGroups = {
-							["Wrap"] = "wrap"
+							-- ["Wrap"] = "wrap"
 						}
 					}
 				},
@@ -157,6 +204,41 @@ VEHICLE.Equipment = {
 				Option = "No Lights",
 				BodyGroups = {
 					{ BodyGroup = "pushbar", Value = 1 }
+				}
+			},
+		}
+	},
+	{
+		Category = "Hideaways",
+		Options = {
+			{
+				Option = "Enabled",
+				Components = {
+					{
+						Name = "@forward_hideaway",
+						Component = "photon_sos_undercover",
+						Position = Vector( -35.8, 103, 40 ),
+						Angles = Angle( 53, 180, 27 ),
+						Scale = 0.4,
+						Phase = "A",
+						States = { "W", "W" },
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {},
+								["MODE2"] = { Light = "MED_ALT" },
+								["MODE3"] = { Light = "MED_ALT" },
+							},
+							["Emergency.Marker"] = {
+								["ON"] = {}
+							}
+						}
+					},
+					{
+						Phase = "B",
+						Inherit = "@forward_hideaway",
+						Position = Vector( 35.8, 103, 40 ),
+						Angles = Angle( 180 +53, 0, 180 + 27 ),
+					}
 				}
 			},
 		}
@@ -193,6 +275,36 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
+		Category = "Cruise Lights",
+		Options = {
+			{
+				Option = "Visible",
+				Components = {
+					{
+						Name = "@cruise_light",
+						Component = "photon_sos_undercover",
+						Position = Vector( -17, -14, 87.3 ),
+						Angles = Angle( 1, 90, 0 ),
+						Scale = 0.7,
+						States = { "B" },
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {},
+								["MODE2"] = {},
+								["MODE3"] = {},
+							},
+						}
+					},
+					{
+						Inherit = "@cruise_light",
+						Position = Vector( 17, -14, 87.3 ),
+					}
+				}
+			},
+		}
+	},
+	
+	{
 		Category = "Mirror Lights",
 		Options = {
 			{
@@ -207,6 +319,7 @@ VEHICLE.Equipment = {
 						Phase = "A",
 						Inputs = {
 							["Emergency.Warning"] = {
+								["MODE1"] = {},
 								["MODE2"] = { Light = "TRI_FLASH_HOLD" },
 								["MODE3"] = { Light = "TRI_FLASH_HOLD" },
 							}
