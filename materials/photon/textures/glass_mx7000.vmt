@@ -11,12 +11,12 @@
 	"$normalmapalphaenvmapmask" "1"
 	"$envmapfresnel" "1"
 	"$envmaptint" "[1.25 1.25 1.25]"
-	"$carpenisenabled" "[.2 .2 .2]"
+	"$carproxenabled" "[.2 .2 .2]"
 	Proxies // proxies are listed inside this block
 	{
-		Equals // a proxy which produces a penis
+		Equals // 
 		{
-			srcVar1 $carpenisenabled
+			srcVar1 $carproxenabled
 			resultVar	$color // The shader parameter to be manipulated
 
 		}

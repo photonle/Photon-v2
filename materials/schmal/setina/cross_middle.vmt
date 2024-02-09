@@ -1,23 +1,12 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "schmal/setina/lvmpd"
-	"$bumpmap" "schmal/setina/setina_nm"
+	"$basetexture" "photon/common/white"
+	"$bumpmap" "photon/common/flat"
 	"$envmap" env_cubemap
 	"$envmaptint" "[0.01 0.01 0.01]"
-    $phong "1"
-    $phongexponent "7"
-    $phongboost "0"
-    $phongfresnelranges "[.05 .3 1]"
-	"$carfixenabled" "1"
-	Proxies // proxies are listed inside this block
-	{
-		Equals // a proxy which produces a fix
-		{
-			srcVar1 $carfixenabled
-			resultVar	$color // The shader parameter to be manipulated
-
-		}
-	}
+	"$phong" "1"
+	"$phongexponent" "30"
+	"$phongboost" "0.2"	
+	"$phongfresnelranges"	"[.3 1 8]"
+	"$color2" "{28 28 28}"
 }
-
-// this vmt and bumpmap was provided by the amazing person known as SGM.

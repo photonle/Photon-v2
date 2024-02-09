@@ -47,4 +47,18 @@
 						"\t}"
 					"},"]
 		},
+		"New Equipment Category": {
+			"prefix": ["/category"],
+			"body": [
+				"{",
+					"\tCategory = \"${1:Category}\",",
+					"\tOptions = {",
+						"\t\t{",
+							"\t\t\tOption = \"${2:Option}\","
+							"\t\t\t"
+						"\t\t},",
+					"\t}",
+				"},"
+			]
+		}
 },
