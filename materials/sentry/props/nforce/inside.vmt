@@ -12,7 +12,7 @@
 	"$carfixenabled" "1"
 	Proxies // proxies are listed inside this block
 	{
-		Equals // a proxy which produces a penis
+		Equals // 
 		{
 			srcVar1 $carfixenabled
 			resultVar	$color // The shader parameter to be manipulated

@@ -1,0 +1,22 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "photon/common/glass_whi_32"
+	"$bumpmap" "photon/common/flat"
+//	"$rimlight" "1"
+//	"$rimlightexponent" "1"
+//	"$rimlightboost"	"10"
+	"$translucent" 1
+	"$alpha" 1
+	"$phong" 1
+	"$phongtint" "[1 1 1]"
+	"$phongexponent" 10
+	"$phongboost" "20"
+	"$phongfresnelranges" "[1 1 1]"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[1 1 1.2 ]"
+	"$normalmapalphaenvmapmask" 1
+	"$nodecal" "1"
+	"$nocull" 0
+	"$color2" "{128 128 0}"
+
+}

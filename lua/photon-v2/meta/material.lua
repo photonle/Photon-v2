@@ -8,7 +8,8 @@ local printf = Photon2.Debug.PrintF
 local textureParams = {
 	["$basetexture"] = true,
 	["$bumpmap"] = true,
-	["$envmap"] = true
+	["$envmap"] = true,
+	["$detail"] = true
 }
 
 ---@class PhotonMaterialProperties

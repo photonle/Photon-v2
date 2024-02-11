@@ -121,6 +121,7 @@ PhotonMaterial = PhotonMaterial
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.
 ---@field States table<integer, string> Pre-defined state slots.
 ---@field RenderGroup RENDERGROUP
+---@field BodyGroups table
 ---@field Inputs table
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
@@ -212,7 +213,7 @@ PhotonMaterial = PhotonMaterial
 
 ---@class PhotonVehicleSelectionVariant
 ---@field Variant string
----@field Variants PhotonEquipmentTable[]
+---@field Variants? PhotonEquipmentTable[]
 
 ---@class PhotonEquipmentPositional
 
