@@ -321,6 +321,7 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									RE_Rear = "MODE1",
+									PoseTest = "ON"
 									-- RE_Traffic = "LEFT"
 								},
 								["MODE2"] = {

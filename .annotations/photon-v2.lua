@@ -75,6 +75,12 @@ PhotonElementBone = PhotonElementBone
 ---@type PhotonElementBoneState
 PhotonElementBoneState = PhotonElementBoneState
 
+---@type PhotonElementPose
+PhotonElementPose = PhotonElementPose
+
+---@type PhotonElementPoseState
+PhotonElementPoseState = PhotonElementPoseState
+
 ---@type PhotonBlendColor
 PhotonBlendColor = PhotonBlendColor
 

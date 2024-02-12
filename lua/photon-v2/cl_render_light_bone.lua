@@ -21,3 +21,27 @@ function Photon2.RenderLightBone.Update()
 	this.Active = nextTable
 end
 hook.Add( "Think", "Photon2.LightBone:Update", this.Update )
+
+
+Photon2.RenderPoseElement = Photon2.RenderPoseElement or {
+	Active = {}
+}
+
+local poseAlternative = {}
+local pose = Photon2.RenderPoseElement
+
+function Photon2.RenderPoseElement.Update()
+	local activeElements = pose.Active
+	local nextTable = poseAlternative
+
+	for i=1, #activeElements do
+		if ( activeElements[i] ) then
+			nextTable[#nextTable+1] = activeElements[i]:DoPreRender()
+		end
+		activeElements[i] = nil
+	end
+
+	poseAlternative = activeElements
+	pose.Active = nextTable
+end
+hook.Add( "Think", "Photon2.PoseElement:Update", pose.Update )
