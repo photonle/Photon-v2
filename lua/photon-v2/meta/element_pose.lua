@@ -26,6 +26,11 @@ end
 
 function Element.New( element, template )
 	setmetatable( element, { __index = ( template or PhotonElementPose ) } )
+
+	if ( not element.Parameter and element[2] ) then
+		element.Parameter = element[2]
+	end
+
 	return element
 end
 

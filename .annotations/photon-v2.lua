@@ -140,7 +140,7 @@ PhotonMaterial = PhotonMaterial
 ---@field PrintName string
 ---@field Model string
 ---@field Templates PhotonLibraryComponentTemplates
----@field Elements table<number, PhotonElement2DEntry | PhotonElementBoneEntry | PhotonElementMeshEntry | PhotonElementProjectedEntry | PhotonElementSoundEntry | PhotonElementDynamicEntry | PhotonElementSubEntry | PhotonElementSequenceEntry | PhotonElementVirtualEntry >
+---@field Elements table<number, PhotonElement2DEntry | PhotonElementBoneEntry | PhotonElementMeshEntry | PhotonElementProjectedEntry | PhotonElementSoundEntry | PhotonElementDynamicEntry | PhotonElementSubEntry | PhotonElementSequenceEntry | PhotonElementPoseEntry | PhotonElementVirtualEntry >
 ---@field InputPriorities table<string, number>
 ---@field VirtualOutputs table
 ---@field SubMaterials table<integer, string>
