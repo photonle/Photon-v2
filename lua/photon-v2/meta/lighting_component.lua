@@ -3,8 +3,9 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonLightingComponent"
 BASE = "PhotonBaseEntity"
 
+local printf, warn = Photon2.Debug.Declare( "Component" )
+
 local print = Photon2.Debug.Print
-local printf = Photon2.Debug.PrintF
 
 ---@class PhotonLightingComponent : PhotonBaseEntity
 ---@field Name string
@@ -341,7 +342,12 @@ function Component.New( name, data )
 
 		for modeName, sequences in pairs( channel ) do
 			
-			if ( not isstring( modeName ) ) then continue end
+			if ( not isstring( modeName ) ) then 
+				if ( isnumber( modeName ) ) then
+
+				end
+				continue 
+			end
 
 			-- Build input interface modes
 			if ( istable( sequences ) and ( next(sequences) ~= nil) ) then
@@ -359,7 +365,48 @@ function Component.New( name, data )
 				end
 			]]--\
 			local orderTally = 0
+
+			
+			
+			-- ???????????????
+
+
+			-- for segmentNumber, pattern in ipairs( sequences ) do
+			-- 	if ( not isnumber( segmentNumber ) ) then continue end
+			-- 	local autoPatternName
+			-- 	if ( isstring( pattern ) ) then autoPatternName = pattern end
+			-- 	autoPatternName = autoPatternName or pattern.Pattern or pattern[1]
+			-- 	print( "Should use pattern: " .. tostring( autoPatternName ) )
+
+			-- 	local order = orderTally * 10
+
+			-- 	if ( istable( pattern ) and pattern.Order ) then
+			-- 		order = pattern.Order
+			-- 	end
+
+			-- 	if ( data.Patterns ) then
+			-- 		print( "Component has patterns defined." )
+			-- 		if ( data.Patterns[autoPatternName] ) then
+			-- 			for segmentName, sequence in pairs( data.Patterns[autoPatternName] ) do
+			-- 				if ( isstring( sequence ) ) then
+			-- 					sequence = { sequence }
+			-- 				end
+			-- 				sequence.Order = sequence.Order or order
+			-- 				sequences[segmentName] = sequence
+			-- 			end
+			-- 		else
+			-- 			warn( "Pattern [%s] does not appear to be defined in COMPONENT.Patterns.", autoPatternName )
+			-- 		end
+			-- 	end
+
+			-- 	sequences[segmentNumber] = nil
+
+			-- 	orderTally = orderTally + 1
+			-- end
+
+
 			for segmentName, sequence in pairs ( sequences ) do
+				if ( not isstring( segmentName ) ) then continue end
 				-- if sequence == "<UNSET>" then continue end
 
 				local sequenceName

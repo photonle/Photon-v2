@@ -177,7 +177,11 @@ COMPONENT.Inputs = {
 			-- IonTest = "ALT"
 			-- UpperLeft = "SPD",
 			-- UpperRight = "SPD",
-			-- Side = "FLASH"
+			-- Side = "FLASH",
+			IonUpperLeft = "ALT_OFFSET",
+			IonUpperRight = "ALT_OFFSET",
+			IonLowerLeft = "ALT_OFFSET",
+			IonLowerRight = "ALT_OFFSET",
 		},
 		["MODE3"] = {
 			IonUpperLeft = "ALT_OFFSET",

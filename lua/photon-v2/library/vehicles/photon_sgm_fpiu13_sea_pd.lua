@@ -225,7 +225,7 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {},
-								["MODE2"] = { Light = "MED_ALT" },
+								["MODE2"] = {},
 								["MODE3"] = { Light = "MED_ALT" },
 							},
 							["Emergency.Marker"] = {
