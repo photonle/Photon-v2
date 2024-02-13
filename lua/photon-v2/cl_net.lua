@@ -62,6 +62,18 @@ function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 				ent:ProcessSelectionsString( newValue )
 			end
 		end
+	elseif ( ent:GetClass() == "prop_physics" ) then
+		if ( name == "Photon2.SyncSubMaterials" ) then
+			local controller = ent:GetPhotonControllerFromAncestor()
+			if ( IsValid( controller ) ) then
+				timer.Create("Photon2.RefreshSubMaterials:" .. tostring( ent:GetParent() ), 0.1, 1, function()
+					if ( IsValid( ent ) and IsValid( controller ) ) then
+						controller.SyncAttachedParentSubMaterials = true
+						controller:RefreshParentSubMaterials()
+					end
+				end)
+			end
+		end
 	end
 end
 hook.Add("EntityNetworkedVarChanged", "Photon2:OnNetworkVarChanged", Photon2.cl_Network.OnNetworkVarChanged)

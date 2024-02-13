@@ -204,4 +204,18 @@ function Photon2.Util.GetKeyName( key )
 	return result
 end
 
+function Photon2.Util.BuildParentSubMaterialMap( ent )
+	local childMaterials = ent:GetMaterials()
+	local map = {}
+	for key, name in pairs( childMaterials ) do
+		childMaterials[name] = key
+	end
+	for key, name in pairs( ent:GetParent():GetMaterials() ) do
+		if ( childMaterials[name] ) then 
+			map[key-1] = childMaterials[name]-1 
+		end
+	end
+	return map
+end
+
 -- PrintTable(Util.ModelMeshes)
