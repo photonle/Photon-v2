@@ -82,12 +82,38 @@ VEHICLE.Equipment = {
 				Option = "Updated (2015)",
 				SubMaterials = {
 					{ Id = 8, Material = hybridLivery.MaterialName }
+				},
+				Components = {
+					{
+						Name = "@cruise_light",
+						Component = "photon_sos_undercover",
+						Position = Vector( -17, -14, 87.3 ),
+						Angles = Angle( 1, 90, 0 ),
+						Scale = 0.7,
+						States = { "B" },
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {},
+								["MODE2"] = {},
+								["MODE3"] = {},
+							},
+						}
+					},
+					{
+						Inherit = "@cruise_light",
+						Name = "@r_cruise_light",
+						Position = Vector( 17, -14, 87.3 ),
+					}
 				}
 			},
 			{
 				Option = "Redesign (2016)",
 				SubMaterials = {
 					{ Id = 8, Material = newLivery.MaterialName }
+				},
+				Components = {
+					{ Inherit = "@cruise_light" },
+					{ Inherit = "@r_cruise_light" },
 				},
 				Props = {
 					{
@@ -280,25 +306,7 @@ VEHICLE.Equipment = {
 			{
 				Option = "Visible",
 				Components = {
-					{
-						Name = "@cruise_light",
-						Component = "photon_sos_undercover",
-						Position = Vector( -17, -14, 87.3 ),
-						Angles = Angle( 1, 90, 0 ),
-						Scale = 0.7,
-						States = { "B" },
-						Inputs = {
-							["Emergency.Warning"] = {
-								["MODE1"] = {},
-								["MODE2"] = {},
-								["MODE3"] = {},
-							},
-						}
-					},
-					{
-						Inherit = "@cruise_light",
-						Position = Vector( 17, -14, 87.3 ),
-					}
+
 				}
 			},
 		}

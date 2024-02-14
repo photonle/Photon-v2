@@ -13,6 +13,8 @@ NAME = "PhotonSequence"
 ---@field UsedLights PhotonElement[]
 ---@field Rank number Sequence's rank in an input pattern.
 ---@field PriorityScore number
+---@field FrameDuration number
+---@field Synchronized boolean
 local Sequence = exmeta.New()
 
 local print = Photon2.Debug.Print
@@ -20,6 +22,7 @@ local printf = Photon2.Debug.PrintF
 
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
+Sequence.Synchronized = false
 
 --[[ *************************************************
 
@@ -127,6 +130,10 @@ function Sequence:IncrementFrame( frame )
 	-- allow empty sequences to silently fail
 	if ( #self < 1 ) then return end
 
+	if ( not self.Synchronized ) then
+		frame = self.CurrentFrame
+	end
+		
 	if ( self.IsRepeating and self.RestartFrame == 1 ) then
 		self.CurrentFrame = (frame % #self) + 1
 	elseif ( not self.IsRepeating ) then
@@ -169,6 +176,7 @@ function Sequence:IncrementFrame( frame )
 end
 
 function Sequence:Activate()
+	if ( not self.Synchronized ) then self.CurrentFrame = 0 end
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		-- usedLights[i]:Activate()

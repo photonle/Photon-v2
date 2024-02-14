@@ -588,22 +588,26 @@ end
 ---@param sequence PhotonSequence
 function Component:RegisterActiveSequence( segmentName, sequence )
 	-- local sequence = self.Segments[segmentName].Sequences[sequence]
-	-- printf("Adding sequence [%s]", sequence)
-	self.ActiveSequences[sequence] = true
+	-- printf("Adding sequence [%s]", sequence.Name)
+	self.ActiveSequences[sequence] = sequence
 end
 
 
 ---@param segmentName string
 ---@param sequence PhotonSequence
 function Component:RemoveActiveSequence( segmentName, sequence)
+	-- printf("Removing sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = nil
 end
 
 function Component:FrameTick()
-	-- Relays notification to each segment
-	-- TODO: consider active sequence-based updates to reduce overhead
-	for segmentName, segment in pairs( self.Segments ) do 
-		segment:IncrementFrame( self.PhotonController.Frame )
+	
+	-- for segmentName, segment in pairs( self.Segments ) do 
+	-- 	segment:IncrementFrame( self.PhotonController.Frame )
+	-- end
+
+	for sequence, _ in pairs( self.ActiveSequences ) do
+		sequence:IncrementFrame( self.PhotonController.Frame )
 	end
 
 	for i=1, #self.Elements do
