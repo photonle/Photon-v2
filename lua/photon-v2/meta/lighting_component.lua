@@ -285,9 +285,9 @@ function Component.New( name, data )
 			Compile Segments
 	--]]
 
-	for segmentName, segmentData in pairs( data.Segments or {} ) do
-		component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
-	end
+	-- for segmentName, segmentData in pairs( data.Segments or {} ) do
+	-- 	component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
+	-- end
 
 	--[[
 			Setup Virtual InputActions
@@ -324,6 +324,8 @@ function Component.New( name, data )
 	-- end
 
 
+	-- local usedSegments = {}
+
 	--[[
 			Compile Inputs
 	--]]
@@ -342,68 +344,62 @@ function Component.New( name, data )
 
 		for modeName, sequences in pairs( channel ) do
 			
-			if ( not isstring( modeName ) ) then 
-				if ( isnumber( modeName ) ) then
-
-				end
-				continue 
-			end
+			-- Allows patterns to be assigned like ["MODE1"] = "Pattern" for simplicity
+			if ( isstring( sequences ) ) then sequences = { sequences } end
 
 			-- Build input interface modes
 			if ( istable( sequences ) and ( next(sequences) ~= nil) ) then
 				component.InputActions[channelName][#component.InputActions[channelName] + 1] = modeName
 			end
-			-- print("----------------------------")
-			-- PrintTable( channel )
-			-- print("----------------------------")
+
 			local patternName = channelName .. ":" .. modeName
 
-			-- sequence ranking...
-			--[[
-				for i=1, #sequences do
-					{ Tail, "RIGHT" }
-				end
-			]]--\
 			local orderTally = 0
 
-			
-			
-			-- ???????????????
+			if ( data.Patterns ) then
+				
+				local addSequences = {}
+				local removeSequences ={}
 
+				for segmentNumber, pattern in ipairs( sequences ) do
+					if ( not isnumber( segmentNumber ) ) then continue end
+					local autoPatternName
+					if ( isstring( pattern ) ) then autoPatternName = pattern end
+					autoPatternName = autoPatternName or pattern.Pattern or pattern[1]
 
-			-- for segmentNumber, pattern in ipairs( sequences ) do
-			-- 	if ( not isnumber( segmentNumber ) ) then continue end
-			-- 	local autoPatternName
-			-- 	if ( isstring( pattern ) ) then autoPatternName = pattern end
-			-- 	autoPatternName = autoPatternName or pattern.Pattern or pattern[1]
-			-- 	print( "Should use pattern: " .. tostring( autoPatternName ) )
+					local order = orderTally * 10
 
-			-- 	local order = orderTally * 10
+					if ( istable( pattern ) and pattern.Order ) then
+						order = pattern.Order
+					end
 
-			-- 	if ( istable( pattern ) and pattern.Order ) then
-			-- 		order = pattern.Order
-			-- 	end
+					if ( data.Patterns ) then
+						if ( data.Patterns[autoPatternName] ) then
+							for index, sequence in pairs( data.Patterns[autoPatternName] ) do
+								addSequences[sequence[1]] = {
+									sequence[2],
+									Order = sequence.Order or ( order + index )
+								}
+							end
+						else
+							warn( "Pattern [%s] does not appear to be defined in COMPONENT.Patterns.", autoPatternName )
+						end
+					end
 
-			-- 	if ( data.Patterns ) then
-			-- 		print( "Component has patterns defined." )
-			-- 		if ( data.Patterns[autoPatternName] ) then
-			-- 			for segmentName, sequence in pairs( data.Patterns[autoPatternName] ) do
-			-- 				if ( isstring( sequence ) ) then
-			-- 					sequence = { sequence }
-			-- 				end
-			-- 				sequence.Order = sequence.Order or order
-			-- 				sequences[segmentName] = sequence
-			-- 			end
-			-- 		else
-			-- 			warn( "Pattern [%s] does not appear to be defined in COMPONENT.Patterns.", autoPatternName )
-			-- 		end
-			-- 	end
+					removeSequences[segmentNumber] = true
 
-			-- 	sequences[segmentNumber] = nil
+					orderTally = orderTally + 1
+				end
 
-			-- 	orderTally = orderTally + 1
-			-- end
+				for segmentName, sequence in pairs( addSequences ) do
+					sequences[segmentName] = sequence
+				end
 
+				for index, _ in pairs( removeSequences ) do
+					sequences[index] = nil
+				end
+
+			end
 
 			for segmentName, sequence in pairs ( sequences ) do
 				if ( not isstring( segmentName ) ) then continue end
@@ -425,7 +421,16 @@ function Component.New( name, data )
 
 				-- sequenceName = patternName .. "/" .. sequenceName
 				-- print("Sequence name: " .. sequenceName)
+				-- usedSegments[segmentName] = true
+
 				local segment = component.Segments[segmentName]
+
+				-- Segments are setup on-demand so unused ones
+				-- won't add overhead to initialized components
+				if ( not segment and data.Segments[segmentName] ) then
+					component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, data.Segments[segmentName], data.ElementGroups, component.InputPriorities )
+					segment = component.Segments[segmentName]
+				end
 
 				if (not segment) then
 					error( string.format("Invalid segment: '%s'", segmentName) )
@@ -436,11 +441,7 @@ function Component.New( name, data )
 
 				if ( phase ) then
 					local newSequenceName = sequenceName .. ":" .. phase
-					-- print( "*********** COMPONENT HAS PHASING ***********" )
-					-- print( "Phase: " .. tostring( phase ) )
-					-- print( "New sequence name: " .. tostring( newSequenceName ) )
 					if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
-						-- print( "Phased sequence LOCATED.")
 						sequenceName = newSequenceName
 					else
 						-- print( "Phase NOT found." )
@@ -449,13 +450,7 @@ function Component.New( name, data )
 
 				segment:AddPattern( patternName, sequenceName, priorityScore, order )
 
-				
-				-- print("Segment InputActions =======================")
-				-- PrintTable( segment.InputActions )
-				-- print("========================================")
 			end
-
-			
 
 		end
 	end

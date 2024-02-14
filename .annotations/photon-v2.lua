@@ -144,6 +144,7 @@ PhotonMaterial = PhotonMaterial
 ---@field InputPriorities table<string, number>
 ---@field VirtualOutputs table
 ---@field SubMaterials table<integer, string>
+---@field Patterns table<string, table[]> Collections of segments and sequences that can be referenced in COMPONENT.Inputs. (See: https://github.com/photonle/Photon-v2/wiki/Components#patterns) 
 
 ---@class PhotonLibraryComponentTemplates
 ---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.

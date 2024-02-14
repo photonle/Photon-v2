@@ -363,20 +363,14 @@ COMPONENT.Segments = {
 	},
 }
 
---[[
-		THIS IS A CONCEPT PROTOTYPE ONLY
-		IT IS NOT FULLY IMPLEMENTED AND MAY NOT EVER BE
---]]
+
 COMPONENT.Patterns = {
-	-- Patterns would be a group of sequences that could be
-	-- inserted into .Inputs by using only the pattern's name...
-	-- e.g. { Pattern = "Pursuit", Order = 10 }
-	Pursuit = {
+	PATTERN26 = {
 		{ "P26_EDGE", "P26" },
 		{ "P26_FRONT", "P26" },
 		{ "P26_REAR", "P26" },
 	},
-	PursuitWO = {
+	PATTERN26W = {
 		{ "P26_EDGE", "P26" },
 		{ "P26_FRONT", "P26" },
 		{ "P26_REAR", "P26" },
@@ -387,44 +381,9 @@ COMPONENT.Patterns = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			-- { "Pursuit" }
-			-- All = "MIX"
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-		["MODE2"] = {
-			-- All = "MIX"
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-		["MODE3"] = {
-			-- White override segment
-			P26_WOR = { "P26", Order = 6 },
-			-- Steady-burn override
-			-- SteadyBurn = { "STEADY", Order = 5 }, -- order defined
-			-- Normal pattern segments
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-
-
-
-
-
-
-		-- ["MODE1"] = {
-		-- 	Demo = "1",
-		-- },
-		-- ["MODE2"] = {
-		-- 	Demo = "2",
-		-- },
-		-- ["MODE3"] = {
-		-- 	Demo = "2",
-		-- }
+		["MODE1"] = "PATTERN26",
+		["MODE2"] = "PATTERN26",
+		["MODE3"] = "PATTERN26W"
 	},
 	["Emergency.Marker"] = { ["ON"] = { Cruise = "CRUISE" } },
 	["Emergency.SceneForward"] = {

@@ -45,7 +45,7 @@ function Light:Initialize( id, component )
 	}
 
 	if ( isstring( self.BoneParent ) ) then
-		self.BoneParent = parent:LookUpBoneOrError( self.BoneParent )
+		self.BoneParent = light.Parent:LookUpBoneOrError( self.BoneParent )
 	end
 
 	return setmetatable( light, { __index = self } )
