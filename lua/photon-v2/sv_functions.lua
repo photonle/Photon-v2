@@ -1,5 +1,3 @@
-print("sv_functions.lua")
-
 local saveSteeringOnExit = true
 
 -- local ENT = FindMetaTable( "Entity" )
@@ -88,3 +86,20 @@ function Photon2.OnVehicleMove( ply, vehicle, moveData )
 	-- print(vehicle:GetSteering())
 end
 hook.Add( "VehicleMove", "Photon2:OnVehicleMove", Photon2.OnVehicleMove )
+
+local lastModelAttachScanTime = 0
+local modelAttachScanRate = 1
+
+-- for compatability with SGM's model attachment framework
+function Photon2.ModelAttachBridgeScan()
+	if ( not ( SGM and SGM.AttachedModels ) ) then return end
+	if ( CurTime() < ( lastModelAttachScanTime + modelAttachScanRate) ) then return end
+	for k, ent in pairs( SGM.AttachedModels ) do
+		if ( not ( ent.SyncSubMaterials or ent.Sync ) ) then continue end
+		if ( ent:GetNW2Bool( "Photon2.SyncSubMaterials" ) ) then continue end
+		if not ( IsValid( ent:GetParent() ) and IsValid( ent:GetParent():GetPhotonController() ) ) then return end
+		ent:SetNW2Bool( "Photon2.SyncSubMaterials", true )
+	end
+	lastModelAttachScanTime = CurTime()
+end
+hook.Add( "Think", "Photon2:ModelAttachBridgeScan", Photon2.ModelAttachBridgeScan )

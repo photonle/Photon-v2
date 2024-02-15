@@ -323,6 +323,11 @@ function Vehicle.New( data )
 
 	setmetatable( vehicle, { __index = PhotonVehicle } )
 
+	-- SGM Model Attachment compatibility
+	if ( SGM and SGM.AttachModelsByClass and SGM.AttachModelsByClass[data.Vehicle] ) then
+		SGM.AttachModelsByClass[vehicleListId] = SGM.AttachModelsByClass[data.Vehicle]
+	end
+
 	-- Generate Signatures (used for soft/hard reload functionality)
 	if ( vehicle.Equipment ) then
 		vehicle.EquipmentSignature = PhotonVehicle.BuildEquipmentSignature( vehicle.Equipment )

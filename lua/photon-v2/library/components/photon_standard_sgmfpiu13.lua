@@ -217,6 +217,10 @@ COMPONENT.Inputs = {
 		}
 	},
 	["Emergency.Warning"] = {
+		["MODE1"] = {
+			ReverseFlasher = "FLASH",
+			SignalFlasher = "FLASH"
+		},
 		["MODE2"] = {
 			ReverseFlasher = "FLASH",
 			SignalFlasher = "FLASH"

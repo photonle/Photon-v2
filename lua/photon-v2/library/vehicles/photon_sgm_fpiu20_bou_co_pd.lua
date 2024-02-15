@@ -321,6 +321,7 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									RE_Rear = "MODE1",
+									-- PoseTest = "ON"
 									-- RE_Traffic = "LEFT"
 								},
 								["MODE2"] = {
@@ -332,6 +333,9 @@ VEHICLE.Equipment = {
 									-- so the white only occupies otherwise "off" lights (defined using the "PASS" state).
 									Pursuit = { "PURSUIT", Order = 10 },
 									PursuitWO = "PURSUIT"
+									-- { "Pursuit" }
+									-- RE_Rear = "MODE2",
+									-- RE_Front = "MODE2",
 								}
 							},
 							["Emergency.Directional"] = {

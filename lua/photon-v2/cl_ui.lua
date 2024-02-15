@@ -430,6 +430,7 @@ properties.Add("photon2_equipment", {
 						end
 					end
 				else
+					if ( not opt.Option ) then continue end
 					-- Process option if applicable
 					local this = categoryMenu:AddOption( opt.Option, function() 
 						Photon2.cl_Network.SetControllerSelection( controller,  { { i, opt.Selection } }  )

@@ -59,6 +59,11 @@ COMPONENT.Templates = {
 			}
 		}
 	},
+	["Pose"] = {
+		Pose = {
+			Parameter = "extend_feet"
+		}
+	}
 }
 
 local mult56 = 0.8
@@ -114,11 +119,13 @@ COMPONENT.Elements = {
 	
 	-- [30] = { "Illumination", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -90, 0 ) },
 	-- [31] = { "Illumination", Vector( 11.3, 2.3, 1.85 ), Angle( 0, -90, 0 ) },
+
+	[30] = { "Pose" }
 }
 
 -- COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"
 
-COMPONENT.StateMap = "[1/2/3]  3 5 7 9 11 13 15 [1/2/4] 21 23 25 27  [2/1/3] 2 4 6 8 10 12 14 16 [2/1/5] 22 24 26 28 [1/2/1] 17 19 [2/1/2] 18 20"
+COMPONENT.StateMap = "[1/2/3]  3 5 7 9 11 13 15 [1/2/4] 21 23 25 27  [2/1/3] 2 4 6 8 10 12 14 16 [2/1/5] 22 24 26 28 [1/2/1] 17 19 [2/1/2] 18 20 [ON] 30"
 
 local sequence = Photon2.SequenceBuilder.New
 
@@ -345,63 +352,38 @@ COMPONENT.Segments = {
 							:FlashHold( 2, 3, 1 ):Add( 0 )
 							:FlashHold( 1, 3, 1 ):Add( 0 )
 						}
-	}
+	},
+	PoseTest = {
+		Frames = {
+			[1] = "30",
+		},
+		Sequences = {
+			["ON"] = sequence():Alternate( 0, 1, 16 ),
+		}
+	},
 }
 
---[[
-		THIS IS A CONCEPT PROTOTYPE ONLY
-		IT IS NOT FULLY IMPLEMENTED AND MAY NOT EVER BE
---]]
+
 COMPONENT.Patterns = {
-	-- Patterns would be a group of sequences that could be
-	-- inserted into .Inputs by using only the pattern's name...
-	-- e.g. { Pattern = "Pursuit", Order = 10 }
-	Pursuit = {
-		["Pursuit"] = "PURSUIT",
-		["PursuitWO"] = "PURSUIT"
+	PATTERN26 = {
+		{ "P26_EDGE", "P26" },
+		{ "P26_FRONT", "P26" },
+		{ "P26_REAR", "P26" },
+	},
+	PATTERN26W = {
+		{ "P26_EDGE", "P26" },
+		{ "P26_FRONT", "P26" },
+		{ "P26_REAR", "P26" },
+		{ "P26_WOR", "P26" },
 	}
 }
 
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			-- All = "MIX"
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-		["MODE2"] = {
-			-- All = "MIX"
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-		["MODE3"] = {
-			-- White override segment
-			P26_WOR = { "P26", Order = 6 },
-			-- Steady-burn override
-			-- SteadyBurn = { "STEADY", Order = 5 }, -- order defined
-			-- Normal pattern segments
-			P26_EDGE = "P26",
-			P26_FRONT = "P26",
-			P26_REAR = "P26",
-		},
-
-
-
-
-
-
-		-- ["MODE1"] = {
-		-- 	Demo = "1",
-		-- },
-		-- ["MODE2"] = {
-		-- 	Demo = "2",
-		-- },
-		-- ["MODE3"] = {
-		-- 	Demo = "2",
-		-- }
+		["MODE1"] = "PATTERN26",
+		["MODE2"] = "PATTERN26",
+		["MODE3"] = "PATTERN26W"
 	},
 	["Emergency.Marker"] = { ["ON"] = { Cruise = "CRUISE" } },
 	["Emergency.SceneForward"] = {

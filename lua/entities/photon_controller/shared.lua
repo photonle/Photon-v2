@@ -15,6 +15,7 @@
 ---@field AttemptingComponentSetup boolean (Internal) Set to true when controller sets up a component. Used to 
 ---@field DoHardReload boolean (Internal) Triggers a hard reload on the next tick.
 ---@field DrawController boolean If the Photon Controller model should be visible.
+---@field SyncAttachedParentSubMaterials boolean SGM attachment framework compatability.
 ENT = ENT
 
 local info, warn = Photon2.Debug.Declare( "Controller" )
@@ -612,14 +613,27 @@ function ENT:SetupBodyGroup( id )
 	self:GetParent():SetBodygroup( bodyGroup, value )
 end
 
+function ENT:SetParentSubMaterial( index, material )
+	self:GetParent():SetSubMaterial( index, material )
+	if ( self.SyncAttachedParentSubMaterials ) then
+		for i, child in pairs( self:GetParent():GetChildren() ) do
+			if ( IsValid( child ) and child:GetNW2Bool( "Photon2.SyncSubMaterials" ) ) then
+				child.parentSubMaterialMap = child.parentSubMaterialMap or Photon2.Util.BuildParentSubMaterialMap( child )
+				if ( child.parentSubMaterialMap[index] ) then
+					child:SetSubMaterial( child.parentSubMaterialMap[index], material )
+				end
+			end
+		end
+	end
+end
+
 function ENT:SetupSubMaterial( id )
 	if SERVER then return end
 	local data = self.Equipment.SubMaterials[id]
 	-- if ( string.StartWith( data.Material, "!" ) and SERVER ) then return end
 	-- printf( "Setting up SubMaterial [%s]", id )
-	local index = data.Id
-	local material = data.Material
-	self:GetParent():SetSubMaterial( index, material )
+
+	self:SetParentSubMaterial( data.Id, data.Material )
 	self.SubMaterials[id] = data
 end
 
@@ -762,6 +776,7 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #bodyGroups do
 		self:SetupBodyGroup( bodyGroups[i] )
 	end
+
 	local subMaterials = equipmentTable.SubMaterials
 	for i=1, #subMaterials do
 		self:SetupSubMaterial( subMaterials[i] )
@@ -777,7 +792,7 @@ function ENT:RefreshParentSubMaterials()
 	if ( not IsValid( self ) or not ( IsValid( self:GetParent() ) ) ) then return end
 	for i=1, #self.SubMaterialArray do
 		-- printf("ID: %s Material: %s", self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material)
-		self:GetParent():SetSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
+		self:SetParentSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
 	end
 	for i=1, #self.VirtualComponentArray do
 		for elementIndex, element in pairs( self.VirtualComponentArray[i].Elements ) do
@@ -905,7 +920,7 @@ function ENT:SetupProfile( name, isReload )
 
 	self:SetupComponentArrays()
 
-	self:ApplySubMaterials( profile.SubMaterials )
+	self:ApplySubMaterials( self.CurrentProfile.SubMaterials )
 	self:RefreshParentMaterialsOnNextFrame()
 end
 
