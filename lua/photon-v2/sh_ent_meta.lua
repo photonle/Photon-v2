@@ -26,7 +26,7 @@ function ENTITY:SetPhotonController( controller )
 end
 
 function ENTITY:LookUpBoneOrError( boneName )
-	self:SetupBones()
+	if CLIENT then self:SetupBones() end
 	local result = self:LookupBone( boneName )
 	local model = self:GetModel() or "ERROR"
 	if ( not result ) then

@@ -44,8 +44,10 @@ function Light:Initialize( id, component )
 		SortedInputActions = {}
 	}
 
-	if ( isstring( self.BoneParent ) ) then
-		self.BoneParent = light.Parent:LookUpBoneOrError( self.BoneParent )
+	if CLIENT then
+		if ( isstring( self.BoneParent ) ) then
+			self.BoneParent = light.Parent:LookUpBoneOrError( self.BoneParent )
+		end
 	end
 
 	return setmetatable( light, { __index = self } )

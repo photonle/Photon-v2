@@ -35,6 +35,8 @@ function Component:Initialize( ent, controller )
 	component.Elements = {}
 	component.Segments = {}
 	component.ActiveSequences = {}
+	component.ActiveIndependentSequences = {}
+	component.ActiveDependentSequences = {}
 
 	-- Process light table
 	for key, light in pairs(self.Elements) do

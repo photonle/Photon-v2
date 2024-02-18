@@ -24,17 +24,19 @@ local printf = Photon2.Debug.PrintF
 ---@field InitializedFrames table<integer, table<PhotonElement, string>>
 ---@field QuickInputs table
 ---@field Lights table Points to Component.Elements
+---@field FrameDuration number
+---@field Synchronized boolean If true, the segment will use the controller's rolling frame index to always keep it synchronized.
 local Segment = exmeta.New()
 
 Segment.Inputs = {}
 Segment.InputPriorities = {}
 Segment.Count = 0
-Segment.FrameDuration = 0.64
 Segment.LastFrameTime = 0
+Segment.Synchronized = false
 -- Segment.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 
 -- On compile
----@param segmentData any
+---@param segmentData table
 ---@param lightGroups table<string, integer[]>
 ---@return PhotonElementingSegment
 function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
@@ -49,6 +51,8 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		QuickInputs = {},
 		InputActions = {},
 		InputPriorities = setmetatable( segmentData.InputPriorities or {}, { __index = componentInputPriorities } ),
+		Synchronized = segmentData.Synchronized,
+		FrameDuration = segmentData.FrameDuration
 	}
 
 	setmetatable( segment, { __index = PhotonElementingSegment } )
@@ -308,9 +312,11 @@ function Segment:Initialize( componentInstance )
 		StateMap = componentInstance.StateMap,
 		Sequences = {},
 		InitializedFrames = {},
-		InputActions = {}
+		InputActions = {},
+		FrameDuration = self.FrameDuration or componentInstance.FrameDuration
 	}
 	
+	-- print("Frame duration: " .. tostring(segment.FrameDuration))
 	setmetatable( segment, { __index = self } )
 
 	-- Setup frames
@@ -336,13 +342,6 @@ function Segment:Initialize( componentInstance )
 		end
 	end
 
-	-- -- Setup sequences
-	-- for sequenceName, sequence in pairs( self.Sequences ) do
-	-- 	error("Deprecated...")
-	-- 	-- printf( "Initializing sequence [%s]", sequenceName )
-	-- 	-- segment.Sequences[sequenceName] = sequence:Initialize( segment )
-	-- end
-
 	-- Setup inputs (new/revised sequences)
 	for channelMode, sequenceData in pairs( self.InputActions ) do
 		-- printf( "Initializing input sequence from channel mode [%s]", channelMode )
@@ -350,6 +349,9 @@ function Segment:Initialize( componentInstance )
 			error( "Sequence [" .. tostring( sequenceData.Sequence ) .."] does not exist." )
 		end
 		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank )
+		if ( segment.Sequences[sequenceData.Sequence].AcceptControllerPulse ) then
+			segment.AcceptPulse = true
+		end
 	end
 
 	segment:ApplyModeUpdate()
@@ -500,7 +502,7 @@ function Segment:ApplyModeUpdate()
 	-- printf( "CurrentPriorityScore: %s", self.CurrentPriorityScore )
 	
 	-- Do nothing if active mode hasn't changed
-	if ( newMode == self.ActivePattern ) then return end
+	if ( newMode == self.ActivePattern ) then return self:GetCurrentSequence() end
 	
 	-- self:DeactivateSequences()
 	self:DectivateCurrentSequence()
@@ -511,6 +513,7 @@ function Segment:ApplyModeUpdate()
 	self:ActivateCurrentSequence()
 	-- Turn lights back on
 	-- self:ActivateSequences()
+	return self:GetCurrentSequence()
 end
 
 

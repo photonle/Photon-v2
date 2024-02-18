@@ -16,6 +16,8 @@
 ---@field DoHardReload boolean (Internal) Triggers a hard reload on the next tick.
 ---@field DrawController boolean If the Photon Controller model should be visible.
 ---@field SyncAttachedParentSubMaterials boolean SGM attachment framework compatability.
+---@field CurrentPulseComponents table<PhotonLightingComponent> (Internal) Array of components actively listening to controller pulse cycle.
+---@field RebuildPulseComponents boolean (Internal) Triggers rebuild of all components that need to be on the pulse schedule.
 ENT = ENT
 
 local info, warn = Photon2.Debug.Declare( "Controller" )
@@ -253,7 +255,10 @@ function ENT:SetChannelMode( channel, state )
 	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
 
 	if CLIENT then
-		self:OnChannelModeChanged( channel, state, oldState )
+		-- this line may be necessary for client prediction but it's doing some really weird shit
+		if ( not game.SinglePlayer() ) then
+			self:OnChannelModeChanged( channel, state, oldState )
+		end
 		Photon2.cl_Network.SetControllerChannelState( self, channel, state )
 	end
 
@@ -1034,18 +1039,26 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
 	-- print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
 	self.CurrentModes[channel] = newState
+	
+	local pulseComponents = {}
+	
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()
 		component:SetChannelMode( channel, newState, oldState )
+		if ( component.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = component end
 	end
 	for id, virtualComponent in pairs( self.VirtualComponents ) do
 		-- component:ApplyModeUpdate()
 		virtualComponent:SetChannelMode( channel, newState, oldState )
+		if ( virtualComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = virtualComponent end
 	end
 	for id, uiComponent in pairs( self.UIComponents ) do
 		-- component:ApplyModeUpdate()
 		uiComponent:SetChannelMode( channel, newState, oldState )
+		if ( uiComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = uiComponent end
 	end
+
+	self.CurrentPulseComponents = pulseComponents
 end
 
 
@@ -1167,6 +1180,8 @@ function ENT:OnComponentReloaded( componentId )
 	-- 	self.DoHardReload = true
 	-- end
 
+	self:UpdatePulseComponentArray()
+
 	self.LastReloadFailed = false
 end
 
@@ -1226,4 +1241,19 @@ end
 function ENT:GetSirenSelection( number )
 	if ( not self.CurrentProfile or not self.CurrentProfile.Siren ) then return nil end
 	return self.CurrentProfile.Siren[number]
+end
+
+function ENT:UpdatePulseComponentArray()
+	local result = {}
+	for i=1, #self.ComponentArray do
+		if( self.ComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.ComponentArray[i] end
+	end
+	for i=1, #self.VirtualComponentArray do
+		if( self.VirtualComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.VirtualComponentArray[i] end
+	end
+	for i=1, #self.UIComponentArray do
+		if( self.UIComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.UIComponentArray[i] end
+	end
+	self.CurrentPulseComponents = result
+	self.RebuildPulseComponents = false
 end

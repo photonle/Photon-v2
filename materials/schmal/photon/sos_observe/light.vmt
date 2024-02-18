@@ -1,4 +1,4 @@
-"VertexLitGeneric"
+"UnlitGeneric"
 {
 	"$basetexture" "schmal/photon/sos_observe/light"
 	"$bumpmap"    "photon/common/flat"

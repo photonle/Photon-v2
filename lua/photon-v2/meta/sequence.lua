@@ -13,36 +13,19 @@ NAME = "PhotonSequence"
 ---@field UsedLights PhotonElement[]
 ---@field Rank number Sequence's rank in an input pattern.
 ---@field PriorityScore number
+---@field AcceptControllerPulse boolean (Internal) If the sequence is configured to utilize pulses (used for variable frame timing).
 ---@field FrameDuration number
----@field Synchronized boolean
+---@field Synchronize boolean If the sequence should always synchronize to its controller's rolling frame index.
 local Sequence = exmeta.New()
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
+local RealTime = RealTime
+
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
-Sequence.Synchronized = false
-
---[[ *************************************************
-
-	New sequence object needs to be created for each 
-	reference in COMPONENT.Inputs and assigned 
-	a unique sequence identifier.
-
-	Required to:
-	1) Enable intra-pattern ranking
-	2) Allow off-state overriding
-
-	Unresolved problems:
-	1) How should off-state overriding be configured?
-	   Per sequence? Per segment?
-
-	 *************************************************
---]]
-
-
-
+Sequence.FrameDuration = nil
 
 -- Returns initialized Sequence for a spawned component.
 ---@param segment PhotonElementingSegment
@@ -76,9 +59,9 @@ end
 
 -- Returns new Sequence for compiled component.
 ---@param name string
----@param frameSequence integer[]
+---@param frameSequence table
 ---@param segment PhotonElementingSegment
----@param data? table
+---@param data? table What the fuck is this for?
 ---@return PhotonSequence
 function Sequence.New( name, frameSequence, segment, data )
 	---@type PhotonSequence
@@ -94,11 +77,23 @@ function Sequence.New( name, frameSequence, segment, data )
 
 	local sequence = {
 		Name = name,
-		IsRepeating = shouldRepeat
+		IsRepeating = shouldRepeat,
+		Synchronize = frameSequence.Synchronize
 	}
 
+	-- If not set, sequence will use the Segment's setting
+	if ( sequence.Synchronize == nil ) then 
+		sequence.Synchronize = segment.Synchronize
+	end
 
+	if ( frameSequence.FrameDuration == nil ) then
+		sequence.FrameDuration = segment.FrameDuration
+		if ( sequence.FrameDuration ) then
+			sequence.AcceptControllerPulse = true
+		end
+	end
 	
+
 	local usedLightsByKey = {}
 	local checkedFrames = {}
 	local rebuiltFrameSequence = {}
@@ -126,14 +121,34 @@ function Sequence.New( name, frameSequence, segment, data )
 	return setmetatable( sequence, { __index = PhotonSequence } )
 end
 
+function Sequence:OnPulse()
+	if ( ( self.NextFrame <= RealTime() ) ) then
+		self:IncrementFrame()
+		return true
+	end
+	return false
+end
+
 function Sequence:IncrementFrame( frame )
+
+	if ( self.FrameDuration ) then
+		local nextFrame = self.NextFrame + self.FrameDuration
+		-- Resets frame timing in case things get fucked
+		if ( nextFrame < RealTime() ) then
+			nextFrame = RealTime() + self.FrameDuration
+		elseif ( self.NextFrame + .01 > ( RealTime() + self.FrameDuration ) ) then
+			nextFrame = self.NextFrame
+		end
+		self.NextFrame = nextFrame
+	end
+
 	-- allow empty sequences to silently fail
 	if ( #self < 1 ) then return end
 
-	if ( not self.Synchronized ) then
+	if ( not self.Synchronize ) then
 		frame = self.CurrentFrame
 	end
-		
+
 	if ( self.IsRepeating and self.RestartFrame == 1 ) then
 		self.CurrentFrame = (frame % #self) + 1
 	elseif ( not self.IsRepeating ) then
@@ -176,7 +191,13 @@ function Sequence:IncrementFrame( frame )
 end
 
 function Sequence:Activate()
-	if ( not self.Synchronized ) then self.CurrentFrame = 0 end
+	if ( not self.Synchronize ) then
+		self.CurrentFrame = 0
+		if ( self.FrameDuration ) then
+			-- self.NextFrame = RealTime()
+			self.NextFrame = RealTime() + self.FrameDuration
+		end
+	end
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		-- usedLights[i]:Activate()

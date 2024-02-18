@@ -81,6 +81,8 @@ function exmeta.LoadFile(filename, tableName, erase)
 	if NAME == nil then error("[EXMeta] Global NAME must be defined. If it is, verify that the filepath is correct.") end
 	exmeta.LoadTable(NAME, BASE, _G[tableName], erase)
 	NAME, BASE, _G[tableName] = _NAME, _BASE, _META
+
+	Photon2.Util.ReloadAllControllers()
 end
 
 ---@param name string

@@ -22,6 +22,7 @@ function ENT:Initialize()
 	self.NextFrameTime = RealTime() + self.FrameDuration
 	self:InitializeShared()
 	self:DoInitializationStandby()
+	self.CurrentPulseComponents = {}
 	-- addTestEquipment(self)
 end
 
@@ -96,6 +97,16 @@ function ENT:DoNextFrame()
 	end
 end
 
+function ENT:DoPulse()
+	if ( self.RebuildPulseComponents ) then self:UpdatePulseComponentArray() end
+	for i=1, #self.CurrentPulseComponents do
+		-- if ( self.CurrentPulseComponents[i].Pulse ) then
+		-- print(tostring(self.CurrentPulseComponents[i]))
+			self.CurrentPulseComponents[i]:Pulse()
+		-- end
+	end
+end
+
 ---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Think()
 	if (not self.IsSuspended) then
@@ -111,6 +122,7 @@ function ENT:Think()
 	if (not self.IsSuspended) then
 		-- print("invalidating bone cache")
 		-- self:GetParent():InvalidateBoneCache()
+		self:DoPulse()
 		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime() and ( not PHOTON2_FREEZE )) then
 			self:DoNextFrame()
 		end

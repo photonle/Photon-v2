@@ -17,12 +17,17 @@ local print = Photon2.Debug.Print
 ---@field InputPriorities table<string, integer>
 ---@field CurrentModes table<string, string>
 ---@field ActiveSequences table<PhotonSequence, boolean>
----@field UseControllerTiming boolean (Default = `true`) When true, flash/sequence timing is managed by the Controller. Set to `false` if unsynchronized flashing is desired.
+---@field ActiveIndependentSequences table<PhotonSequence, boolean>
+---@field ActiveDependentSequences table<PhotonSequence, boolean>
 ---@field StateMap table<integer, string[]>
 ---@field InputActions table<string, string[]>
 ---@field ElementGroups table<string, integer[]>
 ---@field UseControllerModes boolean If true, the component will use its controller's CurrentModes table. If false, it will manage its own (required for Virtual InputActions).
 ---@field Phase string
+---@field FrameDuration number
+---@field AcceptControllerPulse boolean (Internal)
+---@field AcceptControllerTiming boolean (Internal)
+---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -31,6 +36,7 @@ local Util = Photon2.Util
 Component.UseControllerModes = true
 Component.IsPhotonLightingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
+
 
 Component.ClassMap = {
 	Default = "PhotonLightingComponent",
@@ -498,6 +504,8 @@ function Component:Initialize( ent, controller )
 	component.Elements = {}
 	component.Segments = {}
 	component.ActiveSequences = {}
+	component.ActiveIndependentSequences = {}
+	component.ActiveDependentSequences = {}
 
 	-- Process light table
 	for key, light in pairs(self.Elements) do
@@ -512,11 +520,24 @@ function Component:Initialize( ent, controller )
 	return component
 end
 
-
 function Component:OnScaleChange( newScale, oldScale )
 	for key, light in pairs(self.Elements) do
 		if (light.SetLightScale) then
 			light:SetLightScale( newScale )
+		end
+	end
+end
+
+function Component:Pulse()
+	local frameChange = false
+	
+	for sequence, _ in pairs( self.ActiveIndependentSequences ) do
+		if ( sequence:OnPulse() ) then frameChange = true end
+	end
+
+	if ( frameChange ) then
+		for i=1, #self.Elements do
+			self.Elements[i]:UpdateState()
 		end
 	end
 end
@@ -555,11 +576,19 @@ function Component:ApplyModeUpdate()
 		
 	end
 
+	local acceptControllerPulse = false
 	for name, segment in pairs( self.Segments ) do
-		segment:ApplyModeUpdate()
+		local sequence = segment:ApplyModeUpdate()
+		if ( sequence and sequence.AcceptControllerPulse ) then
+			acceptControllerPulse = true
+			self.PhotonController.RebuildPulseComponents = true
+		end
 	end
+
+	self.AcceptControllerPulse = acceptControllerPulse
+
 	-- self:UpdateSegmentLightControl()
-	self:FrameTick()
+	self:FrameTick( true )
 	-- print("\t\tVirtual Outputs table:")
 	-- PrintTable( virtualOutputs )
 	-- print("\t\tInput table:")
@@ -589,7 +618,13 @@ end
 function Component:RegisterActiveSequence( segmentName, sequence )
 	-- local sequence = self.Segments[segmentName].Sequences[sequence]
 	-- printf("Adding sequence [%s]", sequence.Name)
-	self.ActiveSequences[sequence] = sequence
+	self.ActiveSequences[sequence] = true
+
+	if ( sequence.AcceptControllerPulse ) then
+		self.ActiveIndependentSequences[sequence] = true
+	else
+		self.ActiveDependentSequences[sequence] = true
+	end
 end
 
 
@@ -598,17 +633,25 @@ end
 function Component:RemoveActiveSequence( segmentName, sequence)
 	-- printf("Removing sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = nil
+	self.ActiveIndependentSequences[sequence] = nil
+	self.ActiveDependentSequences[sequence] = nil
 end
 
-function Component:FrameTick()
+function Component:FrameTick( all )
 	
 	-- for segmentName, segment in pairs( self.Segments ) do 
 	-- 	segment:IncrementFrame( self.PhotonController.Frame )
 	-- end
-
-	for sequence, _ in pairs( self.ActiveSequences ) do
-		sequence:IncrementFrame( self.PhotonController.Frame )
+	if ( all ) then
+		for sequence, _ in pairs( self.ActiveSequences ) do
+			sequence:IncrementFrame( self.PhotonController.Frame, true )
+		end
+	else
+		for sequence, _ in pairs( self.ActiveDependentSequences ) do
+			sequence:IncrementFrame( self.PhotonController.Frame, false )
+		end
 	end
+	
 
 	for i=1, #self.Elements do
 		self.Elements[i]:UpdateState()

@@ -218,4 +218,13 @@ function Photon2.Util.BuildParentSubMaterialMap( ent )
 	return map
 end
 
+-- (Internal) Triggered when meta (or other internal) files are saved
+-- so changes can be observed immediately on spawned vehicles.
+function Photon2.Util.ReloadAllControllers()
+	for k, ent in pairs ( ents.FindByClass( "photon_controller" ) ) do
+		Photon2.Library.Vehicles:Compile( ent:GetProfileName() )
+		ent:HardReload()
+	end
+end
+
 -- PrintTable(Util.ModelMeshes)
