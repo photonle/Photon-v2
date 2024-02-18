@@ -14,7 +14,13 @@ COMPONENT.Model = "models/schmal/sos_observe.mdl"
 COMPONENT.Templates = {
 	["Mesh"] = {
 		Model = {
-			Model = "models/schmal/sos_observe.mdl"
+			Model = "models/schmal/sos_observe.mdl",
+			States = {
+				-- R = {
+				-- 	DrawColor = PhotonColor( 255, 0, 0 ),
+				-- 	BloomColor = PhotonColor( 255, 0, 0 )
+				-- }
+			}
 		}
 	},
 	["DynamicLight"] = {

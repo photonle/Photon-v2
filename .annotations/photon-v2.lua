@@ -161,6 +161,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Siren string Default siren name.
 
 ---@class PhotonLibraryComponentSegment
+---@field FrameDuration? number Overrides the default duration of each frame. (In seconds.)
 ---@field Frames table<number, string | table>
 ---@field Sequences table<string, table<integer, integer>>
 
