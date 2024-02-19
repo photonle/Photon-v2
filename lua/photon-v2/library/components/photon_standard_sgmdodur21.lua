@@ -11,6 +11,11 @@ COMPONENT.PrintName = "2021 Dodge Durango (PPV)"
 
 COMPONENT.IsVirtual = true
 
+-- Special component attributes
+COMPONENT.Flags = {
+	AutomaticHeadlights = true
+}
+
 COMPONENT.States = {
 	[1] = "R",
 	[2] = "B"
@@ -298,7 +303,7 @@ COMPONENT.Inputs = {
 		["PARKING"] = {
 			Parking = "ON"
 		},
-		["DRL"] = {
+		["AUTO"] = {
 			DRL = "ON"
 		}
 	},

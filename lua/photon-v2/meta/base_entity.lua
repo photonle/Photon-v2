@@ -31,7 +31,8 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Warning"] 			= 40,
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
-	["Vehicle.Lights"]	 			= 10
+	["Vehicle.Lights"]	 			= 10,
+	["Vehicle.Ambient"]				= 0
 }
 
 ENT.SubMaterials = {}

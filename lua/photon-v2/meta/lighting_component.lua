@@ -76,10 +76,17 @@ function Component.New( name, data )
 		-- end
 	end
 
+	data.Flags = data.Flags or {}
+
 	if ( dumpLibraryData ) then
 		print("_______________________________________")
 		PrintTable(data)
 		print("_______________________________________")
+	end
+
+	-- TODO: there needs to be an actual flag system setup
+	if ( data.Flags.AutomaticHeadlights ) then
+		Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( data )
 	end
 
 	---@type PhotonLightingComponent
@@ -295,6 +302,8 @@ function Component.New( name, data )
 	-- for segmentName, segmentData in pairs( data.Segments or {} ) do
 	-- 	component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
 	-- end
+
+
 
 	--[[
 			Setup Virtual InputActions

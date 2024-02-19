@@ -80,8 +80,19 @@ Photon2.RegisterCommand({
 		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = "PARKING" }
 	},
 	OnRelease = { 
-		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = { "DRL", "HEADLIGHTS" } }
+		{ Action = "TOGGLE", Channel = "Vehicle.Lights", Value = { "OFF", "HEADLIGHTS" } }
 	}
+})
+
+Photon2.RegisterCommand({
+	Name = "vehicle_lights_auto",
+	Category = "Headlights/Parking",
+	Title = "Automatic",
+	Description = "Sets vehicle lighting to auto (enables DRL and activates headlights automatically).",
+	OnPress = { 
+		{ Action = "SOUND", Sound = "Click" },
+		{ Action = "SET", Channel = "Vehicle.Lights", Value = "AUTO" },
+	},
 })
 
 Photon2.RegisterCommand({

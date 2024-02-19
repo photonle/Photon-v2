@@ -7,6 +7,11 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
+-- Special component attributes
+COMPONENT.Flags = {
+	AutomaticHeadlights = true
+}
+
 COMPONENT.Templates = {
 	["Mesh"] = {
 		Mesh = {
