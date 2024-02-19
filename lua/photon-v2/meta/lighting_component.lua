@@ -28,6 +28,7 @@ local print = Photon2.Debug.Print
 ---@field AcceptControllerPulse boolean (Internal)
 ---@field AcceptControllerTiming boolean (Internal)
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
+---@field VirtualOutputs table
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder

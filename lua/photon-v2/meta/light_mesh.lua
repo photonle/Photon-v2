@@ -46,8 +46,8 @@ Light.States = {
 	},
 	["OFF"] = {
 		Intensity = 0,
-		BloomColor = PhotonColor( 0, 0, 0 ),
-		DrawColor = PhotonColor( 0, 0, 0 ),
+		BloomColor = PhotonColor( 0, 0, 0 ) --[[@as PhotonBlendColor]],
+		DrawColor = PhotonColor( 0, 0, 0 ) --[[@as PhotonBlendColor]],
 	},
 	["R"] = {
 		BloomColor = PhotonColor( 255, 0, 0 ):Blend( red ):GetBlendColor(),
@@ -134,7 +134,7 @@ function Light:Initialize( id, component )
 	self.Matrix = Matrix()
 	self.DrawColor = PhotonElementColor()
 	self.BloomColor = PhotonElementColor()
-	if ( isnumber( self.Scale ) ) then self.Scale = Vector( self.Scale, self.Scale, self.Scale ) end
+	if ( isnumber( self.Scale ) ) then self.Scale = Vector( self.Scale --[[@as number]], self.Scale--[[@as number]], self.Scale--[[@as number]] ) end
 	
 	-- Fix for bizarre scaling bug in 64-bit game
 	self.Scale = self.Scale + Vector( 0.0000000001, 0.0000000001, 0.0000000001 )
@@ -148,7 +148,7 @@ function Light:Initialize( id, component )
 	end
 
 	if ( isstring( self.BoneParent ) ) then
-		self.BoneParent = parentEntity:LookupBone( self.BoneParent )
+		self.BoneParent = parentEntity:LookupBone( self.BoneParent --[[@as string]] )
 	end
 
 	if ( not self.Mesh and CLIENT ) then
@@ -219,7 +219,7 @@ function Light:DoPreRender()
 		
 	else
 		self.Parent:SetupBones()
-		local matrix = self.Parent:GetBoneMatrix( self.BoneParent )
+		local matrix = self.Parent:GetBoneMatrix( self.BoneParent --[[@as number]] )
 		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
 

@@ -26,7 +26,7 @@ function Photon2.cl_Network.SetControllerSelection( controller, table )
 end
 
 function Photon2.cl_Network.OnSetInputController( len )
-	Photon2.ClientInput.SetTargetController( net.ReadEntity() )
+	Photon2.ClientInput.SetTargetController( net.ReadEntity() --[[@as PhotonController]] )
 end
 net.Receive( "Photon2:SetPlayerInputControllerTarget", Photon2.cl_Network.OnSetInputController )
 

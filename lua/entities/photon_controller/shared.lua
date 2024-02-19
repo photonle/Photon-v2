@@ -1,7 +1,7 @@
 ---@class PhotonController : Entity
 ---@field ComponentParent Entity
 ---@field Components table<string, PhotonLightingComponent>
----@field ComponentArray PhotonBaseEntity[]
+---@field ComponentArray PhotonLightingComponent[]
 ---@field CurrentProfile PhotonVehicle
 ---@field GetLinkedToVehicle fun(): boolean
 ---@field GetVehicleBraking fun(): boolean
@@ -540,8 +540,9 @@ function ENT:GetCurrentEquipment()
 	return result or self.Equipment
 end
 
+---@param id string
 function ENT:SetupUIComponent( id )
-	local data = self.Equipment.UIComponents[id] --[[@as PhotonVehicleEquipment]]
+	local data = self.Equipment.UIComponents[id]
 	-- printf("Setting up UI component [%s]", id)
 	if ( not data ) then
 		error(string.format("Unable to locate equipment UI component ID [%s]", id))
@@ -556,7 +557,7 @@ end
 
 ---@param id string
 function ENT:SetupVirtualComponent( id )
-	local data = self.Equipment.VirtualComponents[id] --[[@as PhotonVehicleEquipment]]
+	local data = self.Equipment.VirtualComponents[id]
 	-- printf("Setting up virtual component [%s]", id)
 	if (not data) then
 		error(string.format("Unable to locate equipment virtual component ID [%s]", id))
@@ -600,7 +601,7 @@ function ENT:SetupProp( id )
 	self.Props[id] = ent
 end
 
----@param id string
+---@param id string | any
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
@@ -648,10 +649,9 @@ function ENT:SetupInteractionSound( id )
 	self:SetInteractionSound( data.Class, data.Profile )
 end
 
----@param id string
 function ENT:SetupComponent( id )
 	self.AttemptingComponentSetup = true
-	local data = self.Equipment.Components[id] --[[@as PhotonVehicleEquipment]]
+	local data = self.Equipment.Components[id]
 	if (not data) then
 		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
@@ -1077,11 +1077,14 @@ function ENT:GetActiveComponents()
 			for _, componentIndex in pairs( map[selectionIndex].Components ) do
 				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
 			end
-			for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
-				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
-			end
-			for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
-				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+			-- not checking for client here causes strange errors when reloading core files
+			if ( CLIENT ) then
+				for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
+					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+				end
+				for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
+					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+				end
 			end
 		end
 	end

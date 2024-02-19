@@ -1,4 +1,4 @@
----@diagnostic disable: undefined-doc-name, missing-return-value, undefined-field
+---@diagnostic disable: undefined-doc-name, missing-return-value, undefined-field, missing-return
 --[[
 CAMI - Common Admin Mod Interface.
 Copyright 2020 CAMI Contributors

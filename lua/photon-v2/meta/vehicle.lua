@@ -309,18 +309,21 @@ function Vehicle.New( data )
 	map[vehicle.EntityClass] 								= map[vehicle.EntityClass] or {}
 	map[vehicle.EntityClass][vehicle.Model] 				= map[vehicle.EntityClass][vehicle.Model] or {}
 	map[vehicle.EntityClass][vehicle.Model][vehicleListId] 	= data.Name
+	if ( data.Default ) then map[vehicle.EntityClass][vehicle.Model]["*"] = data.Name end
+
 
 	-- Populate entry in Vehicles table
 	profiles.Vehicles[vehicleListId] = data.Name
 
+	if ( not data.Default ) then	
 	-- Generate table for Vehicles list table
-	local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
-	vehicleTable.Category			 = data.Category or target.Category
-	vehicleTable.Name				 = title
-	vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
-	vehicleTable.IsPhoton2Generated  = true
-	list.Set( "Vehicles", vehicleListId, vehicleTable )
-
+		local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
+		vehicleTable.Category			 = data.Category or target.Category
+		vehicleTable.Name				 = title
+		vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
+		vehicleTable.IsPhoton2Generated  = true
+		list.Set( "Vehicles", vehicleListId, vehicleTable )
+	end
 	setmetatable( vehicle, { __index = PhotonVehicle } )
 
 	-- SGM Model Attachment compatibility
