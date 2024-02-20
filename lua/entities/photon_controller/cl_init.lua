@@ -134,7 +134,7 @@ function ENT:Think()
 		if ( self.LastAmbientCheck + self.AmbientCheckDuration <= RealTime() ) then
 			self:RefreshAmbient()
 		end
-		if ( self.NextPulse <= RealTime() ) then
+		if ( self.NextPulse <= RealTime() and ( not PHOTON2_FREEZE ) ) then
 			self:DoPulse()
 		end
 		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime() and ( not PHOTON2_FREEZE )) then

@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Seattle Police Department - Ford Police Utility (2013) "
+VEHICLE.Title 		= "Seattle Police Dept. - Ford Police Utility (2013-2015)"
 VEHICLE.Vehicle		= "13fpiu_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
@@ -15,13 +15,18 @@ local classicLivery = PhotonMaterial.New({
 	["$detail"] = "photon/license/reflective_paint",
 	["$detailblendmode"] = 1,
 	["$detailscale"] = 64,
+	["$detailblendfactor"] = 1,
 	["$phong"] = 1,
 	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
 	["$envmap"] = "env_cubemap",
 	["$envmaptint"] = Vector(0.1, 0.1, 0.15),
 	["$phongboost"] = 5,
 	["$phongexponent"] = 64,
-	["$nodecal"] = 1
+	["$nodecal"] = 1,
+	["$rimlight"] = 1,
+	["$rimlightexponent"] = 2,
+	["$rimlightboost"] = .2,
+	-- ["$halflambert"] = 1
 	}
 })
 
@@ -69,6 +74,19 @@ VEHICLE.Siren = { [1] = "motorola_spectra" }
 
 VEHICLE.Equipment = {
 	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				UIComponents = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}
+	},
+	{
 		Category = "Liveries",
 		Options = {
 			
@@ -76,6 +94,25 @@ VEHICLE.Equipment = {
 				Option = "Classic (2013)",
 				SubMaterials = {
 					{ Id = 8, Material = classicLivery.MaterialName }
+				},
+				Components = {
+					{
+						Name = "@legend",
+						Component = "photon_fedsig_legend",
+						Position = Vector( 0, -14, 85.1 ),
+						Angles = Angle( 1, 90, 0 ),
+						Scale = 1,
+						Bones = {
+							["foot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
+							["foot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = "P20",
+								["MODE3"] = "P20W"
+							}
+						}
+					}
 				}
 			},
 			{
@@ -84,6 +121,16 @@ VEHICLE.Equipment = {
 					{ Id = 8, Material = hybridLivery.MaterialName }
 				},
 				Components = {
+					{
+						Inherit = "@legend",
+						Name = "@legend_updated",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = "P1",
+								["MODE3"] = "P22W",
+							}
+						}
+					},
 					{
 						Name = "@cruise_light",
 						Component = "photon_sos_undercover",
@@ -112,6 +159,7 @@ VEHICLE.Equipment = {
 					{ Id = 8, Material = newLivery.MaterialName }
 				},
 				Components = {
+					{ Inherit = "@legend_updated" },
 					{ Inherit = "@cruise_light" },
 					{ Inherit = "@r_cruise_light" },
 				},
@@ -286,16 +334,7 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Legend",
 				Components = {
-					{
-						Component = "photon_fedsig_legend",
-						Position = Vector( 0, -14, 85.1 ),
-						Angles = Angle( 1, 90, 0 ),
-						Scale = 1,
-						Bones = {
-							["foot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
-							["foot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
-						},
-					}
+
 				}
 			}
 		}

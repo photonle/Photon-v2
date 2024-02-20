@@ -38,6 +38,7 @@ end
 function Photon2.NextFrame()
 	for _, ent in pairs(ents.FindByClass("photon_controller")) do
 		ent:DoNextFrame()
+		ent:DoPulse()
 	end
 end
 

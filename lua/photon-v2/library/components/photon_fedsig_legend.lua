@@ -44,11 +44,14 @@ COMPONENT.Templates = {
 		TakedownIllumination = {
 			Brightness = 2
 		},
-		AlleyIllumination = {}
+		AlleyIllumination = {
+			Brightness = 1,
+			FOV = 45
+		}
 	}
 }
 
-COMPONENT.StateMap = "[R] 3 5 7 9 11 15 17 19 21 23 25 [B] 4 6 8 10 12 16 18 20 22 24 26 [W] 1 2 13 14 27 28 29 30"
+COMPONENT.StateMap = "[R] 3 5 7 9 11 15 17 19 21 23 25 [B] 4 6 8 10 12 16 18 20 22 24 26 [W] 1 2 13 14 27 28 29 30 31 32 33"
 
 COMPONENT.Elements = {
 	[1] = { "Main", Vector( 6.7, 3.85, 0.15 ), Angle( 0, -90, 0 ) },
@@ -96,7 +99,17 @@ COMPONENT.Elements = {
 	[29] = { "HotFoot", Vector( -4.5, 31, -2.4 ), Angle( 0, -10, 0 ) },
 	[30] = { "HotFoot", Vector( -4.5, -31, -2.4 ), Angle( 0, 190, 0 ) },
 
+	[31] = { "TakedownIllumination", Vector( 6.7, 0, 0.15 ), Angle( 0, -90, 0 ) },
 
+	[32] = { "AlleyIllumination", Vector( 0, 28.8, 0.15 ), Angle( 15, 0, 0 ) },
+	[33] = { "AlleyIllumination", Vector( 0, -28.8, 0.155 ), Angle( 15, -180, 0 ) },
+}
+
+COMPONENT.ElementGroups = {
+	["#A"] = { 1, 2, 25, 26 },
+	["#B"] = { 3, 4, 23, 24 },
+	["#C"] = { 5, 6, 21, 22 },
+	["#D"] = { 7, 9, 11, 15, 17, 19, 8, 10, 12, 16, 18, 20 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -104,13 +117,46 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30",
+			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33",
 			[2] = "5 7 9 11 16 18 20 22",
 			[3] = "6 8 10 12 15 17 19 21",
 		},
 		Sequences = {
 			["ON"] = { 1 },
 			["ALT"] = sequence():Alternate( 2, 3, 8 )
+		}
+	},
+	P1 = {
+		Frames = {
+			[1] = "5 7 9 11 16 18 20 22",
+			[2] = "6 8 10 12 15 17 19 21",
+		},
+		Sequences = {
+			["P1"] = sequence():Alternate( 1, 2, 8 )
+		}
+	},
+	SignalMaster = {
+		Frames = {
+			[1] = "21",
+			[2] = "21 23",
+			[3] = "21 23 25",
+			[4] = "21 23 25 26",
+			[5] = "21 23 25 26 24",
+			[6] = "21 23 25 26 24 22",
+			[7] = "22",
+			[8] = "24 22",
+			[9] = "26 24 22",
+			[10] = "25 26 24 22",
+			[11] = "23 25 26 24 22",
+			[12] = "21 23 25 26 24 22",
+			[13] = "25 26",
+			[14] = "23 25 26 24",
+			[15] = "21 23 25 26 24 22",
+		},
+		Sequences = {
+			["RIGHT"] = sequence():Add( 0 ):Sequential( 1, 6 ):StretchAll( 3 ):Hold( 8 ),
+			["LEFT"] = sequence():Add( 0 ):Sequential( 7, 12 ):StretchAll( 3 ):Hold( 8 ),
+			["CENOUT"] = sequence():Add( 0 ):Sequential( 13, 15 ):StretchAll( 5 ):Hold( 8 )
 		}
 	},
 	Corner = {
@@ -132,6 +178,38 @@ COMPONENT.Segments = {
 			["P22"] = { 1, 1, 0, 2, 2, 0 }
 		}
 	},
+	P20 = {
+		FrameDuration = 1/48,
+		Frames = {
+			-- Sweep
+			[1] = "#A",
+			[2] = "#A #B",
+			[3] = "#A #B #C",
+			[4] = "#A #B #C #D",
+			[5] = "#B #C #D",
+			[6] = "#C #D",
+			[7] = "#D",
+			-- Interrupt
+			[8] = "#C #D",
+			[9] = "#A #C #D",
+			[10] = "#A #B",
+			[11] = "#A #B #C #D",
+			[12] = "#A #C #D",
+			[13] = "#C #D",
+			[14] = "#B #C #D",
+			[15] = "#B #C"
+		},
+		Sequences = {
+			["P20"] = sequence()
+				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
+				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
+				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
+				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
+				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
+				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
+				:Add( 8, 0, 8, 9, 0, 10, 10, 11, 12, 0, 13, 13, 14, 0, 15, 15 ):Stretch( 2 )
+		}
+	},
 	Inner = {
 		Frames = {
 			[1] = "3 5 21 23 25",
@@ -147,6 +225,7 @@ COMPONENT.Segments = {
 			[2] = "2",
 		},
 		Sequences = {
+			["OFF"] = { 0 },
 			["ALT"] = sequence():Alternate( 1, 2, 3 )
 		}
 	},
@@ -156,7 +235,7 @@ COMPONENT.Segments = {
 			[2] = "14",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 5 )
+			["ALT"] = sequence():Alternate( 1, 2, 8 )
 		}
 	},
 	ForwardHotFeet = {
@@ -179,7 +258,7 @@ COMPONENT.Segments = {
 	},
 	SceneForward = {
 		Frames = {
-			[1] = "1 2 27 28",
+			[1] = "1 2 27 28 31",
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -187,7 +266,7 @@ COMPONENT.Segments = {
 	},
 	SceneLeft = {
 		Frames = {
-			[1] = "13 29",
+			[1] = "13 29 32",
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -195,7 +274,7 @@ COMPONENT.Segments = {
 	},
 	SceneRight = {
 		Frames = {
-			[1] = "14 30",
+			[1] = "14 30 33",
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -203,19 +282,44 @@ COMPONENT.Segments = {
 	},
 }
 
+COMPONENT.Patterns = {
+	["P1"] = {
+		{ "P1", "P1" }
+	},
+	["P20"] = {
+		{ "P20", "P20" },
+		{ "Takedown", "OFF" },
+	},
+	["P20W"] = {
+		{ "P20", "P20" },
+		{ "Takedown", "ALT" },
+		{ "Alley", "ALT" },
+		{ "ForwardHotFeet", "ALT" },
+		{ "AlleyHotFeet", "ALT" },
+	},
+	["P22"] = {
+		{ "Warning", "P22" },
+		{ "Takedown", "OFF" },
+	},
+	["P22W"] = {
+		{ "Warning", "P22" },
+		{ "Takedown", "ALT" },
+		{ "Alley", "ALT" },
+		{ "ForwardHotFeet", "ALT" },
+		{ "AlleyHotFeet", "ALT" },
+	},
+}
+
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { All = "ALT" },
-		["MODE2"] = { All = "ALT" },
-		["MODE3"] = { 
-			-- Corner = "ALT",
-			-- Inner = "ALT",
-			Warning = "P22",
-			Takedown = "ALT",
-			Alley = "ALT",
-			ForwardHotFeet = "ALT",
-			AlleyHotFeet = "ALT",
-		},
+		["MODE1"] = "P1",
+		["MODE2"] = "P1",
+		["MODE3"] = "P20W",
+	},
+	["Emergency.Directional"] = {
+		["LEFT"] = { SignalMaster = "LEFT" },
+		["RIGHT"] = { SignalMaster = "RIGHT" },
+		["CENOUT"] = { SignalMaster = "CENOUT" },
 	},
 	["Emergency.SceneForward"] = {
 		["ON"] = { SceneForward = "ON" },
