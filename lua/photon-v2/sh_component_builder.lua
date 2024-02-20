@@ -107,5 +107,4 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 
 	table.Merge( component, mixin )
 
-	PrintTable( component )
 end

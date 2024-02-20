@@ -6,26 +6,30 @@ include("shared.lua")
 ---@field Frame integer
 ---@field FrameCountEnabled boolean
 ---@field LastFrameTime number
+---@field NextPulse number
 ENT = ENT
 
 local printOnly = print
 local print = Photon2.Debug.Print
+local RealTime = RealTime
 
 ENT.FrameDuration = 1/24
 ENT.FrameCountEnabled = true
 ENT.NextFrameTime = 0
-ENT.AmbientCheckDuration = 1
+ENT.AmbientCheckDuration = 1/2
+ENT.PulseDuration = 1/100
 
 PHOTON2_FREEZE = false
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Initialize()
 	self.Frame = 1
+	self.LastAmbientCheck = 0
+	self.NextPulse = 0
 	self.NextFrameTime = RealTime() + self.FrameDuration
 	self:InitializeShared()
 	self:DoInitializationStandby()
 	self.CurrentPulseComponents = {}
-	self.LastAmbientCheck = 0
 	-- addTestEquipment(self)
 end
 
@@ -102,11 +106,13 @@ end
 
 function ENT:DoPulse()
 	if ( self.RebuildPulseComponents ) then self:UpdatePulseComponentArray() end
+	self.NextPulse = RealTime() + self.PulseDuration
 	for i=1, #self.CurrentPulseComponents do
-		-- if ( self.CurrentPulseComponents[i].Pulse ) then
-		-- print(tostring(self.CurrentPulseComponents[i]))
-			self.CurrentPulseComponents[i]:Pulse()
-		-- end
+		if ( not IsValid( self.CurrentPulseComponents[i] ) ) then
+			self.RebuildPulseComponents = true
+			return
+		end
+		self.CurrentPulseComponents[i]:Pulse()
 	end
 end
 
@@ -125,10 +131,12 @@ function ENT:Think()
 	if (not self.IsSuspended) then
 		-- print("invalidating bone cache")
 		-- self:GetParent():InvalidateBoneCache()
-		if ( self.LastAmbientCheck  + self.AmbientCheckDuration <= RealTime() ) then
+		if ( self.LastAmbientCheck + self.AmbientCheckDuration <= RealTime() ) then
 			self:RefreshAmbient()
 		end
-		self:DoPulse()
+		if ( self.NextPulse <= RealTime() ) then
+			self:DoPulse()
+		end
 		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime() and ( not PHOTON2_FREEZE )) then
 			self:DoNextFrame()
 		end
