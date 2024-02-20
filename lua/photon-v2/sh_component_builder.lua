@@ -81,3 +81,30 @@ function Photon2.ComponentBuilder.InheritInputs( childInputs, mergedInputs )
 		end
 	end
 end
+
+function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
+	local mixin = {
+		VirtualOutputs = {
+			["Vehicle.AutomaticLighting"] = {
+				{
+					Mode = "HEADLIGHTS",
+					Conditions = {
+						["Vehicle.Ambient"] = { "DARK" },
+						["Vehicle.Lights"] = { "AUTO" }
+					}
+				}
+			}
+		},
+		InputPriorities = {
+			["Vehicle.AutomaticLighting"] = 21
+		},
+		Inputs = {
+			["Vehicle.AutomaticLighting"] = {
+				["HEADLIGHTS"] = table.Copy(component.Inputs["Vehicle.Lights"]["HEADLIGHTS"])
+			}
+		}
+	}
+
+	table.Merge( component, mixin )
+
+end

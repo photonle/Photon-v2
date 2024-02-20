@@ -6,19 +6,26 @@ include("shared.lua")
 ---@field Frame integer
 ---@field FrameCountEnabled boolean
 ---@field LastFrameTime number
+---@field NextPulse number
 ENT = ENT
 
+local printOnly = print
 local print = Photon2.Debug.Print
+local RealTime = RealTime
 
 ENT.FrameDuration = 1/24
 ENT.FrameCountEnabled = true
 ENT.NextFrameTime = 0
+ENT.AmbientCheckDuration = 1/2
+ENT.PulseDuration = 1/100
 
 PHOTON2_FREEZE = false
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function ENT:Initialize()
 	self.Frame = 1
+	self.LastAmbientCheck = 0
+	self.NextPulse = 0
 	self.NextFrameTime = RealTime() + self.FrameDuration
 	self:InitializeShared()
 	self:DoInitializationStandby()
@@ -99,11 +106,13 @@ end
 
 function ENT:DoPulse()
 	if ( self.RebuildPulseComponents ) then self:UpdatePulseComponentArray() end
+	self.NextPulse = RealTime() + self.PulseDuration
 	for i=1, #self.CurrentPulseComponents do
-		-- if ( self.CurrentPulseComponents[i].Pulse ) then
-		-- print(tostring(self.CurrentPulseComponents[i]))
-			self.CurrentPulseComponents[i]:Pulse()
-		-- end
+		if ( not IsValid( self.CurrentPulseComponents[i] ) ) then
+			self.RebuildPulseComponents = true
+			return
+		end
+		self.CurrentPulseComponents[i]:Pulse()
 	end
 end
 
@@ -122,7 +131,12 @@ function ENT:Think()
 	if (not self.IsSuspended) then
 		-- print("invalidating bone cache")
 		-- self:GetParent():InvalidateBoneCache()
-		self:DoPulse()
+		if ( self.LastAmbientCheck + self.AmbientCheckDuration <= RealTime() ) then
+			self:RefreshAmbient()
+		end
+		if ( self.NextPulse <= RealTime() ) then
+			self:DoPulse()
+		end
 		if (self.FrameCountEnabled and (self.NextFrameTime) <= RealTime() and ( not PHOTON2_FREEZE )) then
 			self:DoNextFrame()
 		end
@@ -132,6 +146,11 @@ function ENT:Think()
 		self:HardReload()
 	end
 
+	-- local lighting = render.ComputeLighting( self:GetPos(), self:GetUp() )
+	-- local ambient = render.GetAmbientLightColor()
+	-- ambient = ( ambient.x + ambient.y + ambient.z ) / 3
+	-- lighting =  ( lighting.x + lighting.y + lighting.z ) / 3
+	-- printOnly( lighting/ambient )
 	-- for id, component in pairs(self.Components) do
 	-- 	if (not IsValid(component:GetParent())) then
 	-- 		self:RemoveAllComponents()
@@ -142,6 +161,68 @@ function ENT:Think()
 	-- 	print("parent NOT valid")
 	-- end
 	-- print("controller thinking")
+end
+
+local darkMapThreshold = 0.2
+local darkMapMultiplier = 4
+local normalThreshold = 1.5
+
+function ENT:RefreshAmbient()
+	local mapAmbient = render.GetAmbientLightColor()
+	mapAmbient = ( mapAmbient.x + mapAmbient.y + mapAmbient.z ) / 3
+
+	local threshold = normalThreshold
+
+	-- if the map itself is dark, boost the threshold
+	if ( mapAmbient < darkMapThreshold ) then threshold = threshold * darkMapMultiplier end
+
+	local data = self.AmbientLightingData or {
+		CurrentIndex = 1,
+	}
+
+	local current = render.ComputeLighting( self:GetPos(), self:GetUp() )
+	current = ( current.x + current.y + current.z ) / 3
+
+	-- print( "Current: " .. tostring( current ) )
+	if ( current < threshold ) then
+		current = 0
+	else
+		current = 1
+	end
+	
+	data[1] = data[1] or current
+	data[2] = data[2] or current
+	data[3] = data[3] or current
+
+	data[data.CurrentIndex] = current
+
+	data.Average = ( data[1] + data[2] + data[3] ) / 3
+
+	data.CurrentIndex = data.CurrentIndex + 1
+	if ( data.CurrentIndex > 3 ) then data.CurrentIndex = 1 end
+	
+	-- print( "Map: " .. tostring( mapAmbient ) )
+
+	self.LastAmbientCheck = RealTime()
+	self.AmbientLightingData = data
+
+	if ( self:GetChannelMode( "Vehicle.Ambient" ) == "OFF" ) then
+		if ( data.Average ) == 0 then
+			self:SetChannelMode( "Vehicle.Ambient", "DARK" )
+		end
+	else
+		if ( data.Average ) > 0.99 then
+			self:SetChannelMode( "Vehicle.Ambient", "OFF" )
+		end
+	end
+	-- if ( data.Average < 1.5 ) then
+	-- 	self:SetChannelMode( "Vehicle.Ambient", "DARK" )
+	-- 	print("DARK")
+	-- else
+	-- 	self:SetChannelMode( "Vehicle.Ambient", "OFF" )
+	-- 	print("NORMAL")
+	-- end
+	-- print("Average: " .. tostring( data.Average ) )
 end
 
 function ENT:RenderOverride()

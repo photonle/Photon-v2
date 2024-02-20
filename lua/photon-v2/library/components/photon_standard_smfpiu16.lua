@@ -22,6 +22,11 @@ COMPONENT.PrintName = "2016 Ford Police Interceptor Utility"
 -- and will instead manipulate the existing vehicle entity.
 COMPONENT.IsVirtual = true
 
+-- Special component attributes
+COMPONENT.Flags = {
+	AutomaticHeadlights = true
+}
+
 local s = 1
 
 -- Templates
@@ -306,7 +311,7 @@ COMPONENT.Inputs = {
 			Tail_R = "ON",
 			DRL = "ON"
 		},
-		["DRL"] = {
+		["AUTO"] = {
 			["DRL"] = "ON"
 		}
 	},

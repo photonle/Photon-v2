@@ -18,9 +18,6 @@ PhotonSequenceCollection = PhotonSequenceCollection
 ---@type PhotonElementingSegment
 PhotonElementingSegment = PhotonElementingSegment
 
----@type PhotonSequenceFrame
-PhotonSequenceFrame = PhotonSequenceFrame
-
 ---@type PhotonLightingComponent
 PhotonLightingComponent = PhotonLightingComponent
 
@@ -53,9 +50,6 @@ PhotonElementMesh = PhotonElementMesh
 
 ---@type PhotonElementMeshState
 PhotonElementMeshState = PhotonElementMeshState
-
----@type PhotonComponent
-PhotonComponent = PhotonComponent
 
 ---@type PhotonElementSound
 PhotonElementSound = PhotonElementSound
@@ -129,6 +123,7 @@ PhotonMaterial = PhotonMaterial
 ---@field RenderGroup RENDERGROUP
 ---@field BodyGroups table
 ---@field Inputs table
+---@field Flags PhotonLibraryComponentFlags
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
 ---@field Name? string Component name (may be overwritten by filename).
@@ -145,6 +140,9 @@ PhotonMaterial = PhotonMaterial
 ---@field VirtualOutputs table
 ---@field SubMaterials table<integer, string>
 ---@field Patterns table<string, table[]> Collections of segments and sequences that can be referenced in COMPONENT.Inputs. (See: https://github.com/photonle/Photon-v2/wiki/Components#patterns) 
+
+---@class PhotonLibraryComponentFlags
+---@field AutomaticHeadlights? boolean Injects component code to setup automatic headlight on/off behavior.
 
 ---@class PhotonLibraryComponentTemplates
 ---@field ["2D"]? table<string, PhotonElement2DProperties> 2D sprite-based light.
@@ -176,6 +174,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Equipment PhotonVehicleSelectionCategory[]
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
 ---@field Schema table<string, table<table>>
+---@field Default? boolean If true, the profile will be used by default on the base vehicle and any other non-Photon 2 vehicles of the same class and model.
 -- ---@field Equipment PhotonVehicleEquipment[]
 
 ---@class PhotonLibrarySiren

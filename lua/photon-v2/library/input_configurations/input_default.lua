@@ -19,7 +19,8 @@ local default = {
 			{ Command = "manual_siren" } 
 		},
 		[KEY_H] = { 
-			{ Command = "vehicle_lights" } 
+			{ Command = "vehicle_lights" },
+			{ Command = "vehicle_lights_auto", Modifiers = { KEY_RALT } }
 		},
 		[KEY_N] = {
 			{ Command = "auxiliary_dual_toggle" }

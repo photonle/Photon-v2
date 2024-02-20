@@ -10,8 +10,6 @@ include("sv_functions.lua")
 
 include("sh_input.lua")
 
-print("sv_init.lua")
-
 local profiles = Photon2.Index.Profiles
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
@@ -27,7 +25,7 @@ Photon2.OnEntityCreated = function( ent )
 	timer.Simple(duration, function()
 		if not IsValid( ent ) then return end
 		if ( 
-			( ent:IsVehicle() ) or 
+			-- ( ent:IsVehicle() ) or 
 			( Photon2.Index.Profiles.Map[ent:GetClass()] and Photon2.Index.Profiles.Map[ent:GetClass()][ent:GetModel()] )
 		) then
 			Photon2.OnPostVehicleCreated ( ent )
@@ -40,15 +38,23 @@ hook.Add("OnEntityCreated", "Photon2:OnEntityCreated", Photon2.OnEntityCreated)
 ---@param ent Entity
 Photon2.OnPostVehicleCreated = function ( ent )
 	if (not IsValid( ent )) then return end
-	if (not ent.VehicleName) then
+	local universal = Photon2.Index.Profiles.Map[ent:GetClass()][ent:GetModel()]["*"]
+	local vehicleName = ent.VehicleName
+	if ( ( not vehicleName ) and ( not universal ) ) then
 		-- Photon2.Debug.Print( "A vehicle was just spawned (" .. tostring( ent ) .. ") but no .VehicleName was set." )
 		-- print("Vehicle parent: " .. tostring( ent:GetParent() ))
 		return
 	end
-	local profile = profiles.Vehicles[ent.VehicleName]
-	if (profiles.Vehicles[ent.VehicleName]) then
-		-- Photon2.Debug.PrintF( "Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile ) 
+	
+	local profile
+	
+	if ( vehicleName ) then profile = profiles.Vehicles[vehicleName] end
+
+	if ( profile ) then
+		-- Photon2.Debug.PrintF( "Matching vehicle profile found. [%s] = %s", ent.VehicleName, profile )
 		Photon2.AddControllerToVehicle( ent, profile )
+	elseif ( universal ) then
+		Photon2.AddControllerToVehicle( ent, universal )
 	end
 end
 

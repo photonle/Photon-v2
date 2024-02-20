@@ -27,11 +27,21 @@
 ---@field [4] string Mesh sub-material.
 
 ---@class PhotonElementMesh : PhotonElement, PhotonElementMeshProperties
+---@field New? fun(light: PhotonElementMesh, template: string): PhotonElementMesh
 ---@field MeshSubIndex? number Model's mesh sub-index (default = `1`).
 ---@field Mesh? IMesh
 ---@field LocalPosition? Vector
 ---@field LocalAngles? Angle
 ---@field Matrix? VMatrix
----@field protected FinalScale? Vector The scale of the mesh multiplied by the scale of its spawned parent. Set automatically.
+---@field DrawColor PhotonElementColor
+---@field BloomColor PhotonElementColor
+---@field FinalScale? Vector The scale of the mesh multiplied by the scale of its spawned parent. Set automatically.
 ---@field States? table<string, PhotonElementMeshState>
----@field Initialize fun(self: PhotonElementMesh, id: number, component: PhotonLightingComponent)
+---@field Initialize fun(self: PhotonElementMesh, id: number, component: PhotonLightingComponent): PhotonElementMesh
+---@field OnFileLoad fun()
+---@field NewTemplate fun(data: PhotonElementMesh): PhotonElementMesh
+---@field SetLightScale fun(self: PhotonElementMesh, scale: number)
+---@field Activate fun(self: PhotonElementMesh)
+---@field DeactivateNow fun(self: PhotonElementMesh)
+---@field DoPreRender fun(self: PhotonElementMesh): PhotonElementMesh | nil
+---@field OnStateChange fun(self: PhotonElementMesh, state: PhotonElementMeshState)

@@ -1,8 +1,7 @@
 {
     "Lua.diagnostics.disable": [
-		"undefined-global",
 		"lowercase-global",
-		"need-check-nil"
+		"undefined-global",
 	],
     "Lua.workspace.preloadFileSize": 8192,
     "Lua.runtime.nonstandardSymbol": [
@@ -14,6 +13,39 @@
         "continue",
         "||"
     ],
+	"Lua.diagnostics.globals": [
+		"SERVER",
+		"CLIENT",
+		"IN_BACK",
+		"IN_FORWARD",
+		"IN_JUMP",
+		"MOUSE_LEFT",
+		"MOUSE_RIGHT",
+		"color_white",
+		"isstring",
+		"SOLID_VPHYSICS",
+		"MOVETYPE_VPHYSICS",
+		"SOLID_NONE",
+		"isbool",
+		"MOVETYPE_NONE",
+		"STENCIL_ALWAYS",
+		"STENCIL_REPLACE",
+		"STENCIL_KEEP",
+		"STENCIL_EQUAL",
+		"FILL",
+		"RIGHT",
+		"BOTTOM",
+		"TOP",
+		"LEFT",
+		"FORCE_BOOL",
+		"DButton",
+		"KEY_UP",
+		"KEY_DOWN",
+		"KEY_TAB",
+		"KEY_RSHIFT",
+		"KEY_RCONTROL",
+		"KEY_RALT"
+	],
     "editor.insertSpaces": false,
     "editor.detectIndentation": false,
 }

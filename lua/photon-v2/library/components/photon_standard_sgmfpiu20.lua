@@ -177,10 +177,10 @@ COMPONENT.Elements = {
 
 local sequence = Photon2.SequenceBuilder.New
 
-COMPONENT.InputPriorities = {
-
+-- Special component attributes
+COMPONENT.Flags = {
+	AutomaticHeadlights = true
 }
-
 COMPONENT.Segments = {
 	Headlights = {
 		Frames = {

@@ -31,7 +31,8 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Warning"] 			= 40,
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
-	["Vehicle.Lights"]	 			= 10
+	["Vehicle.Lights"]	 			= 10,
+	["Vehicle.Ambient"]				= 0
 }
 
 ENT.SubMaterials = {}
@@ -185,7 +186,7 @@ function ENT:SetupStaticBones()
 		data.Position = data.Position or data[1] or Vector()
 		data.Angles = data.Angles or data[2] or Angle()
 		data.Scale = data.Scale or data[3] or Vector( 1, 1, 1 )
-		if ( isnumber(data.Scale) ) then data.Scale = Vector( data.Scale, data.Scale, data.Scale ) end
+		if ( isnumber(data.Scale) ) then data.Scale = Vector( data.Scale --[[@as number]], data.Scale --[[@as number]], data.Scale --[[@as number]] ) end
 		data.Follow = data.Follow or data[4] or false
 
 		if ( not data.Follow ) then

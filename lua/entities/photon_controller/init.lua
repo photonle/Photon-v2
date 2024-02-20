@@ -54,7 +54,7 @@ function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
 	Photon2.sv_Network.NotifyPlayerInputController( ply, self )
 	self:SetChannelMode( "Vehicle.Transmission", "DRIVE" )
 	if ( self:GetChannelMode( "Vehicle.Lights" ) == "OFF" ) then
-		self:SetChannelMode( "Vehicle.Lights", "DRL" )
+		self:SetChannelMode( "Vehicle.Lights", "AUTO" )
 	end
 end
 
@@ -62,7 +62,7 @@ function ENT:PlayerExitedLinkedVehicle( ply, vehicle )
 	self:UpdateVehicleBraking( false )
 	self:UpdateVehicleReversing( false )
 	self:SetChannelMode( "Vehicle.Transmission", "PARK" )
-	if ( self:GetChannelMode( "Vehicle.Lights" ) == "DRL" ) then
+	if ( self:GetChannelMode( "Vehicle.Lights" ) == "AUTO" ) then
 		self:SetChannelMode( "Vehicle.Lights", "OFF" )
 	end
 end

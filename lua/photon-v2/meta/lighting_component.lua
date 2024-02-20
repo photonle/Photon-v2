@@ -28,6 +28,7 @@ local print = Photon2.Debug.Print
 ---@field AcceptControllerPulse boolean (Internal)
 ---@field AcceptControllerTiming boolean (Internal)
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
+---@field VirtualOutputs table
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -75,10 +76,17 @@ function Component.New( name, data )
 		-- end
 	end
 
+	data.Flags = data.Flags or {}
+
 	if ( dumpLibraryData ) then
 		print("_______________________________________")
 		PrintTable(data)
 		print("_______________________________________")
+	end
+
+	-- TODO: there needs to be an actual flag system setup
+	if ( data.Flags.AutomaticHeadlights ) then
+		Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( data )
 	end
 
 	---@type PhotonLightingComponent
@@ -294,6 +302,8 @@ function Component.New( name, data )
 	-- for segmentName, segmentData in pairs( data.Segments or {} ) do
 	-- 	component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
 	-- end
+
+
 
 	--[[
 			Setup Virtual InputActions
