@@ -302,7 +302,7 @@ ENT.Interactions = {
 function ENT:QueryModeFromInputSchema( channel, query, param )
 	local schema = self:GetInputSchema()[channel]
 	local currentMode = self.CurrentModes[channel]
-	if ( not schema ) then return nil end
+	if ( not schema ) or ( not currentMode ) then return nil end
 	local result
 	if ( query == "FIRST" ) then
 		result = schema[1]
@@ -329,7 +329,7 @@ function ENT:QueryModeFromInputSchema( channel, query, param )
 		param = tonumber( param ) or 0
 		result = schema[math.Clamp( 1 + param, 1, #schema )]
 	end
-	return result.Mode
+	return (result or {}).Mode
 end
 
 ---@param class string
@@ -1081,10 +1081,10 @@ function ENT:GetActiveComponents()
 			-- not checking for client here causes strange errors when reloading core files
 			if ( CLIENT ) then
 				for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
-					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+					result[self.CurrentProfile.Equipment.VirtualComponents[componentIndex].Component] = true
 				end
 				for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
-					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
+					result[self.CurrentProfile.Equipment.UIComponents[componentIndex].Component] = true
 				end
 			end
 		end
