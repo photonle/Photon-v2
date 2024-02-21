@@ -46,10 +46,10 @@ COMPONENT.Templates = {
 			Bone = "lamp",
 			Axis = "y",
 			States = {
-				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
-				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
-				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
-				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = 300, Direction = 1 },
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed * 2, DeactivateOnTarget = true, Direction = 0 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = 0 },
+				["LEFT"] = { Activity = "Fixed", Target = 271, Speed = upSpeed, Direction = 0 },
+				["RIGHT"] = { Activity = "Fixed", Target = 89, Speed = 300, Direction = 0 },
 			},
 			DeactivationState = "DOWN"
 		},
@@ -58,10 +58,10 @@ COMPONENT.Templates = {
 			Bone = "grip",
 			Axis = "p",
 			States = {
-				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
-				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
-				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
-				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = upSpeed * 0.75, Direction = 1 },
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 0 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = 0 },
+				["LEFT"] = { Activity = "Fixed", Target = 271, Speed = upSpeed, Direction = 0 },
+				["RIGHT"] = { Activity = "Fixed", Target = 89, Speed = upSpeed * 0.75, Direction = 0 },
 			},
 			DeactivationState = "DOWN"
 		}
