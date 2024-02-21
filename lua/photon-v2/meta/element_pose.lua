@@ -14,6 +14,7 @@ Element.Class = "Pose"
 Element.Target = 0
 Element.GainSpeed = 1
 Element.LossSpeed = 1
+Element.ShouldInvalidateBoneCache = true
 
 Element.States = {
 	["OFF"] = { Target = 0 },
@@ -85,7 +86,8 @@ function Element:DoPreRender()
 	end
 	
 	self.Parent:SetPoseParameter( self.Parameter, self.Value )
-
+	if ( self.ShouldInvalidateBoneCache ) then self.Parent:InvalidateBoneCache() end
+	
 	return self
 end
 
