@@ -82,9 +82,9 @@ function Element:OnStateChange( state )
 	self.Smooth = state.Smooth
 	self.Direction = state.Direction
 	self.Speed = state.Speed
-	self.Target = state.Target
-	self.SweepStart = state.SweepStart
-	self.SweepEnd = state.SweepEnd
+	self.Target = ( state.Target or 0 ) % 360
+	self.SweepStart = ( state.SweepStart or 0 ) % 360
+	self.SweepEnd = ( state.SweepEnd or 0 ) % 360
 	self.SweepPause = state.SweepPause
 	self.AngleOutputMap = state.AngleOutputMap
 	self.DeactivateOnTarget = state.DeactivateOnTarget
