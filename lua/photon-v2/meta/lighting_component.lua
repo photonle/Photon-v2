@@ -89,6 +89,14 @@ function Component.New( name, data )
 		Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( data )
 	end
 
+	if ( data.Flags.ParkMode ) then
+		Photon2.ComponentBuilder.SetupParkMode( data, data.Flags.ParkMode )
+	end
+
+	if ( data.Flags.NightParkMode ) then
+		Photon2.ComponentBuilder.SetupNightParkMode( data, data.Flags.NightParkMode )
+	end
+
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,

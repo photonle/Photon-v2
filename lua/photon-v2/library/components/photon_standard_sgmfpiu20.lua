@@ -264,6 +264,7 @@ COMPONENT.Segments = {
 			[1] = "HeadL"
 		},
 		Sequences = {
+			PASS = { 0 },
 			WIGWAG = sequence():Alternate( 1, 0, 8, 2 ),
 			ON = { 1 }
 		}
@@ -276,24 +277,29 @@ COMPONENT.Segments = {
 			[1] = "HeadR"
 		},
 		Sequences = {
+			PASS = { 0 },
 			WIGWAG = sequence():Alternate( 0, 1, 8, 2 ),
 			ON = { 1 }
 		}
 	},
 	HighBeamL = {
 		Frames = {
+			[0] = "[PASS] HighL",
 			[1] = "HighL"
 		},
 		Sequences = {
+			PASS = { 0 },
 			WIGWAG = sequence():Alternate( 1, 0, 8, 2 ),
 			ON = { 1 }
 		}
 	},
 	HighBeamR = {
 		Frames = {
+			[0] = "[PASS] HighR",
 			[1] = "HighR"
 		},
 		Sequences = {
+			PASS = { 0 },
 			WIGWAG = sequence():Alternate( 0, 1, 8, 2 ),
 			ON = { 1 }
 		}
@@ -351,6 +357,12 @@ COMPONENT.Inputs = {
 		}
 	},
 	["Emergency.Warning"] = {
+		["MODE2"] = {
+			HighBeamL = "PASS",
+			HighBeamR = "PASS",
+			HeadlightL = "PASS",
+			HeadlightR = "PASS",
+		},
 		["MODE3"] = {
 			HighBeamL = "WIGWAG",
 			HighBeamR = "WIGWAG",

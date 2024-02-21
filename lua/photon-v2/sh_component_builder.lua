@@ -106,5 +106,71 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 	}
 
 	table.Merge( component, mixin )
+end
 
+function Photon2.ComponentBuilder.SetupParkMode( component, params )
+	if ( not istable( params ) ) then params = { "Emergency.Warning", "MODE2" } end
+	local sequences = component.Inputs[params[1]][params[2]]
+
+	-- Ignore automatic copying if the input is manually defined
+	if ( component.Inputs and component.Inputs["Emergency.ParkedWarning"] and component.Inputs["Emergency.ParkedWarning"]["MODE3"] ) then
+		sequences = component.Inputs["Emergency.ParkedWarning"]["MODE3"]
+	end
+
+	local mixin = {
+		VirtualOutputs = {
+			["Emergency.ParkedWarning"] = {
+				{
+					Mode = "MODE3",
+					Conditions = {
+						["Vehicle.Transmission"] = { "PARK" },
+						["Emergency.Warning"] = { "MODE3" }
+					}
+				}
+			},
+		},
+		InputPriorities = {
+			["Emergency.ParkedWarning"] = 45
+		},
+		Inputs = {
+			["Emergency.ParkedWarning"] = {
+				["MODE3"] = table.Copy( sequences )
+			}
+		}
+	}
+	table.Merge( component, mixin )
+end
+
+function Photon2.ComponentBuilder.SetupNightParkMode( component, params )
+	if ( not istable( params ) ) then params = { "Emergency.Warning", "MODE3" } end
+	local sequences = component.Inputs[params[1]][params[2]]
+	
+	-- Ignore automatic copying if the input is manually defined
+	if ( component.Inputs and component.Inputs["Emergency.NightParkedWarning"] and component.Inputs["Emergency.NightParkedWarning"]["MODE3"] ) then
+		sequences = component.Inputs["Emergency.NightParkedWarning"]["MODE3"]
+	end
+	
+	local mixin = {
+		VirtualOutputs = {
+			["Emergency.NightParkedWarning"] = {
+				{
+					Mode = "MODE3",
+					Conditions = {
+						["Vehicle.Transmission"] = { "PARK" },
+						["Emergency.Warning"] = { "MODE3" },
+						["Vehicle.Ambient"] = { "DARK" }
+					}
+				}
+			},
+		},
+		InputPriorities = {
+			["Emergency.NightParkedWarning"] = 46
+		},
+		Inputs = {
+			["Emergency.NightParkedWarning"] = {
+				["MODE3"] = table.Copy( sequences )
+			}
+		}
+	}
+	table.Merge( component, mixin )
 end

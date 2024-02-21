@@ -100,7 +100,7 @@ function Element:OnStateChange( state )
 					-- print("condition 1")
 					self.Direction = -1
 				else
-					print("condition 2")
+					-- print("condition 2")
 					self.Direction = 1
 				end
 			else

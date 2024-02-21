@@ -46,8 +46,9 @@ local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	Siren = {
-		Frames = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
+		Frames = { [0] = "", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" },
 		Sequences = {
+			["KILL"] = { 0 },
 			["T1"] = { 1 },
 			["T2"] = { 2 },
 			["T3"] = { 3 },
@@ -63,7 +64,8 @@ COMPONENT.Segments = {
 }
 
 COMPONENT.InputPriorities = {
-	["Virtual.SirenOverride"] = 62
+	["Virtual.SirenOverride"] = 62,
+	["Emergency.SirenParkKill"] = 63,
 }
 
 COMPONENT.VirtualOutputs = {
@@ -73,6 +75,14 @@ COMPONENT.VirtualOutputs = {
 			Conditions = {
 				["Emergency.Siren"] = { "T1", "T2", "T4" },
 				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		}
+	},
+	["Emergency.SirenParkKill"] = {
+		{
+			Mode = "PARK",
+			Conditions = {
+				["Vehicle.Transmission"] = { "PARK" }
 			}
 		}
 	}
@@ -95,5 +105,8 @@ COMPONENT.Inputs = {
 	},
 	["Virtual.SirenOverride"] = {
 		["MANOVRD"] = { Siren = "T3" }
+	},
+	["Emergency.SirenParkKill"] = {
+		["PARK"] = { Siren = "KILL" }
 	}
 }

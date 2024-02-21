@@ -126,6 +126,10 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Phase = "A",
 						States = { "R", "B" },
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "SCENE" }
@@ -181,6 +185,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4",
 						Position = Vector( -15, 128, 34 ),
 						Angles = Angle( 0, 90, 0),
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -224,6 +232,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -20.5, 124.5, 36 ),
 						Angles = Angle( 0, 180, 0),
 						Phase = "A",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -307,17 +319,35 @@ VEHICLE.Equipment = {
 						States = {
 							[1] = "R", [2] = "B", [3] = "W"
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {},
+						-- InputPriorities = {
+						-- 	["Virtual.ParkedWarning"] = 41
+						-- },
+						-- VirtualOutputs = {
+						-- 	["Virtual.ParkedWarning"] = {
+						-- 		{
+						-- 			Mode = "MODE3",
+						-- 			Conditions = {
+						-- 				["Emergency.Warning"] = { "MODE3" },
+						-- 				["Vehicle.Transmission"] = { "PARK" }
+						-- 			}
+						-- 		}
+						-- 	}
+						-- },
 						Inputs = {
 							["Emergency.Marker"] = {
 								["ON"] = { SteadyBurn = "FULL" }
 							},
-							-- !MODE1 is the same as MODE1, but indicates that
-							-- the table should NOT be inherited. This prevents
-							-- the other sequences from playing in MODE1.
-							--
-							-- This is a Photon-specific feature built into its
-							-- underlying inheritance functionality.
+							-- ["Virtual.ParkedWarning"] = {
+							-- 	["MODE3"] = {
+							-- 		RE_Rear = "MODE2",
+							-- 		RE_Front = "MODE2",
+							-- 	}
+							-- },
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									RE_Rear = "MODE1",
@@ -469,6 +499,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -10, -128.7, 56.4 ),
 						Angles = Angle( 0, -96, 0),
 						Phase = "A",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -533,6 +567,10 @@ VEHICLE.Equipment = {
 						Component = "photon_fedsig_xstream_duo",
 						Position = Vector( -37.6, -95, 63.4 ),
 						Angles = Angle( 0, 180+7, 180),
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						BodyGroups = {
 							["Mount"] = 1,
 							["Shroud"] = 1
@@ -577,6 +615,10 @@ VEHICLE.Equipment = {
 				VirtualComponents = {
 					{
 						Component = "photon_standard_sgmfpiu20",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						-- Add custom segments to to flash the vehicle lights
 						Segments = {
 							-- Create new segment for reverse flashers
@@ -597,12 +639,23 @@ VEHICLE.Equipment = {
 							}
 						},
 						Inputs = {
+							-- This channel and mode is setup by the ParkMode flag
+							["Emergency.ParkedWarning"] = {
+								["MODE3"] = {
+									HighBeamL = "PASS",
+									HighBeamR = "PASS",
+									HeadlightL = "PASS",
+									HeadlightR = "PASS",
+								}
+							},
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									-- Assign reverse left-right flash to MODE1
 									ReverseFlasher = "MODE1"
 								},
-								["MODE2"] = { ReverseFlasher = "MODE2" },
+								["MODE2"] = { 
+									ReverseFlasher = "MODE2",
+								},
 								["MODE3"] = { 
 									HighBeamL = "WIGWAG",
 									HighBeamR = "WIGWAG",

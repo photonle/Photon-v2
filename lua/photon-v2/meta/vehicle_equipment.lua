@@ -137,13 +137,15 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 	-- print("Building Components [" .. key .. "]")
 	for key, entry in pairs( equipmentTable[key] ) do
 		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
+		
 		---@type PhotonLibraryComponent
-
+		
 		local component = {
 			Base = entry.Component,
 			StateMap = entry.StateMap,
 			Phase = entry.Phase,
 			Generated = true,
+			Flags = entry.Flags,
 			Segments = entry.Segments,
 			Inputs = entry.InputActions or entry.Inputs,
 			InputPriorities = entry.InputPriorities,
@@ -153,6 +155,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			States = entry.States,
 			Templates = entry.Templates,
 			RenderGroup = entry.RenderGroup,
+			VirtualOutputs = entry.VirtualOutputs
 		}
 
 		component.Name = componentId
