@@ -18,7 +18,7 @@ local printf = Photon2.Debug.PrintF
 local function photonLegacySpawnOverride( self, ent )
 	if not IsValid( ent ) then return end
 	if ( not ent.VehicleTable.IsEMV ) then return end
-	EMVU:SpawnedVehicle( ent )
+	EMVU:OriginalSpawnedVehicle( ent )
 end
 
 ---@param ent Entity

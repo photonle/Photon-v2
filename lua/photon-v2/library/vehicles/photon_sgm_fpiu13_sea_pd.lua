@@ -74,19 +74,6 @@ VEHICLE.Siren = { [1] = "motorola_spectra" }
 
 VEHICLE.Equipment = {
 	{
-		Category = "HUD",
-		Options = {
-			{
-				Option = "HUD",
-				UIComponents = {
-					{
-						Component = "photon_hud_default"
-					}
-				}
-			}
-		}
-	},
-	{
 		Category = "Liveries",
 		Options = {
 			
@@ -460,6 +447,19 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -87, 79.7 ),
 						Angles = Angle( 0, 0, 5 ),
 						Scale = 0.8
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				UIComponents = {
+					{
+						Component = "photon_hud_default"
 					}
 				}
 			}
