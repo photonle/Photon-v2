@@ -32,10 +32,12 @@ local inputConfigurations = {
 		return Photon2.ClientInput.ImportProfileFromJson( json )
 	end,
 	OnReload = function( self, profile )
+		-- Clears out the old compiled version (if it exists)
+		-- to force a recompile next time the profile is requested
+		self.Index[profile.Name] = nil
 		if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == profile.Name ) ) then
-			Photon2.ClientInput.Active = Photon2.Index.CompileInputConfiguration( profile )
-		else
-			Photon2.Index.InputConfigurations[profile.Name] = nil
+			-- Should immediately trigger a recompile
+			Photon2.ClientInput.SetActiveConfiguration( profile.Name )
 		end
 	end,
 	DoCompile = function( self, profile )
@@ -155,6 +157,9 @@ local commands = {
 		command.ExtendedTitle = command.Category .. " " .. command.Title
 		return command
 	end,
+	OnPostReload = function()
+		Photon2.Library.InputConfigurations:ReloadIndex()
+	end
 }
 
 local soundFileMeta = {

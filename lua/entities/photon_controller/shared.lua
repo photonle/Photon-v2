@@ -309,14 +309,14 @@ function ENT:QueryModeFromInputSchema( channel, query, param )
 	elseif ( query == "LAST" ) then
 		result = schema[#schema]
 	elseif ( query == "NEXT" ) then
-		local currentIndex = ( schema[currentMode].Index or 0 ) + 1
+		local currentIndex = ( (schema[currentMode] or {}).Index or 0 ) + 1
 		if ( currentIndex > #schema ) then
 			result = schema[1]
 		else
 			result = schema[currentIndex]
 		end
 	elseif ( query == "PREV" ) then
-		local currentIndex = ( schema[currentMode].Index or 0 ) - 1
+		local currentIndex = ((schema[currentMode] or {}).Index or 0 ) - 1
 		if ( currentIndex < 1 ) then
 			result = schema[#schema]
 		else

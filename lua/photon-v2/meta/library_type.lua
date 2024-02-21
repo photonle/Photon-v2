@@ -44,6 +44,7 @@ function meta.New( properties )
 	
 	result.Loaded = false
 	result.LuaPath = luaPath .. result.Folder .. "/"
+	-- ??????
 	result.GlobalName = "PHOTON_LIBRARY_" .. string.upper( result.Singular )
 
 	if ( Photon2.Index and Photon2.Index[result.Name] ) then result.Loaded = true end
@@ -54,6 +55,7 @@ function meta.New( properties )
 		return result:Register( entry )
 	end
 
+	-- what the fuck is this?
 	Photon2["Library" .. result.Singular] = function()
 		_G[result.GlobalName] = {
 			LibraryToken = "asdf"
@@ -318,6 +320,23 @@ function meta:OnReload( data )
 	local old = self.Index[data.Name]
 	local hardReload = ( ( old ) and old.CompileTime + self.HardReloadThreshold >= CurTime() )
 	self:Compile( data, hardReload )
+	timer.Create( "Photon2.Library:" .. self.Name .. "Reload", 0.05, 1, function()
+		if ( self ) then
+			self:OnPostReload()
+		end
+	end)
+end
+
+-- Reloads every entry in the index. Useful when external data changes that the library needs to account for.
+function meta:ReloadIndex()
+	for name, entry in pairs( self.Index ) do
+		self:OnReload( self.Repository[name] )
+	end
+end
+
+-- Called one tick(ish) after any reload occurred. Does not provide what was reloaded
+-- because this is only called once AFTER multiple entries were reloaded.
+function meta:OnPostReload()
 end
 
 -- Compilation wrapper. Actual compilation overrides should be done in `TYPE:DoCompile( data )`

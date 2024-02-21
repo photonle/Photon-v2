@@ -221,21 +221,21 @@ COMPONENT.Inputs = {
 			Lights = "PARK"
 		}
 	},
-	["Emergency.Warning"] = {
-		["MODE1"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH"
-		},
-		["MODE2"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH"
-		},
-		["MODE3"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH",
-			WigWag = "WIGWAG"
-		}
-	}
+	-- ["Emergency.Warning"] = {
+	-- 	["MODE1"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH"
+	-- 	},
+	-- 	["MODE2"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH"
+	-- 	},
+	-- 	["MODE3"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH",
+	-- 		WigWag = "WIGWAG"
+	-- 	}
+	-- }
 }
 
 hook.Add( "HUDPaint", "Photon2.FPIU13RefractFix", function() 

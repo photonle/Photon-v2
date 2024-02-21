@@ -173,6 +173,14 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Warning"] = {
 								-- They apparently don't use headlight wig-wags
+								["MODE1"] = {
+									ReverseFlasher = "FLASH",
+									SignalFlasher = "FLASH"
+								},
+								["MODE2"] = {
+									ReverseFlasher = "FLASH",
+									SignalFlasher = "FLASH"
+								},
 								["MODE3"] = {
 									ReverseFlasher = "FLASH",
 									SignalFlasher = "FLASH"
