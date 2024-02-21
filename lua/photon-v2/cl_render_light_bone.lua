@@ -44,4 +44,5 @@ function Photon2.RenderPoseElement.Update()
 	poseAlternative = activeElements
 	pose.Active = nextTable
 end
-hook.Add( "Think", "Photon2.PoseElement:Update", pose.Update )
+hook.Add( "PreRender", "Photon2.PoseElement:Update", pose.Update )
+-- hook.Remove( "", "Photon2.PoseElement:Update" )

@@ -1,3 +1,8 @@
+-- **** NOTICE **** --
+-- This is a specialized file for mapping standard vehicle lighting to appropriate vehicles. 
+-- Do NOT use this file as a reference for normal Photon 2 vehicles.
+-- **************** --
+
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
