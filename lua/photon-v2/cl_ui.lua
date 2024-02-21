@@ -414,6 +414,7 @@ properties.Add("photon2_equipment", {
 		-- Required so child elements can be applied
 		local subMenu = option:AddSubMenu()
 		for i, category in ipairs( selections ) do
+			if ( not category.Options ) or ( #category.Options < 2 ) then continue end
 			-- Create category's sub-menu
 			local categoryMenu = subMenu:AddSubMenu( category.Category )
 			-- Process each option
