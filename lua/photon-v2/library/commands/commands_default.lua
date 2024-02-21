@@ -85,6 +85,17 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Name = "vehicle_lights_cycle",
+	Title = "Cycle Parking/Headlights",
+	Category = "Basic",
+	Description = "Cycles through parking lights, headlights, and then off.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Click" },
+		{ Action = "CYCLE", Channel = "Vehicle.Lights", Value = { "PARKING", "HEADLIGHTS", "OFF" } }
+	}
+})
+
+Photon2.RegisterCommand({
 	Name = "vehicle_lights_auto",
 	Category = "Headlights/Parking",
 	Title = "Automatic",
