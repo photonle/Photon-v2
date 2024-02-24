@@ -23,8 +23,6 @@ function Equipment.GetTemplate()
 		Props = {},
 		BodyGroups = {},
 		SubMaterials = {},
-		VirtualComponents = {},
-		UIComponents = {},
 		InteractionSounds = {}
 	}
 end
@@ -33,6 +31,18 @@ end
 function Equipment.ApplyTemplate( tbl )
 	for k, v in pairs( Equipment.GetTemplate() ) do
 		tbl[k] = rawget( tbl, k ) or v
+	end
+end
+
+function Equipment.PreMergeEquipment( selection, mergeMap )
+	for mergeFrom, mergeTo in pairs( mergeMap ) do
+		if ( istable( selection[mergeFrom] ) ) then
+			selection[mergeTo] = selection[mergeTo] or {}
+			for i=1, #selection[mergeFrom] do
+				selection[mergeTo][#selection[mergeTo]+1] = selection[mergeFrom][i]
+			end
+		end
+		selection[mergeFrom] = {}
 	end
 end
 

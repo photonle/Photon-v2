@@ -96,12 +96,6 @@ function ENT:DoNextFrame()
 	for i=1,#componentArray do
 		if ( componentArray[i].FrameTick) then componentArray[i]:FrameTick() end -- ***rebuild component array on equipment change *** 
 	end
-	for i=1, #self.VirtualComponentArray do
-		self.VirtualComponentArray[i]:FrameTick()
-	end
-	for i=1, #self.UIComponentArray do
-		self.UIComponentArray[i]:FrameTick()
-	end
 end
 
 function ENT:DoPulse()

@@ -6,15 +6,10 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 NAME = "PhotonVehicle"
----@alias EquipmentMode
----| "Configurable" # Has multiple equipment options.
----| "Static" # Uses all defined equipment and does not support any options.
 
 ---@class PhotonVehicle
 ---@field Name string
 ---@field Title string
----@field ControllerType? string Not implemented.
----@field EquipmentMode? EquipmentMode Not implemented.
 ---@field Target string
 ---@field EntityClass string
 ---@field Model string
@@ -65,10 +60,6 @@ Vehicle.Schema = {
 	}
 }
 
--- Specifies the actual controller entity class to create when the vehicle is created.
--- Override if using your own modified controller entity.
-Vehicle.ControllerType = "photon_controller"
-
 local equipmentTypeMap = {
 	["Components"] = "Component",
 	["Props"] = "Prop"
@@ -84,6 +75,10 @@ function Vehicle.GetError()
 	}
 end
 
+-- Creates a "signature" string based on how the vehicle's
+-- equipment is configured. This is used to detect significant
+-- changes in equipment configurations so a "hard reload" can be
+-- triggered when editing vehicle files.
 function Vehicle.BuildEquipmentSignature( tbl )
 	local sig = ""
 	for equipmentType, entries in pairs( tbl ) do
@@ -102,6 +97,10 @@ function Vehicle.BuildEquipmentSignature( tbl )
 	return sig
 end
 
+-- Creates a "signature" string based on how the vehicle's
+-- selections are configured. This is used to detect significant
+-- changes in equipment configurations so a "hard reload" can be
+-- triggered when editing vehicle files.
 function Vehicle.BuildSelectionSignature( tbl )
 	local sig = ""
 	for key, category in ipairs(tbl) do
@@ -120,8 +119,17 @@ function Vehicle.BuildSelectionSignature( tbl )
 	return sig
 end
 
+-- Maps what equipment types should be merged into others
+-- before being processed. Necessary for backwards compatibility
+-- when different component types needed to be explicitly defined.
+local preMergeEquipment = {
+	["VirtualComponents"] = "Components",
+	["UIComponents"] = "Components"
+}
+
 ---@param data PhotonLibraryVehicle
 ---@return PhotonVehicle
+-- Compiles a new vehicle profile entry using raw input data.
 function Vehicle.New( data )
 	local Equipment = PhotonVehicleEquipmentManager
 
@@ -250,6 +258,9 @@ function Vehicle.New( data )
 						
 						local currentVariant = currentOption.Variants[variantIndex]
 						
+						-- Merge different component types into .Components
+						Equipment.PreMergeEquipment( variant, preMergeEquipment )
+
 						-- Automatically iterate through each type of Equipment and process
 						for key, value in pairs( vehicle.Equipment ) do
 							if ( variant[key] ) then
@@ -271,6 +282,9 @@ function Vehicle.New( data )
 					Equipment.ApplyTemplate( currentOption )
 					currentOption.Selection = #map + 1
 
+					-- Merge different component types into .Components
+					Equipment.PreMergeEquipment( option, preMergeEquipment )
+
 					-- Automatically iterate through each type of Equipment and process
 					for key, value in pairs( vehicle.Equipment ) do
 						if ( option[key] ) then
@@ -290,8 +304,6 @@ function Vehicle.New( data )
 		end
 		
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.Components, nameTable.Components )
-		Equipment.ResolveNamesFromQueue( pendingNamesQueue.VirtualComponents, nameTable.VirtualComponents )
-		Equipment.ResolveNamesFromQueue( pendingNamesQueue.UIComponents, nameTable.UIComponents )
 
 	end
 
@@ -304,8 +316,6 @@ function Vehicle.New( data )
 	end
 
 	Equipment.BuildComponents( vehicle.Equipment, "Components", data.Name )
-	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.Name )
-	Equipment.BuildComponents( vehicle.Equipment, "UIComponents", data.Name )
 
 	local vehicleListId = "photon2:".. data.Name --[[@as string]]
 

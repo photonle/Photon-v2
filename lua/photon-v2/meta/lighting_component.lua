@@ -120,6 +120,11 @@ function Component.New( name, data )
 		States = data.States
 	}
 
+	-- Assume components without a model defined are virtual
+	if ( data.IsVirtual == nil ) then
+		if ( component.Model == nil ) then component.IsVirtual = true end
+	end
+
 	for key, value in pairs( data ) do
 		if ( component[key] == nil ) then
 			component[key] = value

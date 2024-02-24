@@ -173,7 +173,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Standard Lighting",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmfpiu20"
 					}

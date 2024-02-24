@@ -201,10 +201,6 @@ PhotonMaterial = PhotonMaterial
 ---@field BodyGroups? PhotonEquipmentBodyGroupEntry[]
 -- Sub materials.
 ---@field SubMaterials? PhotonEquipmentSubMaterialEntry[]
--- For Photon components that don't create standalone entities.
----@field VirtualComponents? PhotonEquipmentVirtualComponentEntry[]
--- For UI components (used for the HUD indicator).
----@field UIComponents? PhotonEquipmentUIComponentEntry[]
 -- User HUD sounds (i.e. beeps and clicks).
 ---@field InteractionSounds? PhotonEquipmentInteractionSoundEntry[]
 
@@ -253,10 +249,6 @@ PhotonMaterial = PhotonMaterial
 ---@field Inherit? string Name of an equipment entry to inherit from.
 
 ---@class PhotonEquipmentComponentEntry : PhotonEquipmentEntityProperties, PhotonEquipmentLibraryComponentProperties
-
----@class PhotonEquipmentVirtualComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
-
----@class PhotonEquipmentUIComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
 
 ---@class PhotonEquipmentPropEntry : PhotonEquipmentEntityProperties
 ---@field Model? string Model path. (e.g. `models/my/props/model.mdl`)
