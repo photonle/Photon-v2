@@ -21,7 +21,7 @@ function Photon2.Util.ReferentialCopy( target, meta )
 end
 
 -- A more expensive version of table.Copy that doesn't reuse 
--- metatables, can cause issues with Photon's inheritance.
+-- metatables, which can cause issues with Photon's inheritance.
 function Photon2.Util.UniqueCopy( tbl )
 	local copy = {}
 	for k, v in pairs( tbl ) do
@@ -33,20 +33,6 @@ function Photon2.Util.UniqueCopy( tbl )
 	end
 	return copy
 end
--- local function clearMarkers( tbl )
--- 	local keys = {}
--- 	for key, value in pairs( tbl ) do
--- 		if isstring( key ) and ( string.StartsWith( key, "!" ) ) then
--- 			keys[#keys+1] = key
--- 		elseif ( istable( value ) ) then
--- 			clearMarkers( tbl )
--- 		end
--- 	end
--- 	for i=1, #keys do
--- 		tbl[string.sub( key, 2)] = value
--- 		tbl[key] = nil
--- 	end
--- end
 
 function Photon2.Util.SimpleInherit( target, base )
 	base = table.Copy( base )
@@ -80,16 +66,6 @@ function Photon2.Util.Inherit( target, base )
 	for key, value in pairs( base ) do
 		local raw = rawget( target, key )
 		
-		-- if ( raw == nil and isstring( key ) ) then
-		-- 	local magicKey = "!" .. key
-		-- 	if ( rawget( target, magicKey ) ) then
-		-- 		raw = rawget( target, magicKey )
-		-- 		target[key] = raw
-		-- 		target[key]["__no_inherit"] = true
-		-- 		target[magicKey] = nil
-		-- 	end
-		-- end
-		
 		if ( raw == nil ) then
 			target[key] = value
 		elseif ( raw == PHOTON2_UNSET ) then
@@ -102,66 +78,11 @@ function Photon2.Util.Inherit( target, base )
 			end
 		end
 	end
-	
-	-- for key, value in pairs ( target ) do
-	-- 	if ( isstring( key ) and string.StartsWith( key, "!" ) ) then
-	-- 		-- print("found extra non-inherited key: " .. tostring( key))
-	-- 		-- print("should be: " .. string.sub(key, 2))
-	-- 		target[string.sub(key, 2)] = value
-	-- 	end
-	-- end
-
-	-- clearMarkers( target )
 
 	metaTable.__inherits = base
 	metaTable.__inheritedAt = CurTime()
 	return target
 end
-
--- function Photon2.Util.CacheModelMesh( model, meshes )
--- 	local materialLookup = {}
--- 	Util.ModelMeshMap[model] = {}
--- 	for k, v in pairs( meshes or util.GetModelMeshes( model )) do
--- 		local material = v.material
--- 		-- local material = string.GetFileFromFilename( v.material )
--- 		if ( not materialLookup[material] ) then
--- 			materialLookup[material] = 0
--- 		end
--- 		materialLookup[material] = materialLookup[material] + 1
--- 		Photon2.Util.ModelMeshMap[model][material .. "[".. materialLookup[material] .. "]"] = k
--- 	end
--- 	print("MATERIAL LOOKUP RESULT")
--- 	PrintTable( materialLookup )
--- end
-
--- function Photon2.Util.GetModelMesh( model, mesh, index )
--- 	index = index or 1
-	
--- 	local meshes
-	
--- 	if ( isstring( mesh ) ) then
--- 		local prev = mesh
--- 		if ( Util.ModelMeshMap[model] == nil ) then
--- 			meshes = util.GetModelMeshes( model )
--- 			Util.CacheModelMesh( model, meshes )
--- 		end
--- 		mesh = Util.ModelMeshMap[model][mesh .. "[" .. index .. "]"]
--- 		if ( not mesh ) then
--- 			error("No mesh with material '" .. tostring(prev) .."' was found on model '" .. tostring(mdl) .. "'")
--- 		end
--- 	end
-
--- 	if ( isnumber( mesh ) ) then
--- 		Util.ModelMeshes[model] = Util.ModelMeshes[model] or {}
--- 		if ( not Util.ModelMeshes[model][mesh] ) then
--- 			meshes = meshes or util.GetModelMeshes( model )
--- 			Util.ModelMeshes[model][mesh] = Mesh()
--- 			Util.ModelMeshes[model][mesh]:BuildFromTriangles( meshes[mesh].triangles )
--- 		end
--- 	end
-
--- 	return Util.ModelMeshes[model][mesh]
--- end
 
 function Photon2.Util.FindBodyGroupOptionByName( ent, bodyGroupIndex, name )
 	if ( string.len(name) > 0 ) then name = name .. ".smd" end
@@ -193,26 +114,34 @@ function Photon2.Util.PrintTableProperties( tbl )
 	print("\nEND   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n")
 end
 
--- Runs a function if it is indeed a function.
-function Photon2.Run( func )
-	if ( isfunction( func ) ) then func() end
-end
-
+-- Returns an input key name or `"(INVALID)"` instead of nil
+-- so you don't have to use fucking `tostring(result)` every time.
 function Photon2.Util.GetKeyName( key )
 	local result = input.GetKeyName( key )
 	result = result or "(INVALID)"
 	return result
 end
 
+-- Finds sub-materials on an entity that match those of its parent
+-- and generates a map of their indexes lik `{ [ParentIndex] = ChildIndex }`.
+---@param ent Entity
 function Photon2.Util.BuildParentSubMaterialMap( ent )
-	local childMaterials = ent:GetMaterials()
+	return Photon2.Util.BuildSubMaterialMap( ent:GetParent(), ent )
+end
+
+-- Finds sub-materials on `toEnt` that match those of `fromEnt`
+-- and generates a map of their indexes lik `{ [fromIndex] = toIndex }`.
+---@param fromEnt Entity (Usually the parent entity)
+---@param toEnt Entity (Usually the child entity)
+function Photon2.Util.BuildSubMaterialMap( fromEnt, toEnt )
+	local toMaterials = toEnt:GetMaterials()
 	local map = {}
-	for key, name in pairs( childMaterials ) do
-		childMaterials[name] = key
+	for key, name in pairs( toMaterials ) do
+		toMaterials[name] = key
 	end
-	for key, name in pairs( ent:GetParent():GetMaterials() ) do
-		if ( childMaterials[name] ) then 
-			map[key-1] = childMaterials[name]-1 
+	for key, name in pairs( fromEnt:GetMaterials() ) do
+		if ( toMaterials[name] ) then 
+			map[key-1] = toMaterials[name]-1
 		end
 	end
 	return map

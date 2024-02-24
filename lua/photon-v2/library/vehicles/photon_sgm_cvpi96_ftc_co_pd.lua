@@ -43,7 +43,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				UIComponents = {
+				Components = {
 					{
 						Component = "photon_hud_default"
 					}
@@ -73,7 +73,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Default",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmcvpi96",
 						Position = Vector( 0, 0, 0 ),

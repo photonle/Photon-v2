@@ -132,7 +132,7 @@ function ENT:GetChannelModeTree()
 	local cache = {}
 	local result = {}
 
-	local componentTables = { "Components", "VirtualComponents" }
+	local componentTables = { "Components" }
 
 	for _, componentType in pairs( componentTables ) do
 		for k, v in pairs( self[componentType] ) do
@@ -181,15 +181,11 @@ end
 
 function ENT:InitializeShared()
 	self.Components = {}
-	self.VirtualComponents = {}
 	self.Props = {}
-	self.UIComponents = {}
 	self.SubMaterials = {}
 
 	self.ComponentArray = {}
-	self.VirtualComponentArray = {}
 	self.PropArray = {}
-	self.UIComponentArray = {}
 	self.SubMaterialArray = {}
 
 	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
@@ -541,36 +537,6 @@ function ENT:GetCurrentEquipment()
 	return result or self.Equipment
 end
 
----@param id string
-function ENT:SetupUIComponent( id )
-	local data = self.Equipment.UIComponents[id]
-	-- printf("Setting up UI component [%s]", id)
-	if ( not data ) then
-		error(string.format("Unable to locate equipment UI component ID [%s]", id))
-		return
-	end
-
-	local component = Photon2.GetComponent( data.Component )
-	local uiEnt = component:CreateOn( self, self )
-	self.UIComponents[id] = uiEnt
-	uiEnt:ApplyModeUpdate()
-end
-
----@param id string
-function ENT:SetupVirtualComponent( id )
-	local data = self.Equipment.VirtualComponents[id]
-	-- printf("Setting up virtual component [%s]", id)
-	if (not data) then
-		error(string.format("Unable to locate equipment virtual component ID [%s]", id))
-		return
-	end
-
-	local component = Photon2.GetComponent( data.Component )
-	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
-	self.VirtualComponents[id] = virtualEnt
-	virtualEnt:ApplyModeUpdate()
-end
-
 function ENT:SetupProp( id )
 	local data = self.Equipment.Props[id]
 	-- printf( "Setting up Prop [%s]", id )
@@ -662,32 +628,35 @@ function ENT:SetupComponent( id )
 	---@type PhotonLightingComponent
 	local component = Photon2.GetComponent( data.Component )
 
-
 	local ent
 
-	if (SERVER and data.OnServer) then
-		-- TODO: serverside spawn code
-	elseif (CLIENT and (not data.OnServer)) then
-		---@type PhotonLightingComponent
-		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
-		-- component.Setup( component )
+	if ( component.IsVirtual ) then
+		local component = Photon2.GetComponent( data.Component )
+		ent = component:CreateOn( self:GetComponentParent(), self )
 	else
-		return
+		if (SERVER and data.OnServer) then
+			-- TODO: serverside spawn code
+		elseif (CLIENT and (not data.OnServer)) then
+			---@type PhotonLightingComponent
+			ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
+			-- component.Setup( component )
+		else
+			return
+		end
+
+		if ( not ent.IsVirtual ) then
+			-- Set default/essential properties
+			ent.Entity:SetMoveType( MOVETYPE_NONE )
+			ent.Entity:SetParent( self:GetComponentParent() )
+		end
+
+		-- Set the other basic properties
+		ent:SetPropertiesFromEquipment( data )
+
+		if (IsValid(self.Components[id])) then
+			self.Components[id]:Remove()
+		end		
 	end
-
-	if ( not ent.IsVirtual ) then
-		-- Set default/essential properties
-		ent.Entity:SetMoveType( MOVETYPE_NONE )
-		ent.Entity:SetParent( self:GetComponentParent() )
-	end
-
-	-- Set the other basic properties
-	ent:SetPropertiesFromEquipment( data )
-
-	if (IsValid(self.Components[id])) then
-		self.Components[id]:Remove()
-	end
-
 	self.Components[id] = ent
 	ent:ApplyModeUpdate()
 	self.AttemptingComponentSetup = false
@@ -696,12 +665,6 @@ end
 function ENT:RemoveAllComponents()
 	for id, ent in pairs(self.Components) do
 		self:RemoveEquipmentComponentByIndex( id )
-	end
-	for id, virtualComponent in pairs( self.VirtualComponents ) do
-		self:RemoveEquipmentVirtualComponentByIndex( id )
-	end
-	for id, uiComponent in pairs( self.UIComponents ) do
-		self:RemoveEquipmentUIComponentByIndex( id )
 	end
 end
 
@@ -719,26 +682,12 @@ end
 
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
-	if (IsValid(self.Components[index])) then
+	if ( (self.Components[index] or {}).IsVirtual ) then
+		self.Components[index]:RemoveVirtual()
+	elseif ( IsValid(self.Components[index]) ) then
 		self.Components[index]:Remove()
 	end
 	self.Components[index] = nil
-end
-
-function ENT:RemoveEquipmentVirtualComponentByIndex( index )
-	-- printf("Controller is removing virtual component equipment ID [%s]", index)
-	if ( self.VirtualComponents[index] ) then
-		self.VirtualComponents[index]:RemoveVirtual()
-	end
-	self.VirtualComponents[index] = nil
-end
-
-function ENT:RemoveEquipmentUIComponentByIndex( index )
-	-- printf("Controller is removing UI component equipment ID [%s]", index)
-	if ( self.UIComponents[index] ) then
-		self.UIComponents[index]:RemoveVirtual()
-	end
-	self.UIComponents[index] = nil
 end
 
 function ENT:RemoveEquipmentPropByIndex( index )
@@ -766,14 +715,6 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #components do
 		self:SetupComponent( components[i] )
 	end
-	local virtualComponents = equipmentTable.VirtualComponents
-	for i=1, #virtualComponents do
-		self:SetupVirtualComponent( virtualComponents[i] )
-	end
-	local uiComponents = equipmentTable.UIComponents
-	for i=1, #uiComponents do
-		self:SetupUIComponent( uiComponents[i] )
-	end
 	local props = equipmentTable.Props
 	for i=1, #props do
 		self:SetupProp( props[i] )
@@ -800,8 +741,9 @@ function ENT:RefreshParentSubMaterials()
 		-- printf("ID: %s Material: %s", self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material)
 		self:SetParentSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
 	end
-	for i=1, #self.VirtualComponentArray do
-		for elementIndex, element in pairs( self.VirtualComponentArray[i].Elements ) do
+
+	for i=1, #self.ComponentArray do
+		for elementIndex, element in pairs( self.ComponentArray[i].Elements ) do
 			if ( element and element.Class == "Sub" ) then
 				element--[[@as PhotonElementSub]]:ReapplyState()
 			end
@@ -835,12 +777,6 @@ function ENT:RemoveEquipment( equipmentTable )
 	-- print("Controller is removing an equipment table...")
 	for i=1, #equipmentTable.Components do
 		self:RemoveEquipmentComponentByIndex(equipmentTable.Components[i])
-	end
-	for i=1, #equipmentTable.VirtualComponents do
-		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
-	end
-	for i=1, #equipmentTable.UIComponents do
-		self:RemoveEquipmentUIComponentByIndex(equipmentTable.UIComponents[i])
 	end
 	for i=1, #equipmentTable.Props do
 		self:RemoveEquipmentPropByIndex(equipmentTable.Props[i])
@@ -891,14 +827,6 @@ function ENT:SetupProfile( name, isReload )
 		-- Setup normal components
 		for id, equipment in pairs( self.Equipment.Components ) do
 			self:SetupComponent( id )
-		end
-		-- Setup virtual components
-		for id, equipment in pairs( self.Equipment.VirtualComponents ) do
-			self:SetupVirtualComponent( id )
-		end
-		-- Setup UI components
-		for id, equipment in pairs( self.Equipment.UIComponents ) do
-			self:SetupUIComponent( id )
 		end
 		-- Setup props
 		for id, prop in pairs( self.Equipment.Props ) do
@@ -951,24 +879,6 @@ function ENT:SetupComponentArrays()
 	end
 	for id, component in pairs( self.Components ) do
 		componentArray[#componentArray+1] = component
-	end
-
-	-- Setup virtual components array
-	local virtualComponentArray = self.VirtualComponentArray
-	for i=1, #virtualComponentArray do
-		virtualComponentArray[i] = nil
-	end
-	for id, component in pairs( self.VirtualComponents ) do
-		virtualComponentArray[#virtualComponentArray+1] = component
-	end
-
-	-- Setup UI components array
-	local uiComponentArray = self.UIComponentArray
-	for i=1, #uiComponentArray do
-		uiComponentArray[i] = nil
-	end
-	for id, component in pairs( self.UIComponents ) do
-		uiComponentArray[#uiComponentArray+1] = component
 	end
 
 	-- Setup props
@@ -1048,16 +958,6 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 		component:SetChannelMode( channel, newState, oldState )
 		if ( component.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = component end
 	end
-	for id, virtualComponent in pairs( self.VirtualComponents ) do
-		-- component:ApplyModeUpdate()
-		virtualComponent:SetChannelMode( channel, newState, oldState )
-		if ( virtualComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = virtualComponent end
-	end
-	for id, uiComponent in pairs( self.UIComponents ) do
-		-- component:ApplyModeUpdate()
-		uiComponent:SetChannelMode( channel, newState, oldState )
-		if ( uiComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = uiComponent end
-	end
 
 	self.CurrentPulseComponents = pulseComponents
 end
@@ -1077,15 +977,6 @@ function ENT:GetActiveComponents()
 		if ( map and map[selectionIndex] ) then
 			for _, componentIndex in pairs( map[selectionIndex].Components ) do
 				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
-			end
-			-- not checking for client here causes strange errors when reloading core files
-			if ( CLIENT ) then
-				for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
-					result[self.CurrentProfile.Equipment.VirtualComponents[componentIndex].Component] = true
-				end
-				for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
-					result[self.CurrentProfile.Equipment.UIComponents[componentIndex].Component] = true
-				end
 			end
 		end
 	end
@@ -1151,22 +1042,6 @@ function ENT:OnComponentReloaded( componentId )
 		if ( component.Ancestors[componentId] ) then
 			self:RemoveEquipmentComponentByIndex( equipmentId )
 			self:SetupComponent( equipmentId )
-			matched = true
-		end
-	end
-	-- Reload virtual components
-	for equipmentId, component in pairs( self.VirtualComponents ) do
-		if ( component.Ancestors[componentId] ) then
-			self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
-			self:SetupVirtualComponent( equipmentId )
-			matched = true
-		end
-	end
-	-- Reload UI components
-	for equipmentId, component in pairs( self.UIComponents ) do
-		if ( component.Ancestors[componentId] ) then
-			self:RemoveEquipmentUIComponentByIndex( equipmentId )
-			self:SetupUIComponent( equipmentId )
 			matched = true
 		end
 	end
@@ -1251,12 +1126,6 @@ function ENT:UpdatePulseComponentArray()
 	local result = {}
 	for i=1, #self.ComponentArray do
 		if( self.ComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.ComponentArray[i] end
-	end
-	for i=1, #self.VirtualComponentArray do
-		if( self.VirtualComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.VirtualComponentArray[i] end
-	end
-	for i=1, #self.UIComponentArray do
-		if( self.UIComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.UIComponentArray[i] end
 	end
 	self.CurrentPulseComponents = result
 	self.RebuildPulseComponents = false

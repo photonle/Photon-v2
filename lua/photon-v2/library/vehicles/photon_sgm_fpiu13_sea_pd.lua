@@ -167,7 +167,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Enabled",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmfpiu13",
 						Inputs = {
@@ -465,7 +465,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				UIComponents = {
+				Components = {
 					{
 						Component = "photon_hud_default"
 					}
