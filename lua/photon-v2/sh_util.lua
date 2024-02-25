@@ -156,4 +156,25 @@ function Photon2.Util.ReloadAllControllers()
 	end
 end
 
+local skinSearch = { "skin0", "skin", "skin1" }
+-- Micro-optimize the search smiley face
+for i=1, #skinSearch do
+	skinSearch[skinSearch[i]] = true
+end
+
+local skinCache = {}
+function Photon2.Util.FindSkinSubMaterial( ent )
+	if ( not IsValid( ent ) ) then return 0 end
+	if ( skinCache[ent:GetModel()] ) then return skinCache[ent:GetModel()] end
+
+	for i, mat in ipairs( ent:GetMaterials() ) do
+		if ( skinSearch[string.sub( mat, 1 - string.find( string.reverse( mat ), "/", 0, false ) )] ) then
+			skinCache[ent:GetModel()] = i - 1
+			return i - 1
+		end
+	end
+
+	return -1
+end
+
 -- PrintTable(Util.ModelMeshes)

@@ -587,6 +587,7 @@ function ENT:SetupBodyGroup( id )
 end
 
 function ENT:SetParentSubMaterial( index, material )
+	if ( index == "SKIN" ) then index = Photon2.Util.FindSkinSubMaterial( self:GetParent() ) end
 	self:GetParent():SetSubMaterial( index, material )
 	if ( self.SyncAttachedParentSubMaterials ) then
 		for i, child in pairs( self:GetParent():GetChildren() ) do
@@ -702,7 +703,7 @@ function ENT:RemoveSubMaterialByIndex( index )
 	local parent = self:GetParent()
 	if ( not IsValid( parent ) ) then return end
 	if ( self.SubMaterials[index] ) then
-		parent:SetSubMaterial( self.SubMaterials[index].Id, nil )
+		self:SetParentSubMaterial( self.SubMaterials[index].Id, nil )
 	end
 	self.SubMaterials[index] = nil
 end
