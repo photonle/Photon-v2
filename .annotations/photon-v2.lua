@@ -208,6 +208,7 @@ PhotonMaterial = PhotonMaterial
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.
+---@field Visible? boolean If category should be visible in menu.
 ---@field Options PhotonVehicleSelectionOption[]
 
 ---@class PhotonVehicleSelectionOption : PhotonEquipmentTable

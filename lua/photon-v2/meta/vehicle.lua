@@ -213,6 +213,57 @@ function Vehicle.New( data )
 		InvalidVehicle 		= invalidVehicle
 	}
 
+	--[[
+			Setup Livery
+			(Simple property if vehicle uses just one livery.)
+	--]]
+
+	if ( isstring( data.Livery ) ) then
+		data.SubMaterials = data.SubMaterials or {}
+		data.SubMaterials["SKIN"] = data.Livery
+	end
+
+	--[[
+			Setup SIMPLIFIED Equipment		
+	--]]
+
+	local defaultEquipmentTable
+	for key, _ in pairs( vehicle.Equipment ) do
+		if ( istable( data[key] ) ) then
+			defaultEquipmentTable = defaultEquipmentTable or {
+				Category = "Equipment",
+				Visible = false,
+				Options = {
+					{
+						Option = "Default",
+					}
+				}
+			}
+			-- SubMaterials need special handling to for backwards compatability
+			if ( key == "SubMaterials" ) then
+				local result = {}
+				for k, v in pairs( data["SubMaterials"] ) do
+					if ( isstring( v ) ) then
+						result[#result+1] = { Id = k, Material = v }
+					else
+						result[#result+1] = v
+					end
+				end
+				defaultEquipmentTable.Options[1]["SubMaterials"] = result
+			else
+				defaultEquipmentTable.Options[1][key] = data[key]
+			end
+		end
+	end
+
+	if ( defaultEquipmentTable ) then
+		data.EquipmentSelections = data.EquipmentSelections or {}
+		data.EquipmentSelections[#data.EquipmentSelections+1] = defaultEquipmentTable
+	end
+
+	--[[
+			Setup Equipment
+	--]]
 
 	local nameTable = Equipment.GetTemplate()
 	local pendingNamesQueue = Equipment.GetTemplate()
@@ -224,14 +275,22 @@ function Vehicle.New( data )
 		vehicle.EquipmentSelections = {}
 
 		-- Loop through each category
-		for categoryIndex, category in pairs(data.EquipmentSelections) do
-			vehicle.EquipmentSelections[categoryIndex] = 
+		for categoryIndex, category in ipairs(data.EquipmentSelections) do
+			local visible = true
+			
+			if ( category.Visible ~= nil ) then
+				visible = category.Visible
+			end
+			
+			vehicle.EquipmentSelections[categoryIndex] =
 			{
 				Category = category.Category,
-				Index = categoryIndex, 
+				Index = categoryIndex,
+				Visible = visible,
 				Options = {},
 				Map = {}
 			}
+			
 			local currentCategory = vehicle.EquipmentSelections[categoryIndex]
 			local map = currentCategory.Map
 			-- Loop through each option

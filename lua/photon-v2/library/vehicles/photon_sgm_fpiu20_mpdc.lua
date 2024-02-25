@@ -28,31 +28,34 @@ local livery = PhotonMaterial.New({
 	}
 })
 
-VEHICLE.SubMaterials = {
-	[3] = "photon/common/blank"
-}
+-- VEHICLE.SubMaterials = {
+-- 	[3] = "photon/common/blank"
+-- 	-- [3] = "photon/common/blank"
+-- }
 
 VEHICLE.Siren = { "sos_nergy400" }
 
+VEHICLE.Livery = livery.MaterialName
+
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
-	{
-		Category = "Liveries",
-		Options = {
-			{
-				Option = "MPDC",
-				SubMaterials = {
-					{ Id = 20, Material = livery.MaterialName },
-				}
-			},
-			{
-				Option = "None",
-				SubMaterials = {
-					{ Id = 20, Material = nil }
-				}
-			}
-		}
-	},
+	-- {
+	-- 	Category = "Liveries",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "MPDC",
+	-- 			SubMaterials = {
+	-- 				{ Id = "SKIN", Material = livery.MaterialName },
+	-- 			}
+	-- 		},
+	-- 		{
+	-- 			Option = "None",
+	-- 			SubMaterials = {
+	-- 				{ Id = 20, Material = nil }
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
 	{
 		Category = "Controller Sound",
 		Options = {
