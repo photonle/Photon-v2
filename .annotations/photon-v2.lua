@@ -175,6 +175,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
 ---@field Schema table<string, table<table>>
 ---@field Default? boolean If true, the profile will be used by default on the base vehicle and any other non-Photon 2 vehicles of the same class and model.
+---@field Livery? string Static material to apply as the vehicle's livery.
 -- ---@field Equipment PhotonVehicleEquipment[]
 
 ---@class PhotonLibrarySiren

@@ -63,16 +63,22 @@ function Equipment.AddEntry( entry, master, nameTable )
 	return index
 end
 
-function Equipment.ProcessTable( source, destination, master, nameTable, pendingNamesTable )
+function Equipment.ProcessTable( name, source, destination, master, nameTable, pendingNamesTable )
 	for key, entry in pairs( source ) do
 		if ( istable( entry ) ) then
 			destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
 		elseif ( isstring( entry ) ) then
-			-- Treat entry as pointing to an alias
-			-- to be resolved later.
-			destination[#destination+1] = entry
-			-- Add destination table to queue of unresolved aliases
-			pendingNamesTable[destination] = true
+			-- Allow sub-materials to be setup like [1] = "material"
+			if ( name == "SubMaterials" ) then
+				entry = { Id = name, Material = entry }
+				destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
+			else
+				-- Otherwise treat entry as pointing to an alias
+				-- to be resolved later.
+				destination[#destination+1] = entry
+				-- Add destination table to queue of unresolved aliases
+				pendingNamesTable[destination] = true
+			end
 		end
 	end
 end

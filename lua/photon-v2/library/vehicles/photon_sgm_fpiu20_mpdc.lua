@@ -17,14 +17,14 @@ local livery = PhotonMaterial.New({
 	Name = "schmal_fpiu20_mpdc",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu20/mpdc.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu20/mpdc.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$phong"] = 1,
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector(0.1, 0.1, 0.1),
+		["$phongboost"] = 1.25,
+		["$phongexponent"] = 23,
+		["$nodecal"] = 1
 	}
 })
 

@@ -21,11 +21,12 @@ NAME = "PhotonVehicle"
 ---@field EquipmentSignature string (Internal)
 ---@field SelectionsSignature string (Internal)
 ---@field InvalidVehicle? boolean (Internal) If vehicle base is invalid or missing.
+---@field EngineIdleEnabled boolean If vehicle should idle when player quickly exits.
 local Vehicle = exmeta.New() --[[@as PhotonVehicle]]
 
 Vehicle.SubMaterials = {}
-
 Vehicle.EntityClass = "prop_vehicle_jeep"
+Vehicle.EngineIdleEnabled = true
 
 Vehicle.Schema = {
 	["Emergency.Warning"] = {
@@ -323,7 +324,8 @@ function Vehicle.New( data )
 						-- Automatically iterate through each type of Equipment and process
 						for key, value in pairs( vehicle.Equipment ) do
 							if ( variant[key] ) then
-								Equipment.ProcessTable( 
+								Equipment.ProcessTable(
+									key,
 									variant[key], 
 									currentVariant[key], 
 									vehicle.Equipment[key], 
@@ -347,7 +349,8 @@ function Vehicle.New( data )
 					-- Automatically iterate through each type of Equipment and process
 					for key, value in pairs( vehicle.Equipment ) do
 						if ( option[key] ) then
-							Equipment.ProcessTable( 
+							Equipment.ProcessTable(
+								key, 
 								option[key], 
 								currentOption[key], 
 								vehicle.Equipment[key], 

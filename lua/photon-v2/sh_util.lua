@@ -177,4 +177,48 @@ function Photon2.Util.FindSkinSubMaterial( ent )
 	return -1
 end
 
--- PrintTable(Util.ModelMeshes)
+---Finds and returns the sound file name of a sound state in a vehicle script file.
+---@param script string Contents of vehicle script file.
+---@param soundName string Sound name to retrieve.
+---@param getTime? boolean If the duration of the sound should also be retrieved.
+function Photon2.Util.FindVehicleScriptSound( script, soundName, getTime )
+	local searchStart = string.find( script, soundName, 1, true ) or 1
+	local soundStart = ( string.find( script, "\"Sound\"", searchStart, true ) or 1 ) + 8
+	
+	local fileStart = string.find( script, "\"", soundStart )
+	local fileEnd = string.find( script, ".wav\"", fileStart )
+
+	local fileName = string.sub( script, fileStart + 1, fileEnd + 3 )
+
+	local time
+
+	if ( getTime ) then
+		local timeStart = ( string.find( script, "\"Min_Time\"", fileEnd, true ) or  1 ) + 10
+		timeStart = string.find( script, "\"", timeStart, true ) + 1
+		local timeEnd = string.find( script, "\"", timeStart + 1, true ) - 1
+		time = string.sub( script, timeStart, timeEnd )
+	end
+
+	return fileName, time
+end
+
+
+local vehicleScriptSoundCache = {}
+---Finds and returns a vehicle's start and idle sounds.
+---@param vehicle Entity
+function Photon2.Util.GetVehicleStartAndIdleSounds( vehicle )
+	local scriptFile = vehicle:GetKeyValues()["VehicleScript"]
+	if ( vehicleScriptSoundCache[scriptFile] ) then return vehicleScriptSoundCache[scriptFile] end
+	
+	local content = file.Read( scriptFile, "GAME" )
+	local startSound, startSoundDuration = Photon2.Util.FindVehicleScriptSound( content, "SS_START_IDLE", true )
+	local idleSound = Photon2.Util.FindVehicleScriptSound( content, "SS_IDLE" )
+	
+	vehicleScriptSoundCache[scriptFile] = {
+		StartSound = startSound,
+		StartDuration = tonumber(startSoundDuration) or 0,
+		IdleSound = idleSound
+	}
+	
+	return vehicleScriptSoundCache[scriptFile]
+end

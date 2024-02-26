@@ -1,5 +1,28 @@
 local saveSteeringOnExit = true
 
+local function getVehicleSound( scriptContent, name, getTime )
+	local searchStart = string.find( scriptContent, name, 1, true ) or 1
+	local soundStart = ( string.find( scriptContent, "\"Sound\"", searchStart, true ) or 1 ) + 8
+	
+	local fileStart = string.find( scriptContent, "\"", soundStart )
+	local fileEnd = string.find( scriptContent, ".wav\"", fileStart )
+
+	local fileName = string.sub( scriptContent, fileStart + 1, fileEnd + 3 )
+
+	local time
+
+	if ( getTime ) then
+		local timeStart = ( string.find( scriptContent, "\"Min_Time\"", fileEnd, true ) or  1 ) + 10
+		timeStart = string.find( scriptContent, "\"", timeStart, true ) + 1
+		timeEnd = string.find( scriptContent, "\"", timeStart + 1, true ) - 1
+		time = string.sub( scriptContent, timeStart, timeEnd )
+	end
+
+	return fileName, time
+end
+
+local CurTime = CurTime
+
 -- local ENT = FindMetaTable( "Entity" )
 
 -- if not ENT._oldSetKeyValue then
@@ -33,14 +56,68 @@ end
 
 -- Photon2.RunVehicleListModification()
 
+local holdDuration = 0.33
+
+local vehicleEntryPause = {}
+local activeUseHeld = {}
+
+hook.Add( "StartCommand", "Photon2:StartCommand", function( ply, ucmd ) 
+	if ( IsValid( ply ) and IsValid( ply:GetVehicle() ) and ( ply:GetVehicle().PhotonEngineIdleEnabled ) ) then
+		if ( ucmd:KeyDown( IN_USE ) ) then
+			if ( not vehicleEntryPause[ply] ) then
+				activeUseHeld[ply] = activeUseHeld[ply] or CurTime()
+				if ( activeUseHeld[ply] + holdDuration > CurTime() ) then
+					ucmd:RemoveKey( IN_USE )
+				else
+					ply:GetVehicle().PhotonEngineIdleOff = true
+					ply.PhotonEngineIdleExit = activeUseHeld[ply]
+					activeUseHeld[ply] = nil
+				end
+			end
+		else
+			if ( vehicleEntryPause[ply] ) then
+				vehicleEntryPause[ply] = nil
+			elseif ( activeUseHeld[ply] ) then
+				ucmd:AddKey( IN_USE )
+				ply.PhotonEngineIdleExit = activeUseHeld[ply]
+				activeUseHeld[ply] = nil
+			end
+		end
+	end
+end)
+
+
 ---@param ply Entity
 ---@param vehicle Vehicle
 ---@param role any
 function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
-	
+
+	if ( vehicle.PhotonEngineIdleEnabled ) then
+		vehicleEntryPause[ply] = true
+		vehicle.PhotonEngineIdleOff = nil
+	end
+
 	local controller = vehicle:GetPhotonControllerFromAncestor() --[[@as sv_PhotonController]]
 	if ( not IsValid( controller ) ) then return end
 	
+	-- if ( vehicle.PhotonIdleSound ) then
+	-- 	print("stopping start and idle") 
+	-- 	timer.Create( "StopIdleSound" .. tostring( vehicle:EntIndex() ), 0.4, 1, function()
+	-- 		vehicle.PhotonIdleSound:Stop()
+	-- 	end)
+	-- 	timer.Create( "BlockStartSound" .. tostring( vehicle:EntIndex() ), 0.01, 500, function()
+	-- 		if ( IsValid( vehicle ) ) then
+	-- 			vehicle:StopSound( vehicle.PhotonStartSoundFile )
+	-- 		end
+	-- 	end)
+	-- end
+
+	-- if ( not vehicle.PhotonStartSoundFile or true ) then
+	-- 	local scriptFile = vehicle:GetKeyValues()["VehicleScript"]
+	-- 	local scriptContent = file.Read( scriptFile, "GAME" )
+	-- 	vehicle.PhotonStartSoundFile = getVehicleSound( scriptContent, "SS_START_IDLE", true )
+	-- 	vehicle.PhotonIdleSoundFile = getVehicleSound( scriptContent, "SS_IDLE" )
+	-- end
 	
 	if ( controller.IsLinkedToStandardVehicle and ( vehicle:GetPhotonController() == controller ) and ( vehicle:GetDriver() == ply ) ) then
 		controller:PlayerEnteredLinkedVehicle( ply, vehicle, role )
@@ -52,8 +129,8 @@ end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
+
 	local controller = vehicle:GetPhotonControllerFromAncestor()
-	
 	if ( IsValid( controller ) ) then
 		if ( controller.IsLinkedToStandardVehicle ) then
 			if ( vehicle:GetPhotonController() == controller ) then
@@ -75,6 +152,22 @@ function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
 			vehicle:Fire( "steer", increment )
 		end
 	end
+
+	-- vehicle:StartEngine( true )
+	-- vehicle:StopSound( vehicle.PhotonStartSoundFile )
+
+	-- timer.Destroy("StopIdleSound" .. tostring( vehicle:EntIndex() ))
+	-- vehicle.PhotonIdleSound = CreateSound( vehicle, vehicle.PhotonIdleSoundFile )
+	-- vehicle.PhotonIdleSound:PlayEx( 0, 100 )
+	-- vehicle.PhotonIdleSound:ChangeVolume( 1, 0.4 )
+
+	-- timer.Simple( 0.05, function() 
+	-- 	-- vehicle:StartEngine( true )
+	-- 	-- vehicle:ReleaseHandbrake()
+	-- 	-- vehicle:StopSound( vehicle.PhotonStartSoundFile )
+	-- end)
+
+	
 
 end
 hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )

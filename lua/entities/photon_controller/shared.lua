@@ -805,6 +805,25 @@ function ENT:SetupProfile( name, isReload )
 	self:RemoveAllProps()
 	self:RemoveAllSubMaterials()
 
+	if ( profile.EngineIdleEnabled and self:GetParent():IsVehicle() ) then
+		self.EngineIdleEnabled = profile.EngineIdleEnabled
+		self:GetParent().PhotonEngineIdleEnabled = profile.EngineIdleEnabled
+
+		if ( SERVER ) then
+			local soundData = Photon2.Util.GetVehicleStartAndIdleSounds( self:GetParent() )
+			self.EngineIdleData = {
+				StartSound = soundData.StartSound,
+				StartDuration = soundData.StartDuration,
+				IdleSound = soundData.IdleSound,
+				StopIdleTimer = "Photon.StopIdleSound[" .. self:EntIndex() .. "]",
+				StopStartTimer = "Photon.StopStartSound[" .. self:EntIndex() .. "]",
+
+			}
+		end
+	else
+		self.EngineIdleEnabled = false
+	end
+
 	if ( istable( profile.InteractionSounds ) ) then
 		for class, name in pairs( profile.InteractionSounds ) do
 			self:SetInteractionSound( class, name )

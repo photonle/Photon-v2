@@ -82,7 +82,7 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
 
 	vehicle:SetPhotonController( controller )
-
+	
 	return controller
 end
 
