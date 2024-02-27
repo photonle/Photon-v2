@@ -11,7 +11,7 @@ local margin = 8
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
 
-PANEL.Schema
+-- PANEL.Schema
 
 PANEL.ColumnSchema = {
 	{
