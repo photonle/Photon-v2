@@ -89,8 +89,18 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 				{
 					Mode = "HEADLIGHTS",
 					Conditions = {
+						["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
 						["Vehicle.Ambient"] = { "DARK" },
 						["Vehicle.Lights"] = { "AUTO" }
+					}
+				},
+				{
+					Mode = "PARKING",
+					Conditions = {
+						["Vehicle.Ambient"] = { "DARK" },
+						["Vehicle.Lights"] = { "AUTO" },
+						["Vehicle.Engine"] = { "ON" },
+						["Vehicle.Transmission"] = { "PARK" }
 					}
 				}
 			}
@@ -100,7 +110,8 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 		},
 		Inputs = {
 			["Vehicle.AutomaticLighting"] = {
-				["HEADLIGHTS"] = table.Copy(component.Inputs["Vehicle.Lights"]["HEADLIGHTS"])
+				["HEADLIGHTS"] = table.Copy(component.Inputs["Vehicle.Lights"]["HEADLIGHTS"]),
+				["PARKING"] = table.Copy(component.Inputs["Vehicle.Lights"]["PARKING"])
 			}
 		}
 	}

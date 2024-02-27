@@ -14,13 +14,14 @@ local ENT = exmeta.New()
 local print = Photon2.Debug.PrintF
 
 ENT.DefaultInputPriorities = {
-	["Emergency.Cut"] 				= 160,
-	["Emergency.Illuminate"]		= 150,
-	["Emergency.SceneForward"] 		= 140,
-	["Emergency.SceneLeft"] 		= 130,
-	["Emergency.SceneRight"] 		= 120,
-	["Vehicle.Signal"] 				= 110,
-	["Vehicle.Brake"] 				= 100,
+	["Emergency.Cut"] 				= 170,
+	["Emergency.Illuminate"]		= 160,
+	["Emergency.SceneForward"] 		= 150,
+	["Emergency.SceneLeft"] 		= 140,
+	["Emergency.SceneRight"] 		= 130,
+	["Vehicle.Signal"] 				= 120,
+	["Vehicle.Brake"] 				= 110,
+	["Vehicle.Engine"]				= 100,
 	["Vehicle.Transmission"] 		= 90,
 	["Emergency.Directional"] 		= 80,
 	["Emergency.Auxiliary"] 		= 70,
@@ -32,7 +33,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
 	["Vehicle.Lights"]	 			= 10,
-	["Vehicle.Ambient"]				= 0
+	["Vehicle.Ambient"]				= 0,
 }
 
 ENT.SubMaterials = {}

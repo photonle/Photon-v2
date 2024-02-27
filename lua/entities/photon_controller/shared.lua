@@ -55,7 +55,8 @@ ENT.ChannelTree = {
         "Transmission",
         "Lights",
         "HighBeam",
-		"Ambient"
+		"Ambient",
+		"Engine"
     }
 }
 
@@ -175,8 +176,11 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Bool", 0, "LinkedToVehicle" )
 	self:NetworkVar( "Bool", 1, "VehicleReversing" )
 	self:NetworkVar( "Bool", 2, "VehicleBraking" )
-	
+	self:NetworkVar( "Bool", 3, "EngineRunning" )
+
 	self:NetworkVar( "Int",  0, "VehicleSpeed" )
+
+	self:NetworkVarNotify( "EngineRunning", self.OnEngineStateChange )
 end
 
 function ENT:InitializeShared()
@@ -1134,6 +1138,15 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 		self:UpdateVehicleBraking( true )
 	else
 		self:UpdateVehicleBraking( false )
+	end
+end
+
+function ENT:OnEngineStateChange( name, old, new )
+	print("Engine state change: " .. tostring(new))
+	if ( new ) then
+		self:SetChannelMode( "Vehicle.Engine", "ON" )
+	else
+		self:SetChannelMode( "Vehicle.Engine", "OFF" )
 	end
 end
 
