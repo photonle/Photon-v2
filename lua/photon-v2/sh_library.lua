@@ -240,7 +240,10 @@ local components = {
 	end,
 	PostRegister = function( self, name )
 		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
-	end
+	end,
+	UI = {
+		PreviewPanel = "Photon2UIComponentPreviewer"
+	}
 }
 
 ---@type PhotonLibraryType

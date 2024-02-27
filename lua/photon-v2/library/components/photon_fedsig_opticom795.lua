@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Model = "Schmal",
 }
 
-COMPONENT.PrintName = [[Federal Signal Opticom 795]]
+COMPONENT.Title = [[Federal Signal Opticom 795]]
 
 COMPONENT.Model = "models/schmal/fedsig_opticom795.mdl"
 

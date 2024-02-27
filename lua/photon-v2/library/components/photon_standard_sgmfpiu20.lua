@@ -13,7 +13,7 @@ COMPONENT.States = {
 	[2] = "B"
 }
 
-COMPONENT.PrintName = "2020 Ford Police Interceptor Utility"
+COMPONENT.Title = "2020 Ford Police Interceptor Utility"
 
 COMPONENT.IsVirtual = true
 

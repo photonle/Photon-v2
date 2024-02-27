@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4" - Vertical License Mount]]
+COMPONENT.Title = [[SoundOff Signal mpower Fascia 4" - Vertical License Mount]]
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_vertical.mdl"
 

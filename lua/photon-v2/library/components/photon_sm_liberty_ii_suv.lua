@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 	Code = "SuperMighty, ported by Schmal"
 }
 
-COMPONENT.PrintName = [[Whelen Liberty (54")]]
+COMPONENT.Title = [[Whelen Liberty (54")]]
 
 COMPONENT.Model = "models/supermighty/whelen_liberty_ii_large.mdl"
 

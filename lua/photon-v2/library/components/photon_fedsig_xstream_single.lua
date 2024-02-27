@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 
 COMPONENT.Phase = nil
 
-COMPONENT.PrintName = [[Federal Signal X-Stream Single]]
+COMPONENT.Title = [[Federal Signal X-Stream Single]]
 
 COMPONENT.Model = "models/schmal/fedsig_xstream_single.mdl"
 

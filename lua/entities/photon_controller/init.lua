@@ -116,7 +116,7 @@ function ENT:DeactivateEngineIdle()
 				end
 			end
 		end)
-		timer.Create( self.EngineIdleData.StopStartTimer, 0.01, 500, function() 
+		timer.Create( self.EngineIdleData.StopStartTimer, 0.01, 200, function() 
 			if ( IsValid( self ) ) then
 				local vehicle = self:GetParent() --[[@as Vehicle]]
 				vehicle:StopSound( self.EngineIdleData.StartSound )

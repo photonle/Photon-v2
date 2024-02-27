@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Model = "Mighty, Schmal, et. al",
 }
 
-COMPONENT.PrintName = [[Setina Push Bumper - 2016 Ford Police Utility]]
+COMPONENT.Title = [[Setina Push Bumper - 2016 Ford Police Utility]]
 
 COMPONENT.Model = "models/schmal/fpiu16_setina.mdl"
 

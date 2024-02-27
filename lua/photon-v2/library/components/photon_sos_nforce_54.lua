@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal nForce (54")]]
+COMPONENT.Title = [[SoundOff Signal nForce (54")]]
 
 COMPONENT.Model = "models/sentry/props/nforce_suv.mdl"
 

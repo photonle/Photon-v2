@@ -7,7 +7,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = "Whelen Inner Edge"
+COMPONENT.Title = "Whelen Inner Edge"
 
 COMPONENT.Model = "models/supermighty/photon/inner_edge_driver.mdl"
 

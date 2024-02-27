@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Model = "Khuutznetsov",
 }
 
-COMPONENT.PrintName = [[Federal Signal x-Stream Duo]]
+COMPONENT.Title = [[Federal Signal x-Stream Duo]]
 
 COMPONENT.Model = "models/schmal/fedsig_xstream_duo.mdl"
 

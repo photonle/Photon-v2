@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal Intersector (Surface)]]
+COMPONENT.Title = [[SoundOff Signal Intersector (Surface)]]
 
 COMPONENT.Model = "models/schmal/sos_int_surf.mdl"
 

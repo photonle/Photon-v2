@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[Federal Signal Legend (45")]]
+COMPONENT.Title = [[Federal Signal Legend (45")]]
 
 COMPONENT.Model = "models/schmal/fedsig_legend_45in.mdl"
 

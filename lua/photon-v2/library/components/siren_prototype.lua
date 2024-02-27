@@ -14,7 +14,7 @@ COMPONENT.Siren = "fedsig_touchmaster_delta"
 
 COMPONENT.Category = "Siren"
 
-COMPONENT.PrintName = "Photon Siren Prototype"
+COMPONENT.Title = "Photon Siren Prototype"
 
 COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"
 

@@ -62,6 +62,22 @@ local newLivery = PhotonMaterial.New({
 	}
 })
 
+local prototypeLivery = PhotonMaterial.New({
+	Name = "schmal_fpiu13_seattlepd_prototype",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_prototype.png",
+	["$bumpmap"] = "photon/common/flat",
+	["$phong"] = 1,
+	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
+	["$envmap"] = "env_cubemap",
+	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
+	["$phongboost"] = 5,
+	["$phongexponent"] = 64,
+	["$nodecal"] = 1
+	}
+})
+
 VEHICLE.WorkshopRequirements = {
 	[2798400972] = "2013 Ford Police Interceptor Utility"
 }
@@ -76,7 +92,12 @@ VEHICLE.Equipment = {
 	{
 		Category = "Liveries",
 		Options = {
-			
+			-- {
+			-- 	Option = "Prototype",
+			-- 	SubMaterials = {
+			-- 		{ Id = 8, Material = prototypeLivery.MaterialName }
+			-- 	}
+			-- },
 			{
 				Option = "Classic (2013)",
 				SubMaterials = {

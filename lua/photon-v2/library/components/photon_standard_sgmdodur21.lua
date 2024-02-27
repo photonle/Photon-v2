@@ -7,7 +7,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = "2021 Dodge Durango (PPV)"
+COMPONENT.Title = "2021 Dodge Durango (PPV)"
 
 COMPONENT.IsVirtual = true
 

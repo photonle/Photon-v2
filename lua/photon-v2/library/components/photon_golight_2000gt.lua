@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Noble"
 }
 
-COMPONENT.PrintName = [[Golight 2000GT Searchlight"]]
+COMPONENT.Title = [[Golight 2000GT Searchlight"]]
 
 COMPONENT.Model = "models/noble/golight_2000.mdl"
 

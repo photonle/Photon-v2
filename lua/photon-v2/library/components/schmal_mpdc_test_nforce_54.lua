@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[[MPDC] SoundOff Signal nForce (54")]]
+COMPONENT.Title = [[[MPDC] SoundOff Signal nForce (54")]]
 
 COMPONENT.Base = "schmal_mpdc_sos_nforce_54"
 

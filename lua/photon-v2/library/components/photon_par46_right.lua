@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[PAR46 Spotlight (Right)]]
+COMPONENT.Title = [[PAR46 Spotlight (Right)]]
 
 COMPONENT.Model = "models/sentry/props/spotlight_right_up.mdl"
 

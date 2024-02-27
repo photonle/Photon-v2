@@ -345,6 +345,10 @@ function Photon2.UI.PopulateMenuBar()
 		debugMenu:AddOption( "Open Channel Controller", function() 
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
+		
+		debugMenu:AddOption( "Open Component Inspector", function() 
+			local form = vgui.Create( "Photon2UIComponentInspector" )
+		end)
 
 		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
 		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()

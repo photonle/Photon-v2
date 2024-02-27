@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 
 -- Printed name of component ONLY. Reference component
 -- using its filename or directory/filename.
-COMPONENT.PrintName = "Federal Signal Jet Solaris"
+COMPONENT.Title = "Federal Signal Jet Solaris"
 
 COMPONENT.Model = "models/schmal/fedsig_jetsolaris.mdl"
 

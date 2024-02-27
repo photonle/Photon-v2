@@ -7,7 +7,7 @@ COMPONENT.Credits = {
 	Code = "Schmal", Model = "Schmal"
 }
 
-COMPONENT.PrintName = [[Federal Signal Smart Controller Series B]]
+COMPONENT.Title = [[Federal Signal Smart Controller Series B]]
 
 COMPONENT.Model = "models/photon_ex/controllers/fedsig_scsb.mdl"
 

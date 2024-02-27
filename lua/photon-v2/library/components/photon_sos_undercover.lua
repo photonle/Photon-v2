@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal Universal Undercover]]
+COMPONENT.Title = [[SoundOff Signal Universal Undercover]]
 
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 

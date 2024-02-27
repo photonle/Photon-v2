@@ -100,7 +100,7 @@ function Component.New( name, data )
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
-		PrintName = data.PrintName or name,
+		Title = data.Title or data.PrintName or name,
 		Authors = data.Authors,
 		Class = data.Class or "Default",
 		Category = data.Category,

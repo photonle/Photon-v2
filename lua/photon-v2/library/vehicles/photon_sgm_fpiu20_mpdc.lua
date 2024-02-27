@@ -112,7 +112,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4_lic_h",
 						Angles = Angle( 0, -90, 0 ),
 						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96
+						Scale = 0.96,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					}
 				}
 			}
@@ -129,6 +132,9 @@ VEHICLE.Equipment = {
 						States = { "B", "B" },
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
 				}
@@ -145,7 +151,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_intersector_surf",
 						Position = Vector( -11, 116.2, 48 ),
 						Angles = Angle( 0, 7, 12 ),
-						Scale = 1
+						Scale = 1,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 					{
 						Component = "photon_sos_intersector_surf",
@@ -153,7 +162,10 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, -7, 12 ),
 						States = { "B", "R" },
 						Phase = "B",
-						Scale = 1
+						Scale = 1,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					}
 				}
 			}
@@ -172,6 +184,9 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
 					{
@@ -182,6 +197,9 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
 				}
@@ -202,6 +220,9 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 					{
 						Component = "photon_sos_intersector_surf",
@@ -212,6 +233,9 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 				}
 			}
@@ -256,7 +280,10 @@ VEHICLE.Equipment = {
 								Component = "photon_sos_nforce_54",
 								Position = Vector( 0, -15, 87.55 ),
 								Angles = Angle( 0, 0, -1 ),
-								Scale = 1.029
+								Scale = 1.029,
+								Flags = {
+									ParkMode = { "Emergency.Warning", "MODE2" },
+								}
 							}
 						}
 					},
@@ -315,10 +342,10 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Spotlights (Decorative)",
+		Category = "Spotlights",
 		Options = {
 			{
-				Option = "Decorative",
+				Option = "Spotlights",
 				Components = {
 					{
 						Component = "photon_whe_par46_left",

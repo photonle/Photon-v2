@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Code = "Noble"
 }
 
-COMPONENT.PrintName = [[Federal Signal MB1 Controller]]
+COMPONENT.Title = [[Federal Signal MB1 Controller]]
 
 COMPONENT.Model = "models/noble/fedsig_mb1_controller.mdl"
 

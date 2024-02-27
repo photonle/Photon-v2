@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 3"]]
+COMPONENT.Title = [[SoundOff Signal mpower Fascia 3"]]
 
 COMPONENT.Model = "models/sentry/props/soundofffascia_small.mdl"
 

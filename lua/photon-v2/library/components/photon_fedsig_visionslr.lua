@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 	Model = "HighSpeedDesigns, Schmal",
 }
 
-COMPONENT.PrintName = [[Federal Signal Vision SLR]]
+COMPONENT.Title = [[Federal Signal Vision SLR]]
 
 COMPONENT.Model = "models/schmal/fedsig_visionslr.mdl"
 
