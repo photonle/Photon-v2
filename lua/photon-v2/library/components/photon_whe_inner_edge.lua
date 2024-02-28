@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = "Whelen Inner Edge"
-
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/supermighty/photon/inner_edge_driver.mdl"
 
 COMPONENT.States = {

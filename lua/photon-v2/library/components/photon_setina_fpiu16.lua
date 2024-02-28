@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Setina Push Bumper - 2016 Ford Police Utility]]
-
+COMPONENT.Category = "Bumper"
 COMPONENT.Model = "models/schmal/fpiu16_setina.mdl"
 
 COMPONENT.Templates = {

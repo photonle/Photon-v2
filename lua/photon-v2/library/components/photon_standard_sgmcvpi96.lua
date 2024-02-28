@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = "1996 Ford Crown Victoria"
-
+COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
 COMPONENT.ElementStates = {

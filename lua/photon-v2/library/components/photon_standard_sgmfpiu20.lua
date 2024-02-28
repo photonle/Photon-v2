@@ -14,6 +14,7 @@ COMPONENT.States = {
 }
 
 COMPONENT.Title = "2020 Ford Police Interceptor Utility"
+COMPONENT.Category = "Vehicle"
 
 COMPONENT.IsVirtual = true
 

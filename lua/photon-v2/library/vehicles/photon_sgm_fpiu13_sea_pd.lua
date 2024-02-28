@@ -93,9 +93,15 @@ VEHICLE.Equipment = {
 		Category = "Liveries",
 		Options = {
 			-- {
+			-- This one is a half-assed work in progress still
 			-- 	Option = "Prototype",
 			-- 	SubMaterials = {
 			-- 		{ Id = 8, Material = prototypeLivery.MaterialName }
+			-- 	},
+			-- 	Components = {
+			-- 		{
+			-- 			Inherit = "@legend"
+			-- 		}
 			-- 	}
 			-- },
 			{

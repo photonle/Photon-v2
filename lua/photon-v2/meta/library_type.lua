@@ -30,6 +30,7 @@ local printf = info
 ---@field LoadingDedicatedFile? boolean (Internal)
 ---@field HardReloadThreshold? number (Internal) Time between reloads that should trigger a hard reload.
 ---@field Signatures? string[] Table keys used as signatures for change detection.
+---@field UI? table User interface parameters.
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -212,6 +213,7 @@ function meta:LoadDedicatedLuaFile( path )
 
 	local entry = _G[self.GlobalName]
 	entry.Name = name
+	entry.Source = "Lua"
 
 	UNSET = _UNSET
 	
@@ -290,12 +292,18 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
+	self:PreRegister( data )
 	local success, code = pcall( self.DoRegister, self, data )
 	if ( not success ) then
 		local name = data.Name or "(INVALID NAME)"
 		warn( "Failed to register [%s]: %s", name, code )
 	end
 end
+
+---This should only be used as a last resort to handle breaking API changes!
+---Raw data should otherwise NEVER be manipulated.
+---@param data any
+function meta:PreRegister( data ) end
 
 function meta:DoRegister( data )
 	info( "\t\t\tRegistering [%s] library entry [%s]", self.Name, data.Name )

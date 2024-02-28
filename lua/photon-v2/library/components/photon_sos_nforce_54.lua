@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[SoundOff Signal nForce (54")]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/nforce_suv.mdl"
 
 COMPONENT.States = {

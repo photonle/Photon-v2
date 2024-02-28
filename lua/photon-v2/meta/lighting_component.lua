@@ -60,21 +60,21 @@ function Component.New( name, data )
 
 	local ancestors = { [name] = true }
 
-	
-	if ( data.Base ) then
-		-- More special handling for Input sequence assignments (there must be a better way to do this)
-		local dataInputs
-		if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-		Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
-		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
-		Photon2.Library.ComponentsGraph[data.Base][name] = true
+	data = Photon2.Library.Components:GetInherited( data )
+	-- if ( data.Base ) then
+	-- 	-- More special handling for Input sequence assignments (there must be a better way to do this)
+	-- 	local dataInputs
+	-- 	if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
+	-- 	Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+	-- 	Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
+	-- 	Photon2.Library.ComponentsGraph[data.Base][name] = true
 
-		Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
+	-- 	Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
 
-		-- if ( Photon2.Library.Components[data.Base] ) then
-		-- 	Photon2.Library.Components[data.Base].Children[name] = true
-		-- end
-	end
+	-- 	-- if ( Photon2.Library.Components[data.Base] ) then
+	-- 	-- 	Photon2.Library.Components[data.Base].Children[name] = true
+	-- 	-- end
+	-- end
 
 	data.Flags = data.Flags or {}
 

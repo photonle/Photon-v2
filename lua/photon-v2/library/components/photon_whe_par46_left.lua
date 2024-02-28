@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
 COMPONENT.Title = [[Whelen PAR46 LED Spotlight"]]
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_left_up.mdl"
 
 local downSpeed = 100

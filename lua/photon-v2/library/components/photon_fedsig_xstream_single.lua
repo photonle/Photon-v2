@@ -11,7 +11,7 @@ COMPONENT.Credits = {
 COMPONENT.Phase = nil
 
 COMPONENT.Title = [[Federal Signal X-Stream Single]]
-
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/schmal/fedsig_xstream_single.mdl"
 
 COMPONENT.Templates = {

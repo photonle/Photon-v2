@@ -2,7 +2,7 @@ if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Base = "photon_whe_par46_left"
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_right_up.mdl"
 
 -- Most other properties are set in the par46_left file. The ones here

@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Whelen Liberty (54")]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/supermighty/whelen_liberty_ii_large.mdl"
 
  

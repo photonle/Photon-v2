@@ -9,6 +9,19 @@ surface.CreateFont("PhotonDefault", {
 	size = 16
 })
 
+surface.CreateFont( "PhotonUI.Header", {
+	font = "Roboto",
+	weight = 900,
+	size = 16
+})
+
+surface.CreateFont( "PhotonUI.Mono", {
+	font = "Consolas",
+	size = 14
+})
+
+surface.
+
 SKIN = {}
 
 SKIN.PrintName		= "Photon Studio"

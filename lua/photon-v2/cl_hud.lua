@@ -335,7 +335,7 @@ function HUD.DrawTargetBox( w, h )
 end
 
 -- hook.Add( "PostDrawHUD", "Photon2.TargetBox", function() 
--- 	HUD.DrawTargetBox( 400, 128 )
+	-- HUD.DrawTargetBox( 400, 128 )
 -- end)
 
 function HUD.KeyBindHint( x, y, keys )

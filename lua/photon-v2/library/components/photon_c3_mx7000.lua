@@ -2,7 +2,6 @@ if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Author = "Photon"
-
 COMPONENT.Credits = {
 	Model = "SGM",
 	Code = "Schmal"
@@ -13,7 +12,7 @@ COMPONENT.WorkshopRequirements = {
 }
 
 COMPONENT.Title = [[Code 3 MX7000]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
 
 COMPONENT.SubMaterials = {

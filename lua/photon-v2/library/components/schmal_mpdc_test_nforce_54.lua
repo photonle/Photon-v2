@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[[MPDC] SoundOff Signal nForce (54")]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Base = "schmal_mpdc_sos_nforce_54"
 
 local sequence = Photon2.SequenceBuilder.New

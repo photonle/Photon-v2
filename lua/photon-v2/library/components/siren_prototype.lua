@@ -11,9 +11,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Siren = "fedsig_touchmaster_delta"
-
-COMPONENT.Category = "Siren"
-
+COMPONENT.Category = "Speaker"
 COMPONENT.Title = "Photon Siren Prototype"
 
 COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"

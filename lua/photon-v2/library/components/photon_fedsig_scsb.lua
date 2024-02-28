@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal Smart Controller Series B]]
-
+COMPONENT.Category = "Controller"
 COMPONENT.Model = "models/photon_ex/controllers/fedsig_scsb.mdl"
 
 COMPONENT.Templates = {

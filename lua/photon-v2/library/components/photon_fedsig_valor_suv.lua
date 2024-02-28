@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal Valor (51")]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
 COMPONENT.States = {

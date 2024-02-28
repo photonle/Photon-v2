@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Siren #2 Speaker]]
-
+COMPONENT.Category = "Speaker"
 COMPONENT.Base = "siren_prototype"
 
 

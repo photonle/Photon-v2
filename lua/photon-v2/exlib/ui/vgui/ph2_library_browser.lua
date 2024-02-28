@@ -11,9 +11,7 @@ local margin = 8
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
 
--- PANEL.Schema
-
-PANEL.ColumnSchema = {
+local columnSchema = {
 	{
 		Label = "Name",
 		Property = "Name",
@@ -27,13 +25,22 @@ PANEL.ColumnSchema = {
 	{
 		Label = "Author",
 		Property = "Author",
-		Search = true
+		Search = true,
+		MaxWidth = 96
 	},
 	{
 		Label = "Source",
-		Property = "SourceType"
+		Property = "SourceType",
+		MaxWidth = 56
 	}
 }
+
+function PANEL:SetSizing( width, height, previewPanelWidth )
+	self:SetWidth( math.Clamp( width, 0, ScrW() ) )
+	self:SetHeight( math.Clamp( height, 0, ScrH() ) )
+	self.DividerPanel:SetAnchorWidth( previewPanelWidth )
+	self:Center()
+end
 
 function PANEL:SetSearchFilter( value )
 	if ( value == "" ) then
@@ -47,8 +54,10 @@ end
 function PANEL:SetSourceFilter( source )
 	if ( not source ) then
 		self.SourceFilter = false
+		self.BottomPanel.FileType:SetValue( "All Sources" )
 	else
 		self.SourceFilter = source
+		self.BottomPanel.FileType:SetValue( source )
 	end
 	self:PopulateEntries()
 end
@@ -119,7 +128,10 @@ function PANEL:SetupMain()
 	files:Dock( FILL )
 
 	for i, schema in ipairs( self.ColumnSchema ) do
-		files:AddColumn( schema.Label )
+		local column = files:AddColumn( schema.Label )
+		if ( schema.MaxWidth ) then
+			column:SetMaxWidth( schema.MaxWidth )
+		end
 	end
 
 	files:SetMultiSelect( false )
@@ -134,10 +146,24 @@ function PANEL:SetupMain()
 
 	this.EntriesPanel = files
 
-	local previewPanel = vgui.Create( "DPanel", main )
-	divider:SetRight( previewPanel )
-
+	local previewPanelParent = vgui.Create( "DPanel", main )
+	divider:SetRight( previewPanelParent )
+	
+	if ( self.UI.PreviewPanel ) then
+		self.PreviewPanel = vgui.Create( self.UI.PreviewPanel, previewPanelParent )
+		self.PreviewPanel:Dock( FILL )
+		previewPanelParent:SetPaintBackground( false )
+	else
+		divider:SetAnchorWidth( 0 )
+	end
+	
+	
+	self.PreviewPanelParent = previewPanelParent
+	self.DividerPanel = divider
 	self.MainPanel = main
+
+	-- divider:SetAnchorWidth( 600 )
+
 end
 
 function PANEL:OnItemDoubleClick( value )
@@ -148,8 +174,6 @@ function PANEL:PopulateEntries()
 	local files = self.EntriesPanel
 	if ( not IsValid( files ) ) then return end
 	files:Clear()
-
-
 
 	for name, entry in pairs( self.CurrentLibrary.Repository ) do
 		
@@ -297,7 +321,8 @@ function PANEL:SetupBottom()
 	function fileType:OnSelect( index, value, data )
 		this:SetSourceFilter( data )
 	end
-
+	bottom.FileType = fileType
+	
 	local buttons = vgui.Create( "DPanel", bottom )
 	buttons:Dock( BOTTOM )
 	buttons:SetHeight( 24 )
@@ -339,6 +364,9 @@ function PANEL:SetupBottom()
 			this:AttemptSave( this.FileNameTextBox:GetText() )
 		end
 		this.OnItemDoubleClick = this.AttemptSave
+	elseif ( self.FileMode == "BROWSE" ) then
+		confirmButton:SetVisible( false )
+		cancelButton:SetText( "Close" )
 	else
 		confirmButton:SetText( "Select" )
 		function confirmButton:DoClick()
@@ -355,6 +383,9 @@ function PANEL:SetSelected( entryName )
 	local entry = self.CurrentLibrary:Get( entryName )
 	self.SelectedEntry = entry
 	self.FileNameTextBox:SetText( entryName )
+	if ( self.PreviewPanel ) then
+		self.PreviewPanel:SetEntry( entryName )
+	end
 end
 
 -- Override
@@ -370,17 +401,21 @@ end
 function PANEL:Init()
 	self.BaseClass.Init( self )
 	local this = self
+	self:SetWidth( 540 )
+	self:SetHeight( 400 )
+	self:Center()
 end
 
 ---@param library string Library type.
----@param mode "OPEN" | "SAVE" | "SELECT" Mode type.
+---@param mode "OPEN" | "SAVE" | "SELECT" | "BROWSE" Mode type.
 function PANEL:Setup( library, mode )
 	local this = self
-	self:SetWidth( 500 )
-	self:SetHeight( 380 )
-	self:Center()
 	---@type PhotonLibraryType
 	self.CurrentLibrary = Photon2.Library[library]
+	self.CurrentLibraryName = library
+
+	self.UI = self.CurrentLibrary.UI or {}
+	self.ColumnSchema = self.UI.BrowserColumnSchema or columnSchema
 
 	if ( not self.CurrentLibrary ) then
 		ErrorNoHaltWithStack( "Invalid library type [" .. tostring( library ) .. "]." )
@@ -388,6 +423,7 @@ function PANEL:Setup( library, mode )
 	end
 
 	local title = "Browse"
+	local suffix = self.CurrentLibrary.Singular .. "..."
 
 	if ( mode == "OPEN" ) then
 		title = "Open "
@@ -395,11 +431,14 @@ function PANEL:Setup( library, mode )
 		title = "Save "
 	elseif ( mode == "SELECT") then
 		title = "Select "
+	elseif ( mode == "BROWSE" ) then
+		title = "Browse "
+		suffix = "Components"
 	end
 
 	self.FileMode = mode
 
-	title = title .. self.CurrentLibrary.Singular .. "..."
+	title = title .. suffix
 
 	self:SetTitle( title )
 	
@@ -410,6 +449,10 @@ function PANEL:Setup( library, mode )
 	self:PopulateEntries()
 
 	self:MakePopup()
+
+	if ( self.UI.DefaultFilter ) then
+		self:SetSourceFilter( self.UI.DefaultFilter )
+	end
 end
 
 -- Sets the file selection text box to the given value and selects the text.
@@ -425,7 +468,7 @@ function PANEL:PostAutoRefresh()
 	if ( self.TopControls ) then self.TopControls:Remove() end
 	if ( self.MainPanel ) then self.MainPanel:Remove() end
 	if ( self.BottomPanel ) then self.BottomPanel:Remove() end
-	self:Setup( "InputConfigurations", "OPEN" )
+	self:Setup( self.CurrentLibraryName or "Components", self.FileMode or "OPEN" )
 end
 
 derma.DefineControl( class, description, PANEL, base )

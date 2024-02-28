@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[PAR46 Spotlight (Right)]]
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlight_right_up.mdl"
 
 COMPONENT.Base = "photon_whe_par46_right"

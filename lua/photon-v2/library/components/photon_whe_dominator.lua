@@ -1,7 +1,7 @@
 local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Name = "photon_whe_dominator_2"
-
+COMPONENT.Title = "Whelen Dominator (x2)"
 COMPONENT.Author = "Photon"
 COMPONENT.Credits = {
 	Model = "SGM",
@@ -15,6 +15,7 @@ COMPONENT.States = {
 	[4] = "A"
 }
 
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/sentry/props/dominator2.mdl"
 
 COMPONENT.Templates = {

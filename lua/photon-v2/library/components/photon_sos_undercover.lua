@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[SoundOff Signal Universal Undercover]]
-
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 
 COMPONENT.States = { "R", "B", "W" }

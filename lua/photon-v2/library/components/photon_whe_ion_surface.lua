@@ -8,10 +8,10 @@ COMPONENT.WorkshopRequirements = {
 
 COMPONENT.Author = "Photon"
 COMPONENT.Credits = {
-	Model = "Anemolis",
+	Model = "Mighty/SGM/Anemolis",
 	Code = "Schmal"
 }
-
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/anemolis/props/anemolis_surfaceion.mdl"
 
 local size = 6

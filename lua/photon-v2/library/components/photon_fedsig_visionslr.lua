@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal Vision SLR]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_visionslr.mdl"
 
 COMPONENT.Templates = {

@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal Legend (45")]]
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_legend_45in.mdl"
 
 COMPONENT.Templates = {

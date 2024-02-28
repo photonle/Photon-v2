@@ -11,7 +11,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[PAR46 Spotlight (Left)]]
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlight_left_up.mdl"
 
 COMPONENT.States = {

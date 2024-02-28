@@ -17,10 +17,7 @@ end
 
 
 COMPONENT.Title = "2016 Ford Police Interceptor Utility"
-
--- Virtual component means the component doesn't spawn a model,
--- and will instead manipulate the existing vehicle entity.
-COMPONENT.IsVirtual = true
+COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
 COMPONENT.Flags = {

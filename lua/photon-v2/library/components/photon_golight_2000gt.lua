@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Golight 2000GT Searchlight"]]
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/noble/golight_2000.mdl"
 
 local baseSpeed = 100

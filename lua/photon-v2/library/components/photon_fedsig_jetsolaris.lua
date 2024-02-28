@@ -11,7 +11,7 @@ COMPONENT.Credits = {
 -- Printed name of component ONLY. Reference component
 -- using its filename or directory/filename.
 COMPONENT.Title = "Federal Signal Jet Solaris"
-
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_jetsolaris.mdl"
 
 COMPONENT.Templates = {

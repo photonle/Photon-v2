@@ -6,6 +6,7 @@ COMPONENT.Credits = {
 	Vehicle = "SGM",
 	Code = "Schmal"
 }
+COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
 COMPONENT.Flags = {

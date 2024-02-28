@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Photon 2 HUD]]
-
+COMPONENT.Category = "HUD"
 COMPONENT.IsVirtual = true
 
 COMPONENT.Templates = {

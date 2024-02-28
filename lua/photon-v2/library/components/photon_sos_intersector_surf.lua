@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[SoundOff Signal Intersector (Surface)]]
-
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_int_surf.mdl"
 
 COMPONENT.States = {

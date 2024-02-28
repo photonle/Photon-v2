@@ -230,6 +230,19 @@ local components = {
 		local component = PhotonLightingComponent.New( data.Name, data )
 		return component
 	end,
+	GetInherited = function( self, data )
+		if ( isstring( data ) ) then data = self:GetCopy( data ) end
+		if ( data.Base ) then
+			local dataInputs
+			if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
+			Photon2.Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+			Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
+			Photon2.Library.ComponentsGraph[data.Base][data.Name] = true
+	
+			Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
+		end
+		return data
+	end,
 	PostCompile = function( self, name )
 		-- TODO: lazy loading needs to be implemented to maintain
 		-- good compilation performance
@@ -238,11 +251,55 @@ local components = {
 			self:Register( self:Get( id ) )
 		end
 	end,
+	PreRegister = function( self, data )
+		-- Required for backwards compatibility
+		data.Title = data.Title or data.PrintName
+	end,
 	PostRegister = function( self, name )
 		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
 	end,
+	FindCategory = function( self, name )
+		local component = self:Get( name )
+		if ( component.Category ) then
+			return component.Category
+		elseif ( component.Base ) then
+			return self:FindCategory( component.Base  )
+		else
+			return nil
+		end
+	end,
 	UI = {
-		PreviewPanel = "Photon2UIComponentPreviewer"
+		PreviewPanel = "Photon2UIComponentPreviewer",
+		DefaultFilter = "Lua",
+		BrowserColumnSchema = {
+			{
+				Label = "Type",
+				Property = "Category",
+				Search = true,
+				MaxWidth = 96
+			},
+			{
+				Label = "Name",
+				Property = "Name",
+				Search = true
+			},
+			{
+				Label = "Title",
+				Property = "Title",
+				Search = true
+			},
+			{
+				Label = "Author",
+				Property = "Author",
+				Search = true,
+				MaxWidth = 96
+			},
+			{
+				Label = "Source",
+				Property = "SourceType",
+				MaxWidth = 56
+			}
+		}
 	}
 }
 

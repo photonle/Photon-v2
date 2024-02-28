@@ -345,10 +345,14 @@ function Photon2.UI.PopulateMenuBar()
 		debugMenu:AddOption( "Open Channel Controller", function() 
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
-		
-		debugMenu:AddOption( "Open Component Inspector", function() 
-			local form = vgui.Create( "Photon2UIComponentInspector" )
+
+		debugMenu:AddOption( "Open Component Browser", function() 
+			RunConsoleCommand( "ph2_component_browser" )
 		end)
+
+		-- debugMenu:AddOption( "Open Component Inspector", function() 
+		-- 	local form = vgui.Create( "Photon2UIComponentInspector" )
+		-- end)
 
 		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
 		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
@@ -394,7 +398,12 @@ end)
 
 hook.Add( "PopulateMenuBar", "Photon2:PopulateMenuBar", Photon2.UI.OnPopulateMenuBar )
 
+concommand.Add("ph2_component_browser", function() 
+	local browser = vgui.Create( "Photon2UILibraryBrowser" )
+	browser:Setup( "Components", "BROWSE" )
 
+	browser:SetSizing( 1280, 700, 400 )
+end)
 
 --[[
 	Sandbox Properties Context Menu 

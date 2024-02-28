@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal MB1 Controller]]
-
+COMPONENT.Category = "Controller"
 COMPONENT.Model = "models/noble/fedsig_mb1_controller.mdl"
 
 COMPONENT.Templates = {

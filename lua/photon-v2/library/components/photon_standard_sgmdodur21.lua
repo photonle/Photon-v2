@@ -8,7 +8,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = "2021 Dodge Durango (PPV)"
-
+COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
 -- Special component attributes

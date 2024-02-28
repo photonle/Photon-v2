@@ -9,7 +9,7 @@ COMPONENT.Credits = {
 }
 
 COMPONENT.Title = [[Federal Signal x-Stream Duo]]
-
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/schmal/fedsig_xstream_duo.mdl"
 
 COMPONENT.States = { "R", "B", "W" }
