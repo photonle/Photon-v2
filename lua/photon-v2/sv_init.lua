@@ -1,6 +1,7 @@
 include("sh_init.lua")
 include("sv_net.lua")
 
+
 include("sh_component_builder.lua")
 include("sh_library.lua")
 include("sh_index.lua")
@@ -11,7 +12,7 @@ include("sv_functions.lua")
 include("sh_input.lua")
 
 local profiles = Photon2.Index.Profiles
-local print = Photon2.Debug.Print
+-- local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 -- Hacky fix for some dumbass code in original Photon

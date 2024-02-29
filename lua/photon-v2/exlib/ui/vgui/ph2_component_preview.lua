@@ -130,10 +130,10 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
-	local segmentsNode = tree:AddNode( "Segments" )
-	for segmentName, segment in pairs( entry.Segments or {} ) do
+	local segmentsNode = tree:AddNode( "Sequences" )
+	for segmentName, segment in SortedPairs( entry.Segments or {} ) do
 		local segmentNode = segmentsNode:AddNode( segmentName )
-		for sequenceName, sequence in pairs( segment.Sequences or {}) do
+		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
 			local sequenceNode = segmentNode:AddNode( sequenceName )
 		end
 	end
@@ -141,7 +141,7 @@ function PANEL:SetEntry( entryName )
 	local inputsNode = tree:AddNode( "Inputs" )
 	for channelName, modes in pairs( entry.Inputs or {} ) do
 		local channelNode = inputsNode:AddNode( channelName )
-		for modeName, sequences in pairs( modes ) do
+		for modeName, sequences in SortedPairs( modes ) do
 			local modeNode = channelNode:AddNode( modeName )
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do

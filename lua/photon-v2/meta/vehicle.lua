@@ -203,7 +203,7 @@ function Vehicle.New( data )
 		Name				= data.Name,
 		ID 					= data.Name,
 		Title 				= data.Title,
-		Model 				= target.Model,
+		Model 				= string.lower(target.Model),
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
