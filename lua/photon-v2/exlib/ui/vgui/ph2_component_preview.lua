@@ -20,7 +20,8 @@ function PANEL:SetEntry( entryName )
 
 	local this = self
 
-	local scrollPanel = vgui.Create( "DScrollPanel", self )
+	local scrollPanel = vgui.Create( "DPanel", self )
+	scrollPanel:SetPaintBackground( false )
 	scrollPanel:Dock( FILL )
 
 	print("Loading: " .. tostring(entryName))
@@ -43,66 +44,114 @@ function PANEL:SetEntry( entryName )
 	nameLabel:SetText( entryName )
 
 	if ( entry.Model ) then
-		local modelPanel = vgui.Create( "DModelPanel", scrollPanel )
+		local modelPanel = vgui.Create( "DAdjustableModelPanel", scrollPanel )
 		modelPanel:Dock( TOP )
 		modelPanel:SetTall( 100 )
-		modelPanel:SetCamPos( Vector( 100, 0, 0 ))
-		modelPanel:SetLookAt( Vector( 0, 0, 0 ))
-		modelPanel:SetFOV( this.FOV or 45 )
-		modelPanel.Angles = angle_zero
+		modelPanel:SetCamPos( Vector( -50, 0, 5 ) )
+		modelPanel:SetLookAng( Angle( 5, 0, 0 ) )
+		modelPanel:SetFOV( 50 )
+		modelPanel:SetAnimated( false )
+		-- modelPanel:SetFOV( this.FOV or 45 )
+		-- modelPanel.Angles = angle_zero
 		-- modelPanel:SetSize( 200, 200 )
 		modelPanel:SetModel( entry.Model )
 
-		function modelPanel:DragMousePress( mouseCode )
-			self.PressX, self.PressY = input.GetCursorPos()
-			if ( mouseCode == MOUSE_LEFT ) then
-				self.Pressed = true
-				self.RightPressed = false
-			elseif ( mouseCode == MOUSE_RIGHT ) then
-				self.Pressed = false
-				self.RightPressed = true
-			end
+		function modelPanel:LayoutEntity()
+
 		end
+		-- function modelPanel:DragMousePress( mouseCode )
+		-- 	self.PressX, self.PressY = input.GetCursorPos()
+		-- 	if ( mouseCode == MOUSE_LEFT ) then
+		-- 		self.Pressed = true
+		-- 		self.RightPressed = false
+		-- 	elseif ( mouseCode == MOUSE_RIGHT ) then
+		-- 		self.Pressed = false
+		-- 		self.RightPressed = true
+		-- 	end
+		-- end
 
-		function modelPanel:DragMouseRelease( mouseCode ) 
-			if ( mouseCode == MOUSE_LEFT ) then
-				self.Pressed = false 
-			elseif ( mouseCode == MOUSE_RIGHT ) then
-				self.RightPressed = false 
-			end
-		end
+		-- function modelPanel:DragMouseRelease( mouseCode ) 
+		-- 	if ( mouseCode == MOUSE_LEFT ) then
+		-- 		self.Pressed = false 
+		-- 	elseif ( mouseCode == MOUSE_RIGHT ) then
+		-- 		self.RightPressed = false 
+		-- 	end
+		-- end
 
-		function modelPanel:LayoutEntity( ent )
-			if ( self.bAnimated ) then self:RunAnimation() end
+		-- function modelPanel:LayoutEntity( ent )
+		-- 	if ( self.bAnimated ) then self:RunAnimation() end
 
-			if ( self.Pressed ) then
-				local mx, my = input.GetCursorPos()
-				-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-				-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-				-- self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
-				self.Angles:RotateAroundAxis( angle_zero:Up(), ( ( self.PressX or mx ) - mx ) / -2 )
-				self.PressX, self.PressY = mx, my
-			elseif ( self.RightPressed ) then
-				local mx, my = input.GetCursorPos()
-				-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-				-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-				self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
-				self.PressX, self.PressY = mx, my
-			end
+		-- 	if ( self.Pressed ) then
+		-- 		local mx, my = input.GetCursorPos()
+		-- 		-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
+		-- 		-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
+		-- 		-- self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
+		-- 		self.Angles:RotateAroundAxis( angle_zero:Up(), ( ( self.PressX or mx ) - mx ) / -2 )
+		-- 		self.PressX, self.PressY = mx, my
+		-- 	elseif ( self.RightPressed ) then
+		-- 		local mx, my = input.GetCursorPos()
+		-- 		-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
+		-- 		-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
+		-- 		self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
+		-- 		self.PressX, self.PressY = mx, my
+		-- 	end
 
-			ent:SetAngles( self.Angles )
-		end
+		-- 	ent:SetAngles( self.Angles )
+		-- end
 
-		function modelPanel:OnMouseWheeled( delta )
-			-- print( tostring( delta ) )
-			local fov = math.Clamp( modelPanel:GetFOV() + ( delta * -1 ), 0, 180 )
-			modelPanel:SetFOV( fov )
-			this.FOV = fov
-		end
+		-- function modelPanel:OnMouseWheeled( delta )
+		-- 	-- print( tostring( delta ) )
+		-- 	local fov = math.Clamp( modelPanel:GetFOV() + ( delta * -1 ), 0, 180 )
+		-- 	modelPanel:SetFOV( fov )
+		-- 	this.FOV = fov
+		-- end
 
 	end
 
+	local overviewTab = vgui.Create( "DPanel", scrollPanel )
 
+	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
+	propertySheet:DockMargin( 0, 8, 0, 0 )
+	propertySheet:Dock( FILL )
+	propertySheet:AddSheet( "Overview", overviewTab )
+
+	local tree = vgui.Create( "EXDTree", overviewTab )
+	tree:SetLineHeight( 22 )
+	tree:Dock( FILL )
+
+	if ( entry.Patterns ) then
+		local patternsNode = tree:AddNode( "Patterns" )
+		for patternName, sequences in pairs( entry.Patterns ) do
+			local patternNode = patternsNode:AddNode( patternName )
+			for i, sequence in pairs( sequences or {} ) do
+				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ) )
+			end
+			-- for segmentName, sequence in 
+		end
+	end
+
+	local segmentsNode = tree:AddNode( "Segments" )
+	for segmentName, segment in pairs( entry.Segments or {} ) do
+		local segmentNode = segmentsNode:AddNode( segmentName )
+		for sequenceName, sequence in pairs( segment.Sequences or {}) do
+			local sequenceNode = segmentNode:AddNode( sequenceName )
+		end
+	end
+
+	local inputsNode = tree:AddNode( "Inputs" )
+	for channelName, modes in pairs( entry.Inputs or {} ) do
+		local channelNode = inputsNode:AddNode( channelName )
+		for modeName, sequences in pairs( modes ) do
+			local modeNode = channelNode:AddNode( modeName )
+			if ( istable( sequences ) ) then
+				for k, v in pairs( sequences ) do
+					modeNode:AddNode( string.format("[%s]: %s", k, v))
+				end
+			elseif ( isstring( sequences ) ) then
+				modeNode:AddNode( sequences )
+			end
+		end
+	end
 end
 
 function PANEL:Setup()

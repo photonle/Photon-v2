@@ -20,8 +20,6 @@ surface.CreateFont( "PhotonUI.Mono", {
 	size = 14
 })
 
-surface.
-
 SKIN = {}
 
 SKIN.PrintName		= "Photon Studio"

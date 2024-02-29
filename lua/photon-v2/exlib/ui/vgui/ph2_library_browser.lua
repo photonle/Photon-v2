@@ -36,8 +36,8 @@ local columnSchema = {
 }
 
 function PANEL:SetSizing( width, height, previewPanelWidth )
-	self:SetWidth( math.Clamp( width, 0, ScrW() ) )
-	self:SetHeight( math.Clamp( height, 0, ScrH() ) )
+	self:SetWidth( math.Clamp( width, 0, ScrW() - 16 ) )
+	self:SetHeight( math.Clamp( height, 0, ScrH() - 16 ) )
 	self.DividerPanel:SetAnchorWidth( previewPanelWidth )
 	self:Center()
 end
