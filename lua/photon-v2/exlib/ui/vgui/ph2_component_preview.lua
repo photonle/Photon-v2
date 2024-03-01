@@ -56,9 +56,65 @@ function PANEL:SetEntry( entryName )
 		-- modelPanel:SetSize( 200, 200 )
 		modelPanel:SetModel( entry.Model )
 
-		function modelPanel:LayoutEntity()
+		function modelPanel:FirstPersonControls()
 
+			local x, y = self:CaptureMouse()
+		
+			local scale = self:GetFOV() / 180
+			x = x * -0.5 * scale
+			y = y * 0.5 * scale
+		
+			if ( self.MouseKey == MOUSE_LEFT ) then
+		
+				if ( input.IsShiftDown() ) then y = 0 end
+		
+				self.aLookAngle = self.aLookAngle + Angle( y * 1, x * 1, 0 )
+		
+				self.vCamPos = self.OrbitPoint - self.aLookAngle:Forward() * self.OrbitDistance
+		
+				return
+			end
+		
+			-- Look around
+			self.aLookAngle = self.aLookAngle + Angle( y, x, 0 )
+			self.aLookAngle.p = math.Clamp( self.aLookAngle.p, -90, 90 )
+		
+			local Movement = vector_origin
+		
+			if ( IsKeyBindDown( "+forward" ) or input.IsKeyDown( KEY_UP ) ) then
+				Movement = Movement + self.aLookAngle:Forward()
+			end
+		
+			if ( IsKeyBindDown( "+back" ) or input.IsKeyDown( KEY_DOWN ) ) then
+				Movement = Movement - self.aLookAngle:Forward()
+			end
+		
+			if ( IsKeyBindDown( "+moveleft" ) or input.IsKeyDown( KEY_LEFT ) ) then
+				Movement = Movement - self.aLookAngle:Right()
+			end
+		
+			if ( IsKeyBindDown( "+moveright" ) or input.IsKeyDown( KEY_RIGHT ) ) then
+				Movement = Movement + self.aLookAngle:Right()
+			end
+		
+			if ( IsKeyBindDown( "+jump" ) or input.IsKeyDown( KEY_SPACE ) ) then
+				Movement = Movement + vector_up
+			end
+		
+			if ( IsKeyBindDown( "+duck" ) or input.IsKeyDown( KEY_LCONTROL ) ) then
+				Movement = Movement - vector_up
+			end
+		
+			local speed = 0.5
+			if ( input.IsShiftDown() ) then speed = 4.0 end
+		
+			self.vCamPos = self.vCamPos + Movement * speed
+		
 		end
+
+		-- function modelPanel:LayoutEntity()
+
+		-- end
 		-- function modelPanel:DragMousePress( mouseCode )
 		-- 	self.PressX, self.PressY = input.GetCursorPos()
 		-- 	if ( mouseCode == MOUSE_LEFT ) then
@@ -113,42 +169,52 @@ function PANEL:SetEntry( entryName )
 	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	propertySheet:Dock( FILL )
-	propertySheet:AddSheet( "Overview", overviewTab )
+	propertySheet:AddSheet( "Component", overviewTab )
 
 	local tree = vgui.Create( "EXDTree", overviewTab )
 	tree:SetLineHeight( 22 )
 	tree:Dock( FILL )
+	
+	-- Override function because selecting a node will do nothing
+	function tree:SetSelectedItem( node ) end
+
+	if ( entry.States ) then
+		local slotsNode = tree:AddNode( "State Slots", "numeric" )
+		for i, state in ipairs( entry.States ) do
+			local stateNode = slotsNode:AddNode( state, "numeric-" .. tostring( i ) .. "-circle-outline")
+		end
+	end
 
 	if ( entry.Patterns ) then
-		local patternsNode = tree:AddNode( "Patterns" )
+		local patternsNode = tree:AddNode( "Patterns", "animation-play" )
 		for patternName, sequences in pairs( entry.Patterns ) do
-			local patternNode = patternsNode:AddNode( patternName )
+			local patternNode = patternsNode:AddNode( patternName, "play-box" )
 			for i, sequence in pairs( sequences or {} ) do
-				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ) )
+				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ), "filmstrip" )
 			end
 			-- for segmentName, sequence in 
 		end
 	end
 
-	local segmentsNode = tree:AddNode( "Sequences" )
+	local segmentsNode = tree:AddNode( "Sequences", "movie-roll" )
 	for segmentName, segment in SortedPairs( entry.Segments or {} ) do
-		local segmentNode = segmentsNode:AddNode( segmentName )
+		local segmentNode = segmentsNode:AddNode( segmentName, "film" )
 		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
-			local sequenceNode = segmentNode:AddNode( sequenceName )
+			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
 		end
 	end
 
-	local inputsNode = tree:AddNode( "Inputs" )
+	local inputsNode = tree:AddNode( "Inputs", "power-plug" )
 	for channelName, modes in pairs( entry.Inputs or {} ) do
-		local channelNode = inputsNode:AddNode( channelName )
+		local channelNode = inputsNode:AddNode( channelName, "ray-vertex" )
 		for modeName, sequences in SortedPairs( modes ) do
-			local modeNode = channelNode:AddNode( modeName )
+			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do
-					modeNode:AddNode( string.format("[%s]: %s", k, v))
+					modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
 				end
 			elseif ( isstring( sequences ) ) then
-				modeNode:AddNode( sequences )
+				modeNode:AddNode( sequences, "play-box" )
 			end
 		end
 	end

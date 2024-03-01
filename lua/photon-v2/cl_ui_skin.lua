@@ -884,16 +884,18 @@ function SKIN:PaintTreeNode( panel, w, h )
 
 	if ( not panel.m_bDrawLines ) then return end
 	
+	local lineH = panel:GetLineHeight() / 2
+
 	surface.SetDrawColor( self.Colours.Tree.Lines )
 
 	if ( panel.m_bLastChild ) then
 
-		surface.DrawRect( 9, 0, 1, 7 )
-		surface.DrawRect( 9, 7, 9, 1 )
+		surface.DrawRect( 9, 0, 1, lineH )
+		surface.DrawRect( 9, lineH, 9, 1 )
 
 	else
 		surface.DrawRect( 9, 0, 1, h )
-		surface.DrawRect( 9, 7, 9, 1 )
+		surface.DrawRect( 9, lineH, 9, 1 )
 	end
 
 	
