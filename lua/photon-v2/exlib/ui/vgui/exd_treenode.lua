@@ -30,7 +30,10 @@ function PANEL:Init()
 
 	self.Label = vgui.Create( "EXDTree_Node_Button", self )
 	self.Label:SetDragParent( self )
+
 	self.Label.DoClick = function() self:InternalDoClick() end
+	-- self.Label.DoClick = function() self:SetExpanded( !self.m_bExpanded ) end
+
 	self.Label.DoDoubleClick = function() self:InternalDoClick() end
 	self.Label.DoRightClick = function() self:InternalDoRightClick() end
 	self.Label.DragHover = function( s, t ) self:DragHover( t ) end
@@ -338,7 +341,7 @@ function PANEL:AddPanel( pPanel )
 
 end
 
-function PANEL:AddNode( strName, strIcon )
+function PANEL:AddNode( strName, strIcon, notSelectable )
 
 	self:CreateChildNodes()
 
@@ -350,7 +353,11 @@ function PANEL:AddNode( strName, strIcon )
 	pNode:SetRoot( self:GetRoot() )
 	pNode:SetIcon( strIcon )
 	pNode:SetDrawLines( !self:IsRootNode() )
-
+	
+	if ( notSelectable ) then
+		pNode.Label.DoClick = function() pNode:SetExpanded( !pNode.m_bExpanded ) end
+	end
+	
 	self:InstallDraggable( pNode )
 
 	self.ChildNodes:Add( pNode )

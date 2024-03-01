@@ -23,7 +23,7 @@ function PANEL:Init()
 	self.AddIcon = i
 
 	local l = vgui.Create("DLabel", self)
-	l:SetFont("EXUI.Button")
+	-- l:SetFont("EXUI.Button")
 	l:SetText("Add Property     ")
 	l:Dock(FILL)
 	l:SetContentAlignment(5)

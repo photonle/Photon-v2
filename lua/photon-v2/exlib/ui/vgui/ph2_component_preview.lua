@@ -165,50 +165,38 @@ function PANEL:SetEntry( entryName )
 	end
 
 	local overviewTab = vgui.Create( "DPanel", scrollPanel )
+	local modelTab = vgui.Create( "DPanel", scrollPanel )
+	-- modelTab:DockMargin( -4, -4, 0, 0 )
 
 	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	propertySheet:Dock( FILL )
 	propertySheet:AddSheet( "Component", overviewTab )
+	propertySheet:AddSheet( "Model", modelTab )
+	propertySheet:DockPadding( 0, 0, 0, 0 )
 
 	local tree = vgui.Create( "EXDTree", overviewTab )
 	tree:SetLineHeight( 22 )
 	tree:Dock( FILL )
 	
+
+
 	-- Override function because selecting a node will do nothing
 	function tree:SetSelectedItem( node ) end
 
 	if ( entry.States ) then
-		local slotsNode = tree:AddNode( "State Slots", "numeric" )
+		local slotsNode = tree:AddNode( "State Slots", "numeric", true )
 		for i, state in ipairs( entry.States ) do
 			local stateNode = slotsNode:AddNode( state, "numeric-" .. tostring( i ) .. "-circle-outline")
 		end
+		slotsNode:SetExpanded( true )
 	end
 
-	if ( entry.Patterns ) then
-		local patternsNode = tree:AddNode( "Patterns", "animation-play" )
-		for patternName, sequences in pairs( entry.Patterns ) do
-			local patternNode = patternsNode:AddNode( patternName, "play-box" )
-			for i, sequence in pairs( sequences or {} ) do
-				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ), "filmstrip" )
-			end
-			-- for segmentName, sequence in 
-		end
-	end
-
-	local segmentsNode = tree:AddNode( "Sequences", "movie-roll" )
-	for segmentName, segment in SortedPairs( entry.Segments or {} ) do
-		local segmentNode = segmentsNode:AddNode( segmentName, "film" )
-		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
-			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
-		end
-	end
-
-	local inputsNode = tree:AddNode( "Inputs", "power-plug" )
+	local inputsNode = tree:AddNode( "Inputs", "power-plug", true )
 	for channelName, modes in pairs( entry.Inputs or {} ) do
-		local channelNode = inputsNode:AddNode( channelName, "ray-vertex" )
+		local channelNode = inputsNode:AddNode( channelName, "ray-vertex", true )
 		for modeName, sequences in SortedPairs( modes ) do
-			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
+			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline", true )
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do
 					modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
@@ -217,7 +205,36 @@ function PANEL:SetEntry( entryName )
 				modeNode:AddNode( sequences, "play-box" )
 			end
 		end
+		-- channelNode:SetExpanded( true )
 	end
+	-- inputsNode:SetExpanded( true )
+
+	if ( entry.Patterns ) then
+		local patternsNode = tree:AddNode( "Patterns", "animation-play", true )
+		for patternName, sequences in pairs( entry.Patterns ) do
+			local patternNode = patternsNode:AddNode( patternName, "play-box", true )
+			for i, sequence in pairs( sequences or {} ) do
+				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ), "filmstrip" )
+			end
+			-- for segmentName, sequence in 
+		end
+		-- patternsNode:SetExpanded( true )
+	end
+
+	local segmentsNode = tree:AddNode( "Sequences", "movie-roll", true )
+	for segmentName, segment in SortedPairs( entry.Segments or {} ) do
+		local segmentNode = segmentsNode:AddNode( segmentName, "film", true )
+		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
+			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
+		end
+	end
+	-- segmentsNode:SetExpanded( true )
+
+
+	-- Model Tab
+	-- local pform = vgui.Create( "EXPForm", modelTab )
+	-- pform:AddEXPControl( "Test", "EXDPField", "Test String", "Value", "Main" )
+	-- pform:AddEXPControl( "Test1", "EXDPAngle", "Test String", Angle(1,1,1), "Main" )
 end
 
 function PANEL:Setup()

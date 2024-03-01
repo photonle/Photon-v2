@@ -92,7 +92,7 @@ function PANEL:AddCategory(category, label)
 		self.Categories[category]:Remove()
 	end
 	local c = vgui.Create("DCollapsibleCategory", self.m_Form)
-	c.Header:SetFont("EXUI.PropertyHeader")
+	-- c.Header:SetFont("EXUI.PropertyHeader")
 	c:DockMargin(0, 0, 0, 0)
 	c:SetLabel(string.upper(label or category))
 	c:Dock(TOP)
