@@ -97,7 +97,7 @@ function PANEL:SetEntry( entryName )
 		
 		end
 
-		function modelPanel:SetComponent( componentId )
+		function modelPanel:SetComponent( componentId, static )
 			if ( IsValid( PHOTON2_PREVIEW_COMPONENT ) ) then
 				PHOTON2_PREVIEW_COMPONENT:Remove()
 			end
@@ -112,9 +112,12 @@ function PANEL:SetEntry( entryName )
 			-- ent:SetPos( Vector( 0, 0, 50 ) )
 			-- local newZoomX = ( 10 * ent.Preview.Zoom ) - 70
 			-- self:SetCamPos( Vector( newZoomX, 0,  20 ) )
-			local newZ = ent.Preview.Position.Z + 20
-			self:SetLookAng( Angle( newZ, 0, 0 ) )
-			self:SetCamPos( Vector( -60, 0, newZ ) )
+			if ( not static ) then
+				local newZ = ent.Preview.Position.Z + 20
+				self:SetLookAng( Angle( newZ, 0, 0 ) )
+				self:SetCamPos( Vector( -60, 0, newZ ) )
+			end
+
 			hook.Add( "Think", ent, function() 
 				ent:ManualThink()
 				-- ent:SetupBones()
@@ -341,7 +344,7 @@ function PANEL:SetEntry( entryName )
 					function modeNode:OnNodeSelected()
 						if( modelPanel ) then
 							Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [k] = v } )
-							modelPanel:SetComponent( entryName )
+							modelPanel:SetComponent( entryName, true )
 							modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 						end
 					end
@@ -351,7 +354,7 @@ function PANEL:SetEntry( entryName )
 				function modeNode:OnNodeSelected()
 					if( modelPanel ) then
 						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, sequences )
-						modelPanel:SetComponent( entryName )
+						modelPanel:SetComponent( entryName, trued )
 						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 					end
 				end
@@ -370,7 +373,7 @@ function PANEL:SetEntry( entryName )
 				function sequenceNode:OnNodeSelected()
 					if( modelPanel ) then
 						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [sequence[1]] = sequence[2] } )
-						modelPanel:SetComponent( entryName )
+						modelPanel:SetComponent( entryName, true )
 						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 					end
 				end
@@ -378,7 +381,7 @@ function PANEL:SetEntry( entryName )
 			function patternNode:OnNodeSelected()
 				if( modelPanel ) then
 					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, patternName )
-					modelPanel:SetComponent( entryName )
+					modelPanel:SetComponent( entryName, true )
 					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 				end
 			end
