@@ -12,6 +12,12 @@ COMPONENT.Title = [[Federal Signal Vision SLR]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_visionslr.mdl"
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 0.9
+}
+
 COMPONENT.Templates = {
 	["Bone"] = {
 		Pod = {

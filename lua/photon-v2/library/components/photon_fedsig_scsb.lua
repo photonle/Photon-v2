@@ -11,6 +11,12 @@ COMPONENT.Title = [[Federal Signal Smart Controller Series B]]
 COMPONENT.Category = "Controller"
 COMPONENT.Model = "models/photon_ex/controllers/fedsig_scsb.mdl"
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 45, 180, 0 ),
+	Zoom = 3.5
+}
+
 COMPONENT.Templates = {
 	["Sub"] = {
 		["Indicators"] = {

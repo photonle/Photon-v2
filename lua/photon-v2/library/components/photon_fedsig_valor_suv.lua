@@ -20,6 +20,12 @@ COMPONENT.States = {
 	[5] = "A",
 }
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
+}
+
 local s = 1.5
 
 COMPONENT.Templates = {

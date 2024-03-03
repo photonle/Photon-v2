@@ -17,6 +17,12 @@ COMPONENT.States = {
 	[2] = "B"
 }
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 1
+}
+
 local domeParameters = { 
 	Shader = "VertexLitGeneric",
 	["$basetexture"] 			= "sentry/props/nforce/top",

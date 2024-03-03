@@ -126,6 +126,7 @@ function PANEL:SetupMain()
 
 	local files = vgui.Create( "EXDListView", browserPanel )
 	files:Dock( FILL )
+	files:SetDataHeight( 20 )
 
 	for i, schema in ipairs( self.ColumnSchema ) do
 		local column = files:AddColumn( schema.Label )
@@ -176,6 +177,7 @@ function PANEL:PopulateEntries()
 	files:Clear()
 
 	for name, entry in pairs( self.CurrentLibrary.Repository ) do
+		entry = self.CurrentLibrary:GetInherited( name )
 		
 		if ( self.SearchFilter ) then
 			local column, propertyValue
@@ -380,7 +382,7 @@ end
 
 function PANEL:SetSelected( entryName )
 	self.SelectedEntryName = entryName
-	local entry = self.CurrentLibrary:Get( entryName )
+	local entry = self.CurrentLibrary:GetInherited( entryName )
 	self.SelectedEntry = entry
 	self.FileNameTextBox:SetText( entryName )
 	if ( self.PreviewPanel ) then
@@ -433,7 +435,7 @@ function PANEL:Setup( library, mode )
 		title = "Select "
 	elseif ( mode == "BROWSE" ) then
 		title = "Browse "
-		suffix = "Components"
+		suffix = library
 	end
 
 	self.FileMode = mode
@@ -453,6 +455,10 @@ function PANEL:Setup( library, mode )
 	if ( self.UI.DefaultFilter ) then
 		self:SetSourceFilter( self.UI.DefaultFilter )
 	end
+
+	hook.Add( "Photon2:" .. library .. "Changed", self, function()
+		self:PopulateEntries()
+	end)
 end
 
 -- Sets the file selection text box to the given value and selects the text.

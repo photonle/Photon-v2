@@ -21,6 +21,7 @@ local printf = Photon2.Debug.PrintF
 ---@field BoneParent? number|string Model bone to attach the light to (if supported).
 ---@field RequiredBodyGroups? table<number | string, number | table<number>>
 ---@field HasBodyGroupRequirements boolean
+---@field UIMode? boolean
 --@field Initialize fun(self: PhotonElement, id: number, component: PhotonLightingComponent): PhotonElement
 --@field CheckBodyGroupRequirements fun(self: PhotonElement): boolean
 --@field OnStateChange fun(self: PhotonElement)
@@ -41,7 +42,8 @@ function Light:Initialize( id, component )
 		Component = component,
 		Parent = component.Entity,
 		InputActions = {},
-		SortedInputActions = {}
+		SortedInputActions = {},
+		UIMode = component.UIMode
 	}
 
 	if CLIENT then

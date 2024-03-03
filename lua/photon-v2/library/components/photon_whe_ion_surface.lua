@@ -7,12 +7,19 @@ COMPONENT.WorkshopRequirements = {
 }
 
 COMPONENT.Author = "Photon"
+COMPONENT.Title = "Whelen Ion (Surface)"
 COMPONENT.Credits = {
 	Model = "Mighty/SGM/Anemolis",
 	Code = "Schmal"
 }
 COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/anemolis/props/anemolis_surfaceion.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 3
+}
 
 local size = 6
 
@@ -78,6 +85,7 @@ COMPONENT.Inputs = {
 Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
+COMPONENT.Title = "Whelen Ion (Surface Bracket)"
 COMPONENT.Name = "photon_whe_ion_surface_bracket"
 COMPONENT.Base = "photon_whe_ion_surface"
 COMPONENT.Model = "models/anemolis/props/anemolis_lsurfaceion.mdl"

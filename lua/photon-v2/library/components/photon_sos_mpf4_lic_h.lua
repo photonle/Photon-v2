@@ -13,6 +13,12 @@ COMPONENT.Title = [[SoundOff Signal mpower Fascia 4" - Horizontal License Mount]
 COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_horizontal.mdl"
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
+}
+
 COMPONENT.States = {
 	[1] = "R",
 	[2] = "B"

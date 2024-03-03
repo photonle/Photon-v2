@@ -12,6 +12,12 @@ COMPONENT.Title = [[Federal Signal x-Stream Duo]]
 COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/schmal/fedsig_xstream_duo.mdl"
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 2
+}
+
 COMPONENT.States = { "R", "B", "W" }
 
 COMPONENT.Templates = {
@@ -37,7 +43,9 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	["Light"] = {
 		Frames = {
-			[1] = "1 2"
+			[1] = "1 2",
+			[2] = "1",
+			[3] = "2"
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -47,7 +55,8 @@ COMPONENT.Segments = {
 			["FLASH1"] = { 1 },
 			["FLASH1:A"] = { 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
 			["FLASH1:B"] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1 },
-			["CRUISE"] = { 1 }
+			["CRUISE"] = { 1 },
+			["ALT"] = sequence():Alternate( 2, 3, 8 )
 		}
 	}
 }
@@ -56,6 +65,12 @@ COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			Light = "ON"
+		},
+		["MODE2"] = {
+			Light = "ON"
+		},
+		["MODE3"] = {
+			Light = "ALT"
 		},
 	},
 	["Emergency.Marker"] = {
