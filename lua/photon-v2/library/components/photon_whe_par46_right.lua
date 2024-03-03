@@ -1,7 +1,6 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
-COMPONENT.Title = "Whelen PAR46 LED Spotlight (Right)"
 COMPONENT.Base = "photon_whe_par46_left"
 COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_right_up.mdl"

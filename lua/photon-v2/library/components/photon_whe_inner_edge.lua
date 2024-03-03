@@ -7,15 +7,9 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.Title = "Whelen Inner Edge (Left)"
+COMPONENT.Title = "Whelen Inner Edge"
 COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/supermighty/photon/inner_edge_driver.mdl"
-
-COMPONENT.Preview = {
-	Position = Vector(),
-	Angles = Angle( 0, 180, 0 ),
-	Zoom = 1.2
-}
 
 COMPONENT.States = {
 	[1] = "R",
@@ -124,7 +118,6 @@ COMPONENT.Inputs = {
 Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
-COMPONENT.Title = "Whelen Inner Edge (Right)"
 COMPONENT.Name = "photon_whe_inner_edge_right"
 COMPONENT.Base = "photon_whe_inner_edge_left"
 COMPONENT.Model = "models/supermighty/photon/inner_edge_passenger.mdl"

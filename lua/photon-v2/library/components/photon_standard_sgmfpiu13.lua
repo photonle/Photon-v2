@@ -1,7 +1,6 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent() --[[@as PhotonLibraryComponent]]
 
-COMPONENT.Title = "Ford Explorer (2013)"
 COMPONENT.Author = "Photon"
 COMPONENT.Credits = {
 	Vehicle = "SGM",

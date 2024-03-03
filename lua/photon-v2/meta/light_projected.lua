@@ -135,7 +135,6 @@ function Light:OnStateChange( state )
 end
 
 function Light:Activate()
-	if ( self.UIMode ) then return end
 	if not PhotonElement.Activate( self ) then return end
 	self.Deactivate = false
 	if ( self.IsActivated ) then return end

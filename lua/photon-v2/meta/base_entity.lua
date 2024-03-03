@@ -4,7 +4,6 @@ NAME = "PhotonBaseEntity"
 ---@class PhotonBaseEntity : photon_entity
 ---@field Entity Entity
 ---@field IsVirtual? boolean
----@field UIMode? boolean
 ---@field Model? string
 ---@field PhotonController PhotonController
 ---@field BodyGroups? table
@@ -42,25 +41,15 @@ ENT.BodyGroups = {}
 ENT.PoseParameters = {}
 ENT.Bones = {}
 
--- Parameters used when showing the entity
--- in a UI preview window.
-ENT.Preview = {
-	Position = Vector(),
-	Angles = Angle( 0.00001, 0.00001, 0.00001 ),
-	Zoom = 1
-}
-
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
 ---@param controller PhotonController
----@param uiMode? boolean If the entity is intended to be rendered in a UI element.
 ---@return PhotonBaseEntity
-function ENT:Initialize( ent, controller, uiMode )
+function ENT:Initialize( ent, controller )
 	---@type PhotonBaseEntity
 	local photonEnt = {
 		Entity = ent,
-		PhotonController = controller,
-		UIMode = uiMode
+		PhotonController = controller
 	}
 	setmetatable( photonEnt, { __index = self } )
 	
@@ -80,11 +69,7 @@ function ENT:Initialize( ent, controller, uiMode )
 		ent = photonEnt
 	end
 	
-	if ( IsValid( controller ) ) then
-		photonEnt.CurrentModes = controller.CurrentModes
-	else
-		photonEnt.CurrentModes = {}
-	end
+	photonEnt.CurrentModes = controller.CurrentModes
 
 	return ent --[[@as PhotonBaseEntity]]
 end
@@ -333,16 +318,6 @@ function ENT:CreateClientside( controller )
 	PHOTON2_ENTITY.RenderGroup = self.RenderGroup or nil
 	local ent = self:Initialize( ents.CreateClientside( "photon_entity" ) --[[@as photon_entity]], controller )
 	PHOTON2_ENTITY.RenderGroup = nil
-	ent:Setup()
-	return ent
-end
-
-function ENT:CreateForUI()
-	PHOTON2_ENTITY.RenderGroup = RENDERGROUP_OTHER
-	local ent = self:Initialize( ents.CreateClientside( "photon_entity" ), nil, true )
-	PHOTON2_ENTITY.RenderGroup = nil
-	ent:SetNoDraw( true )
-	ent:SetIK( false )
 	ent:Setup()
 	return ent
 end

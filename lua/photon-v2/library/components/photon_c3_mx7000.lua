@@ -15,12 +15,6 @@ COMPONENT.Title = [[Code 3 MX7000]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
 
-COMPONENT.Preview = {
-	Position = Vector( 0, 0, -3 ),
-	Angles = Angle( 0, -90, 0 ),
-	Zoom = 0.7
-}
-
 COMPONENT.SubMaterials = {
 	[0] = "photon/textures/mx7000_glass_colored",
 	[1] = "photon/textures/mx7000_glass_outer",

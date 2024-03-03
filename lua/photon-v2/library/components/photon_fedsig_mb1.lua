@@ -12,12 +12,6 @@ COMPONENT.Title = [[Federal Signal MB1]]
 COMPONENT.Category = "Matrix"
 COMPONENT.Model = "models/noble/fedsig_mb1.mdl"
 
-COMPONENT.Preview = {
-	Position = Vector( 0, 0, -3),
-	Angles = Angle( 0, -90, 0 ),
-	Zoom = 1.4
-}
-
 COMPONENT.Templates = {
 	["2D"] = {
 		POLICE_ANIM = {

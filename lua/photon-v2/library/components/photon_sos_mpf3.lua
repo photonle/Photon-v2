@@ -13,12 +13,6 @@ COMPONENT.Title = [[SoundOff Signal mpower Fascia 3"]]
 COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/sentry/props/soundofffascia_small.mdl"
 
-COMPONENT.Preview = {
-	Position = Vector(),
-	Angles = Angle( 0, 180, 0 ),
-	Zoom = 4
-}
-
 COMPONENT.Templates = {}
 
 COMPONENT.Elements = {}

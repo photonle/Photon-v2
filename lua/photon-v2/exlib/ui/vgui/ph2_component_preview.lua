@@ -18,16 +18,16 @@ end
 function PANEL:SetEntry( entryName )
 	self:Clear()
 
-
-
 	local this = self
 
 	local scrollPanel = vgui.Create( "DPanel", self )
 	scrollPanel:SetPaintBackground( false )
 	scrollPanel:Dock( FILL )
 
+	print("Loading: " .. tostring(entryName))
 	self.CurrentEntryName = entryName
 	self.CurrentEntry = Photon2.Library.Components:GetInherited( entryName )
+	print("loaded: " .. tostring( self.CurrentEntry.Title ) )
 
 	local entry = self.CurrentEntry
 
@@ -37,95 +37,24 @@ function PANEL:SetEntry( entryName )
 	titleLabel:SetFont( "PhotonUI.Header")
 	titleLabel:SetText( entry.Title or "(Untitled)" )
 	
-	local activeComponent
+	local nameLabel = vgui.Create( "DLabel", scrollPanel )
+	nameLabel:Dock( TOP )
+	-- nameLabel:SetHeight( 60 )
+	nameLabel:SetFont( "PhotonUI.Mono" )
+	nameLabel:SetText( entryName )
 
 	if ( entry.Model ) then
 		local modelPanel = vgui.Create( "DAdjustableModelPanel", scrollPanel )
 		modelPanel:Dock( TOP )
 		modelPanel:SetTall( 100 )
-		modelPanel:SetCamPos( Vector( -60, 0, 20 ) )
-		modelPanel:SetLookAng( Angle( 20, 0, 0 ) )
-		modelPanel:SetFOV( 60 )
+		modelPanel:SetCamPos( Vector( -50, 0, 5 ) )
+		modelPanel:SetLookAng( Angle( 5, 0, 0 ) )
+		modelPanel:SetFOV( 50 )
 		modelPanel:SetAnimated( false )
-
-		
 		-- modelPanel:SetFOV( this.FOV or 45 )
 		-- modelPanel.Angles = angle_zero
 		-- modelPanel:SetSize( 200, 200 )
-		-- modelPanel:SetModel( entry.Model )
-		function modelPanel:Paint( w, h )
-
-			if ( !IsValid( self.Entity ) ) then return end
-		
-			local x, y = self:LocalToScreen( 0, 0 )
-		
-			self:LayoutEntity( self.Entity )
-		
-			local ang = self.aLookAngle
-			if ( !ang ) then
-				ang = ( self.vLookatPos - self.vCamPos ):Angle()
-			end
-		
-			cam.Start3D( self.vCamPos, ang, self.fFOV, x, y, w, h, 5, self.FarZ )
-		
-			render.SuppressEngineLighting( true )
-			render.SetLightingOrigin( self.Entity:GetPos() )
-			render.ResetModelLighting( self.colAmbientLight.r / 255, self.colAmbientLight.g / 255, self.colAmbientLight.b / 255 )
-			render.SetColorModulation( self.colColor.r / 255, self.colColor.g / 255, self.colColor.b / 255 )
-			render.SetBlend( ( self:GetAlpha() / 255 ) * ( self.colColor.a / 255 ) ) -- * surface.GetAlphaMultiplier()
-		
-			for i = 0, 6 do
-				local col = self.DirectionalLight[ i ]
-				if ( col ) then
-					render.SetModelLighting( i, col.r / 255, col.g / 255, col.b / 255 )
-				end
-			end
-			
-			self.Entity:SetupBones()
-			self:DrawModel()
-			
-			Photon2.RenderLightMesh.OnPreRender()
-			Photon2.RenderLightMesh.DrawUI()
-			Photon2.RenderLight2D.OnPreRender()
-			Photon2.RenderLight2D.DrawUI()
-			
-			render.SuppressEngineLighting( false )
-			cam.End3D()
-		
-			self.LastPaint = RealTime()
-		
-		end
-
-		function modelPanel:SetComponent( componentId )
-			if ( IsValid( PHOTON2_PREVIEW_COMPONENT ) ) then
-				PHOTON2_PREVIEW_COMPONENT:Remove()
-			end
-			local component = Photon2.GetComponent( componentId )
-			local ent = component:CreateForUI()
-			ent:SetScale( ent.Preview.Zoom )
-			self.Entity = ent
-			PHOTON2_PREVIEW_COMPONENT = ent
-			ent:SetChannelMode( "Emergency.Warning", "MODE3" )
-			-- ent:SetMoveType( MOVETYPE_NONE )
-			-- ent:SetAngles( Angle( 0.0001, 0.0001, 0.0001 ))
-			-- ent:SetPos( Vector( 0, 0, 50 ) )
-			-- local newZoomX = ( 10 * ent.Preview.Zoom ) - 70
-			-- self:SetCamPos( Vector( newZoomX, 0,  20 ) )
-			local newZ = ent.Preview.Position.Z + 20
-			self:SetLookAng( Angle( newZ, 0, 0 ) )
-			self:SetCamPos( Vector( -60, 0, newZ ) )
-			hook.Add( "Think", ent, function() 
-				ent:ManualThink()
-				-- ent:SetupBones()
-				-- ent:SetPropertiesFromEquipment( component )
-			end)
-			hook.Add( "Photon2:ComponentReloaded", self, function( hookName, id )
-				if ( id == entryName or component.Ancestors[id] ) then
-					this:SetEntry( entryName )
-				end
-			end )
-			activeComponent = ent
-		end
+		modelPanel:SetModel( entry.Model )
 
 		function modelPanel:FirstPersonControls()
 
@@ -183,13 +112,9 @@ function PANEL:SetEntry( entryName )
 		
 		end
 
-		modelPanel:SetComponent( entryName )
+		-- function modelPanel:LayoutEntity()
 
-
-		function modelPanel:LayoutEntity()
-			self.Entity:SetPos( self.Entity.Preview.Position )
-			self.Entity:SetAngles( self.Entity.Preview.Angles )
-		end
+		-- end
 		-- function modelPanel:DragMousePress( mouseCode )
 		-- 	self.PressX, self.PressY = input.GetCursorPos()
 		-- 	if ( mouseCode == MOUSE_LEFT ) then
@@ -240,16 +165,14 @@ function PANEL:SetEntry( entryName )
 	end
 
 	local overviewTab = vgui.Create( "DPanel", scrollPanel )
-	overviewTab:SetPaintBackground( false )
-
-	-- local modelTab = vgui.Create( "DPanel", scrollPanel )
+	local modelTab = vgui.Create( "DPanel", scrollPanel )
 	-- modelTab:DockMargin( -4, -4, 0, 0 )
 
 	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	propertySheet:Dock( FILL )
 	propertySheet:AddSheet( "Component", overviewTab )
-	-- propertySheet:AddSheet( "Model", modelTab )
+	propertySheet:AddSheet( "Model", modelTab )
 	propertySheet:DockPadding( 0, 0, 0, 0 )
 
 	local tree = vgui.Create( "EXDTree", overviewTab )
@@ -257,57 +180,9 @@ function PANEL:SetEntry( entryName )
 	tree:Dock( FILL )
 	
 
-	local componentInfoPanel = vgui.Create( "DPanel", overviewTab )
-	componentInfoPanel:Dock( TOP )
-	componentInfoPanel:SetHeight( 48 )
-	componentInfoPanel:DockMargin( 0, 0, 0, 4 )
-	componentInfoPanel:DockPadding( 8, 4, 8, 4 )
-	componentInfoPanel:SetCursor( "hand" )
-
-	local nameLabel = vgui.Create( "DLabel", componentInfoPanel )
-	nameLabel:Dock( TOP )
-	-- nameLabel:SetHeight( 60 )
-	nameLabel:SetFont( "PhotonUI.Mono" )
-	nameLabel:SetText( entryName )
-
-	local authorLabel = vgui.Create( "DLabel", componentInfoPanel )
-	authorLabel:Dock( TOP )
-	local function setAuthorLabelText()
-		local authorText = "Author: " .. ( entry.Author or "Unknown" )
-		if ( entry.Credits ) then
-			for credit, name in pairs( entry.Credits ) do
-				authorText = authorText .. " | " .. tostring( credit ) .. ": " .. tostring( name )
-			end
-		end
-		authorLabel:SetText( authorText )
-	end
-	setAuthorLabelText()
-
-	function componentInfoPanel:OnCursorEntered()
-		authorLabel:SetText( "Click to copy component name..." )
-	end
-	
-	function componentInfoPanel:OnCursorExited()
-		setAuthorLabelText()
-	end
-	
-	function componentInfoPanel:OnMousePressed( keyCode )
-		if ( keyCode == MOUSE_LEFT ) then
-			authorLabel:SetText( "" )
-			SetClipboardText( entryName )
-		end
-	end
-
-	function componentInfoPanel:OnMouseReleased( keyCode )
-		if ( keyCode == MOUSE_LEFT ) then
-			authorLabel:SetText( "Copied." )
-		end
-	end
 
 	-- Override function because selecting a node will do nothing
-	-- function tree:SetSelectedItem( node ) 
-	-- 	-- if ( not node.Selectable ) then return end
-	-- end
+	function tree:SetSelectedItem( node ) end
 
 	if ( entry.States ) then
 		local slotsNode = tree:AddNode( "State Slots", "numeric", true )
@@ -321,18 +196,7 @@ function PANEL:SetEntry( entryName )
 	for channelName, modes in pairs( entry.Inputs or {} ) do
 		local channelNode = inputsNode:AddNode( channelName, "ray-vertex", true )
 		for modeName, sequences in SortedPairs( modes ) do
-			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
-			function modeNode:OnNodeSelected()
-				if ( activeComponent.CurrentModes[channelName] ~= modeName ) then
-					if ( activeComponent ) then
-						activeComponent:SetChannelMode( channelName, modeName, true )
-					end
-				else
-					if ( activeComponent ) then
-						activeComponent:ClearAllModes()
-					end
-				end
-			end
+			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline", true )
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do
 					modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
@@ -350,7 +214,7 @@ function PANEL:SetEntry( entryName )
 		for patternName, sequences in pairs( entry.Patterns ) do
 			local patternNode = patternsNode:AddNode( patternName, "play-box", true )
 			for i, sequence in pairs( sequences or {} ) do
-				patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
+				patternNode:AddNode( string.format("[%s]: %s", sequence[1], sequence[2] ), "filmstrip" )
 			end
 			-- for segmentName, sequence in 
 		end

@@ -29,7 +29,6 @@ local print = Photon2.Debug.Print
 ---@field AcceptControllerTiming boolean (Internal)
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
 ---@field VirtualOutputs table
----@field Title string
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -512,23 +511,17 @@ end
 -- to a Photon Controller and component entity.
 ---@param ent photon_entity
 ---@param controller PhotonController
----@param uiMode? boolean
 ---@return PhotonLightingComponent
-function Component:Initialize( ent, controller, uiMode )
+function Component:Initialize( ent, controller )
 	-- Calls the base constructor but passes LightingComponent as "self"
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
-	local component = PhotonBaseEntity.Initialize( self, ent, controller, uiMode ) --[[@as PhotonLightingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
 
-	if ( IsValid( controller ) ) then
-		if ( self.UseControllerModes ) then
-			component.CurrentModes = controller.CurrentModes
-		else
-			component.CurrentModes = table.Copy( controller.CurrentModes )
-		end
+	if ( self.UseControllerModes ) then
+		component.CurrentModes = controller.CurrentModes
 	else
-		self.UseControllerModes = false
-		component.CurrentModes = {}
+		component.CurrentModes = table.Copy( controller.CurrentModes )
 	end
 
 	component.Elements = {}
@@ -611,20 +604,14 @@ function Component:ApplyModeUpdate()
 		local sequence = segment:ApplyModeUpdate()
 		if ( sequence and sequence.AcceptControllerPulse ) then
 			acceptControllerPulse = true
-			if ( IsValid( self.PhotonController ) ) then
-				self.PhotonController.RebuildPulseComponents = true
-			end
+			self.PhotonController.RebuildPulseComponents = true
 		end
 	end
 
 	self.AcceptControllerPulse = acceptControllerPulse
 
 	-- self:UpdateSegmentLightControl()
-	if ( self.PhotonController ) then
-		self:FrameTick( true )
-	else
-		self:IndependentFrameTick( true )
-	end
+	self:FrameTick( true )
 	-- print("\t\tVirtual Outputs table:")
 	-- PrintTable( virtualOutputs )
 	-- print("\t\tInput table:")
@@ -632,36 +619,11 @@ function Component:ApplyModeUpdate()
 	-- print("=======================================================")
 end
 
-function Component:ManualThink()
-	self:Pulse()
-	self.LastFrameTick = self.LastFrameTick or CurTime()
-	
-	local frameDuration = 1/24
-
-	if ( CurTime() >= self.LastFrameTick + frameDuration ) then
-		self:IndependentFrameTick()
-		self.LastFrameTick = self.LastFrameTick + frameDuration
-	end
-end
-
--- Developer function that turns all active modes to OFF.
-function Component:ClearAllModes()
-	for thisChannel, thisMode in pairs( self.CurrentModes ) do
-		self.CurrentModes[thisChannel] = "OFF"
-	end
-	self:ApplyModeUpdate()
-end
-
-function Component:SetChannelMode( channel, new, exclusive )
+function Component:SetChannelMode( channel, new, old )
 	
 	-- printf( "Component received mode change notification for [%s] => %s", channel, new )
 	
 	if ( not self.UseControllerModes ) then
-		if ( exclusive ) then
-			for thisChannel, thisMode in pairs( self.CurrentModes ) do
-				self.CurrentModes[thisChannel] = "OFF"
-			end
-		end
 		self.CurrentModes[channel] = new
 	end
 
@@ -698,27 +660,8 @@ function Component:RemoveActiveSequence( segmentName, sequence)
 	self.ActiveDependentSequences[sequence] = nil
 end
 
-function Component:IndependentFrameTick( all )
-	if ( not self.FrameIndex ) then self.FrameIndex = 0 end
-	self.FrameIndex = self.FrameIndex + 1
-
-	if ( all ) then
-		for sequence, _ in pairs( self.ActiveSequences ) do
-			sequence:IncrementFrame( self.FrameIndex, true )
-		end
-	else
-		for sequence, _ in pairs( self.ActiveDependentSequences ) do
-			sequence:IncrementFrame( self.FrameIndex, false )
-		end
-	end
-	
-
-	for i=1, #self.Elements do
-		self.Elements[i]:UpdateState()
-	end
-end
-
 function Component:FrameTick( all )
+	
 	-- for segmentName, segment in pairs( self.Segments ) do 
 	-- 	segment:IncrementFrame( self.PhotonController.Frame )
 	-- end

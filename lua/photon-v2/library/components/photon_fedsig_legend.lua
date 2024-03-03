@@ -13,12 +13,6 @@ COMPONENT.Title = [[Federal Signal Legend (45")]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_legend_45in.mdl"
 
-COMPONENT.Preview = {
-	Position = Vector(),
-	Angles = Angle( 0, 180, 0 ),
-	Zoom = 1
-}
-
 COMPONENT.Templates = {
 	["2D"] = {
 		Main = {

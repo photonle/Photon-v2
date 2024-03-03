@@ -254,7 +254,6 @@ local components = {
 	PreRegister = function( self, data )
 		-- Required for backwards compatibility
 		data.Title = data.Title or data.PrintName
-		PHOTON_LIBRARY_COMPONENT = nil
 	end,
 	PostRegister = function( self, name )
 		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
@@ -288,6 +287,12 @@ local components = {
 				Label = "Title",
 				Property = "Title",
 				Search = true
+			},
+			{
+				Label = "Author",
+				Property = "Author",
+				Search = true,
+				MaxWidth = 96
 			},
 			{
 				Label = "Source",

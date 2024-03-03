@@ -9,15 +9,9 @@ COMPONENT.Credits = {
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.Title = [[Whelen PAR46 LED Spotlight (Left)]]
+COMPONENT.Title = [[Whelen PAR46 LED Spotlight"]]
 COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_left_up.mdl"
-
-COMPONENT.Preview = {
-	Position = Vector(),
-	Angles = Angle( 0, 90, 0 ),
-	Zoom = 1
-}
 
 local downSpeed = 100
 local upSpeed = 400
