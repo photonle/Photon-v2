@@ -13,7 +13,11 @@ COMPONENT.Title = [[Whelen Liberty (54")]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/supermighty/whelen_liberty_ii_large.mdl"
 
- 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
+}
 
 COMPONENT.Templates = {
 	["2D"] = {

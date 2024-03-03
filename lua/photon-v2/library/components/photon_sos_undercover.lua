@@ -12,6 +12,12 @@ COMPONENT.Title = [[SoundOff Signal Universal Undercover]]
 COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 0, 0 ),
+	Zoom = 2
+}
+
 COMPONENT.States = { "R", "B", "W" }
 
 COMPONENT.Templates = {

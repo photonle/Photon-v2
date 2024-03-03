@@ -3,6 +3,7 @@
 	"$basetexture" "schmal/photon/fedsig_visionslr/pod_emis"
 	"$translucent" "1"
 	"$nocull" "1"
+	"$additive" "0"
 }
 
 

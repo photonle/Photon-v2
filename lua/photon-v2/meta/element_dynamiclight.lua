@@ -83,6 +83,7 @@ function Element:OnStateChange( state )
 end
 
 function Element:Activate()
+	if ( self.UIMode ) then return end
 	if not PhotonElement.Activate( self ) then return end
 	-- ErrorNoHalt("dlight activate")
 	self.Deactivate = false

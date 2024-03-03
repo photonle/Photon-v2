@@ -28,7 +28,7 @@ function Photon2.RenderLightMesh.DrawBloom()
 	for i=1, #activeLights do
 		light = activeLights[i]
 		-- if ( light.CurrentStateId == "OFF" ) then print("light is off") end
-		if ( not light or ( light.CurrentStateId == "OFF" ) ) then continue end
+		if ( not light or ( light.CurrentStateId == "OFF" ) or ( light.UIMode ) ) then continue end
 		cam.PushModelMatrix( light.Matrix, true )
 		render.SetMaterial( light.BloomMaterial --[[@as IMaterial]] )
 		-- light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", Vector(1, 0, 0) )
@@ -47,7 +47,7 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 	local activeLights = this.Active
 		for i=1, #activeLights do
 			light = activeLights[i]
-			if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) ) then continue end
+			if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) or ( light.UIMode ) ) then continue end
 			-- light.Matrix:Scale(Vector(1.5,1.5,1.5))
 			
 			cam.PushModelMatrix( light.Matrix, true )
@@ -63,6 +63,9 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			else
 				light.DrawMaterial--[[@as IMaterial]]:SetFloat( "$alpha", 1 )
 			end
+
+			light.Mesh:Draw()
+
 			-- light.DrawMaterial--[[@as IMaterial]]:SetInt( "$alpha", light.Intensity )
 			-- local cMatrix = Matrix({{512, 512, 512, 512}, {512, 512, 512, 512}, {512,512,512,512}, {512,512,512,512}})
 			-- cMatrix:Translate(Vector(1024, 1024, 0))
@@ -71,8 +74,34 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			-- glowTest:SetString( "$color2", "{255 512 512}")
 			-- light.DrawMaterial:SetVector( "$color2", Vector(1, 5, 1))
 			-- light.DrawMaterial:SetMatrix( "$color2", cMatrix )
-				light.Mesh:Draw()
 			cam.PopModelMatrix()
 		end
 end
 hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderLightMesh", Photon2.RenderLightMesh.Render )
+
+function Photon2.RenderLightMesh.DrawUI()
+	local activeLights = this.Active
+	for i=1, #activeLights do
+		light = activeLights[i]
+		if ( not light or ( light.CurrentStateId == "OFF" ) or ( not light.EnableDraw ) or ( not light.UIMode ) ) then continue end
+		-- light.Matrix:Scale(Vector(1.5,1.5,1.5))
+		render.SuppressEngineLighting( false )
+		cam.PushModelMatrix( light.Matrix, true )
+		-- render.SetMaterial( glowTest --[[@as IMaterial]] )
+		render.SetMaterial( light.DrawMaterial --[[@as IMaterial]] )
+		-- light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", Vector( 0, 0, 1 ) )
+		light.DrawMaterial--[[@as IMaterial]]:SetVector( "$color", light.DrawColor:GetVector() * 1.3 )
+
+		if ( light.ManipulateAlpha ) then
+			light.DrawMaterial--[[@as IMaterial]]:SetFloat( "$alpha", light.Intensity )
+		else
+			light.DrawMaterial--[[@as IMaterial]]:SetFloat( "$alpha", 1 )
+		end
+
+		-- light.DrawMaterial:SetInt( "$additive", 1 )
+		-- light.DrawMaterial:Recompute()
+
+		light.Mesh:Draw()
+		cam.PopModelMatrix()
+	end
+end

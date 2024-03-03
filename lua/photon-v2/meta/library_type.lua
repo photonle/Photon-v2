@@ -31,6 +31,7 @@ local printf = info
 ---@field HardReloadThreshold? number (Internal) Time between reloads that should trigger a hard reload.
 ---@field Signatures? string[] Table keys used as signatures for change detection.
 ---@field UI? table User interface parameters.
+---@field RefreshQueue? table<string, boolean> Stores a list of recently registered entries. (For hooks that need to know when ANY generic updates occur.)
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -47,6 +48,7 @@ function meta.New( properties )
 	result.LuaPath = luaPath .. result.Folder .. "/"
 	-- ??????
 	result.GlobalName = "PHOTON_LIBRARY_" .. string.upper( result.Singular )
+	result.RefreshQueue = {}
 
 	if ( Photon2.Index and Photon2.Index[result.Name] ) then result.Loaded = true end
 	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
@@ -212,6 +214,9 @@ function meta:LoadDedicatedLuaFile( path )
 	self.LoadingDedicatedFile = false
 
 	local entry = _G[self.GlobalName]
+	
+	if ( not entry ) then return end
+	
 	entry.Name = name
 	entry.Source = "Lua"
 
@@ -242,6 +247,7 @@ function meta:LoadLibrary()
 	print("\tLoading data files...")
 	self:LoadDataLibary()
 	self.IsLoading = false
+	print("\tLibrary loading marked complete.")
 	self.Loaded = true
 end
 
@@ -317,6 +323,11 @@ function meta:DoRegister( data )
 		self:Compile( data )
 	end
 	self:PostRegister( data.Name )
+	self.RefreshQueue[data.Name] = true
+	timer.Create( self.GlobalName .. "_UPDATED", 0.01, 1, function()
+		hook.Run( "Photon2:" .. self.Name .. "Changed", self.RefreshQueue )
+		self.RefreshQueue = {}
+	end)
 end
 
 function meta:PostRegister( name )
@@ -372,6 +383,11 @@ function meta:MatchSignatures( oldEntry, newEntry )
 		print("SIGNATURE MATCHES: %s", tostring( newEntry[key]))
 	end
 	return true
+end
+
+function meta:GetInherited( data )
+	if ( isstring( data ) ) then data = self:GetCopy( data ) end
+	return data
 end
 
 function meta:DoCompile( data )
