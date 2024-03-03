@@ -16,7 +16,7 @@ COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
 
 COMPONENT.Preview = {
-	Position = Vector( 0, 0, -3 ),
+	Position = Vector( 0, 0, -4 ),
 	Angles = Angle( 0, -90, 0 ),
 	Zoom = 0.7
 }
