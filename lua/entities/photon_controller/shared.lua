@@ -979,7 +979,7 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()
-		component:SetChannelMode( channel, newState, oldState )
+		component:SetChannelMode( channel, newState )
 		if ( component.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = component end
 	end
 
