@@ -230,8 +230,9 @@ local components = {
 		local component = PhotonLightingComponent.New( data.Name, data )
 		return component
 	end,
-	GetInherited = function( self, data )
+	GetInherited = function( self, data, unique )
 		if ( isstring( data ) ) then data = self:GetCopy( data ) end
+		if ( unique ) then data = Photon2.Util.UniqueCopy( data ) end
 		if ( data.Base ) then
 			local dataInputs
 			if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end

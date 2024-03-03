@@ -21,7 +21,7 @@ COMPONENT.States = {
 }
 
 COMPONENT.Preview = {
-	Position = Vector(),
+	Position = Vector( 0, 0, -2),
 	Angles = Angle( 0, 180, 0 ),
 	Zoom = 1
 }

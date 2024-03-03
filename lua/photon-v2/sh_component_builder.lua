@@ -185,3 +185,21 @@ function Photon2.ComponentBuilder.SetupNightParkMode( component, params )
 	}
 	table.Merge( component, mixin )
 end
+
+-- Modifies a component to add a special debug channel and _quietly_ recompiles. It's somewhat hacky-
+-- but it plays nicely with the component registration and compilation process. This might be somewhat
+-- laggy on very complex components but it probably doesn't matter.
+function Photon2.ComponentBuilder.ApplyDebugSequences( entryName, inputAction )
+	local component = Photon2.Library.Components:GetInherited( entryName, true )
+	component.Segments = component.Segments or {}
+	-- This will probably be necessary for the sequence creation UI
+	-- component.Segments["#DEBUG"] = {
+
+	-- }
+	component.Inputs = component.Inputs or {}
+	component.Inputs["#DEBUG"] = {
+		["ON"] = inputAction
+	}
+
+	Photon2.Library.Components:Compile( component )
+end

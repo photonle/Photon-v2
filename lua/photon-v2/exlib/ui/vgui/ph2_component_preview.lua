@@ -38,9 +38,10 @@ function PANEL:SetEntry( entryName )
 	titleLabel:SetText( entry.Title or "(Untitled)" )
 	
 	local activeComponent
+	local modelPanel
 
 	if ( entry.Model ) then
-		local modelPanel = vgui.Create( "DAdjustableModelPanel", scrollPanel )
+		modelPanel = vgui.Create( "DAdjustableModelPanel", scrollPanel )
 		modelPanel:Dock( TOP )
 		modelPanel:SetTall( 100 )
 		modelPanel:SetCamPos( Vector( -60, 0, 20 ) )
@@ -331,14 +332,29 @@ function PANEL:SetEntry( entryName )
 					if ( activeComponent ) then
 						activeComponent:ClearAllModes()
 					end
+					modeNode:SetSelected( false )
 				end
 			end
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do
 					modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
+					function modeNode:OnNodeSelected()
+						if( modelPanel ) then
+							Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [k] = v } )
+							modelPanel:SetComponent( entryName )
+							modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+						end
+					end
 				end
 			elseif ( isstring( sequences ) ) then
 				modeNode:AddNode( sequences, "play-box" )
+				function modeNode:OnNodeSelected()
+					if( modelPanel ) then
+						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, sequences )
+						modelPanel:SetComponent( entryName )
+						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+					end
+				end
 			end
 		end
 		-- channelNode:SetExpanded( true )
@@ -348,9 +364,23 @@ function PANEL:SetEntry( entryName )
 	if ( entry.Patterns ) then
 		local patternsNode = tree:AddNode( "Patterns", "animation-play", true )
 		for patternName, sequences in pairs( entry.Patterns ) do
-			local patternNode = patternsNode:AddNode( patternName, "play-box", true )
+			local patternNode = patternsNode:AddNode( patternName, "play-box" )
 			for i, sequence in pairs( sequences or {} ) do
-				patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
+				local sequenceNode = patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
+				function sequenceNode:OnNodeSelected()
+					if( modelPanel ) then
+						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [sequence[1]] = sequence[2] } )
+						modelPanel:SetComponent( entryName )
+						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+					end
+				end
+			end
+			function patternNode:OnNodeSelected()
+				if( modelPanel ) then
+					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, patternName )
+					modelPanel:SetComponent( entryName )
+					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+				end
 			end
 			-- for segmentName, sequence in 
 		end
@@ -362,6 +392,13 @@ function PANEL:SetEntry( entryName )
 		local segmentNode = segmentsNode:AddNode( segmentName, "film", true )
 		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
 			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
+			function sequenceNode:OnNodeSelected()
+				if( modelPanel ) then
+					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [segmentName] = sequenceName } )
+					modelPanel:SetComponent( entryName )
+					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+				end
+			end
 		end
 	end
 	-- segmentsNode:SetExpanded( true )

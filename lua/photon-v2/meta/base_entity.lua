@@ -15,6 +15,7 @@ local ENT = exmeta.New()
 local print = Photon2.Debug.PrintF
 
 ENT.DefaultInputPriorities = {
+	["#DEBUG"]						= 9999,
 	["Emergency.Cut"] 				= 170,
 	["Emergency.Illuminate"]		= 160,
 	["Emergency.SceneForward"] 		= 150,
