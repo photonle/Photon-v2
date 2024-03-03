@@ -243,15 +243,12 @@ local components = {
 		end
 		return data
 	end,
-	PostCompile = function( self, name, isReload )
+	PostCompile = function( self, name )
 		-- TODO: lazy loading needs to be implemented to maintain
 		-- good compilation performance
-		if ( isReload ) then
-			for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-				if ( id ~= name ) then
-					self:Register( self:Get( id ) )
-				end
-			end
+		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
+			print( "Should reload child: " .. id )
+			self:Register( self:Get( id ) )
 		end
 	end,
 	PreRegister = function( self, data )

@@ -61,7 +61,7 @@ function meta.New( properties )
 	-- what the fuck is this?
 	Photon2["Library" .. result.Singular] = function()
 		_G[result.GlobalName] = {
-			SourceType = "Lua"
+			LibraryToken = "asdf"
 		}
 		return _G[result.GlobalName]
 	end
@@ -212,15 +212,15 @@ function meta:LoadDedicatedLuaFile( path )
 	self.LoadingDedicatedFile = true
 	include( path )
 	self.LoadingDedicatedFile = false
-	
-	UNSET = _UNSET
 
 	local entry = _G[self.GlobalName]
 	
 	if ( not entry ) then return end
 	
 	entry.Name = name
-	entry.SourceType = "Lua"
+	entry.Source = "Lua"
+
+	UNSET = _UNSET
 	
 	self:Register( table.Copy( entry ) )
 	
@@ -313,7 +313,6 @@ function meta:PreRegister( data ) end
 
 function meta:DoRegister( data )
 	info( "\t\t\tRegistering [%s] library entry [%s]", self.Name, data.Name )
-	local initialType = data.SourceType
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end
@@ -329,9 +328,6 @@ function meta:DoRegister( data )
 		hook.Run( "Photon2:" .. self.Name .. "Changed", self.RefreshQueue )
 		self.RefreshQueue = {}
 	end)
-	-- if ( data.SourceType ~= initialType ) then
-	-- 	warn("SourceType changed!")
-	-- end
 end
 
 function meta:PostRegister( name )
@@ -342,7 +338,7 @@ end
 function meta:OnReload( data )
 	local old = self.Index[data.Name]
 	local hardReload = ( ( old ) and old.CompileTime + self.HardReloadThreshold >= CurTime() )
-	self:Compile( data, true, hardReload )
+	self:Compile( data, hardReload )
 	timer.Create( "Photon2.Library:" .. self.Name .. "Reload", 0.05, 1, function()
 		if ( self ) then
 			self:OnPostReload()
@@ -365,13 +361,13 @@ end
 -- Compilation wrapper. Actual compilation overrides should be done in `TYPE:DoCompile( data )`
 ---@param data table | string
 ---@param hardReload? boolean
-function meta:Compile( data, isReload, hardReload )
+function meta:Compile( data, hardReload )
 	if ( isstring( data ) ) then data = self:Get( data ) end
 	local result = self:DoCompile( table.Copy( data --[[@as table]]) )
 	result.CompileTime = CurTime()
 	hardReload = hardReload or ( self:MatchSignatures( self.Index[result.Name], result ) == false )
 	self.Index[result.Name] = result
-	self:PostCompile( result.Name, isReload, hardReload )
+	self:PostCompile( result.Name, hardReload )
 	return result
 end
 
@@ -398,7 +394,7 @@ function meta:DoCompile( data )
 	return data
 end
 
-function meta:PostCompile( name, isReload, hardReload )
+function meta:PostCompile( name, hardReload )
 
 end
 
