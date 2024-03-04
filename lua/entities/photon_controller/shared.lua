@@ -465,7 +465,6 @@ end
 
 
 function ENT:HardReload()
-	-- ErrorNoHaltWithStack()
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
 	self:SetupProfile()
@@ -1153,12 +1152,22 @@ function ENT:OnComponentReloaded( componentId )
 	-- if ( not self:GetActiveComponents()[componentId] ) then return end
 	local matched = false
 	local shouldExist = self:GetActiveComponents()[componentId]
+	local doSoftReload = false
 	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then
+			
+			-- If the component serves as a parent
+			if ( IsValid( component ) and #component:GetChildren() > 0 ) then
+				-- self:SoftEquipmentReload()
+				-- return
+				doSoftReload = true
+			end
+
 			self:RemoveEquipmentComponentByIndex( equipmentId )
 			self:SetupComponent( equipmentId )
+			
 			matched = true
 		end
 	end
@@ -1182,6 +1191,8 @@ function ENT:OnComponentReloaded( componentId )
 	self:UpdatePulseComponentArray()
 
 	self.LastReloadFailed = false
+
+	if ( doSoftReload ) then self:SoftEquipmentReload()	end
 end
 
 function ENT:UpdateVehicleBraking( braking )	

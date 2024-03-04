@@ -244,7 +244,7 @@ local components = {
 		end
 		return data
 	end,
-	PostCompile = function( self, name, isReload )
+	PostCompile = function( self, name, isReload, hardReload )
 		-- TODO: lazy loading needs to be implemented to maintain
 		-- good compilation performance
 		if ( isReload ) then
@@ -313,7 +313,7 @@ local vehicles = {
 		local vehicle = PhotonVehicle.New( data )
 		return vehicle
 	end,
-	PostCompile = function( self, name, hardReload )
+	PostCompile = function( self, name, isReload, hardReload )
 		hook.Run( "Photon2.VehicleCompiled", name, nil, hardReload )
 	end,
 	PostRegister = function( self, name )
