@@ -12,7 +12,7 @@ COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/supermighty/photon/inner_edge_driver.mdl"
 
 COMPONENT.Preview = {
-	Position = Vector(),
+	Position = Vector( 0, 0, -3),
 	Angles = Angle( 0, 180, 0 ),
 	Zoom = 1.2
 }

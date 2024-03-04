@@ -13,9 +13,9 @@ COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
 
 COMPONENT.Preview = {
-	Position = Vector(),
+	Position = Vector( 0, 0, -4),
 	Angles = Angle( 0, 0, 0 ),
-	Zoom = 2
+	Zoom = 3
 }
 
 COMPONENT.States = { "R", "B", "W" }

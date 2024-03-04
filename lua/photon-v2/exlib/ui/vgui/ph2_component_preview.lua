@@ -15,6 +15,21 @@ function PANEL:PostAutoRefresh()
 	self:Setup()
 end
 
+local function IsKeyBindDown( cmd )
+
+	-- Yes, this is how engine does it for input.LookupBinding
+	for keyCode = 1, BUTTON_CODE_LAST do
+
+		if ( input.LookupKeyBinding( keyCode ) == cmd and input.IsKeyDown( keyCode ) ) then
+			return true
+		end
+
+	end
+
+	return false
+
+end
+
 function PANEL:SetEntry( entryName )
 	self:Clear()
 
@@ -340,8 +355,8 @@ function PANEL:SetEntry( entryName )
 			end
 			if ( istable( sequences ) ) then
 				for k, v in pairs( sequences ) do
-					modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
-					function modeNode:OnNodeSelected()
+					local sequenceNode = modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
+					function sequenceNode:OnNodeSelected()
 						if( modelPanel ) then
 							Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [k] = v } )
 							modelPanel:SetComponent( entryName, true )
@@ -350,11 +365,11 @@ function PANEL:SetEntry( entryName )
 					end
 				end
 			elseif ( isstring( sequences ) ) then
-				modeNode:AddNode( sequences, "play-box" )
-				function modeNode:OnNodeSelected()
+				local patternNode = modeNode:AddNode( sequences, "play-box" )
+				function patternNode:OnNodeSelected()
 					if( modelPanel ) then
 						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, sequences )
-						modelPanel:SetComponent( entryName, trued )
+						modelPanel:SetComponent( entryName, true )
 						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 					end
 				end
@@ -398,7 +413,7 @@ function PANEL:SetEntry( entryName )
 			function sequenceNode:OnNodeSelected()
 				if( modelPanel ) then
 					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [segmentName] = sequenceName } )
-					modelPanel:SetComponent( entryName )
+					modelPanel:SetComponent( entryName, true )
 					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
 				end
 			end

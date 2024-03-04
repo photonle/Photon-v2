@@ -10,23 +10,32 @@ local classicLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_legacy",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_legacy.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$detail"] = "photon/license/reflective_paint",
-	["$detailblendmode"] = 1,
-	["$detailscale"] = 64,
-	["$detailblendfactor"] = 1,
-	["$phong"] = 1,
-	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.15),
-	["$phongboost"] = 5,
-	["$phongexponent"] = 64,
-	["$nodecal"] = 1,
-	["$rimlight"] = 1,
-	["$rimlightexponent"] = 2,
-	["$rimlightboost"] = .2,
-	-- ["$halflambert"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_legacy.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$detail"] = "photon/license/reflective_paint",
+		
+		["$detailblendmode"] = 1,
+		["$detailscale"] = 64,
+		["$detailblendfactor"] = 1,
+
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
@@ -34,15 +43,28 @@ local hybridLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_hybrid",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_hybrid.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 5,
-	["$phongexponent"] = 64,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_hybrid.png",
+		["$bumpmap"] = "photon/common/flat",
+
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.4 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
@@ -50,15 +72,28 @@ local newLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_2015",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_2015.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 5,
-	["$phongexponent"] = 64,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_2015.png",
+		["$bumpmap"] = "photon/common/flat",
+		
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.4 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
