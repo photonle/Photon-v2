@@ -67,6 +67,7 @@ function Equipment.AddEntry( entry, master, nameTable )
 			error(string.format("Equipment Name '%s' is already defined. Name must be unique."))
 		end
 		nameTable[entry.Name] = index
+		-- master[index].EquipmentName = entry.Name
 	end
 	return index
 end
@@ -139,7 +140,7 @@ function Equipment.InheritEntry( entry, parentName, equipmentTable, nameTable, l
 	Photon2.ComponentBuilder.InheritInputs( entryInputs, entry.Inputs )
 	-- This is to prevent the parent name from applying
 	if (isAnonymous) then
-		entry.Name = ""
+		entry.Name = nil
 	end
 
 end

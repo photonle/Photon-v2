@@ -230,6 +230,7 @@ PhotonMaterial = PhotonMaterial
 ---@field SubMaterials? table<integer | string, string>
 ---@field BodyGroups? table<string, integer | string>
 ---@field PoseParameters? table<string, number>
+---@field Parent? string 
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>

@@ -562,15 +562,62 @@ function ENT:SetupProp( id )
 		return
 	end
 
+	ent.EquipmentData = data
+	if ( data.Name ) then ent.EquipmentName = data.Name end
+
 	ent:SetMoveType( MOVETYPE_NONE )
 	ent:SetParent( self:GetComponentParent() )
-	ent:SetPropertiesFromEquipment( data )
+
+	if ( data.Parent ) then
+		self:AddToPropPendingParents( ent, data.Parent )
+	else
+		ent:SetPropertiesFromEquipment( data )
+	end
 
 	if (IsValid(self.Props[id])) then
 		self.Props[id]:Remove()
 	end
 
 	self.Props[id] = ent
+end
+
+function ENT:AddToPropPendingParents( ent, parentName )
+	ent.IsParentPending = trued
+	self.PropPendingParents = self.PropPendingParents or {}
+	self.PropPendingParents[ent] = parentName
+end
+
+function ENT:UpdatePropPendingParents()
+	if ( not self.PropPendingParents ) then return end
+
+	local namedEntities = {}
+	
+	for i=1, #self.PropArray do
+		if ( self.PropArray[i].EquipmentName ) then
+			namedEntities[self.PropArray[i].EquipmentName] = self.PropArray[i]
+		end
+	end
+
+	for i=1, #self.ComponentArray do
+		if ( self.ComponentArray[i].EquipmentName ) then
+			namedEntities[self.ComponentArray[i].EquipmentName] = self.ComponentArray[i]
+		end
+	end
+
+	local newPending = nil
+	
+	for ent, parentName in pairs( self.PropPendingParents ) do
+		if ( namedEntities[parentName] ) then
+			ent:SetParent( namedEntities[parentName] )
+			ent.IsParentPending = nil
+			ent:SetPropertiesFromEquipment()
+		else
+			newPending = newPending or {}
+			newPending[ent] = parentName
+		end
+	end
+
+	self.PropPendingParents = newPending
 end
 
 ---@param id string | any
@@ -637,6 +684,7 @@ function ENT:SetupComponent( id )
 		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
 	end
+
 	-- print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
@@ -664,16 +712,64 @@ function ENT:SetupComponent( id )
 			ent.Entity:SetParent( self:GetComponentParent() )
 		end
 
-		-- Set the other basic properties
-		ent:SetPropertiesFromEquipment( data )
+		ent.EquipmentData = data
+
+		if ( data.Name ) then ent.EquipmentName = data.Name end
+
+		if ( data.Parent ) then
+			self:AddToComponentPendingParents( ent, data.Parent )
+		else
+			-- Set the other basic properties
+			ent:SetPropertiesFromEquipment()
+		end
 
 		if (IsValid(self.Components[id])) then
 			self.Components[id]:Remove()
 		end		
 	end
 	self.Components[id] = ent
-	ent:ApplyModeUpdate()
+	if ( not ent.IsParentPending ) then ent:ApplyModeUpdate() end
 	self.AttemptingComponentSetup = false
+end
+
+function ENT:AddToComponentPendingParents( ent, parentName )
+	ent.IsParentPending = true
+	self.ComponentPendingParents = self.ComponentPendingParents or {}
+	self.ComponentPendingParents[ent] = parentName
+end
+
+function ENT:UpdateComponentPendingParents()
+	if ( not self.ComponentPendingParents ) then return end
+	
+	local namedEntities = {}
+	
+	for i=1, #self.PropArray do
+		if ( self.PropArray[i].EquipmentName ) then
+			namedEntities[self.PropArray[i].EquipmentName] = self.PropArray[i]
+		end
+	end
+
+	for i=1, #self.ComponentArray do
+		if ( self.ComponentArray[i].EquipmentName ) then
+			namedEntities[self.ComponentArray[i].EquipmentName] = self.ComponentArray[i]
+		end
+	end
+
+	local newPending = nil
+
+	for ent, parentName in pairs( self.ComponentPendingParents ) do
+		if ( namedEntities[parentName] ) then
+			ent:SetParent( namedEntities[parentName] )
+			ent.IsParentPending = nil
+			ent:SetPropertiesFromEquipment()
+			ent:ApplyModeUpdate()
+		else
+			newPending = newPending or {}
+			newPending[ent] = parentName
+		end
+	end
+
+	self.ComponentPendingParents = newPending
 end
 
 function ENT:RemoveAllComponents()
@@ -729,6 +825,7 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #components do
 		self:SetupComponent( components[i] )
 	end
+	
 	local props = equipmentTable.Props
 	for i=1, #props do
 		self:SetupProp( props[i] )
@@ -737,7 +834,7 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #bodyGroups do
 		self:SetupBodyGroup( bodyGroups[i] )
 	end
-
+	
 	local subMaterials = equipmentTable.SubMaterials
 	for i=1, #subMaterials do
 		self:SetupSubMaterial( subMaterials[i] )
@@ -746,10 +843,13 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #equipmentTable.InteractionSounds do
 		self:SetupInteractionSound( equipmentTable.InteractionSounds[i] )
 	end
-
+	
 	for i=1, #equipmentTable.Properties do
 		self:SetupEquipmentProperties( equipmentTable.Properties[i] )
 	end
+
+	self:UpdateComponentPendingParents()
+	self:UpdatePropPendingParents()
 end
 
 function ENT:RefreshParentSubMaterials()
@@ -761,6 +861,7 @@ function ENT:RefreshParentSubMaterials()
 	end
 
 	for i=1, #self.ComponentArray do
+		if ( not self.ComponentArray[i].IsVirtual ) then continue end
 		for elementIndex, element in pairs( self.ComponentArray[i].Elements ) do
 			if ( element and element.Class == "Sub" ) then
 				element--[[@as PhotonElementSub]]:ReapplyState()
@@ -860,32 +961,7 @@ function ENT:SetupProfile( name, isReload )
 
 	-- This block is for static equipment which is technically
 	-- supported but also deprecated and should be removed.
-	if ( not profile.EquipmentSelections ) then
-		-- Setup normal components
-		for id, equipment in pairs( self.Equipment.Components ) do
-			self:SetupComponent( id )
-		end
-		-- Setup props
-		for id, prop in pairs( self.Equipment.Props ) do
-			self:SetupProp( id )
-		end
-		-- Setup body groups
-		for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
-			self:SetupBodyGroup( id )
-		end
-		-- Setup sub-materials
-		for id, subMaterialData in pairs( self.Equipment.SubMaterials ) do
-			self:SetupSubMaterial( id )
-		end
-		-- Setup interaction sounds
-		for id, interactionSounds in pairs( self.Equipment.InteractionSounds ) do
-			self:SetupInteractionSound( id )
-		end
-		-- Setup interaction sounds
-		for id, equipmentProperties in pairs( self.Equipment.EquipmentProperties ) do
-			self:SetupEquipmentProperties( id )
-		end
-	else
+	if ( profile.EquipmentSelections ) then
 		self:SetupSelections()
 	end
 
@@ -1086,6 +1162,9 @@ function ENT:OnComponentReloaded( componentId )
 			matched = true
 		end
 	end
+
+	self:UpdateComponentPendingParents()
+	self:UpdatePropPendingParents()
 
 	if ( matched ) then
 		self:SetupComponentArrays()

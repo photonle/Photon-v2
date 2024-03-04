@@ -10,6 +10,8 @@ NAME = "PhotonBaseEntity"
 ---@field BodyGroups? table
 ---@field SubMaterials? table
 ---@field RenderGroup? RENDERGROUP
+---@field EquipmentData? table Data from this entity's coresponding equipment entry.
+---@field IsParentPending? boolean If this entity is to be parented to another but hasn't been setup yet.
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
@@ -176,7 +178,7 @@ end
 function ENT:SetupStaticBones()
 	
 	-- TODO: better approach instead of polling
-	if ( ( not IsValid( self:GetParent() ) )  and ( not self.IsVirtual ) ) then
+	if ( ( not IsValid( self:GetParent() ) ) and ( not self.IsVirtual ) ) or ( self.IsParentPending ) then
 		local this = self
 		timer.Simple( 0.001, function()
 			if ( not IsValid( this ) ) then return end
@@ -436,13 +438,19 @@ function ENT:SetProperty( property, value )
 end
 
 
----@param equipment PhotonVehicleEquipment
+---@param equipment table?
 ---@param isSoftUpdate? boolean (Default = `false`)
 function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 	-- These values manipulate entity properties and must not be called
 	-- if Photon is not controlling the actual component entity.
 	if ( self.IsVirtual ) then return end
 	
+	if ( self.IsParentPending ) then 
+		ErrorNoHaltWithStack( "Equipment properties being setup while IsParentPending = true." )
+		return
+	end
+
+	equipment = equipment or self.EquipmentData --[[@as table]]
 	-- Bone following needs to occur before positioning
 	-- to work correctly.
 	if ( equipment.FollowBone ) then

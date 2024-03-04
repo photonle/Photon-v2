@@ -310,7 +310,23 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Valor",
 				Components = {
+					-- {
+					-- 	Name = "@parent1",
+					-- 	Component = "photon_sos_undercover",
+					-- 	Parent = "@valor",
+					-- 	Position = Vector( 0, 0, 20 ),
+					-- 	Angles = Angle( 0, 0, 0 ),
+
+					-- },
+					-- {
+					-- 	Name = "@parent2",
+					-- 	Component = "photon_sos_undercover",
+					-- 	Parent = "@parent1",
+					-- 	Position = Vector( 0, 0, 20 ),
+					-- 	Angles = Angle( 0, 0, 0 ),
+					-- },
 					{
+						Name = "@valor",
 						Component = "photon_fedsig_valor_suv",
 						Position = Vector(0, -15, 86.1),
 						Angles = Angle(1.5, 90, 0),
