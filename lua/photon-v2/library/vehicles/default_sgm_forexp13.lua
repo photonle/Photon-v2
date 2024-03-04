@@ -24,5 +24,18 @@ VEHICLE.Equipment = {
 				}
 			}
 		}
+	},
+	{
+		Category = "Appearance",
+		Options = {
+			{
+				Option = "Default",
+				-- Example of new equipment type (added March 2024)
+				Properties = {
+					Skin = 0,
+					Color = Color( 255, 255, 255 )
+				}
+			}
+		}
 	}
 }

@@ -187,6 +187,7 @@ function ENT:InitializeShared()
 	self.Components = {}
 	self.Props = {}
 	self.SubMaterials = {}
+	self.EquipmentProperties = {}
 
 	self.ComponentArray = {}
 	self.PropArray = {}
@@ -621,6 +622,14 @@ function ENT:SetupInteractionSound( id )
 	self:SetInteractionSound( data.Class, data.Profile )
 end
 
+function ENT:SetupEquipmentProperties( id )
+	if CLIENT then return end
+	local data = self.Equipment.Properties[id]
+
+	if ( data.Skin ) then self:GetParent():SetSkin( data.Skin ) end
+	if ( data.Color ) then self:GetParent():SetColor( data.Color ) end
+end
+
 function ENT:SetupComponent( id )
 	self.AttemptingComponentSetup = true
 	local data = self.Equipment.Components[id]
@@ -736,6 +745,10 @@ function ENT:AddEquipment( equipmentTable )
 	
 	for i=1, #equipmentTable.InteractionSounds do
 		self:SetupInteractionSound( equipmentTable.InteractionSounds[i] )
+	end
+
+	for i=1, #equipmentTable.Properties do
+		self:SetupEquipmentProperties( equipmentTable.Properties[i] )
 	end
 end
 
@@ -867,6 +880,10 @@ function ENT:SetupProfile( name, isReload )
 		-- Setup interaction sounds
 		for id, interactionSounds in pairs( self.Equipment.InteractionSounds ) do
 			self:SetupInteractionSound( id )
+		end
+		-- Setup interaction sounds
+		for id, equipmentProperties in pairs( self.Equipment.EquipmentProperties ) do
+			self:SetupEquipmentProperties( id )
 		end
 	else
 		self:SetupSelections()

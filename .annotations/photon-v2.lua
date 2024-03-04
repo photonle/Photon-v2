@@ -204,6 +204,7 @@ PhotonMaterial = PhotonMaterial
 ---@field SubMaterials? PhotonEquipmentSubMaterialEntry[]
 -- User HUD sounds (i.e. beeps and clicks).
 ---@field InteractionSounds? PhotonEquipmentInteractionSoundEntry[]
+---@field Properties? table
 
 
 

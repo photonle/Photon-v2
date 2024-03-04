@@ -10,6 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field Properties table
 local Equipment = exmeta.New()
 
 function Equipment.New( name, option )
@@ -17,13 +18,20 @@ function Equipment.New( name, option )
 
 end
 
+-- For Equipment types where multiple sibling entries are unnecessary.
+-- 
+local singleEquipmentTypes = {
+	Properties = true
+}
+
 function Equipment.GetTemplate()
 	return {
 		Components = {},
 		Props = {},
 		BodyGroups = {},
 		SubMaterials = {},
-		InteractionSounds = {}
+		InteractionSounds = {},
+		Properties = {}
 	}
 end
 
@@ -64,6 +72,7 @@ function Equipment.AddEntry( entry, master, nameTable )
 end
 
 function Equipment.ProcessTable( name, source, destination, master, nameTable, pendingNamesTable )
+	if ( singleEquipmentTypes[name] ) then source = { source } end
 	for key, entry in pairs( source ) do
 		if ( istable( entry ) ) then
 			destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
