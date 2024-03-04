@@ -472,7 +472,7 @@ end
 
 
 function ENT:SoftEquipmentReload()
-	print("Controller is executing SOFT reload...")
+	print("Controller performing SOFT reload...")
 	local profile = self:GetProfile()
 	-- TODO: don't virtual and UI components need to be included here?
 	for id, component in pairs(self.Components) do
@@ -729,6 +729,7 @@ function ENT:SetupComponent( id )
 	self.Components[id] = ent
 	if ( not ent.IsParentPending ) then ent:ApplyModeUpdate() end
 	self.AttemptingComponentSetup = false
+	return ent
 end
 
 function ENT:AddToComponentPendingParents( ent, parentName )
@@ -757,6 +758,7 @@ function ENT:UpdateComponentPendingParents()
 	local newPending = nil
 
 	for ent, parentName in pairs( self.ComponentPendingParents ) do
+		if ( not IsValid( ent ) ) then continue end
 		if ( namedEntities[parentName] ) then
 			ent:SetParent( namedEntities[parentName] )
 			ent.IsParentPending = nil
@@ -1153,33 +1155,63 @@ function ENT:OnComponentReloaded( componentId )
 	local matched = false
 	local shouldExist = self:GetActiveComponents()[componentId]
 	local doSoftReload = false
+	local hasChildren = false
 	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then
 			
+			local children
 			-- If the component serves as a parent
 			if ( IsValid( component ) and #component:GetChildren() > 0 ) then
-				-- self:SoftEquipmentReload()
-				-- return
-				doSoftReload = true
+				hasChildren = true
+				-- children = component:GetChildren()
+				-- for i=1, #children do
+				-- 	if ( children[i].IsPhotonLightingComponent ) then
+				-- 		self:AddToComponentPendingParents( children[i], children[i].EquipmentData.Parent )
+				-- 	else
+				-- 		self:AddToPropPendingParents( children[i], children[i].EquipmentData.Parent )
+				-- 	end
+				-- end
 			end
 
 			self:RemoveEquipmentComponentByIndex( equipmentId )
-			self:SetupComponent( equipmentId )
+			local newComponent = self:SetupComponent( equipmentId )
 			
+			-- if ( children ) then
+			-- 	for _, child in pairs( children ) do
+			-- 		child:SetParent( newComponent )
+			-- 	end
+			-- end
+
 			matched = true
 		end
 	end
 
-	self:UpdateComponentPendingParents()
-	self:UpdatePropPendingParents()
+	-- if ( hasChildren ) then
+	-- 	for i=1, #self.ComponentArray do
+	-- 		if ( self.ComponentArray[i].IsVirtual ) then continue end
+	-- 		if ( not IsValid( self.ComponentArray[i]:GetParent() ) ) and ( self.ComponentArray[i].EquipmentData.Parent ) then
+	-- 			self:AddToComponentPendingParents( self.ComponentArray[i], self.ComponentArray[i].EquipmentData.Parent )
+	-- 		end
+	-- 	end
+		
+	-- 	for i=1, #self.PropArray do
+	-- 		if ( not IsValid( self.PropArray[i]:GetParent() ) ) and ( self.PropArray[i].EquipmentData.Parent ) then
+	-- 			self:AddToPropPendingParents( self.PropArray[i], self.PropArray[i].EquipmentData.Parent )
+	-- 		end
+	-- 	end
+
+	-- 	self:UpdateComponentPendingParents()
+	-- 	self:UpdatePropPendingParents()
+	-- end
+
 
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end
 
-	if ( not matched ) and ( shouldExist ) then
+	if ( ( not matched ) and ( shouldExist ) ) or ( hasChildren ) then
 		print( "Queueing hard reload because component [%s] is not currently spawned...", componentId )
 		self.DoHardReload = true
 	end

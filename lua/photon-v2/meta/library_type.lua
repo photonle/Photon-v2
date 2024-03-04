@@ -341,8 +341,7 @@ end
 -- Called when an entry is reloaded.
 function meta:OnReload( data )
 	local old = self.Index[data.Name]
-	print( "Old compile time: " .. tostring( old.CompileTime ) )
-	local hardReload = ( ( old ) and old.CompileTime + self.HardReloadThreshold >= CurTime() )
+	local hardReload = ( ( istable( old ) ) and ( old.CompileTime + self.HardReloadThreshold >= CurTime() ) )
 	self:Compile( data, true, hardReload )
 	timer.Create( "Photon2.Library:" .. self.Name .. "Reload", 0.05, 1, function()
 		if ( self ) then

@@ -445,10 +445,10 @@ function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 	-- if Photon is not controlling the actual component entity.
 	if ( self.IsVirtual ) then return end
 	
-	if ( self.IsParentPending ) then 
-		ErrorNoHaltWithStack( "Equipment properties being setup while IsParentPending = true." )
-		return
-	end
+	-- if ( self.IsParentPending ) then 
+	-- 	ErrorNoHaltWithStack( "Equipment properties being setup while IsParentPending = true." )
+	-- 	return
+	-- end
 
 	equipment = equipment or self.EquipmentData --[[@as table]]
 	-- Bone following needs to occur before positioning
