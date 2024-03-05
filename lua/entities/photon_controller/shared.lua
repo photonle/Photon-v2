@@ -18,6 +18,7 @@
 ---@field SyncAttachedParentSubMaterials boolean SGM attachment framework compatability.
 ---@field CurrentPulseComponents table<PhotonLightingComponent> (Internal) Array of components actively listening to controller pulse cycle.
 ---@field RebuildPulseComponents boolean (Internal) Triggers rebuild of all components that need to be on the pulse schedule.
+---@field UsesSubParenting boolean (Internal) If any components use sub-parenting (uncommon). Used for optimization purposes.
 ENT = ENT
 
 local info, warn = Photon2.Debug.Declare( "Controller" )
@@ -31,6 +32,7 @@ ENT.PrintName = "Photon Controller"
 ENT.Authors = "Photon Lighting Group"
 ENT.Spawnable = true
 ENT.IsPhotonController = true
+ENT.UsesSubParenting = false
 
 ENT.ChannelTree = {
     ["Emergency"] = { 
@@ -492,15 +494,19 @@ end
 function ENT:SoftEquipmentReload()
 	print("Controller performing SOFT reload...")
 	local profile = self:GetProfile()
-	-- TODO: don't virtual and UI components need to be included here?
-	for id, component in pairs(self.Components) do
-		component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
+
+	for id, component in pairs( self.Components ) do
+		if ( ( component.EquipmentData )  and ( not component.EquipmentData.Parent ) ) then
+			component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
+		end
 	end
+	
 	for id, prop in pairs(self.Props) do
 		prop:SetPropertiesFromEquipment( profile.Equipment.Props[id], true )
 		prop:SetupSubMaterials()
 		prop:SetupBodyGroups()
 	end
+	
 	self:SetSchema( profile.Schema )
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
@@ -602,7 +608,8 @@ function ENT:SetupProp( id )
 end
 
 function ENT:AddToPropPendingParents( ent, parentName )
-	ent.IsParentPending = trued
+	self.UsesSubParenting = true
+	ent.IsParentPending = true
 	self.PropPendingParents = self.PropPendingParents or {}
 	self.PropPendingParents[ent] = parentName
 end
@@ -610,25 +617,12 @@ end
 function ENT:UpdatePropPendingParents()
 	if ( not self.PropPendingParents ) then return end
 
-	local namedEntities = {}
-	
-	for i=1, #self.PropArray do
-		if ( self.PropArray[i].EquipmentName ) then
-			namedEntities[self.PropArray[i].EquipmentName] = self.PropArray[i]
-		end
-	end
-
-	for i=1, #self.ComponentArray do
-		if ( self.ComponentArray[i].EquipmentName ) then
-			namedEntities[self.ComponentArray[i].EquipmentName] = self.ComponentArray[i]
-		end
-	end
-
 	local newPending = nil
 	
 	for ent, parentName in pairs( self.PropPendingParents ) do
-		if ( namedEntities[parentName] ) then
-			ent:SetParent( namedEntities[parentName] )
+		if ( not IsValid( ent ) ) then continue end
+		if ( ActiveNamedEquipment[parentName] ) then
+			ent:SetParent( ActiveNamedEquipment[parentName] )
 			ent.IsParentPending = nil
 			ent:SetPropertiesFromEquipment()
 		else
@@ -757,6 +751,7 @@ function ENT:SetupComponent( id )
 end
 
 function ENT:AddToComponentPendingParents( ent, parentName )
+	self.UsesSubParenting = true
 	ent.IsParentPending = true
 	self.ComponentPendingParents = self.ComponentPendingParents or {}
 	self.ComponentPendingParents[ent] = parentName
@@ -1172,18 +1167,38 @@ function ENT:OnComponentReloaded( componentId )
 	local shouldExist = self:GetActiveComponents()[componentId]
 	local doSoftReload = false
 	local hasChildren = false
+	local newComponent
 	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then
 
 			self:RemoveEquipmentComponentByIndex( equipmentId )
-			local newComponent = self:SetupComponent( equipmentId )
+			newComponent = self:SetupComponent( equipmentId )
 
 			matched = true
 		end
 	end
 
+	if ( self.UsesSubParenting and IsValid( newComponent ) ) then
+		for i=1, #self.ComponentArray do
+			if ( IsValid( self.ComponentArray[i] ) ) then
+				if ( ( self.ComponentArray[i].EquipmentData.Parent )  and ( self.ComponentArray[i].EquipmentData.Parent == newComponent.EquipmentName ) ) then
+					self.ComponentArray[i]:SetParent( newComponent )
+					self.ComponentArray[i]:SetPropertiesFromEquipment()
+				end
+			end
+		end
+		for i=1, #self.PropArray do
+			if ( IsValid( self.PropArray[i] ) ) then
+				if ( ( self.PropArray[i].EquipmentData.Parent )  and ( self.PropArray[i].EquipmentData.Parent == newComponent.EquipmentName ) ) then
+					self.PropArray[i]:SetParent( newComponent )
+					self.PropArray[i]:SetPropertiesFromEquipment()
+				end
+			end
+		end
+	end
+	
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end

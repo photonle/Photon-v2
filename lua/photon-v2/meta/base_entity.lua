@@ -408,7 +408,7 @@ function ENT:FollowParentBone( bone )
 		boneId = bone
 	end
 	if ( not boneId ) then
-		ErrorNoHalt( "Unable to find bone [" .. tostring( bone ) .. "]" )
+		ErrorNoHaltWithStack( "Unable to find bone [" .. tostring( bone ) .. "] in " .. tostring( parent:GetModel() ) )
 		return
 	end
 	
