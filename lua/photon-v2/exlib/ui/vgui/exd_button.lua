@@ -55,7 +55,7 @@ function PANEL:SetImage( img )
 end
 -- PANEL.SetIcon = PANEL.SetImage
 
-function PANEL:SetIcon(name)
+function PANEL:SetIcon( name, iconOnly )
 	if not name then
 		if IsValid(self.m_Icon) then
 			self.m_Icon:Remove()
@@ -65,8 +65,13 @@ function PANEL:SetIcon(name)
 	if not IsValid(self.m_Icon) then
 		self.m_Icon = vgui.Create("EXDIcon", self)
 		-- self.m_Icon.UpdateColours = self.UpdateColours
-		self.m_Icon:Dock(LEFT)
-		self.m_Icon:SetWidth(24)
+		if ( iconOnly ) then
+			self.m_Icon:Dock( FILL )
+			self:SetText( "" )
+		else
+			self.m_Icon:Dock( LEFT )
+			self.m_Icon:SetWidth(24)
+		end
 		self.m_Icon:SetMouseInputEnabled(false)
 	end
 	self.m_Icon:SetIcon(name)

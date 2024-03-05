@@ -30,6 +30,7 @@ local print = Photon2.Debug.Print
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
 ---@field VirtualOutputs table
 ---@field Title string
+---@field IsPaused boolean
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -558,11 +559,11 @@ function Component:OnScaleChange( newScale, oldScale )
 	end
 end
 
-function Component:Pulse()
+function Component:Pulse( frameChange )
 	local frameChange = false
 	
 	for sequence, _ in pairs( self.ActiveIndependentSequences ) do
-		if ( sequence:OnPulse() ) then frameChange = true end
+		if ( sequence:OnPulse( frameChange ) ) then frameChange = true end
 	end
 
 	if ( frameChange ) then
@@ -632,7 +633,13 @@ function Component:ApplyModeUpdate()
 	-- print("=======================================================")
 end
 
+function Component:SetPaused( pause )
+	self.IsPaused = pause
+end
+
 function Component:ManualThink()
+	if ( self.IsPaused ) then return end
+
 	self:Pulse()
 	self.LastFrameTick = self.LastFrameTick or CurTime()
 	
@@ -641,6 +648,10 @@ function Component:ManualThink()
 	if ( CurTime() >= self.LastFrameTick + frameDuration ) then
 		self:IndependentFrameTick()
 		self.LastFrameTick = self.LastFrameTick + frameDuration
+		-- Prevents a frame change "backlog"
+		if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+			self.LastFrameTick = CurTime()
+		end
 	end
 end
 
@@ -698,10 +709,10 @@ function Component:RemoveActiveSequence( segmentName, sequence)
 	self.ActiveDependentSequences[sequence] = nil
 end
 
-function Component:IndependentFrameTick( all )
+function Component:IndependentFrameTick( all, change )
 	if ( not self.FrameIndex ) then self.FrameIndex = 0 end
-	self.FrameIndex = self.FrameIndex + 1
-
+	self.FrameIndex = self.FrameIndex + ( change or 1 )
+	print( self.FrameIndex )
 	if ( all ) then
 		for sequence, _ in pairs( self.ActiveSequences ) do
 			sequence:IncrementFrame( self.FrameIndex, true )

@@ -120,13 +120,11 @@ function PANEL:SetEntry( entryName )
 			local ent = component:CreateForUI()
 			ent:SetScale( ent.Preview.Zoom )
 			self.Entity = ent
+			
 			PHOTON2_PREVIEW_COMPONENT = ent
+			
 			ent:SetChannelMode( "Emergency.Warning", "MODE3" )
-			-- ent:SetMoveType( MOVETYPE_NONE )
-			-- ent:SetAngles( Angle( 0.0001, 0.0001, 0.0001 ))
-			-- ent:SetPos( Vector( 0, 0, 50 ) )
-			-- local newZoomX = ( 10 * ent.Preview.Zoom ) - 70
-			-- self:SetCamPos( Vector( newZoomX, 0,  20 ) )
+
 			if ( not static ) then
 				local newZ = ent.Preview.Position.Z + 20
 				self:SetLookAng( Angle( newZ, 0, 0 ) )
@@ -209,52 +207,6 @@ function PANEL:SetEntry( entryName )
 			self.Entity:SetPos( self.Entity.Preview.Position )
 			self.Entity:SetAngles( self.Entity.Preview.Angles )
 		end
-		-- function modelPanel:DragMousePress( mouseCode )
-		-- 	self.PressX, self.PressY = input.GetCursorPos()
-		-- 	if ( mouseCode == MOUSE_LEFT ) then
-		-- 		self.Pressed = true
-		-- 		self.RightPressed = false
-		-- 	elseif ( mouseCode == MOUSE_RIGHT ) then
-		-- 		self.Pressed = false
-		-- 		self.RightPressed = true
-		-- 	end
-		-- end
-
-		-- function modelPanel:DragMouseRelease( mouseCode ) 
-		-- 	if ( mouseCode == MOUSE_LEFT ) then
-		-- 		self.Pressed = false 
-		-- 	elseif ( mouseCode == MOUSE_RIGHT ) then
-		-- 		self.RightPressed = false 
-		-- 	end
-		-- end
-
-		-- function modelPanel:LayoutEntity( ent )
-		-- 	if ( self.bAnimated ) then self:RunAnimation() end
-
-		-- 	if ( self.Pressed ) then
-		-- 		local mx, my = input.GetCursorPos()
-		-- 		-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-		-- 		-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-		-- 		-- self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
-		-- 		self.Angles:RotateAroundAxis( angle_zero:Up(), ( ( self.PressX or mx ) - mx ) / -2 )
-		-- 		self.PressX, self.PressY = mx, my
-		-- 	elseif ( self.RightPressed ) then
-		-- 		local mx, my = input.GetCursorPos()
-		-- 		-- self.Angles = self.Angles - Angle( ( ( self.PressY or my ) - my ) / 2, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-		-- 		-- self.Angles = self.Angles - Angle( 0, ( ( self.PressX or mx ) - mx ) / 2, 0 )
-		-- 		self.Angles:RotateAroundAxis( angle_zero:Right(), ( ( self.PressY or my ) - my ) / 2 )
-		-- 		self.PressX, self.PressY = mx, my
-		-- 	end
-
-		-- 	ent:SetAngles( self.Angles )
-		-- end
-
-		-- function modelPanel:OnMouseWheeled( delta )
-		-- 	-- print( tostring( delta ) )
-		-- 	local fov = math.Clamp( modelPanel:GetFOV() + ( delta * -1 ), 0, 180 )
-		-- 	modelPanel:SetFOV( fov )
-		-- 	this.FOV = fov
-		-- end
 
 	end
 
@@ -323,6 +275,19 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
+	local function sequenceSelected( segment, sequence )
+		print("Sequence was selected.")
+		if( modelPanel ) then
+			if ( sequence ) then
+				Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [segment] = sequence } )
+			else
+				Photon2.ComponentBuilder.ApplyDebugSequences( entryName, segment )
+			end
+			modelPanel:SetComponent( entryName, true )
+			modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+		end
+	end
+
 	-- Override function because selecting a node will do nothing
 	-- function tree:SetSelectedItem( node ) 
 	-- 	-- if ( not node.Selectable ) then return end
@@ -357,21 +322,13 @@ function PANEL:SetEntry( entryName )
 				for k, v in pairs( sequences ) do
 					local sequenceNode = modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
 					function sequenceNode:OnNodeSelected()
-						if( modelPanel ) then
-							Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [k] = v } )
-							modelPanel:SetComponent( entryName, true )
-							modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
-						end
+						sequenceSelected( k, v)
 					end
 				end
 			elseif ( isstring( sequences ) ) then
 				local patternNode = modeNode:AddNode( sequences, "play-box" )
 				function patternNode:OnNodeSelected()
-					if( modelPanel ) then
-						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, sequences )
-						modelPanel:SetComponent( entryName, true )
-						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
-					end
+					sequenceSelected( k, v)
 				end
 			end
 		end
@@ -386,23 +343,13 @@ function PANEL:SetEntry( entryName )
 			for i, sequence in pairs( sequences or {} ) do
 				local sequenceNode = patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
 				function sequenceNode:OnNodeSelected()
-					if( modelPanel ) then
-						Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [sequence[1]] = sequence[2] } )
-						modelPanel:SetComponent( entryName, true )
-						modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
-					end
+					sequenceSelected( sequence[1], sequence[2] )
 				end
 			end
 			function patternNode:OnNodeSelected()
-				if( modelPanel ) then
-					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, patternName )
-					modelPanel:SetComponent( entryName, true )
-					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
-				end
+				sequenceSelected( patternName )
 			end
-			-- for segmentName, sequence in 
 		end
-		-- patternsNode:SetExpanded( true )
 	end
 
 	local segmentsNode = tree:AddNode( "Sequences", "movie-roll", true )
@@ -411,21 +358,26 @@ function PANEL:SetEntry( entryName )
 		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
 			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
 			function sequenceNode:OnNodeSelected()
-				if( modelPanel ) then
-					Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { [segmentName] = sequenceName } )
-					modelPanel:SetComponent( entryName, true )
-					modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
-				end
+				sequenceSelected( segmentName, sequenceName )
 			end
 		end
 	end
 	-- segmentsNode:SetExpanded( true )
 
+	local sequencePlayer = vgui.Create( "Photon2UISequencePlayerControls", overviewTab )
+	sequencePlayer:Dock( BOTTOM )
+	sequencePlayer:SetHeight( 64 )
+	sequencePlayer:DockMargin( 0, 4, 0, 0 )
+	sequencePlayer:DockPadding( 4, 0, 4, 0 )
 
-	-- Model Tab
-	-- local pform = vgui.Create( "EXPForm", modelTab )
-	-- pform:AddEXPControl( "Test", "EXDPField", "Test String", "Value", "Main" )
-	-- pform:AddEXPControl( "Test1", "EXDPAngle", "Test String", Angle(1,1,1), "Main" )
+	function sequencePlayer:OnPause() 
+		activeComponent:SetPaused( true ) 
+	end
+	function sequencePlayer:OnPlay() activeComponent:SetPaused( false ) end
+
+	function sequencePlayer:OnForwardOne() activeComponent:IndependentFrameTick( true ) end
+	function sequencePlayer:OnBackOne() activeComponent:IndependentFrameTick( true, -1 ) end
+
 end
 
 function PANEL:Setup()
@@ -437,3 +389,123 @@ function PANEL:Setup()
 end
 
 derma.DefineControl( class, "Photon 2 component previewer", PANEL, base )
+
+--[[
+	Sequence Player Controls
+--]]
+
+local PANEL = {
+	AllowAutoRefresh = true
+}
+
+function PANEL:OnPause() end
+
+function PANEL:OnPlay() end
+
+function PANEL:OnForwardOne() end
+function PANEL:OnBackOne() end
+
+function PANEL:DoPause()
+	self.IsPaused = true
+	self.PlayButton:SetIcon( "play" )
+	self:OnPause()
+end
+
+function PANEL:DoPlay()
+	self.IsPaused = false
+	self.PlayButton:SetIcon( "pause" )
+	self:OnPlay()
+end
+
+function PANEL:DoForwardOne()
+	self:DoPause()
+	self:OnForwardOne()
+end
+
+function PANEL:DoBackOne()
+	self:DoPause()
+	self:OnBackOne()
+end
+
+function PANEL:Init()
+	self:Clear()
+
+	local this = self
+	self.IsPaused = false
+
+	local sequencePlayer = self
+
+	local slider = vgui.Create( "DNumSlider", sequencePlayer )
+	slider:Dock( TOP )
+	slider:SetHeight( 24 )
+	slider:SetDecimals( 0 )
+	slider:SetMax( 999 )
+	slider:SetMin( 1 )
+	slider:SetDefaultValue( 1 )
+	slider:SetValue( 999 )
+	slider.Label:SetVisible( false )
+	slider:DockPadding( 0, 0, 0, 0 )
+	slider.TextArea:SetWide( 26 )
+
+	self.Slider = slider
+
+	local playerControls = vgui.Create( "DPanel", sequencePlayer )
+	playerControls:Dock( FILL )
+	playerControls:SetPaintBackground( false ) 
+
+	local playButton = vgui.Create( "EXDButton", playerControls )
+	playButton:SetIcon( "pause", true )
+	playButton:SetSize( 48, 28 )
+	playButton:AlignLeft( 2 )
+	playButton:AlignTop( 6 )
+
+	self.PlayButton = playButton
+
+	function playButton:OnReleased()
+		if ( self.Wait ) then 
+			self.Wait = false
+			self:SetIcon( "play" )
+			return
+		end
+		if ( not this.IsPaused ) then return end
+		this:DoPlay()
+		self.Wait = false
+	end
+
+	function playButton:OnDepressed()
+		if ( this.IsPaused ) then return end
+		this.IsPaused = true
+		this:OnPause()
+		self.Wait = true
+	end
+
+	local stepBackButton = vgui.Create( "EXDButton", playerControls )
+	stepBackButton:SetIcon( "skip-previous", true )
+	stepBackButton:SetSize( 32, 28 )
+	stepBackButton:MoveRightOf( playButton, 4 )
+	stepBackButton:AlignTop( 6 )
+
+	function stepBackButton:OnDepressed() this:DoBackOne() end
+
+	local stepForwardButton = vgui.Create( "EXDButton", playerControls )
+	stepForwardButton:SetIcon( "skip-next", true )
+	stepForwardButton:SetSize( 32, 28 )
+	stepForwardButton:MoveRightOf( stepBackButton, 4 )
+	stepForwardButton:AlignTop( 6 )
+	
+	function stepForwardButton:OnDepressed() this:DoForwardOne() end
+
+	local currentFrame = vgui.Create( "DLabel", playerControls )
+	currentFrame:Dock( RIGHT )
+	currentFrame:SetWide( 48 )
+	currentFrame:SetText( "= [99]" )
+	currentFrame:SetContentAlignment( 5 )
+	currentFrame:SetFont( "PhotonUI.Mono" )
+end
+
+function PANEL:PostAutoRefresh()
+	-- print("post auto")
+	-- self:Init()
+end
+
+derma.DefineControl( "Photon2UISequencePlayerControls", "Photon 2 component previewer", PANEL, "DPanel" )
