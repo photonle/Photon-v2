@@ -414,6 +414,8 @@ function ENT:FollowParentBone( bone )
 	
 	self:SetParent( nil )
 	self:FollowBone( parent, boneId )
+	-- Ths is needed otherwise it stops following if one parent is frozen
+	self:AddEffects( EF_PARENT_ANIMATES )
 	self.FollowingBone = boneId
 	-- self:SetPredictable( true )
 	-- hook.Add( "Think", self, function()

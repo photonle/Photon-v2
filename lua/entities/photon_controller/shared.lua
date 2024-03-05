@@ -193,6 +193,8 @@ function ENT:InitializeShared()
 	self.PropArray = {}
 	self.SubMaterialArray = {}
 
+	self.ActiveNamedEquipment = {}
+
 	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
 
 	self.CurrentSelections = {}
@@ -213,6 +215,19 @@ function ENT:InitializeShared()
 
 	-- self:SetInteractionSound( "Controller", "sos_nergy" )
 	-- self:SetInteractionSound( "Click", "default" )
+end
+
+function ENT:FindNamedEquipment( name )
+	if ( self.ActiveNamedEquipment[name] ) then
+		if ( IsValid( self.ActiveNamedEquipment[name] ) ) then
+			return self.ActiveNamedEquipment[name]
+		elseif ( self.ActiveNamedEquipment.IsVirtual ) then
+			return self.ComponentParent
+		else
+			self.ActiveNamedEquipment[name] = nil
+		end
+	end
+	return nil
 end
 
 function ENT:OnMeshCachePurge()
@@ -465,6 +480,9 @@ end
 
 
 function ENT:HardReload()
+	if CLIENT then
+		-- ErrorNoHaltWithStack("Hard reload was triggered...")
+	end
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
 	self:SetupProfile()
@@ -562,7 +580,10 @@ function ENT:SetupProp( id )
 	end
 
 	ent.EquipmentData = data
-	if ( data.Name ) then ent.EquipmentName = data.Name end
+	if ( data.Name ) then 
+		ent.EquipmentName = data.Name
+		self.ActiveNamedEquipment[data.Name] = ent
+	end
 
 	ent:SetMoveType( MOVETYPE_NONE )
 	ent:SetParent( self:GetComponentParent() )
@@ -713,7 +734,10 @@ function ENT:SetupComponent( id )
 
 		ent.EquipmentData = data
 
-		if ( data.Name ) then ent.EquipmentName = data.Name end
+		if ( data.Name ) then 
+			ent.EquipmentName = data.Name
+			self.ActiveNamedEquipment[data.Name] = ent
+		end
 
 		if ( data.Parent ) then
 			self:AddToComponentPendingParents( ent, data.Parent )
@@ -740,27 +764,13 @@ end
 
 function ENT:UpdateComponentPendingParents()
 	if ( not self.ComponentPendingParents ) then return end
-	
-	local namedEntities = {}
-	
-	for i=1, #self.PropArray do
-		if ( self.PropArray[i].EquipmentName ) then
-			namedEntities[self.PropArray[i].EquipmentName] = self.PropArray[i]
-		end
-	end
-
-	for i=1, #self.ComponentArray do
-		if ( self.ComponentArray[i].EquipmentName ) then
-			namedEntities[self.ComponentArray[i].EquipmentName] = self.ComponentArray[i]
-		end
-	end
 
 	local newPending = nil
 
 	for ent, parentName in pairs( self.ComponentPendingParents ) do
 		if ( not IsValid( ent ) ) then continue end
-		if ( namedEntities[parentName] ) then
-			ent:SetParent( namedEntities[parentName] )
+		if ( self.ActiveNamedEquipment[parentName] ) then
+			ent:SetParent( self.ActiveNamedEquipment[parentName] )
 			ent.IsParentPending = nil
 			ent:SetPropertiesFromEquipment()
 			ent:ApplyModeUpdate()
@@ -793,7 +803,13 @@ end
 
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
-	if ( (self.Components[index] or {}).IsVirtual ) then
+	if ( not self.Components[index] ) then return end
+	
+	if ( self.Components[index].EquipmentName ) then
+		self.ActiveNamedEquipment[self.Components[index].EquipmentName] = nil
+	end
+
+	if ( (self.Components[index]).IsVirtual ) then
 		self.Components[index]:RemoveVirtual()
 	elseif ( IsValid(self.Components[index]) ) then
 		self.Components[index]:Remove()
@@ -1160,58 +1176,19 @@ function ENT:OnComponentReloaded( componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then
-			
-			local children
-			-- If the component serves as a parent
-			if ( IsValid( component ) and #component:GetChildren() > 0 ) then
-				hasChildren = true
-				-- children = component:GetChildren()
-				-- for i=1, #children do
-				-- 	if ( children[i].IsPhotonLightingComponent ) then
-				-- 		self:AddToComponentPendingParents( children[i], children[i].EquipmentData.Parent )
-				-- 	else
-				-- 		self:AddToPropPendingParents( children[i], children[i].EquipmentData.Parent )
-				-- 	end
-				-- end
-			end
 
 			self:RemoveEquipmentComponentByIndex( equipmentId )
 			local newComponent = self:SetupComponent( equipmentId )
-			
-			-- if ( children ) then
-			-- 	for _, child in pairs( children ) do
-			-- 		child:SetParent( newComponent )
-			-- 	end
-			-- end
 
 			matched = true
 		end
 	end
 
-	-- if ( hasChildren ) then
-	-- 	for i=1, #self.ComponentArray do
-	-- 		if ( self.ComponentArray[i].IsVirtual ) then continue end
-	-- 		if ( not IsValid( self.ComponentArray[i]:GetParent() ) ) and ( self.ComponentArray[i].EquipmentData.Parent ) then
-	-- 			self:AddToComponentPendingParents( self.ComponentArray[i], self.ComponentArray[i].EquipmentData.Parent )
-	-- 		end
-	-- 	end
-		
-	-- 	for i=1, #self.PropArray do
-	-- 		if ( not IsValid( self.PropArray[i]:GetParent() ) ) and ( self.PropArray[i].EquipmentData.Parent ) then
-	-- 			self:AddToPropPendingParents( self.PropArray[i], self.PropArray[i].EquipmentData.Parent )
-	-- 		end
-	-- 	end
-
-	-- 	self:UpdateComponentPendingParents()
-	-- 	self:UpdatePropPendingParents()
-	-- end
-
-
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end
 
-	if ( ( not matched ) and ( shouldExist ) ) or ( hasChildren ) then
+	if ( ( not matched ) and ( shouldExist ) ) then
 		print( "Queueing hard reload because component [%s] is not currently spawned...", componentId )
 		self.DoHardReload = true
 	end

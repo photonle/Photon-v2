@@ -9,8 +9,11 @@ include("shared.lua")
 ---@field NextPulse number
 ENT = ENT
 
+local info, warn = Photon2.Debug.Declare( "Library" )
+
+
 local printOnly = print
-local print = Photon2.Debug.Print
+local print = info
 local RealTime = RealTime
 
 ENT.FrameDuration = 1/24
@@ -123,6 +126,23 @@ function ENT:Think()
 	end
 
 	if (not self.IsSuspended) then
+		if ( self.PropPendingParents ) then
+			self:UpdatePropPendingParents()
+			for ent, parentName in pairs( self.PropPendingParents or {} ) do
+				warn( "Failed to parent entity to: " .. tostring( parentName ) )
+				ent:Remove()
+			end
+			self.PropPendingParents = nil
+		end
+
+		if ( self.ComponentPendingParents ) then
+			self:UpdateComponentPendingParents()
+			for ent, parentName in pairs( self.ComponentPendingParents or {} ) do
+				warn( "Failed to parent entity to: " .. tostring( parentName ) )
+				ent:Remove()
+			end
+			self.ComponentPendingParents = nil
+		end
 		-- print("invalidating bone cache")
 		-- self:GetParent():InvalidateBoneCache()
 		if ( self.LastAmbientCheck + self.AmbientCheckDuration <= RealTime() ) then
