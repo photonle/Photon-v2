@@ -308,7 +308,7 @@ COMPONENT.Inputs = {
 			Tail_R = "ON",
 			DRL = "ON"
 		},
-		["AUTO"] = {
+		["DRL"] = {
 			["DRL"] = "ON"
 		}
 	},
