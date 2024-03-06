@@ -7,8 +7,8 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[Siren #2 Speaker]]
-
+COMPONENT.Title = [[Siren #2 Speaker]]
+COMPONENT.Category = "Speaker"
 COMPONENT.Base = "siren_prototype"
 
 

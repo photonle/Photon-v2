@@ -1,6 +1,7 @@
 include("sh_init.lua")
 include("sv_net.lua")
 
+
 include("sh_component_builder.lua")
 include("sh_library.lua")
 include("sh_index.lua")
@@ -11,21 +12,27 @@ include("sv_functions.lua")
 include("sh_input.lua")
 
 local profiles = Photon2.Index.Profiles
-local print = Photon2.Debug.Print
+-- local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
+
+-- Hacky fix for some dumbass code in original Photon
+local function photonLegacySpawnOverride( self, ent )
+	if not IsValid( ent ) then return end
+	if ( not ent.VehicleTable.IsEMV ) then return end
+	EMVU:OriginalSpawnedVehicle( ent )
+end
 
 ---@param ent Entity
 Photon2.OnEntityCreated = function( ent )
-	-- ent:SetKeyValue("damagefilter", "vehicle-name")
-	--local targ = ent:GetInternalVariable("LightingOriginHack") or "<error>"
-	--Photon2.Debug.Print("KEY VALUE: " .. tostring(targ))
-	--ent.SetKeyValue = ent._oldSetKeyValue
+	if ( EMVU and not EMVU.OriginalSpawnedVehicle ) then
+		EMVU.OriginalSpawnedVehicle = EMVU.SpawnedVehicle
+		EMVU.SpawnedVehicle = photonLegacySpawnOverride
+	end
 	local duration = 0.1
 	-- if ( CurTime() > 10000 ) then duration = 2 end
 	timer.Simple(duration, function()
 		if not IsValid( ent ) then return end
 		if ( 
-			-- ( ent:IsVehicle() ) or 
 			( Photon2.Index.Profiles.Map[ent:GetClass()] and Photon2.Index.Profiles.Map[ent:GetClass()][ent:GetModel()] )
 		) then
 			Photon2.OnPostVehicleCreated ( ent )
@@ -76,7 +83,7 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
 
 	vehicle:SetPhotonController( controller )
-
+	
 	return controller
 end
 

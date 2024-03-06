@@ -4,23 +4,28 @@ NAME = "PhotonBaseEntity"
 ---@class PhotonBaseEntity : photon_entity
 ---@field Entity Entity
 ---@field IsVirtual? boolean
+---@field UIMode? boolean
 ---@field Model? string
 ---@field PhotonController PhotonController
 ---@field BodyGroups? table
 ---@field SubMaterials? table
 ---@field RenderGroup? RENDERGROUP
+---@field EquipmentData? table Data from this entity's coresponding equipment entry.
+---@field IsParentPending? boolean If this entity is to be parented to another but hasn't been setup yet.
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
 
 ENT.DefaultInputPriorities = {
-	["Emergency.Cut"] 				= 160,
-	["Emergency.Illuminate"]		= 150,
-	["Emergency.SceneForward"] 		= 140,
-	["Emergency.SceneLeft"] 		= 130,
-	["Emergency.SceneRight"] 		= 120,
-	["Vehicle.Signal"] 				= 110,
-	["Vehicle.Brake"] 				= 100,
+	["#DEBUG"]						= 9999,
+	["Emergency.Cut"] 				= 170,
+	["Emergency.Illuminate"]		= 160,
+	["Emergency.SceneForward"] 		= 150,
+	["Emergency.SceneLeft"] 		= 140,
+	["Emergency.SceneRight"] 		= 130,
+	["Vehicle.Signal"] 				= 120,
+	["Vehicle.Brake"] 				= 110,
+	["Vehicle.Engine"]				= 100,
 	["Vehicle.Transmission"] 		= 90,
 	["Emergency.Directional"] 		= 80,
 	["Emergency.Auxiliary"] 		= 70,
@@ -32,7 +37,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
 	["Vehicle.Lights"]	 			= 10,
-	["Vehicle.Ambient"]				= 0
+	["Vehicle.Ambient"]				= 0,
 }
 
 ENT.SubMaterials = {}
@@ -40,15 +45,25 @@ ENT.BodyGroups = {}
 ENT.PoseParameters = {}
 ENT.Bones = {}
 
+-- Parameters used when showing the entity
+-- in a UI preview window.
+ENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0.00001, 0.00001, 0.00001 ),
+	Zoom = 1
+}
+
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
 ---@param controller PhotonController
+---@param uiMode? boolean If the entity is intended to be rendered in a UI element.
 ---@return PhotonBaseEntity
-function ENT:Initialize( ent, controller )
+function ENT:Initialize( ent, controller, uiMode )
 	---@type PhotonBaseEntity
 	local photonEnt = {
 		Entity = ent,
-		PhotonController = controller
+		PhotonController = controller,
+		UIMode = uiMode
 	}
 	setmetatable( photonEnt, { __index = self } )
 	
@@ -68,7 +83,11 @@ function ENT:Initialize( ent, controller )
 		ent = photonEnt
 	end
 	
-	photonEnt.CurrentModes = controller.CurrentModes
+	if ( IsValid( controller ) ) then
+		photonEnt.CurrentModes = controller.CurrentModes
+	else
+		photonEnt.CurrentModes = {}
+	end
 
 	return ent --[[@as PhotonBaseEntity]]
 end
@@ -159,7 +178,7 @@ end
 function ENT:SetupStaticBones()
 	
 	-- TODO: better approach instead of polling
-	if ( ( not IsValid( self:GetParent() ) )  and ( not self.IsVirtual ) ) then
+	if ( ( not IsValid( self:GetParent() ) ) and ( not self.IsVirtual ) ) or ( self.IsParentPending ) then
 		local this = self
 		timer.Simple( 0.001, function()
 			if ( not IsValid( this ) ) then return end
@@ -321,6 +340,16 @@ function ENT:CreateClientside( controller )
 	return ent
 end
 
+function ENT:CreateForUI()
+	PHOTON2_ENTITY.RenderGroup = RENDERGROUP_OTHER
+	local ent = self:Initialize( ents.CreateClientside( "photon_entity" ), nil, true )
+	PHOTON2_ENTITY.RenderGroup = nil
+	ent:SetNoDraw( true )
+	ent:SetIK( false )
+	ent:Setup()
+	return ent
+end
+
 -- Creates a component on an existing entity (clientside).
 ---@param ent Entity
 ---@param controller PhotonController
@@ -379,12 +408,14 @@ function ENT:FollowParentBone( bone )
 		boneId = bone
 	end
 	if ( not boneId ) then
-		ErrorNoHalt( "Unable to find bone [" .. tostring( bone ) .. "]" )
+		ErrorNoHaltWithStack( "Unable to find bone [" .. tostring( bone ) .. "] in " .. tostring( parent:GetModel() ) )
 		return
 	end
 	
 	self:SetParent( nil )
 	self:FollowBone( parent, boneId )
+	-- Ths is needed otherwise it stops following if one parent is frozen
+	self:AddEffects( EF_PARENT_ANIMATES )
 	self.FollowingBone = boneId
 	-- self:SetPredictable( true )
 	-- hook.Add( "Think", self, function()
@@ -409,13 +440,19 @@ function ENT:SetProperty( property, value )
 end
 
 
----@param equipment PhotonVehicleEquipment
+---@param equipment table?
 ---@param isSoftUpdate? boolean (Default = `false`)
 function ENT:SetPropertiesFromEquipment( equipment, isSoftUpdate )
 	-- These values manipulate entity properties and must not be called
 	-- if Photon is not controlling the actual component entity.
 	if ( self.IsVirtual ) then return end
 	
+	-- if ( self.IsParentPending ) then 
+	-- 	ErrorNoHaltWithStack( "Equipment properties being setup while IsParentPending = true." )
+	-- 	return
+	-- end
+
+	equipment = equipment or self.EquipmentData --[[@as table]]
 	-- Bone following needs to occur before positioning
 	-- to work correctly.
 	if ( equipment.FollowBone ) then

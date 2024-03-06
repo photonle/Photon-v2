@@ -82,9 +82,9 @@ function Element:OnStateChange( state )
 	self.Smooth = state.Smooth
 	self.Direction = state.Direction
 	self.Speed = state.Speed
-	self.Target = state.Target
-	self.SweepStart = state.SweepStart
-	self.SweepEnd = state.SweepEnd
+	self.Target = ( state.Target or 0 ) % 360
+	self.SweepStart = ( state.SweepStart or 0 ) % 360
+	self.SweepEnd = ( state.SweepEnd or 0 ) % 360
 	self.SweepPause = state.SweepPause
 	self.AngleOutputMap = state.AngleOutputMap
 	self.DeactivateOnTarget = state.DeactivateOnTarget
@@ -93,6 +93,26 @@ function Element:OnStateChange( state )
 
 	if ( state.Activity == "Fixed" and self.Value ~= state.Target ) then
 		self.InTransit = true
+		if ( self.Direction == 0 ) then
+			-- print( "Value: " .. tostring( self.Value ) .. " Target: " .. tostring( self.Target ) )
+			if ( self.Value > self.Target ) then
+				if ( ( self.Value - self.Target ) <= 180 ) then
+					-- print("condition 1")
+					self.Direction = -1
+				else
+					-- print("condition 2")
+					self.Direction = 1
+				end
+			else
+				if ( ( self.Target - self.Value ) <= 180 ) then
+					-- print("condition 3")
+					self.Direction = 1
+				else
+					-- print("condition 4")
+					self.Direction = -1
+				end
+			end
+		end
 	elseif ( state.Activity == "Sweep" ) then
 		self.InTransit = true
 		self.Direction = self.Direction * -1

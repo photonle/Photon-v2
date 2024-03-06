@@ -8,13 +8,19 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal nForce (54")]]
-
+COMPONENT.Title = [[SoundOff Signal nForce (54")]]
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/nforce_suv.mdl"
 
 COMPONENT.States = {
 	[1] = "R",
 	[2] = "B"
+}
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 1
 }
 
 local domeParameters = { 

@@ -10,9 +10,15 @@ COMPONENT.Credits = {
 
 COMPONENT.Phase = nil
 
-COMPONENT.PrintName = [[Federal Signal X-Stream Single]]
-
+COMPONENT.Title = [[Federal Signal X-Stream Single]]
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/schmal/fedsig_xstream_single.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 2
+}
 
 COMPONENT.Templates = {
 	["2D"] = {
@@ -84,6 +90,9 @@ COMPONENT.Inputs = {
 			Light = "FLASH"
 		},
 		["MODE2"] = {
+			Light = "FLASH"
+		},
+		["MODE3"] = {
 			Light = "FLASH"
 		}
 	},

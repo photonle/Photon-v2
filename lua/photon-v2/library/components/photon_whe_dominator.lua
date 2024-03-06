@@ -1,7 +1,7 @@
 local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Name = "photon_whe_dominator_2"
-
+COMPONENT.Title = "Whelen Dominator (x2)"
 COMPONENT.Author = "Photon"
 COMPONENT.Credits = {
 	Model = "SGM",
@@ -15,7 +15,14 @@ COMPONENT.States = {
 	[4] = "A"
 }
 
+COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/sentry/props/dominator2.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, -90, 0 ),
+	Zoom = 1.8
+}
 
 COMPONENT.Templates = {
 	["2D"] = {
@@ -43,10 +50,13 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2"
+			[1] = "1 2",
+			[2] = "1",
+			[3] = "2",
 		},
 		Sequences = {
-			ALL = { 1 }
+			ALL = { 1 },
+			ALT = sequence():Alternate( 2, 3, 8 )
 		}
 	}
 }
@@ -55,7 +65,9 @@ COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
 			All = "ALL"
-		}
+		},
+		["MODE2"] = { All = "ALT" },
+		["MODE3"] = { All = "ALT" },
 	}
 }
 
@@ -63,6 +75,7 @@ Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
 COMPONENT.Name = "photon_whe_dominator_4"
+COMPONENT.Title = "Whelen Dominator (x4)"
 COMPONENT.Model = "models/sentry/props/dominator4.mdl"
 COMPONENT.Base = "photon_whe_dominator_2"
 COMPONENT.StateMap = "[1/3] 1 3 [2/4] 2 4"
@@ -74,7 +87,9 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2 3 4"
+			[1] = "1 2 3 4",
+			[2] = "1 3",
+			[3] = "2 4"
 		},
 		Sequences = {
 			ALL = { 1 }
@@ -85,6 +100,7 @@ Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
 COMPONENT.Name = "photon_whe_dominator_6"
+COMPONENT.Title = "Whelen Dominator (x6)"
 COMPONENT.Model = "models/sentry/props/dominator6.mdl"
 COMPONENT.Base = "photon_whe_dominator_4"
 COMPONENT.StateMap = "[1/3] 1 3 5 [2/4] 2 4 6"
@@ -96,7 +112,9 @@ COMPONENT.Elements = {
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2 3 4 5 6"
+			[1] = "1 2 3 4 5 6",
+			[2] = "1 3 5",
+			[3] = "2 4 6"
 		},
 		Sequences = {
 			ALL = { 1 }
@@ -107,6 +125,7 @@ Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
 COMPONENT.Name = "photon_whe_dominator_8"
+COMPONENT.Title = "Whelen Dominator (x8)"
 COMPONENT.Model = "models/sentry/props/dominator8.mdl"
 COMPONENT.Base = "photon_whe_dominator_6"
 COMPONENT.StateMap = "[1/3] 1 3 5 7 [2/4] 2 4 6 8"

@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Code = "Noble"
 }
 
-COMPONENT.PrintName = [[Federal Signal MB1 Controller]]
-
+COMPONENT.Title = [[Federal Signal MB1 Controller]]
+COMPONENT.Category = "Controller"
 COMPONENT.Model = "models/noble/fedsig_mb1_controller.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, -90, 45 ),
+	Zoom = 4
+}
 
 COMPONENT.Templates = {
 	["Sub"] = {

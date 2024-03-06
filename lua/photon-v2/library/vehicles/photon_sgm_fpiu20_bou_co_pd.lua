@@ -31,11 +31,25 @@ local livery = PhotonMaterial.New({
 	Parameters = {
 		["$basetexture"] = "schmal/liveries/sgm_fpiu20/bou_co_pd.png",
 		["$bumpmap"] = "photon/common/flat",
-		["$phong"] = 1,
+
 		["$envmap"] = "env_cubemap",
-		["$envmaptint"] = Vector(0.020, 0.020, 0.023),
-		["$phongboost"] = 1.25,
-		["$phongexponent"] = 23,
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
 		["$nodecal"] = 1
 	}
 })
@@ -49,7 +63,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				UIComponents = {
+				Components = {
 					{
 						Component = "photon_hud_default"
 					}
@@ -126,6 +140,10 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Phase = "A",
 						States = { "R", "B" },
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Inputs = {
 							["Emergency.SceneForward"] = {
 								["FLOOD"] = { Light = "SCENE" }
@@ -181,6 +199,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4",
 						Position = Vector( -15, 128, 34 ),
 						Angles = Angle( 0, 90, 0),
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -224,6 +246,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -20.5, 124.5, 36 ),
 						Angles = Angle( 0, 180, 0),
 						Phase = "A",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -284,7 +310,23 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Valor",
 				Components = {
+					-- {
+					-- 	Name = "@parent1",
+					-- 	Component = "photon_sos_undercover",
+					-- 	Parent = "@valor",
+					-- 	Position = Vector( 0, 0, 20 ),
+					-- 	Angles = Angle( 0, 0, 0 ),
+
+					-- },
+					-- {
+					-- 	Name = "@parent2",
+					-- 	Component = "photon_sos_undercover",
+					-- 	Parent = "@parent1",
+					-- 	Position = Vector( 0, 0, 20 ),
+					-- 	Angles = Angle( 0, 0, 0 ),
+					-- },
 					{
+						Name = "@valor",
 						Component = "photon_fedsig_valor_suv",
 						Position = Vector(0, -15, 86.1),
 						Angles = Angle(1.5, 90, 0),
@@ -307,17 +349,35 @@ VEHICLE.Equipment = {
 						States = {
 							[1] = "R", [2] = "B", [3] = "W"
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {},
+						-- InputPriorities = {
+						-- 	["Virtual.ParkedWarning"] = 41
+						-- },
+						-- VirtualOutputs = {
+						-- 	["Virtual.ParkedWarning"] = {
+						-- 		{
+						-- 			Mode = "MODE3",
+						-- 			Conditions = {
+						-- 				["Emergency.Warning"] = { "MODE3" },
+						-- 				["Vehicle.Transmission"] = { "PARK" }
+						-- 			}
+						-- 		}
+						-- 	}
+						-- },
 						Inputs = {
 							["Emergency.Marker"] = {
 								["ON"] = { SteadyBurn = "FULL" }
 							},
-							-- !MODE1 is the same as MODE1, but indicates that
-							-- the table should NOT be inherited. This prevents
-							-- the other sequences from playing in MODE1.
-							--
-							-- This is a Photon-specific feature built into its
-							-- underlying inheritance functionality.
+							-- ["Virtual.ParkedWarning"] = {
+							-- 	["MODE3"] = {
+							-- 		RE_Rear = "MODE2",
+							-- 		RE_Front = "MODE2",
+							-- 	}
+							-- },
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									RE_Rear = "MODE1",
@@ -469,6 +529,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -10, -128.7, 56.4 ),
 						Angles = Angle( 0, -96, 0),
 						Phase = "A",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						Segments = {
 							-- Creates a new segment
 							Override = {
@@ -533,6 +597,10 @@ VEHICLE.Equipment = {
 						Component = "photon_fedsig_xstream_duo",
 						Position = Vector( -37.6, -95, 63.4 ),
 						Angles = Angle( 0, 180+7, 180),
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						BodyGroups = {
 							["Mount"] = 1,
 							["Shroud"] = 1
@@ -574,9 +642,13 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Standard Lighting",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmfpiu20",
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+							NightParkMode = { "Emergency.Marker", "ON" }
+						},
 						-- Add custom segments to to flash the vehicle lights
 						Segments = {
 							-- Create new segment for reverse flashers
@@ -597,12 +669,23 @@ VEHICLE.Equipment = {
 							}
 						},
 						Inputs = {
+							-- This channel and mode is setup by the ParkMode flag
+							["Emergency.ParkedWarning"] = {
+								["MODE3"] = {
+									HighBeamL = "PASS",
+									HighBeamR = "PASS",
+									HeadlightL = "PASS",
+									HeadlightR = "PASS",
+								}
+							},
 							["Emergency.Warning"] = {
 								["MODE1"] = {
 									-- Assign reverse left-right flash to MODE1
 									ReverseFlasher = "MODE1"
 								},
-								["MODE2"] = { ReverseFlasher = "MODE2" },
+								["MODE2"] = { 
+									ReverseFlasher = "MODE2",
+								},
 								["MODE3"] = { 
 									HighBeamL = "WIGWAG",
 									HighBeamR = "WIGWAG",

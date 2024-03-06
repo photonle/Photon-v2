@@ -13,8 +13,8 @@ COMPONENT.States = {
 	[2] = "B"
 }
 
-COMPONENT.PrintName = [[Setina Push Bumper - 2013 Ford Police Utility]]
-
+COMPONENT.Title = [[Setina Push Bumper - 2013 Ford Police Utility]]
+COMPONENT.Category = "Bumper"
 COMPONENT.Model = "models/schmal/fpiu13_setina.mdl"
 
 COMPONENT.BodyGroups = {

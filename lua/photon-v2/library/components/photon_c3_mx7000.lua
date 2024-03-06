@@ -2,7 +2,6 @@ if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
 COMPONENT.Author = "Photon"
-
 COMPONENT.Credits = {
 	Model = "SGM",
 	Code = "Schmal"
@@ -12,9 +11,15 @@ COMPONENT.WorkshopRequirements = {
 	[2821476376] = "Code 3 MX7000 Model"
 }
 
-COMPONENT.PrintName = [[Code 3 MX7000]]
-
+COMPONENT.Title = [[Code 3 MX7000]]
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/sentry/props/mx7k.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector( 0, 0, -4 ),
+	Angles = Angle( 0, -90, 0 ),
+	Zoom = 0.7
+}
 
 COMPONENT.SubMaterials = {
 	[0] = "photon/textures/mx7000_glass_colored",

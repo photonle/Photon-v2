@@ -7,8 +7,8 @@ COMPONENT.Credits = {
 	Code = "Schmal", Model = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal obSERVE Dome Light]]
-
+COMPONENT.Title = [[SoundOff Signal obSERVE Dome Light]]
+COMPONENT.Category = "Compartment"
 COMPONENT.Model = "models/schmal/sos_observe.mdl"
 
 COMPONENT.Templates = {

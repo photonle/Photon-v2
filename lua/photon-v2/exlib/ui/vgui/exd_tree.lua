@@ -38,10 +38,8 @@ function PANEL:Root()
 	return self.RootNode
 end
 
-function PANEL:AddNode( strName, strIcon )
-
-	return self.RootNode:AddNode( strName, strIcon )
-
+function PANEL:AddNode( strName, strIcon, notSelectable )
+	return self.RootNode:AddNode( strName, strIcon, notSelectable )
 end
 
 function PANEL:ChildExpanded( bExpand )

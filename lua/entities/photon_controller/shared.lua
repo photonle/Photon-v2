@@ -18,6 +18,7 @@
 ---@field SyncAttachedParentSubMaterials boolean SGM attachment framework compatability.
 ---@field CurrentPulseComponents table<PhotonLightingComponent> (Internal) Array of components actively listening to controller pulse cycle.
 ---@field RebuildPulseComponents boolean (Internal) Triggers rebuild of all components that need to be on the pulse schedule.
+---@field UsesSubParenting boolean (Internal) If any components use sub-parenting (uncommon). Used for optimization purposes.
 ENT = ENT
 
 local info, warn = Photon2.Debug.Declare( "Controller" )
@@ -31,6 +32,7 @@ ENT.PrintName = "Photon Controller"
 ENT.Authors = "Photon Lighting Group"
 ENT.Spawnable = true
 ENT.IsPhotonController = true
+ENT.UsesSubParenting = false
 
 ENT.ChannelTree = {
     ["Emergency"] = { 
@@ -55,7 +57,8 @@ ENT.ChannelTree = {
         "Transmission",
         "Lights",
         "HighBeam",
-		"Ambient"
+		"Ambient",
+		"Engine"
     }
 }
 
@@ -132,7 +135,7 @@ function ENT:GetChannelModeTree()
 	local cache = {}
 	local result = {}
 
-	local componentTables = { "Components", "VirtualComponents" }
+	local componentTables = { "Components" }
 
 	for _, componentType in pairs( componentTables ) do
 		for k, v in pairs( self[componentType] ) do
@@ -175,22 +178,24 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Bool", 0, "LinkedToVehicle" )
 	self:NetworkVar( "Bool", 1, "VehicleReversing" )
 	self:NetworkVar( "Bool", 2, "VehicleBraking" )
-	
+	self:NetworkVar( "Bool", 3, "EngineRunning" )
+
 	self:NetworkVar( "Int",  0, "VehicleSpeed" )
+
+	self:NetworkVarNotify( "EngineRunning", self.OnEngineStateChange )
 end
 
 function ENT:InitializeShared()
 	self.Components = {}
-	self.VirtualComponents = {}
 	self.Props = {}
-	self.UIComponents = {}
 	self.SubMaterials = {}
+	self.EquipmentProperties = {}
 
 	self.ComponentArray = {}
-	self.VirtualComponentArray = {}
 	self.PropArray = {}
-	self.UIComponentArray = {}
 	self.SubMaterialArray = {}
+
+	self.ActiveNamedEquipment = {}
 
 	self.Equipment = PhotonVehicleEquipmentManager.GetTemplate()
 
@@ -212,6 +217,19 @@ function ENT:InitializeShared()
 
 	-- self:SetInteractionSound( "Controller", "sos_nergy" )
 	-- self:SetInteractionSound( "Click", "default" )
+end
+
+function ENT:FindNamedEquipment( name )
+	if ( self.ActiveNamedEquipment[name] ) then
+		if ( IsValid( self.ActiveNamedEquipment[name] ) ) then
+			return self.ActiveNamedEquipment[name]
+		elseif ( self.ActiveNamedEquipment.IsVirtual ) then
+			return self.ComponentParent
+		else
+			self.ActiveNamedEquipment[name] = nil
+		end
+	end
+	return nil
 end
 
 function ENT:OnMeshCachePurge()
@@ -302,21 +320,21 @@ ENT.Interactions = {
 function ENT:QueryModeFromInputSchema( channel, query, param )
 	local schema = self:GetInputSchema()[channel]
 	local currentMode = self.CurrentModes[channel]
-	if ( not schema ) then return nil end
+	if ( not schema ) or ( not currentMode ) then return nil end
 	local result
 	if ( query == "FIRST" ) then
 		result = schema[1]
 	elseif ( query == "LAST" ) then
 		result = schema[#schema]
 	elseif ( query == "NEXT" ) then
-		local currentIndex = ( schema[currentMode].Index or 0 ) + 1
+		local currentIndex = ( (schema[currentMode] or {}).Index or 0 ) + 1
 		if ( currentIndex > #schema ) then
 			result = schema[1]
 		else
 			result = schema[currentIndex]
 		end
 	elseif ( query == "PREV" ) then
-		local currentIndex = ( schema[currentMode].Index or 0 ) - 1
+		local currentIndex = ((schema[currentMode] or {}).Index or 0 ) - 1
 		if ( currentIndex < 1 ) then
 			result = schema[#schema]
 		else
@@ -329,7 +347,7 @@ function ENT:QueryModeFromInputSchema( channel, query, param )
 		param = tonumber( param ) or 0
 		result = schema[math.Clamp( 1 + param, 1, #schema )]
 	end
-	return result.Mode
+	return (result or {}).Mode
 end
 
 ---@param class string
@@ -464,7 +482,9 @@ end
 
 
 function ENT:HardReload()
-	-- ErrorNoHaltWithStack()
+	if CLIENT then
+		-- ErrorNoHaltWithStack("Hard reload was triggered...")
+	end
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
 	self:SetupProfile()
@@ -472,17 +492,21 @@ end
 
 
 function ENT:SoftEquipmentReload()
-	print("Controller is executing SOFT reload...")
+	print("Controller performing SOFT reload...")
 	local profile = self:GetProfile()
-	-- TODO: don't virtual and UI components need to be included here?
-	for id, component in pairs(self.Components) do
-		component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
+
+	for id, component in pairs( self.Components ) do
+		if ( ( component.EquipmentData )  and ( not component.EquipmentData.Parent ) ) then
+			component:SetPropertiesFromEquipment( profile.Equipment.Components[id], true )
+		end
 	end
+	
 	for id, prop in pairs(self.Props) do
 		prop:SetPropertiesFromEquipment( profile.Equipment.Props[id], true )
 		prop:SetupSubMaterials()
 		prop:SetupBodyGroups()
 	end
+	
 	self:SetSchema( profile.Schema )
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
@@ -541,36 +565,6 @@ function ENT:GetCurrentEquipment()
 	return result or self.Equipment
 end
 
----@param id string
-function ENT:SetupUIComponent( id )
-	local data = self.Equipment.UIComponents[id]
-	-- printf("Setting up UI component [%s]", id)
-	if ( not data ) then
-		error(string.format("Unable to locate equipment UI component ID [%s]", id))
-		return
-	end
-
-	local component = Photon2.GetComponent( data.Component )
-	local uiEnt = component:CreateOn( self, self )
-	self.UIComponents[id] = uiEnt
-	uiEnt:ApplyModeUpdate()
-end
-
----@param id string
-function ENT:SetupVirtualComponent( id )
-	local data = self.Equipment.VirtualComponents[id]
-	-- printf("Setting up virtual component [%s]", id)
-	if (not data) then
-		error(string.format("Unable to locate equipment virtual component ID [%s]", id))
-		return
-	end
-
-	local component = Photon2.GetComponent( data.Component )
-	local virtualEnt = component:CreateOn( self:GetComponentParent(), self )
-	self.VirtualComponents[id] = virtualEnt
-	virtualEnt:ApplyModeUpdate()
-end
-
 function ENT:SetupProp( id )
 	local data = self.Equipment.Props[id]
 	-- printf( "Setting up Prop [%s]", id )
@@ -591,15 +585,53 @@ function ENT:SetupProp( id )
 		return
 	end
 
+	ent.EquipmentData = data
+	if ( data.Name ) then 
+		ent.EquipmentName = data.Name
+		self.ActiveNamedEquipment[data.Name] = ent
+	end
+
 	ent:SetMoveType( MOVETYPE_NONE )
 	ent:SetParent( self:GetComponentParent() )
-	ent:SetPropertiesFromEquipment( data )
+
+	if ( data.Parent ) then
+		self:AddToPropPendingParents( ent, data.Parent )
+	else
+		ent:SetPropertiesFromEquipment( data )
+	end
 
 	if (IsValid(self.Props[id])) then
 		self.Props[id]:Remove()
 	end
 
 	self.Props[id] = ent
+end
+
+function ENT:AddToPropPendingParents( ent, parentName )
+	self.UsesSubParenting = true
+	ent.IsParentPending = true
+	self.PropPendingParents = self.PropPendingParents or {}
+	self.PropPendingParents[ent] = parentName
+end
+
+function ENT:UpdatePropPendingParents()
+	if ( not self.PropPendingParents ) then return end
+
+	local newPending = nil
+	
+	for ent, parentName in pairs( self.PropPendingParents ) do
+		if ( not IsValid( ent ) ) then continue end
+		if ( ActiveNamedEquipment[parentName] ) then
+			ent:SetParent( ActiveNamedEquipment[parentName] )
+			ent.IsParentPending = nil
+			ent:SetPropertiesFromEquipment()
+		else
+			newPending = newPending or {}
+			newPending[ent] = parentName
+		end
+	end
+
+	self.PropPendingParents = newPending
 end
 
 ---@param id string | any
@@ -621,6 +653,7 @@ function ENT:SetupBodyGroup( id )
 end
 
 function ENT:SetParentSubMaterial( index, material )
+	if ( index == "SKIN" ) then index = Photon2.Util.FindSkinSubMaterial( self:GetParent() ) end
 	self:GetParent():SetSubMaterial( index, material )
 	if ( self.SyncAttachedParentSubMaterials ) then
 		for i, child in pairs( self:GetParent():GetChildren() ) do
@@ -650,6 +683,14 @@ function ENT:SetupInteractionSound( id )
 	self:SetInteractionSound( data.Class, data.Profile )
 end
 
+function ENT:SetupEquipmentProperties( id )
+	if CLIENT then return end
+	local data = self.Equipment.Properties[id]
+
+	if ( data.Skin ) then self:GetParent():SetSkin( data.Skin ) end
+	if ( data.Color ) then self:GetParent():SetColor( data.Color ) end
+end
+
 function ENT:SetupComponent( id )
 	self.AttemptingComponentSetup = true
 	local data = self.Equipment.Components[id]
@@ -657,51 +698,89 @@ function ENT:SetupComponent( id )
 		print(string.format("Unable to locate equipment component ID [%s]", id))
 		return
 	end
+
 	-- print( string.format( "Setting up component [%s] [%s]", id, data.Component ) )
 
 	---@type PhotonLightingComponent
 	local component = Photon2.GetComponent( data.Component )
 
-
 	local ent
 
-	if (SERVER and data.OnServer) then
-		-- TODO: serverside spawn code
-	elseif (CLIENT and (not data.OnServer)) then
-		---@type PhotonLightingComponent
-		ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
-		-- component.Setup( component )
+	if ( component.IsVirtual ) then
+		local component = Photon2.GetComponent( data.Component )
+		ent = component:CreateOn( self:GetComponentParent(), self )
 	else
-		return
+		if (SERVER and data.OnServer) then
+			-- TODO: serverside spawn code
+		elseif (CLIENT and (not data.OnServer)) then
+			---@type PhotonLightingComponent
+			ent = component:CreateClientside( self ) --[[@as PhotonLightingComponent]]
+			-- component.Setup( component )
+		else
+			return
+		end
+
+		if ( not ent.IsVirtual ) then
+			-- Set default/essential properties
+			ent.Entity:SetMoveType( MOVETYPE_NONE )
+			ent.Entity:SetParent( self:GetComponentParent() )
+		end
+
+		ent.EquipmentData = data
+
+		if ( data.Name ) then 
+			ent.EquipmentName = data.Name
+			self.ActiveNamedEquipment[data.Name] = ent
+		end
+
+		if ( data.Parent ) then
+			self:AddToComponentPendingParents( ent, data.Parent )
+		else
+			-- Set the other basic properties
+			ent:SetPropertiesFromEquipment()
+		end
+
+		if (IsValid(self.Components[id])) then
+			self.Components[id]:Remove()
+		end		
 	end
-
-	if ( not ent.IsVirtual ) then
-		-- Set default/essential properties
-		ent.Entity:SetMoveType( MOVETYPE_NONE )
-		ent.Entity:SetParent( self:GetComponentParent() )
-	end
-
-	-- Set the other basic properties
-	ent:SetPropertiesFromEquipment( data )
-
-	if (IsValid(self.Components[id])) then
-		self.Components[id]:Remove()
-	end
-
 	self.Components[id] = ent
-	ent:ApplyModeUpdate()
+	if ( not ent.IsParentPending ) then ent:ApplyModeUpdate() end
 	self.AttemptingComponentSetup = false
+	return ent
+end
+
+function ENT:AddToComponentPendingParents( ent, parentName )
+	self.UsesSubParenting = true
+	ent.IsParentPending = true
+	self.ComponentPendingParents = self.ComponentPendingParents or {}
+	self.ComponentPendingParents[ent] = parentName
+end
+
+function ENT:UpdateComponentPendingParents()
+	if ( not self.ComponentPendingParents ) then return end
+
+	local newPending = nil
+
+	for ent, parentName in pairs( self.ComponentPendingParents ) do
+		if ( not IsValid( ent ) ) then continue end
+		if ( self.ActiveNamedEquipment[parentName] ) then
+			ent:SetParent( self.ActiveNamedEquipment[parentName] )
+			ent.IsParentPending = nil
+			ent:SetPropertiesFromEquipment()
+			ent:ApplyModeUpdate()
+		else
+			newPending = newPending or {}
+			newPending[ent] = parentName
+		end
+	end
+
+	self.ComponentPendingParents = newPending
 end
 
 function ENT:RemoveAllComponents()
 	for id, ent in pairs(self.Components) do
 		self:RemoveEquipmentComponentByIndex( id )
-	end
-	for id, virtualComponent in pairs( self.VirtualComponents ) do
-		self:RemoveEquipmentVirtualComponentByIndex( id )
-	end
-	for id, uiComponent in pairs( self.UIComponents ) do
-		self:RemoveEquipmentUIComponentByIndex( id )
 	end
 end
 
@@ -719,26 +798,18 @@ end
 
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
-	if (IsValid(self.Components[index])) then
+	if ( not self.Components[index] ) then return end
+	
+	if ( self.Components[index].EquipmentName ) then
+		self.ActiveNamedEquipment[self.Components[index].EquipmentName] = nil
+	end
+
+	if ( (self.Components[index]).IsVirtual ) then
+		self.Components[index]:RemoveVirtual()
+	elseif ( IsValid(self.Components[index]) ) then
 		self.Components[index]:Remove()
 	end
 	self.Components[index] = nil
-end
-
-function ENT:RemoveEquipmentVirtualComponentByIndex( index )
-	-- printf("Controller is removing virtual component equipment ID [%s]", index)
-	if ( self.VirtualComponents[index] ) then
-		self.VirtualComponents[index]:RemoveVirtual()
-	end
-	self.VirtualComponents[index] = nil
-end
-
-function ENT:RemoveEquipmentUIComponentByIndex( index )
-	-- printf("Controller is removing UI component equipment ID [%s]", index)
-	if ( self.UIComponents[index] ) then
-		self.UIComponents[index]:RemoveVirtual()
-	end
-	self.UIComponents[index] = nil
 end
 
 function ENT:RemoveEquipmentPropByIndex( index )
@@ -753,7 +824,7 @@ function ENT:RemoveSubMaterialByIndex( index )
 	local parent = self:GetParent()
 	if ( not IsValid( parent ) ) then return end
 	if ( self.SubMaterials[index] ) then
-		parent:SetSubMaterial( self.SubMaterials[index].Id, nil )
+		self:SetParentSubMaterial( self.SubMaterials[index].Id, nil )
 	end
 	self.SubMaterials[index] = nil
 end
@@ -766,14 +837,7 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #components do
 		self:SetupComponent( components[i] )
 	end
-	local virtualComponents = equipmentTable.VirtualComponents
-	for i=1, #virtualComponents do
-		self:SetupVirtualComponent( virtualComponents[i] )
-	end
-	local uiComponents = equipmentTable.UIComponents
-	for i=1, #uiComponents do
-		self:SetupUIComponent( uiComponents[i] )
-	end
+	
 	local props = equipmentTable.Props
 	for i=1, #props do
 		self:SetupProp( props[i] )
@@ -782,7 +846,7 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #bodyGroups do
 		self:SetupBodyGroup( bodyGroups[i] )
 	end
-
+	
 	local subMaterials = equipmentTable.SubMaterials
 	for i=1, #subMaterials do
 		self:SetupSubMaterial( subMaterials[i] )
@@ -791,6 +855,13 @@ function ENT:AddEquipment( equipmentTable )
 	for i=1, #equipmentTable.InteractionSounds do
 		self:SetupInteractionSound( equipmentTable.InteractionSounds[i] )
 	end
+	
+	for i=1, #equipmentTable.Properties do
+		self:SetupEquipmentProperties( equipmentTable.Properties[i] )
+	end
+
+	self:UpdateComponentPendingParents()
+	self:UpdatePropPendingParents()
 end
 
 function ENT:RefreshParentSubMaterials()
@@ -800,8 +871,10 @@ function ENT:RefreshParentSubMaterials()
 		-- printf("ID: %s Material: %s", self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material)
 		self:SetParentSubMaterial( self.SubMaterialArray[i].Id, self.SubMaterialArray[i].Material )
 	end
-	for i=1, #self.VirtualComponentArray do
-		for elementIndex, element in pairs( self.VirtualComponentArray[i].Elements ) do
+
+	for i=1, #self.ComponentArray do
+		if ( not self.ComponentArray[i].IsVirtual ) then continue end
+		for elementIndex, element in pairs( self.ComponentArray[i].Elements ) do
 			if ( element and element.Class == "Sub" ) then
 				element--[[@as PhotonElementSub]]:ReapplyState()
 			end
@@ -836,12 +909,6 @@ function ENT:RemoveEquipment( equipmentTable )
 	for i=1, #equipmentTable.Components do
 		self:RemoveEquipmentComponentByIndex(equipmentTable.Components[i])
 	end
-	for i=1, #equipmentTable.VirtualComponents do
-		self:RemoveEquipmentVirtualComponentByIndex(equipmentTable.VirtualComponents[i])
-	end
-	for i=1, #equipmentTable.UIComponents do
-		self:RemoveEquipmentUIComponentByIndex(equipmentTable.UIComponents[i])
-	end
 	for i=1, #equipmentTable.Props do
 		self:RemoveEquipmentPropByIndex(equipmentTable.Props[i])
 	end
@@ -868,6 +935,25 @@ function ENT:SetupProfile( name, isReload )
 	self:RemoveAllProps()
 	self:RemoveAllSubMaterials()
 
+	if ( profile.EngineIdleEnabled and self:GetParent():IsVehicle() ) then
+		self.EngineIdleEnabled = profile.EngineIdleEnabled
+		self:GetParent().PhotonEngineIdleEnabled = profile.EngineIdleEnabled
+
+		if ( SERVER ) then
+			local soundData = Photon2.Util.GetVehicleStartAndIdleSounds( self:GetParent() )
+			self.EngineIdleData = {
+				StartSound = soundData.StartSound,
+				StartDuration = soundData.StartDuration,
+				IdleSound = soundData.IdleSound,
+				StopIdleTimer = "Photon.StopIdleSound[" .. self:EntIndex() .. "]",
+				StopStartTimer = "Photon.StopStartSound[" .. self:EntIndex() .. "]",
+
+			}
+		end
+	else
+		self.EngineIdleEnabled = false
+	end
+
 	if ( istable( profile.InteractionSounds ) ) then
 		for class, name in pairs( profile.InteractionSounds ) do
 			self:SetInteractionSound( class, name )
@@ -887,36 +973,7 @@ function ENT:SetupProfile( name, isReload )
 
 	-- This block is for static equipment which is technically
 	-- supported but also deprecated and should be removed.
-	if ( not profile.EquipmentSelections ) then
-		-- Setup normal components
-		for id, equipment in pairs( self.Equipment.Components ) do
-			self:SetupComponent( id )
-		end
-		-- Setup virtual components
-		for id, equipment in pairs( self.Equipment.VirtualComponents ) do
-			self:SetupVirtualComponent( id )
-		end
-		-- Setup UI components
-		for id, equipment in pairs( self.Equipment.UIComponents ) do
-			self:SetupUIComponent( id )
-		end
-		-- Setup props
-		for id, prop in pairs( self.Equipment.Props ) do
-			self:SetupProp( id )
-		end
-		-- Setup body groups
-		for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
-			self:SetupBodyGroup( id )
-		end
-		-- Setup sub-materials
-		for id, subMaterialData in pairs( self.Equipment.SubMaterials ) do
-			self:SetupSubMaterial( id )
-		end
-		-- Setup interaction sounds
-		for id, interactionSounds in pairs( self.Equipment.InteractionSounds ) do
-			self:SetupInteractionSound( id )
-		end
-	else
+	if ( profile.EquipmentSelections ) then
 		self:SetupSelections()
 	end
 
@@ -951,24 +1008,6 @@ function ENT:SetupComponentArrays()
 	end
 	for id, component in pairs( self.Components ) do
 		componentArray[#componentArray+1] = component
-	end
-
-	-- Setup virtual components array
-	local virtualComponentArray = self.VirtualComponentArray
-	for i=1, #virtualComponentArray do
-		virtualComponentArray[i] = nil
-	end
-	for id, component in pairs( self.VirtualComponents ) do
-		virtualComponentArray[#virtualComponentArray+1] = component
-	end
-
-	-- Setup UI components array
-	local uiComponentArray = self.UIComponentArray
-	for i=1, #uiComponentArray do
-		uiComponentArray[i] = nil
-	end
-	for id, component in pairs( self.UIComponents ) do
-		uiComponentArray[#uiComponentArray+1] = component
 	end
 
 	-- Setup props
@@ -1045,18 +1084,8 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	
 	for id, component in pairs(self.Components) do
 		-- component:ApplyModeUpdate()
-		component:SetChannelMode( channel, newState, oldState )
+		component:SetChannelMode( channel, newState )
 		if ( component.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = component end
-	end
-	for id, virtualComponent in pairs( self.VirtualComponents ) do
-		-- component:ApplyModeUpdate()
-		virtualComponent:SetChannelMode( channel, newState, oldState )
-		if ( virtualComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = virtualComponent end
-	end
-	for id, uiComponent in pairs( self.UIComponents ) do
-		-- component:ApplyModeUpdate()
-		uiComponent:SetChannelMode( channel, newState, oldState )
-		if ( uiComponent.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = uiComponent end
 	end
 
 	self.CurrentPulseComponents = pulseComponents
@@ -1077,15 +1106,6 @@ function ENT:GetActiveComponents()
 		if ( map and map[selectionIndex] ) then
 			for _, componentIndex in pairs( map[selectionIndex].Components ) do
 				result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
-			end
-			-- not checking for client here causes strange errors when reloading core files
-			if ( CLIENT ) then
-				for _, componentIndex in pairs( map[selectionIndex].VirtualComponents ) do
-					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
-				end
-				for _, componentIndex in pairs( map[selectionIndex].UIComponents ) do
-					result[self.CurrentProfile.Equipment.Components[componentIndex].Component] = true
-				end
 			end
 		end
 	end
@@ -1145,37 +1165,45 @@ function ENT:OnComponentReloaded( componentId )
 	-- if ( not self:GetActiveComponents()[componentId] ) then return end
 	local matched = false
 	local shouldExist = self:GetActiveComponents()[componentId]
+	local doSoftReload = false
+	local hasChildren = false
+	local newComponent
 	-- printf( "Controller notified of a component reload [%s]", componentId )
 	-- Reload normal components
 	for equipmentId, component in pairs( self.Components ) do
 		if ( component.Ancestors[componentId] ) then
+
 			self:RemoveEquipmentComponentByIndex( equipmentId )
-			self:SetupComponent( equipmentId )
-			matched = true
-		end
-	end
-	-- Reload virtual components
-	for equipmentId, component in pairs( self.VirtualComponents ) do
-		if ( component.Ancestors[componentId] ) then
-			self:RemoveEquipmentVirtualComponentByIndex( equipmentId )
-			self:SetupVirtualComponent( equipmentId )
-			matched = true
-		end
-	end
-	-- Reload UI components
-	for equipmentId, component in pairs( self.UIComponents ) do
-		if ( component.Ancestors[componentId] ) then
-			self:RemoveEquipmentUIComponentByIndex( equipmentId )
-			self:SetupUIComponent( equipmentId )
+			newComponent = self:SetupComponent( equipmentId )
+
 			matched = true
 		end
 	end
 
+	if ( self.UsesSubParenting and IsValid( newComponent ) ) then
+		for i=1, #self.ComponentArray do
+			if ( IsValid( self.ComponentArray[i] ) ) then
+				if ( ( self.ComponentArray[i].EquipmentData.Parent )  and ( self.ComponentArray[i].EquipmentData.Parent == newComponent.EquipmentName ) ) then
+					self.ComponentArray[i]:SetParent( newComponent )
+					self.ComponentArray[i]:SetPropertiesFromEquipment()
+				end
+			end
+		end
+		for i=1, #self.PropArray do
+			if ( IsValid( self.PropArray[i] ) ) then
+				if ( ( self.PropArray[i].EquipmentData.Parent )  and ( self.PropArray[i].EquipmentData.Parent == newComponent.EquipmentName ) ) then
+					self.PropArray[i]:SetParent( newComponent )
+					self.PropArray[i]:SetPropertiesFromEquipment()
+				end
+			end
+		end
+	end
+	
 	if ( matched ) then
 		self:SetupComponentArrays()
 	end
 
-	if ( not matched ) and ( shouldExist ) then
+	if ( ( not matched ) and ( shouldExist ) ) then
 		print( "Queueing hard reload because component [%s] is not currently spawned...", componentId )
 		self.DoHardReload = true
 	end
@@ -1187,6 +1215,8 @@ function ENT:OnComponentReloaded( componentId )
 	self:UpdatePulseComponentArray()
 
 	self.LastReloadFailed = false
+
+	if ( doSoftReload ) then self:SoftEquipmentReload()	end
 end
 
 function ENT:UpdateVehicleBraking( braking )	
@@ -1242,6 +1272,15 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 	end
 end
 
+function ENT:OnEngineStateChange( name, old, new )
+	print("Engine state change: " .. tostring(new))
+	if ( new ) then
+		self:SetChannelMode( "Vehicle.Engine", "ON" )
+	else
+		self:SetChannelMode( "Vehicle.Engine", "OFF" )
+	end
+end
+
 function ENT:GetSirenSelection( number )
 	if ( not self.CurrentProfile or not self.CurrentProfile.Siren ) then return nil end
 	return self.CurrentProfile.Siren[number]
@@ -1251,12 +1290,6 @@ function ENT:UpdatePulseComponentArray()
 	local result = {}
 	for i=1, #self.ComponentArray do
 		if( self.ComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.ComponentArray[i] end
-	end
-	for i=1, #self.VirtualComponentArray do
-		if( self.VirtualComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.VirtualComponentArray[i] end
-	end
-	for i=1, #self.UIComponentArray do
-		if( self.UIComponentArray[i].AcceptControllerPulse ) then result[#result+1] = self.UIComponentArray[i] end
 	end
 	self.CurrentPulseComponents = result
 	self.RebuildPulseComponents = false

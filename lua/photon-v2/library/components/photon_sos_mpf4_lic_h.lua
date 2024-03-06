@@ -9,9 +9,15 @@ COMPONENT.Credits = {
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.PrintName = [[SoundOff Signal mpower Fascia 4" - Horizontal License Mount]]
-
+COMPONENT.Title = [[SoundOff Signal mpower Fascia 4" - Horizontal License Mount]]
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/sentry/props/soundofffascia_plate_horizontal.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
+}
 
 COMPONENT.States = {
 	[1] = "R",

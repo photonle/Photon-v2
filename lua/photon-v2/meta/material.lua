@@ -9,7 +9,8 @@ local textureParams = {
 	["$basetexture"] = true,
 	["$bumpmap"] = true,
 	["$envmap"] = true,
-	["$detail"] = true
+	["$detail"] = true,
+	["$phongexponenttexture"] = true,
 }
 
 ---@class PhotonMaterialProperties

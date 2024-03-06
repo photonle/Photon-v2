@@ -132,7 +132,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Credits table<string, string>
 ---@field Class string
 ---@field Category string
----@field PrintName string
+---@field Title string
 ---@field Model string
 ---@field Templates PhotonLibraryComponentTemplates
 ---@field Elements table<number, PhotonElement2DEntry | PhotonElementBoneEntry | PhotonElementMeshEntry | PhotonElementProjectedEntry | PhotonElementSoundEntry | PhotonElementDynamicEntry | PhotonElementSubEntry | PhotonElementSequenceEntry | PhotonElementPoseEntry | PhotonElementVirtualEntry >
@@ -175,6 +175,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Siren table<number, table<string, string> | string> Defines the siren(s) the vehicle should use by default. You may use a complete siren-set or select tones individually from other existing sets and re-map them. If you need more customization, you should create a new siren with `Photon2.RegisterSiren(...)` and use the name of it instead.
 ---@field Schema table<string, table<table>>
 ---@field Default? boolean If true, the profile will be used by default on the base vehicle and any other non-Photon 2 vehicles of the same class and model.
+---@field Livery? string Static material to apply as the vehicle's livery.
 -- ---@field Equipment PhotonVehicleEquipment[]
 
 ---@class PhotonLibrarySiren
@@ -201,17 +202,15 @@ PhotonMaterial = PhotonMaterial
 ---@field BodyGroups? PhotonEquipmentBodyGroupEntry[]
 -- Sub materials.
 ---@field SubMaterials? PhotonEquipmentSubMaterialEntry[]
--- For Photon components that don't create standalone entities.
----@field VirtualComponents? PhotonEquipmentVirtualComponentEntry[]
--- For UI components (used for the HUD indicator).
----@field UIComponents? PhotonEquipmentUIComponentEntry[]
 -- User HUD sounds (i.e. beeps and clicks).
 ---@field InteractionSounds? PhotonEquipmentInteractionSoundEntry[]
+---@field Properties? table
 
 
 
 ---@class PhotonVehicleSelectionCategory
 ---@field Category string Category name.
+---@field Visible? boolean If category should be visible in menu.
 ---@field Options PhotonVehicleSelectionOption[]
 
 ---@class PhotonVehicleSelectionOption : PhotonEquipmentTable
@@ -231,6 +230,7 @@ PhotonMaterial = PhotonMaterial
 ---@field SubMaterials? table<integer | string, string>
 ---@field BodyGroups? table<string, integer | string>
 ---@field PoseParameters? table<string, number>
+---@field Parent? string 
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>
@@ -253,10 +253,6 @@ PhotonMaterial = PhotonMaterial
 ---@field Inherit? string Name of an equipment entry to inherit from.
 
 ---@class PhotonEquipmentComponentEntry : PhotonEquipmentEntityProperties, PhotonEquipmentLibraryComponentProperties
-
----@class PhotonEquipmentVirtualComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
-
----@class PhotonEquipmentUIComponentEntry : PhotonEquipmentEntryProperties, PhotonEquipmentLibraryComponentProperties
 
 ---@class PhotonEquipmentPropEntry : PhotonEquipmentEntityProperties
 ---@field Model? string Model path. (e.g. `models/my/props/model.mdl`)

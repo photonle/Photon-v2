@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal Universal Undercover]]
-
+COMPONENT.Title = [[SoundOff Signal Universal Undercover]]
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_undercover.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector( 0, 0, -4),
+	Angles = Angle( 0, 0, 0 ),
+	Zoom = 3
+}
 
 COMPONENT.States = { "R", "B", "W" }
 

@@ -8,8 +8,8 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[Federal Signal Valor (51")]]
-
+COMPONENT.Title = [[Federal Signal Valor (51")]]
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
 COMPONENT.States = {
@@ -18,6 +18,12 @@ COMPONENT.States = {
 	[3] = "W",
 	[4] = "A",
 	[5] = "A",
+}
+
+COMPONENT.Preview = {
+	Position = Vector( 0, 0, -2),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
 }
 
 local s = 1.5

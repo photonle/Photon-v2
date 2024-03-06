@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal Intersector (Surface)]]
-
+COMPONENT.Title = [[SoundOff Signal Intersector (Surface)]]
+COMPONENT.Category = "Perimeter"
 COMPONENT.Model = "models/schmal/sos_int_surf.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 3
+}
 
 COMPONENT.States = {
 	[1] = "R",

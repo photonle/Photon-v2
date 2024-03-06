@@ -14,6 +14,7 @@ Element.Class = "Pose"
 Element.Target = 0
 Element.GainSpeed = 1
 Element.LossSpeed = 1
+Element.Persist = false
 
 Element.States = {
 	["OFF"] = { Target = 0 },
@@ -37,6 +38,7 @@ end
 function Element:Initialize( id, component )
 	self = PhotonElement.Initialize( self, id, component ) --[[@as PhotonElementPose]]
 	self.Value = self.Parent:GetPoseParameter( self.Parameter )
+	if ( component.IsVirtual ) then self.Persist = true end
 	-- local parentEntity = component.Entity
 
 	return self
@@ -73,6 +75,10 @@ function Element:DoPreRender()
 		if ( self.CurrentStateId ==  self.DeactivationState ) then
 			self.Deactivate = true
 		end
+		if ( self.Persist ) then
+			self.Parent:SetPoseParameter( self.Parameter, self.Value )
+			self.Parent:InvalidateBoneCache()
+		end
 		return self
 	end
 
@@ -85,6 +91,7 @@ function Element:DoPreRender()
 	end
 	
 	self.Parent:SetPoseParameter( self.Parameter, self.Value )
+	if ( self.Persist ) then self.Parent:InvalidateBoneCache() end
 
 	return self
 end

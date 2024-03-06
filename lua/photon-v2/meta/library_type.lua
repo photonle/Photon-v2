@@ -30,6 +30,8 @@ local printf = info
 ---@field LoadingDedicatedFile? boolean (Internal)
 ---@field HardReloadThreshold? number (Internal) Time between reloads that should trigger a hard reload.
 ---@field Signatures? string[] Table keys used as signatures for change detection.
+---@field UI? table User interface parameters.
+---@field RefreshQueue? table<string, boolean> Stores a list of recently registered entries. (For hooks that need to know when ANY generic updates occur.)
 local meta = exmeta.New()
 
 local dataPath = "photon_v2/library/"
@@ -44,7 +46,9 @@ function meta.New( properties )
 	
 	result.Loaded = false
 	result.LuaPath = luaPath .. result.Folder .. "/"
+	-- ??????
 	result.GlobalName = "PHOTON_LIBRARY_" .. string.upper( result.Singular )
+	result.RefreshQueue = {}
 
 	if ( Photon2.Index and Photon2.Index[result.Name] ) then result.Loaded = true end
 	result.IsValidRealm = ( result.OnServer == SERVER ) or ( result.OnClient == CLIENT )
@@ -54,9 +58,10 @@ function meta.New( properties )
 		return result:Register( entry )
 	end
 
+	-- what the fuck is this?
 	Photon2["Library" .. result.Singular] = function()
 		_G[result.GlobalName] = {
-			LibraryToken = "asdf"
+			SourceType = "Lua"
 		}
 		return _G[result.GlobalName]
 	end
@@ -207,11 +212,15 @@ function meta:LoadDedicatedLuaFile( path )
 	self.LoadingDedicatedFile = true
 	include( path )
 	self.LoadingDedicatedFile = false
+	
+	UNSET = _UNSET
 
 	local entry = _G[self.GlobalName]
+	
+	if ( not entry ) then return end
+	
 	entry.Name = name
-
-	UNSET = _UNSET
+	entry.SourceType = "Lua"
 	
 	self:Register( table.Copy( entry ) )
 	
@@ -238,6 +247,7 @@ function meta:LoadLibrary()
 	print("\tLoading data files...")
 	self:LoadDataLibary()
 	self.IsLoading = false
+	print("\tLibrary loading marked complete.")
 	self.Loaded = true
 end
 
@@ -288,6 +298,7 @@ end
 
 -- Registers an entry to this library.
 function meta:Register( data )
+	self:PreRegister( data )
 	local success, code = pcall( self.DoRegister, self, data )
 	if ( not success ) then
 		local name = data.Name or "(INVALID NAME)"
@@ -295,8 +306,14 @@ function meta:Register( data )
 	end
 end
 
+---This should only be used as a last resort to handle breaking API changes!
+---Raw data should otherwise NEVER be manipulated.
+---@param data any
+function meta:PreRegister( data ) end
+
 function meta:DoRegister( data )
 	info( "\t\t\tRegistering [%s] library entry [%s]", self.Name, data.Name )
+	local initialType = data.SourceType
 	self.Repository[data.Name] = data
 	if ( not data.SourceType ) then data.SourceType = self.CurrentLoadSource or "Other" end
 	if ( data.ReadOnly == nil ) then data.ReadOnly = true end
@@ -307,6 +324,14 @@ function meta:DoRegister( data )
 		self:Compile( data )
 	end
 	self:PostRegister( data.Name )
+	self.RefreshQueue[data.Name] = true
+	timer.Create( self.GlobalName .. "_UPDATED", 0.01, 1, function()
+		hook.Run( "Photon2:" .. self.Name .. "Changed", self.RefreshQueue )
+		self.RefreshQueue = {}
+	end)
+	-- if ( data.SourceType ~= initialType ) then
+	-- 	warn("SourceType changed!")
+	-- end
 end
 
 function meta:PostRegister( name )
@@ -316,20 +341,37 @@ end
 -- Called when an entry is reloaded.
 function meta:OnReload( data )
 	local old = self.Index[data.Name]
-	local hardReload = ( ( old ) and old.CompileTime + self.HardReloadThreshold >= CurTime() )
-	self:Compile( data, hardReload )
+	local hardReload = ( ( istable( old ) ) and ( old.CompileTime + self.HardReloadThreshold >= CurTime() ) )
+	self:Compile( data, true, hardReload )
+	timer.Create( "Photon2.Library:" .. self.Name .. "Reload", 0.05, 1, function()
+		if ( self ) then
+			self:OnPostReload()
+		end
+	end)
+end
+
+-- Reloads every entry in the index. Useful when external data changes that the library needs to account for.
+function meta:ReloadIndex()
+	for name, entry in pairs( self.Index ) do
+		self:OnReload( self.Repository[name] )
+	end
+end
+
+-- Called one tick(ish) after any reload occurred. Does not provide what was reloaded
+-- because this is only called once AFTER multiple entries were reloaded.
+function meta:OnPostReload()
 end
 
 -- Compilation wrapper. Actual compilation overrides should be done in `TYPE:DoCompile( data )`
 ---@param data table | string
 ---@param hardReload? boolean
-function meta:Compile( data, hardReload )
+function meta:Compile( data, isReload, hardReload )
 	if ( isstring( data ) ) then data = self:Get( data ) end
 	local result = self:DoCompile( table.Copy( data --[[@as table]]) )
 	result.CompileTime = CurTime()
 	hardReload = hardReload or ( self:MatchSignatures( self.Index[result.Name], result ) == false )
 	self.Index[result.Name] = result
-	self:PostCompile( result.Name, hardReload )
+	self:PostCompile( result.Name, isReload, hardReload )
 	return result
 end
 
@@ -347,11 +389,16 @@ function meta:MatchSignatures( oldEntry, newEntry )
 	return true
 end
 
+function meta:GetInherited( data )
+	if ( isstring( data ) ) then data = self:GetCopy( data ) end
+	return data
+end
+
 function meta:DoCompile( data )
 	return data
 end
 
-function meta:PostCompile( name, hardReload )
+function meta:PostCompile( name, isReload, hardReload )
 
 end
 

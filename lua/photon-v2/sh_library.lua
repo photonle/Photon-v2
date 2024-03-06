@@ -32,10 +32,12 @@ local inputConfigurations = {
 		return Photon2.ClientInput.ImportProfileFromJson( json )
 	end,
 	OnReload = function( self, profile )
+		-- Clears out the old compiled version (if it exists)
+		-- to force a recompile next time the profile is requested
+		self.Index[profile.Name] = nil
 		if ( Photon2.ClientInput.Active and ( Photon2.ClientInput.Active.Name == profile.Name ) ) then
-			Photon2.ClientInput.Active = Photon2.Index.CompileInputConfiguration( profile )
-		else
-			Photon2.Index.InputConfigurations[profile.Name] = nil
+			-- Should immediately trigger a recompile
+			Photon2.ClientInput.SetActiveConfiguration( profile.Name )
 		end
 	end,
 	DoCompile = function( self, profile )
@@ -155,6 +157,9 @@ local commands = {
 		command.ExtendedTitle = command.Category .. " " .. command.Title
 		return command
 	end,
+	OnPostReload = function()
+		Photon2.Library.InputConfigurations:ReloadIndex()
+	end
 }
 
 local soundFileMeta = {
@@ -225,17 +230,76 @@ local components = {
 		local component = PhotonLightingComponent.New( data.Name, data )
 		return component
 	end,
-	PostCompile = function( self, name )
+	GetInherited = function( self, data, unique )
+		if ( isstring( data ) ) then data = self:GetCopy( data ) end
+		if ( unique ) then data = Photon2.Util.UniqueCopy( data ) end
+		if ( data.Base ) then
+			local dataInputs
+			if ( istable( data.Inputs ) ) then dataInputs = Photon2.Util.UniqueCopy( data.Inputs ) end
+			Photon2.Util.Inherit( data, Photon2.Util.UniqueCopy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+			Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
+			Photon2.Library.ComponentsGraph[data.Base][data.Name] = true
+	
+			Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
+		end
+		return data
+	end,
+	PostCompile = function( self, name, isReload, hardReload )
 		-- TODO: lazy loading needs to be implemented to maintain
 		-- good compilation performance
-		for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
-			print( "Should reload child: " .. id )
-			self:Register( self:Get( id ) )
+		if ( isReload ) then
+			for id, _ in pairs( Photon2.Library.ComponentsGraph[name] or {} ) do
+				if ( id ~= name ) then
+					self:Register( self:Get( id ) )
+				end
+			end
 		end
+	end,
+	PreRegister = function( self, data )
+		-- Required for backwards compatibility
+		data.Title = data.Title or data.PrintName
+		PHOTON_LIBRARY_COMPONENT = nil
 	end,
 	PostRegister = function( self, name )
 		hook.Run( "Photon2:ComponentReloaded", name, self:Get( name ) )
-	end
+	end,
+	FindCategory = function( self, name )
+		local component = self:Get( name )
+		if ( component.Category ) then
+			return component.Category
+		elseif ( component.Base ) then
+			return self:FindCategory( component.Base  )
+		else
+			return nil
+		end
+	end,
+	UI = {
+		PreviewPanel = "Photon2UIComponentPreviewer",
+		DefaultFilter = "Lua",
+		BrowserColumnSchema = {
+			{
+				Label = "Type",
+				Property = "Category",
+				Search = true,
+				MaxWidth = 96
+			},
+			{
+				Label = "Name",
+				Property = "Name",
+				Search = true
+			},
+			{
+				Label = "Title",
+				Property = "Title",
+				Search = true
+			},
+			{
+				Label = "Source",
+				Property = "SourceType",
+				MaxWidth = 56
+			}
+		}
+	}
 }
 
 ---@type PhotonLibraryType
@@ -249,7 +313,7 @@ local vehicles = {
 		local vehicle = PhotonVehicle.New( data )
 		return vehicle
 	end,
-	PostCompile = function( self, name, hardReload )
+	PostCompile = function( self, name, isReload, hardReload )
 		hook.Run( "Photon2.VehicleCompiled", name, nil, hardReload )
 	end,
 	PostRegister = function( self, name )

@@ -89,8 +89,25 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 				{
 					Mode = "HEADLIGHTS",
 					Conditions = {
+						["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
 						["Vehicle.Ambient"] = { "DARK" },
 						["Vehicle.Lights"] = { "AUTO" }
+					}
+				},
+				{
+					Mode = "PARKING",
+					Conditions = {
+						["Vehicle.Ambient"] = { "DARK" },
+						["Vehicle.Lights"] = { "AUTO" },
+						["Vehicle.Engine"] = { "ON" },
+						["Vehicle.Transmission"] = { "PARK" }
+					}
+				},
+				{
+					Mode = "DRL",
+					Conditions = {
+						["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
+						["Vehicle.Lights"] = { "AUTO" },
 					}
 				}
 			}
@@ -100,11 +117,97 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 		},
 		Inputs = {
 			["Vehicle.AutomaticLighting"] = {
-				["HEADLIGHTS"] = table.Copy(component.Inputs["Vehicle.Lights"]["HEADLIGHTS"])
+				["HEADLIGHTS"] = table.Copy( component.Inputs["Vehicle.Lights"]["HEADLIGHTS"] or {} ),
+				["PARKING"] = table.Copy( component.Inputs["Vehicle.Lights"]["PARKING"] or {} ),
+				["DRL"] = table.Copy( component.Inputs["Vehicle.Lights"]["DRL"] or {} )
 			}
 		}
 	}
 
 	table.Merge( component, mixin )
+end
 
+function Photon2.ComponentBuilder.SetupParkMode( component, params )
+	if ( not istable( params ) ) then params = { "Emergency.Warning", "MODE2" } end
+	local sequences = component.Inputs[params[1]][params[2]]
+
+	-- Ignore automatic copying if the input is manually defined
+	if ( component.Inputs and component.Inputs["Emergency.ParkedWarning"] and component.Inputs["Emergency.ParkedWarning"]["MODE3"] ) then
+		sequences = component.Inputs["Emergency.ParkedWarning"]["MODE3"]
+	end
+
+	local mixin = {
+		VirtualOutputs = {
+			["Emergency.ParkedWarning"] = {
+				{
+					Mode = "MODE3",
+					Conditions = {
+						["Vehicle.Transmission"] = { "PARK" },
+						["Emergency.Warning"] = { "MODE3" }
+					}
+				}
+			},
+		},
+		InputPriorities = {
+			["Emergency.ParkedWarning"] = 45
+		},
+		Inputs = {
+			["Emergency.ParkedWarning"] = {
+				["MODE3"] = table.Copy( sequences )
+			}
+		}
+	}
+	table.Merge( component, mixin )
+end
+
+function Photon2.ComponentBuilder.SetupNightParkMode( component, params )
+	if ( not istable( params ) ) then params = { "Emergency.Warning", "MODE3" } end
+	local sequences = component.Inputs[params[1]][params[2]]
+	
+	-- Ignore automatic copying if the input is manually defined
+	if ( component.Inputs and component.Inputs["Emergency.NightParkedWarning"] and component.Inputs["Emergency.NightParkedWarning"]["MODE3"] ) then
+		sequences = component.Inputs["Emergency.NightParkedWarning"]["MODE3"]
+	end
+	
+	local mixin = {
+		VirtualOutputs = {
+			["Emergency.NightParkedWarning"] = {
+				{
+					Mode = "MODE3",
+					Conditions = {
+						["Vehicle.Transmission"] = { "PARK" },
+						["Emergency.Warning"] = { "MODE3" },
+						["Vehicle.Ambient"] = { "DARK" }
+					}
+				}
+			},
+		},
+		InputPriorities = {
+			["Emergency.NightParkedWarning"] = 46
+		},
+		Inputs = {
+			["Emergency.NightParkedWarning"] = {
+				["MODE3"] = table.Copy( sequences )
+			}
+		}
+	}
+	table.Merge( component, mixin )
+end
+
+-- Modifies a component to add a special debug channel and _quietly_ recompiles. It's somewhat hacky-
+-- but it plays nicely with the component registration and compilation process. This might be somewhat
+-- laggy on very complex components but it probably doesn't matter.
+function Photon2.ComponentBuilder.ApplyDebugSequences( entryName, inputAction )
+	local component = Photon2.Library.Components:Get( entryName )
+	component.Segments = component.Segments or {}
+	-- This will probably be necessary for the sequence creation UI
+	-- component.Segments["#DEBUG"] = {
+
+	-- }
+	component.Inputs = component.Inputs or {}
+	component.Inputs["#DEBUG"] = {
+		["ON"] = inputAction
+	}
+
+	Photon2.Library.Components:Compile( component )
 end

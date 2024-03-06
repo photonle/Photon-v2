@@ -16,11 +16,8 @@ local function runMaterialOverride()
 end
 
 
-COMPONENT.PrintName = "2016 Ford Police Interceptor Utility"
-
--- Virtual component means the component doesn't spawn a model,
--- and will instead manipulate the existing vehicle entity.
-COMPONENT.IsVirtual = true
+COMPONENT.Title = "2016 Ford Police Interceptor Utility"
+COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
 COMPONENT.Flags = {
@@ -311,7 +308,7 @@ COMPONENT.Inputs = {
 			Tail_R = "ON",
 			DRL = "ON"
 		},
-		["AUTO"] = {
+		["DRL"] = {
 			["DRL"] = "ON"
 		}
 	},

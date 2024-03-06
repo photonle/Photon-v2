@@ -94,7 +94,7 @@ function Photon2.RenderLight2D.DrawBloom()
 	local activeLights = this.Active
 	for i=1, #activeLights do
 		light = activeLights[i] --[[@as PhotonElement2D]]
-		if ( light.Shape and drawShape ) then
+		if ( light.Shape and drawShape and ( not light.UIMode ) ) then
 			render.SetMaterial( light.Shape --[[@as IMaterial]] )
 			-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
@@ -137,10 +137,10 @@ function Photon2.RenderLight2D.Render()
 
 	if ( drawLights:GetBool() ) then
 		-- Draw glow effect sprites
-		if (drawGlow) then
+		if (drawGlow ) then
 			for i=1, #activeLights do
 				light = activeLights[i] --[[@as PhotonElement2D]]
-				if ( not light or not light.ShouldDraw or not light.DrawLightPoints ) then continue end
+				if ( not light or not light.ShouldDraw or not light.DrawLightPoints or ( light.UIMode ) ) then continue end
 				
 				if (drawSubtractive:GetBool()) then
 					render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
@@ -170,7 +170,7 @@ function Photon2.RenderLight2D.Render()
 
 			light = activeLights[i] --[[@as PhotonElement2D]]
 
-			if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" ) then continue end
+			if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" or light.UIMode ) then continue end
 
 			if ( light.Detail and drawDetail ) then
 				-- render.PushFilterMag( TEXFILTER.POINT )
@@ -216,3 +216,41 @@ hook.Add( "PostDrawTranslucentRenderables", "Photon2.Light2D:Render", function( 
 	if (draw3dSkybox or drawingSkybox or draw3dSkybox) then return end
 	this.Render()
 end)
+
+function Photon2.RenderLight2D.DrawUI()
+	render.OverrideColorWriteEnable( true, true )
+	local activeLights = this.Active
+	for i=1, #activeLights do
+
+		light = activeLights[i] --[[@as PhotonElement2D]]
+
+		if ( not light or not light.ShouldDraw or light.CurrentStateId == "OFF" or ( not light.UIMode ) ) then continue end
+
+		if ( light.Detail and drawDetail ) then
+			-- render.PushFilterMag( TEXFILTER.POINT )
+			-- render.PushFilterMin( TEXFILTER.POINT )
+			render.SetMaterial( light.Detail --[[@as IMaterial]] )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+			
+			render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
+				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+			render.OverrideBlend( false, 0, 0, 0 )
+			
+			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+			-- render.PopFilterMag()
+			-- render.PopFilterMin()
+		end
+
+		if ( light.Shape and drawShape ) then
+			render.SetMaterial( light.Shape --[[@as IMaterial]] )
+			-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.SourceDetailColor, light.Angles[3] - 180 )
+			
+			-- render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
+				-- render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, invertColor( light.SourceFillColor ), light.Angles[3] - 180 )
+			-- render.OverrideBlend( false )
+			
+			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.ShapeGlowColor, light.Angles[3] - 180 )
+		end
+	end
+	render.OverrideColorWriteEnable( false, false )
+end

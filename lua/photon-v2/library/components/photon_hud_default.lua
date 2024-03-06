@@ -8,8 +8,8 @@ COMPONENT.Credits = {
 	Code = "Schmal",
 }
 
-COMPONENT.PrintName = [[Photon 2 HUD]]
-
+COMPONENT.Title = [[Photon 2 HUD]]
+COMPONENT.Category = "HUD"
 COMPONENT.IsVirtual = true
 
 COMPONENT.Templates = {

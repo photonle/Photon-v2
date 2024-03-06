@@ -26,10 +26,15 @@ function Component:Initialize( ent, controller )
 		end
 	end
 
-	if ( self.UseControllerModes ) then
-		component.CurrentModes = controller.CurrentModes
+	if ( IsValid( controller ) ) then
+		if ( self.UseControllerModes ) then
+			component.CurrentModes = controller.CurrentModes
+		else
+			component.CurrentModes = table.Copy( controller.CurrentModes )
+		end
 	else
-		component.CurrentModes = table.Copy( controller.CurrentModes )
+		self.UseControllerModes = false
+		component.CurrentModes = {}
 	end
 
 	component.Elements = {}

@@ -29,6 +29,8 @@ local print = Photon2.Debug.Print
 ---@field AcceptControllerTiming boolean (Internal)
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
 ---@field VirtualOutputs table
+---@field Title string
+---@field IsPaused boolean
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -60,21 +62,21 @@ function Component.New( name, data )
 
 	local ancestors = { [name] = true }
 
-	
-	if ( data.Base ) then
-		-- More special handling for Input sequence assignments (there must be a better way to do this)
-		local dataInputs
-		if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-		Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
-		Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
-		Photon2.Library.ComponentsGraph[data.Base][name] = true
+	data = Photon2.Library.Components:GetInherited( data )
+	-- if ( data.Base ) then
+	-- 	-- More special handling for Input sequence assignments (there must be a better way to do this)
+	-- 	local dataInputs
+	-- 	if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
+	-- 	Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+	-- 	Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
+	-- 	Photon2.Library.ComponentsGraph[data.Base][name] = true
 
-		Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
+	-- 	Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
 
-		-- if ( Photon2.Library.Components[data.Base] ) then
-		-- 	Photon2.Library.Components[data.Base].Children[name] = true
-		-- end
-	end
+	-- 	-- if ( Photon2.Library.Components[data.Base] ) then
+	-- 	-- 	Photon2.Library.Components[data.Base].Children[name] = true
+	-- 	-- end
+	-- end
 
 	data.Flags = data.Flags or {}
 
@@ -89,10 +91,18 @@ function Component.New( name, data )
 		Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( data )
 	end
 
+	if ( data.Flags.ParkMode ) then
+		Photon2.ComponentBuilder.SetupParkMode( data, data.Flags.ParkMode )
+	end
+
+	if ( data.Flags.NightParkMode ) then
+		Photon2.ComponentBuilder.SetupNightParkMode( data, data.Flags.NightParkMode )
+	end
+
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
-		PrintName = data.PrintName or name,
+		Title = data.Title or data.PrintName or name,
 		Authors = data.Authors,
 		Class = data.Class or "Default",
 		Category = data.Category,
@@ -111,6 +121,11 @@ function Component.New( name, data )
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
 		States = data.States
 	}
+
+	-- Assume components without a model defined are virtual
+	if ( data.IsVirtual == nil ) then
+		if ( component.Model == nil ) then component.IsVirtual = true end
+	end
 
 	for key, value in pairs( data ) do
 		if ( component[key] == nil ) then
@@ -498,17 +513,23 @@ end
 -- to a Photon Controller and component entity.
 ---@param ent photon_entity
 ---@param controller PhotonController
+---@param uiMode? boolean
 ---@return PhotonLightingComponent
-function Component:Initialize( ent, controller )
+function Component:Initialize( ent, controller, uiMode )
 	-- Calls the base constructor but passes LightingComponent as "self"
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
-	local component = PhotonBaseEntity.Initialize( self, ent, controller ) --[[@as PhotonLightingComponent]]
+	local component = PhotonBaseEntity.Initialize( self, ent, controller, uiMode ) --[[@as PhotonLightingComponent]]
 
-	if ( self.UseControllerModes ) then
-		component.CurrentModes = controller.CurrentModes
+	if ( IsValid( controller ) ) then
+		if ( self.UseControllerModes ) then
+			component.CurrentModes = controller.CurrentModes
+		else
+			component.CurrentModes = table.Copy( controller.CurrentModes )
+		end
 	else
-		component.CurrentModes = table.Copy( controller.CurrentModes )
+		self.UseControllerModes = false
+		component.CurrentModes = {}
 	end
 
 	component.Elements = {}
@@ -538,11 +559,11 @@ function Component:OnScaleChange( newScale, oldScale )
 	end
 end
 
-function Component:Pulse()
+function Component:Pulse( frameChange )
 	local frameChange = false
 	
 	for sequence, _ in pairs( self.ActiveIndependentSequences ) do
-		if ( sequence:OnPulse() ) then frameChange = true end
+		if ( sequence:OnPulse( frameChange ) ) then frameChange = true end
 	end
 
 	if ( frameChange ) then
@@ -591,14 +612,20 @@ function Component:ApplyModeUpdate()
 		local sequence = segment:ApplyModeUpdate()
 		if ( sequence and sequence.AcceptControllerPulse ) then
 			acceptControllerPulse = true
-			self.PhotonController.RebuildPulseComponents = true
+			if ( IsValid( self.PhotonController ) ) then
+				self.PhotonController.RebuildPulseComponents = true
+			end
 		end
 	end
 
 	self.AcceptControllerPulse = acceptControllerPulse
 
 	-- self:UpdateSegmentLightControl()
-	self:FrameTick( true )
+	if ( self.PhotonController ) then
+		self:FrameTick( true )
+	else
+		self:IndependentFrameTick( true )
+	end
 	-- print("\t\tVirtual Outputs table:")
 	-- PrintTable( virtualOutputs )
 	-- print("\t\tInput table:")
@@ -606,11 +633,47 @@ function Component:ApplyModeUpdate()
 	-- print("=======================================================")
 end
 
-function Component:SetChannelMode( channel, new, old )
+function Component:SetPaused( pause )
+	self.IsPaused = pause
+end
+
+function Component:ManualThink()
+	if ( not self.IsPaused ) then
+		self:Pulse()
+		self.LastFrameTick = self.LastFrameTick or CurTime()
+		
+		local frameDuration = 1/24
+
+		if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+			self:IndependentFrameTick()
+			self.LastFrameTick = self.LastFrameTick + frameDuration
+			-- Prevents a frame change "backlog"
+			if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+				self.LastFrameTick = CurTime()
+			end
+		end
+	end
+	return self.FrameIndex
+end
+
+-- Developer function that turns all active modes to OFF.
+function Component:ClearAllModes()
+	for thisChannel, thisMode in pairs( self.CurrentModes ) do
+		self.CurrentModes[thisChannel] = "OFF"
+	end
+	self:ApplyModeUpdate()
+end
+
+function Component:SetChannelMode( channel, new, exclusive )
 	
 	-- printf( "Component received mode change notification for [%s] => %s", channel, new )
 	
 	if ( not self.UseControllerModes ) then
+		if ( exclusive ) then
+			for thisChannel, thisMode in pairs( self.CurrentModes ) do
+				self.CurrentModes[thisChannel] = "OFF"
+			end
+		end
 		self.CurrentModes[channel] = new
 	end
 
@@ -647,8 +710,37 @@ function Component:RemoveActiveSequence( segmentName, sequence)
 	self.ActiveDependentSequences[sequence] = nil
 end
 
-function Component:FrameTick( all )
+function Component:SetFrameIndex( index )
+	self.FrameIndex = index
+	for sequence, _ in pairs( self.ActiveSequences ) do
+		sequence:IncrementFrame( self.FrameIndex, true )
+	end
+	for i=1, #self.Elements do
+		self.Elements[i]:UpdateState()
+	end
+end
+
+function Component:IndependentFrameTick( all, change )
+	if ( not self.FrameIndex ) then self.FrameIndex = 0 end
+	self.FrameIndex = self.FrameIndex + ( change or 1 )
+	-- print( self.FrameIndex )
+	if ( all ) then
+		for sequence, _ in pairs( self.ActiveSequences ) do
+			sequence:IncrementFrame( self.FrameIndex, true )
+		end
+	else
+		for sequence, _ in pairs( self.ActiveDependentSequences ) do
+			sequence:IncrementFrame( self.FrameIndex, false )
+		end
+	end
 	
+
+	for i=1, #self.Elements do
+		self.Elements[i]:UpdateState()
+	end
+end
+
+function Component:FrameTick( all )
 	-- for segmentName, segment in pairs( self.Segments ) do 
 	-- 	segment:IncrementFrame( self.PhotonController.Frame )
 	-- end

@@ -9,11 +9,15 @@ COMPONENT.Credits = {
 	Code = "SuperMighty, ported by Schmal"
 }
 
-COMPONENT.PrintName = [[Whelen Liberty (54")]]
-
+COMPONENT.Title = [[Whelen Liberty (54")]]
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/supermighty/whelen_liberty_ii_large.mdl"
 
- 
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 180, 0 ),
+	Zoom = 1
+}
 
 COMPONENT.Templates = {
 	["2D"] = {
@@ -248,7 +252,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["QUAD_FLASH"] = sequence():QuadFlash( 0, 2 ),
+			["QUAD_FLASH"] = sequence():QuadFlash( 0, 2 )
 		}
 	}
 }

@@ -6,15 +6,10 @@ local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 NAME = "PhotonVehicle"
----@alias EquipmentMode
----| "Configurable" # Has multiple equipment options.
----| "Static" # Uses all defined equipment and does not support any options.
 
 ---@class PhotonVehicle
 ---@field Name string
 ---@field Title string
----@field ControllerType? string Not implemented.
----@field EquipmentMode? EquipmentMode Not implemented.
 ---@field Target string
 ---@field EntityClass string
 ---@field Model string
@@ -26,11 +21,12 @@ NAME = "PhotonVehicle"
 ---@field EquipmentSignature string (Internal)
 ---@field SelectionsSignature string (Internal)
 ---@field InvalidVehicle? boolean (Internal) If vehicle base is invalid or missing.
+---@field EngineIdleEnabled boolean If vehicle should idle when player quickly exits.
 local Vehicle = exmeta.New() --[[@as PhotonVehicle]]
 
 Vehicle.SubMaterials = {}
-
 Vehicle.EntityClass = "prop_vehicle_jeep"
+Vehicle.EngineIdleEnabled = true
 
 Vehicle.Schema = {
 	["Emergency.Warning"] = {
@@ -56,12 +52,14 @@ Vehicle.Schema = {
 	},
 	["Emergency.Siren"] = {
 		{ Label = "SIREN" }
+	},
+	["Vehicle.Lights"] = {
+		{ Label = "OFF" },
+		{ Mode = "PARKING", Label = "PRK" },
+		{ Mode = "HEADLIGHTS", Label = "HDL" },
+		{ Mode = "OFF" }
 	}
 }
-
--- Specifies the actual controller entity class to create when the vehicle is created.
--- Override if using your own modified controller entity.
-Vehicle.ControllerType = "photon_controller"
 
 local equipmentTypeMap = {
 	["Components"] = "Component",
@@ -78,6 +76,10 @@ function Vehicle.GetError()
 	}
 end
 
+-- Creates a "signature" string based on how the vehicle's
+-- equipment is configured. This is used to detect significant
+-- changes in equipment configurations so a "hard reload" can be
+-- triggered when editing vehicle files.
 function Vehicle.BuildEquipmentSignature( tbl )
 	local sig = ""
 	for equipmentType, entries in pairs( tbl ) do
@@ -96,6 +98,10 @@ function Vehicle.BuildEquipmentSignature( tbl )
 	return sig
 end
 
+-- Creates a "signature" string based on how the vehicle's
+-- selections are configured. This is used to detect significant
+-- changes in equipment configurations so a "hard reload" can be
+-- triggered when editing vehicle files.
 function Vehicle.BuildSelectionSignature( tbl )
 	local sig = ""
 	for key, category in ipairs(tbl) do
@@ -114,8 +120,17 @@ function Vehicle.BuildSelectionSignature( tbl )
 	return sig
 end
 
+-- Maps what equipment types should be merged into others
+-- before being processed. Necessary for backwards compatibility
+-- when different component types needed to be explicitly defined.
+local preMergeEquipment = {
+	["VirtualComponents"] = "Components",
+	["UIComponents"] = "Components"
+}
+
 ---@param data PhotonLibraryVehicle
 ---@return PhotonVehicle
+-- Compiles a new vehicle profile entry using raw input data.
 function Vehicle.New( data )
 	local Equipment = PhotonVehicleEquipmentManager
 
@@ -188,7 +203,7 @@ function Vehicle.New( data )
 		Name				= data.Name,
 		ID 					= data.Name,
 		Title 				= data.Title,
-		Model 				= target.Model,
+		Model 				= string.lower(target.Model),
 		EntityClass 		= target.Class,
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
@@ -199,6 +214,57 @@ function Vehicle.New( data )
 		InvalidVehicle 		= invalidVehicle
 	}
 
+	--[[
+			Setup Livery
+			(Simple property if vehicle uses just one livery.)
+	--]]
+
+	if ( isstring( data.Livery ) ) then
+		data.SubMaterials = data.SubMaterials or {}
+		data.SubMaterials["SKIN"] = data.Livery
+	end
+
+	--[[
+			Setup SIMPLIFIED Equipment		
+	--]]
+
+	local defaultEquipmentTable
+	for key, _ in pairs( vehicle.Equipment ) do
+		if ( istable( data[key] ) ) then
+			defaultEquipmentTable = defaultEquipmentTable or {
+				Category = "Equipment",
+				Visible = false,
+				Options = {
+					{
+						Option = "Default",
+					}
+				}
+			}
+			-- SubMaterials need special handling to for backwards compatability
+			if ( key == "SubMaterials" ) then
+				local result = {}
+				for k, v in pairs( data["SubMaterials"] ) do
+					if ( isstring( v ) ) then
+						result[#result+1] = { Id = k, Material = v }
+					else
+						result[#result+1] = v
+					end
+				end
+				defaultEquipmentTable.Options[1]["SubMaterials"] = result
+			else
+				defaultEquipmentTable.Options[1][key] = data[key]
+			end
+		end
+	end
+
+	if ( defaultEquipmentTable ) then
+		data.EquipmentSelections = data.EquipmentSelections or {}
+		data.EquipmentSelections[#data.EquipmentSelections+1] = defaultEquipmentTable
+	end
+
+	--[[
+			Setup Equipment
+	--]]
 
 	local nameTable = Equipment.GetTemplate()
 	local pendingNamesQueue = Equipment.GetTemplate()
@@ -210,14 +276,22 @@ function Vehicle.New( data )
 		vehicle.EquipmentSelections = {}
 
 		-- Loop through each category
-		for categoryIndex, category in pairs(data.EquipmentSelections) do
-			vehicle.EquipmentSelections[categoryIndex] = 
+		for categoryIndex, category in ipairs(data.EquipmentSelections) do
+			local visible = true
+			
+			if ( category.Visible ~= nil ) then
+				visible = category.Visible
+			end
+			
+			vehicle.EquipmentSelections[categoryIndex] =
 			{
 				Category = category.Category,
-				Index = categoryIndex, 
+				Index = categoryIndex,
+				Visible = visible,
 				Options = {},
 				Map = {}
 			}
+			
 			local currentCategory = vehicle.EquipmentSelections[categoryIndex]
 			local map = currentCategory.Map
 			-- Loop through each option
@@ -244,10 +318,14 @@ function Vehicle.New( data )
 						
 						local currentVariant = currentOption.Variants[variantIndex]
 						
+						-- Merge different component types into .Components
+						Equipment.PreMergeEquipment( variant, preMergeEquipment )
+
 						-- Automatically iterate through each type of Equipment and process
 						for key, value in pairs( vehicle.Equipment ) do
 							if ( variant[key] ) then
-								Equipment.ProcessTable( 
+								Equipment.ProcessTable(
+									key,
 									variant[key], 
 									currentVariant[key], 
 									vehicle.Equipment[key], 
@@ -265,10 +343,14 @@ function Vehicle.New( data )
 					Equipment.ApplyTemplate( currentOption )
 					currentOption.Selection = #map + 1
 
+					-- Merge different component types into .Components
+					Equipment.PreMergeEquipment( option, preMergeEquipment )
+
 					-- Automatically iterate through each type of Equipment and process
 					for key, value in pairs( vehicle.Equipment ) do
 						if ( option[key] ) then
-							Equipment.ProcessTable( 
+							Equipment.ProcessTable(
+								key, 
 								option[key], 
 								currentOption[key], 
 								vehicle.Equipment[key], 
@@ -284,8 +366,6 @@ function Vehicle.New( data )
 		end
 		
 		Equipment.ResolveNamesFromQueue( pendingNamesQueue.Components, nameTable.Components )
-		Equipment.ResolveNamesFromQueue( pendingNamesQueue.VirtualComponents, nameTable.VirtualComponents )
-		Equipment.ResolveNamesFromQueue( pendingNamesQueue.UIComponents, nameTable.UIComponents )
 
 	end
 
@@ -298,8 +378,6 @@ function Vehicle.New( data )
 	end
 
 	Equipment.BuildComponents( vehicle.Equipment, "Components", data.Name )
-	Equipment.BuildComponents( vehicle.Equipment, "VirtualComponents", data.Name )
-	Equipment.BuildComponents( vehicle.Equipment, "UIComponents", data.Name )
 
 	local vehicleListId = "photon2:".. data.Name --[[@as string]]
 

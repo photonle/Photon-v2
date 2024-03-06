@@ -346,6 +346,14 @@ function Photon2.UI.PopulateMenuBar()
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
 
+		debugMenu:AddOption( "Open Component Browser", function() 
+			RunConsoleCommand( "ph2_component_browser" )
+		end)
+
+		-- debugMenu:AddOption( "Open Component Inspector", function() 
+		-- 	local form = vgui.Create( "Photon2UIComponentInspector" )
+		-- end)
+
 		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
 		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
 		newComponentPrintOptionMenu:SetDeleteSelf( false )
@@ -390,7 +398,12 @@ end)
 
 hook.Add( "PopulateMenuBar", "Photon2:PopulateMenuBar", Photon2.UI.OnPopulateMenuBar )
 
+concommand.Add("ph2_component_browser", function() 
+	local browser = vgui.Create( "Photon2UILibraryBrowser" )
+	browser:Setup( "Components", "BROWSE" )
 
+	browser:SetSizing( 1280, 700, 400 )
+end)
 
 --[[
 	Sandbox Properties Context Menu 
@@ -414,6 +427,7 @@ properties.Add("photon2_equipment", {
 		-- Required so child elements can be applied
 		local subMenu = option:AddSubMenu()
 		for i, category in ipairs( selections ) do
+			if ( not category.Options ) or ( #category.Options < 2 ) then continue end
 			-- Create category's sub-menu
 			local categoryMenu = subMenu:AddSubMenu( category.Category )
 			-- Process each option

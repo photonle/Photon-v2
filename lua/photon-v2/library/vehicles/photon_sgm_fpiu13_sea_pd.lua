@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Seattle Police Department - Ford Police Utility (2013) "
+VEHICLE.Title 		= "Seattle Police Dept. - Ford Police Utility (2013-2015)"
 VEHICLE.Vehicle		= "13fpiu_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
@@ -10,18 +10,32 @@ local classicLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_legacy",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_legacy.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$detail"] = "photon/license/reflective_paint",
-	["$detailblendmode"] = 1,
-	["$detailscale"] = 64,
-	["$phong"] = 1,
-	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.15),
-	["$phongboost"] = 5,
-	["$phongexponent"] = 64,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_legacy.png",
+		["$bumpmap"] = "photon/common/flat",
+		["$detail"] = "photon/license/reflective_paint",
+		
+		["$detailblendmode"] = 1,
+		["$detailscale"] = 64,
+		["$detailblendfactor"] = 1,
+
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
@@ -29,15 +43,28 @@ local hybridLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_hybrid",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_hybrid.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 5,
-	["$phongexponent"] = 64,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_hybrid.png",
+		["$bumpmap"] = "photon/common/flat",
+
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.4 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
@@ -45,7 +72,36 @@ local newLivery = PhotonMaterial.New({
 	Name = "schmal_fpiu13_seattlepd_2015",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_2015.png",
+		["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_2015.png",
+		["$bumpmap"] = "photon/common/flat",
+		
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.4 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
+	}
+})
+
+local prototypeLivery = PhotonMaterial.New({
+	Name = "schmal_fpiu13_seattlepd_prototype",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+	["$basetexture"] = "schmal/liveries/sgm_fpiu13/seattlepd_prototype.png",
 	["$bumpmap"] = "photon/common/flat",
 	["$phong"] = 1,
 	["$phongfresnelranges"] = Vector( 0.1, 0.6, 0 ),
@@ -71,11 +127,41 @@ VEHICLE.Equipment = {
 	{
 		Category = "Liveries",
 		Options = {
-			
+			-- {
+			-- This one is a half-assed work in progress still
+			-- 	Option = "Prototype",
+			-- 	SubMaterials = {
+			-- 		{ Id = 8, Material = prototypeLivery.MaterialName }
+			-- 	},
+			-- 	Components = {
+			-- 		{
+			-- 			Inherit = "@legend"
+			-- 		}
+			-- 	}
+			-- },
 			{
 				Option = "Classic (2013)",
 				SubMaterials = {
 					{ Id = 8, Material = classicLivery.MaterialName }
+				},
+				Components = {
+					{
+						Name = "@legend",
+						Component = "photon_fedsig_legend",
+						Position = Vector( 0, -14, 85.1 ),
+						Angles = Angle( 1, 90, 0 ),
+						Scale = 1,
+						Bones = {
+							["foot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
+							["foot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = "P20",
+								["MODE3"] = "P20W"
+							}
+						}
+					}
 				}
 			},
 			{
@@ -84,6 +170,16 @@ VEHICLE.Equipment = {
 					{ Id = 8, Material = hybridLivery.MaterialName }
 				},
 				Components = {
+					{
+						Inherit = "@legend",
+						Name = "@legend_updated",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = "P1",
+								["MODE3"] = "P22W",
+							}
+						}
+					},
 					{
 						Name = "@cruise_light",
 						Component = "photon_sos_undercover",
@@ -112,6 +208,7 @@ VEHICLE.Equipment = {
 					{ Id = 8, Material = newLivery.MaterialName }
 				},
 				Components = {
+					{ Inherit = "@legend_updated" },
 					{ Inherit = "@cruise_light" },
 					{ Inherit = "@r_cruise_light" },
 				},
@@ -132,12 +229,20 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Enabled",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmfpiu13",
 						Inputs = {
 							["Emergency.Warning"] = {
 								-- They apparently don't use headlight wig-wags
+								["MODE1"] = {
+									ReverseFlasher = "FLASH",
+									SignalFlasher = "FLASH"
+								},
+								["MODE2"] = {
+									ReverseFlasher = "FLASH",
+									SignalFlasher = "FLASH"
+								},
 								["MODE3"] = {
 									ReverseFlasher = "FLASH",
 									SignalFlasher = "FLASH"
@@ -286,16 +391,7 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Legend",
 				Components = {
-					{
-						Component = "photon_fedsig_legend",
-						Position = Vector( 0, -14, 85.1 ),
-						Angles = Angle( 1, 90, 0 ),
-						Scale = 1,
-						Bones = {
-							["foot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
-							["foot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
-						},
-					}
+
 				}
 			}
 		}
@@ -421,6 +517,19 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -87, 79.7 ),
 						Angles = Angle( 0, 0, 5 ),
 						Scale = 0.8
+					}
+				}
+			}
+		}
+	},
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				Components = {
+					{
+						Component = "photon_hud_default"
 					}
 				}
 			}

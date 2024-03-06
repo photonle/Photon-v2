@@ -9,9 +9,15 @@ COMPONENT.Credits = {
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
-COMPONENT.PrintName = [[Whelen PAR46 LED Spotlight"]]
-
+COMPONENT.Title = [[Whelen PAR46 LED Spotlight (Left)]]
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_left_up.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 1
+}
 
 local downSpeed = 100
 local upSpeed = 400
@@ -46,10 +52,10 @@ COMPONENT.Templates = {
 			Bone = "lamp",
 			Axis = "y",
 			States = {
-				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
-				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
-				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
-				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = 300, Direction = 1 },
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed * 2, DeactivateOnTarget = true, Direction = 0 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = 0 },
+				["LEFT"] = { Activity = "Fixed", Target = 271, Speed = upSpeed, Direction = 0 },
+				["RIGHT"] = { Activity = "Fixed", Target = 89, Speed = 300, Direction = 0 },
 			},
 			DeactivationState = "DOWN"
 		},
@@ -58,10 +64,10 @@ COMPONENT.Templates = {
 			Bone = "grip",
 			Axis = "p",
 			States = {
-				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 1 },
-				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = -1 },
-				["LEFT"] = { Activity = "Fixed", Target = 270, Speed = upSpeed, Direction = -1 },
-				["RIGHT"] = { Activity = "Fixed", Target = 90, Speed = upSpeed * 0.75, Direction = 1 },
+				["DOWN"] = { Activity = "Fixed", Target = 90, Speed = downSpeed, DeactivateOnTarget = true, Direction = 0 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = upSpeed, Direction = 0 },
+				["LEFT"] = { Activity = "Fixed", Target = 271, Speed = upSpeed, Direction = 0 },
+				["RIGHT"] = { Activity = "Fixed", Target = 89, Speed = upSpeed * 0.75, Direction = 0 },
 			},
 			DeactivationState = "DOWN"
 		}

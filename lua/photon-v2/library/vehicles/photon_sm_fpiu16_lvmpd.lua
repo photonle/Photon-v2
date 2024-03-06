@@ -17,11 +17,25 @@ local livery = PhotonMaterial.New({
 	Parameters = {
 		["$basetexture"] = "schmal/liveries/sm_fpiu16/lvmpd.png",
 		["$bumpmap"] = "photon/common/flat",
-		["$phong"] = 1,
+		
 		["$envmap"] = "env_cubemap",
-		["$envmaptint"] = Vector(0.020, 0.020, 0.023),
-		["$phongboost"] = 1.25,
-		["$phongexponent"] = 23,
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
 		["$nodecal"] = 1
 	}
 })
@@ -54,7 +68,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				UIComponents = {
+				Components = {
 					{
 						Component = "photon_hud_default"
 					}
@@ -67,7 +81,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Default",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_smfpiu16",
 						Segments = {

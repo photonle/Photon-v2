@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = [[SoundOff Signal nForce (48")]]
-
+COMPONENT.Title = [[SoundOff Signal nForce (48")]]
+COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/photon/sentry/nforce.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 1
+}
 
 local s = 1.2
 

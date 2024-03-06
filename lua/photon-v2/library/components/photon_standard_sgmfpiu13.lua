@@ -1,11 +1,13 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent() --[[@as PhotonLibraryComponent]]
 
+COMPONENT.Title = "Ford Explorer (2013)"
 COMPONENT.Author = "Photon"
 COMPONENT.Credits = {
 	Vehicle = "SGM",
 	Code = "Schmal"
 }
+COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
 COMPONENT.Flags = {
@@ -221,21 +223,21 @@ COMPONENT.Inputs = {
 			Lights = "PARK"
 		}
 	},
-	["Emergency.Warning"] = {
-		["MODE1"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH"
-		},
-		["MODE2"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH"
-		},
-		["MODE3"] = {
-			ReverseFlasher = "FLASH",
-			SignalFlasher = "FLASH",
-			WigWag = "WIGWAG"
-		}
-	}
+	-- ["Emergency.Warning"] = {
+	-- 	["MODE1"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH"
+	-- 	},
+	-- 	["MODE2"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH"
+	-- 	},
+	-- 	["MODE3"] = {
+	-- 		ReverseFlasher = "FLASH",
+	-- 		SignalFlasher = "FLASH",
+	-- 		WigWag = "WIGWAG"
+	-- 	}
+	-- }
 }
 
 hook.Add( "HUDPaint", "Photon2.FPIU13RefractFix", function() 

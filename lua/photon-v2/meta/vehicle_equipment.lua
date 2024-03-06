@@ -10,6 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field Properties table
 local Equipment = exmeta.New()
 
 function Equipment.New( name, option )
@@ -17,15 +18,20 @@ function Equipment.New( name, option )
 
 end
 
+-- For Equipment types where multiple sibling entries are unnecessary.
+-- 
+local singleEquipmentTypes = {
+	Properties = true
+}
+
 function Equipment.GetTemplate()
 	return {
 		Components = {},
 		Props = {},
 		BodyGroups = {},
 		SubMaterials = {},
-		VirtualComponents = {},
-		UIComponents = {},
-		InteractionSounds = {}
+		InteractionSounds = {},
+		Properties = {}
 	}
 end
 
@@ -33,6 +39,18 @@ end
 function Equipment.ApplyTemplate( tbl )
 	for k, v in pairs( Equipment.GetTemplate() ) do
 		tbl[k] = rawget( tbl, k ) or v
+	end
+end
+
+function Equipment.PreMergeEquipment( selection, mergeMap )
+	for mergeFrom, mergeTo in pairs( mergeMap ) do
+		if ( istable( selection[mergeFrom] ) ) then
+			selection[mergeTo] = selection[mergeTo] or {}
+			for i=1, #selection[mergeFrom] do
+				selection[mergeTo][#selection[mergeTo]+1] = selection[mergeFrom][i]
+			end
+		end
+		selection[mergeFrom] = {}
 	end
 end
 
@@ -49,20 +67,28 @@ function Equipment.AddEntry( entry, master, nameTable )
 			error(string.format("Equipment Name '%s' is already defined. Name must be unique."))
 		end
 		nameTable[entry.Name] = index
+		-- master[index].EquipmentName = entry.Name
 	end
 	return index
 end
 
-function Equipment.ProcessTable( source, destination, master, nameTable, pendingNamesTable )
+function Equipment.ProcessTable( name, source, destination, master, nameTable, pendingNamesTable )
+	if ( singleEquipmentTypes[name] ) then source = { source } end
 	for key, entry in pairs( source ) do
 		if ( istable( entry ) ) then
 			destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
 		elseif ( isstring( entry ) ) then
-			-- Treat entry as pointing to an alias
-			-- to be resolved later.
-			destination[#destination+1] = entry
-			-- Add destination table to queue of unresolved aliases
-			pendingNamesTable[destination] = true
+			-- Allow sub-materials to be setup like [1] = "material"
+			if ( name == "SubMaterials" ) then
+				entry = { Id = name, Material = entry }
+				destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
+			else
+				-- Otherwise treat entry as pointing to an alias
+				-- to be resolved later.
+				destination[#destination+1] = entry
+				-- Add destination table to queue of unresolved aliases
+				pendingNamesTable[destination] = true
+			end
 		end
 	end
 end
@@ -114,7 +140,7 @@ function Equipment.InheritEntry( entry, parentName, equipmentTable, nameTable, l
 	Photon2.ComponentBuilder.InheritInputs( entryInputs, entry.Inputs )
 	-- This is to prevent the parent name from applying
 	if (isAnonymous) then
-		entry.Name = ""
+		entry.Name = nil
 	end
 
 end
@@ -137,13 +163,15 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 	-- print("Building Components [" .. key .. "]")
 	for key, entry in pairs( equipmentTable[key] ) do
 		local componentId = entry.Component .. "<" .. vehicleId .. ":" .. entry.Index .. ">"
+		
 		---@type PhotonLibraryComponent
-
+		
 		local component = {
 			Base = entry.Component,
 			StateMap = entry.StateMap,
 			Phase = entry.Phase,
 			Generated = true,
+			Flags = entry.Flags,
 			Segments = entry.Segments,
 			Inputs = entry.InputActions or entry.Inputs,
 			InputPriorities = entry.InputPriorities,
@@ -153,6 +181,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			States = entry.States,
 			Templates = entry.Templates,
 			RenderGroup = entry.RenderGroup,
+			VirtualOutputs = entry.VirtualOutputs
 		}
 
 		component.Name = componentId

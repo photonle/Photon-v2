@@ -7,8 +7,8 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.PrintName = "1996 Ford Crown Victoria"
-
+COMPONENT.Title = "1996 Ford Crown Victoria"
+COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
 COMPONENT.ElementStates = {

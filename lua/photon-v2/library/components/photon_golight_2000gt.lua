@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Code = "Noble"
 }
 
-COMPONENT.PrintName = [[Golight 2000GT Searchlight"]]
-
+COMPONENT.Title = [[Golight 2000GT Searchlight"]]
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/noble/golight_2000.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 1
+}
 
 local baseSpeed = 100
 local headSpeed = 40

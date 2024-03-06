@@ -6,6 +6,34 @@ VEHICLE.Vehicle		= "21durango_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
+local livery = PhotonMaterial.New({
+	Name = "schmal_dodur21_csp",
+	Shader = "VertexLitGeneric",
+	Parameters = {
+		["$basetexture"] = "schmal/liveries/sgm_durang21/co_csp.png",
+		["$bumpmap"] = "photon/common/flat",
+		
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
+	}
+})
 
 VEHICLE.SubMaterials = {
 	[17] = "photon/common/blank", -- skin
@@ -20,7 +48,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "HUD",
-				UIComponents = {
+				Components = {
 					{
 						Component = "photon_hud_default"
 					}
@@ -62,7 +90,7 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Standard Lighting",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmdodur21",
 						Inputs = {
@@ -166,7 +194,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
 						SubMaterials = {
-							[0] = "schmal/liveries/sgm_durang21/co_csp",
+							[0] = livery.MaterialName,
 						}
 					},
 					{

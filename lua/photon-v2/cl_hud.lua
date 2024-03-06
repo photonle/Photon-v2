@@ -320,6 +320,24 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
 end
 
+-- Utility function that draws a fixed box. I made it so 
+-- I could capture screenshots/recordings with the same
+-- perspective and dimensions for the Wiki.
+function HUD.DrawTargetBox( w, h )
+	local centerX = ScrW() / 2
+	local centerY = ScrH() / 2
+
+	-- surface.SetDrawColor( 255, 255, 255, 255 )
+	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), w, 1, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX - (w/2), centerY + (h/2), w, 1, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX + (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
+end
+
+-- hook.Add( "PostDrawHUD", "Photon2.TargetBox", function() 
+	-- HUD.DrawTargetBox( 400, 128 )
+-- end)
+
 function HUD.KeyBindHint( x, y, keys )
 	local key
 	local keyPadding = 7
@@ -479,15 +497,19 @@ local hintDuration = 7
 
 local drawHeight = 0
 local hudStartTime = 0
+local indicatorComponent = nil
 
 local hintInfoVisible = false
 
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
-	local indicatorComponent
 
-	if ( not target ) then hudStartTime = 0 return end
+	if ( not target ) then 
+		hudStartTime = 0
+		indicatorComponent = nil
+		return
+	end
 
 	if ( not Photon2.ClientInput.Active ) then return end
 
@@ -501,10 +523,12 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			hintInfoVisible = true
 		end
 
-		for k, v in pairs( target.UIComponents ) do
-			if ( v.PrintName == "Photon 2 HUD" ) then
-				indicatorComponent = v
-				break
+		if ( not indicatorComponent ) then
+			for k, v in pairs( target.ComponentArray ) do
+				if ( v.Title == "Photon 2 HUD" ) then
+					indicatorComponent = v
+					break
+				end
 			end
 		end
 

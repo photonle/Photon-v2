@@ -1,5 +1,7 @@
 local saveSteeringOnExit = true
 
+local CurTime = CurTime
+
 -- local ENT = FindMetaTable( "Entity" )
 
 -- if not ENT._oldSetKeyValue then
@@ -33,14 +35,49 @@ end
 
 -- Photon2.RunVehicleListModification()
 
+local holdDuration = 0.2
+
+local vehicleEntryPause = {}
+local activeUseHeld = {}
+
+hook.Add( "StartCommand", "Photon2:StartCommand", function( ply, ucmd ) 
+	if ( IsValid( ply ) and IsValid( ply:GetVehicle() ) and ( ply:GetVehicle().PhotonEngineIdleEnabled ) ) then
+		if ( ucmd:KeyDown( IN_USE ) ) then
+			if ( not vehicleEntryPause[ply] ) then
+				activeUseHeld[ply] = activeUseHeld[ply] or CurTime()
+				if ( activeUseHeld[ply] + holdDuration > CurTime() ) then
+					ucmd:RemoveKey( IN_USE )
+				else
+					ply:GetVehicle().PhotonEngineIdleOff = true
+					ply.PhotonEngineIdleExit = activeUseHeld[ply]
+					activeUseHeld[ply] = nil
+				end
+			end
+		else
+			if ( vehicleEntryPause[ply] ) then
+				vehicleEntryPause[ply] = nil
+			elseif ( activeUseHeld[ply] ) then
+				ucmd:AddKey( IN_USE )
+				ply.PhotonEngineIdleExit = activeUseHeld[ply]
+				activeUseHeld[ply] = nil
+			end
+		end
+	end
+end)
+
+
 ---@param ply Entity
 ---@param vehicle Vehicle
 ---@param role any
 function Photon2.OnPlayerEnteredVehicle( ply, vehicle, role )
-	
+
+	if ( vehicle.PhotonEngineIdleEnabled ) then
+		vehicleEntryPause[ply] = true
+		vehicle.PhotonEngineIdleOff = nil
+	end
+
 	local controller = vehicle:GetPhotonControllerFromAncestor() --[[@as sv_PhotonController]]
 	if ( not IsValid( controller ) ) then return end
-	
 	
 	if ( controller.IsLinkedToStandardVehicle and ( vehicle:GetPhotonController() == controller ) and ( vehicle:GetDriver() == ply ) ) then
 		controller:PlayerEnteredLinkedVehicle( ply, vehicle, role )
@@ -52,8 +89,8 @@ end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
+
 	local controller = vehicle:GetPhotonControllerFromAncestor()
-	
 	if ( IsValid( controller ) ) then
 		if ( controller.IsLinkedToStandardVehicle ) then
 			if ( vehicle:GetPhotonController() == controller ) then

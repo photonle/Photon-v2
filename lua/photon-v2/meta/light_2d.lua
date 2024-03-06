@@ -367,6 +367,7 @@ function Light:DoPreRender()
 	if ( self.BoneParent < 0 ) then
 		self.Position = self.Parent:LocalToWorld( self.LocalPosition )
 		self.Angles = self.Parent:LocalToWorldAngles( self.TranslatedLocalAngles )
+		-- print( tostring(self.Parent:GetAngles()) )
 	else
 		-- print("BONE PARENT: " .. tostring(self.BoneParent))
 		-- -- TODO: optimization
@@ -394,8 +395,12 @@ function Light:DoPreRender()
 	self.ForwardNormal = self.Angles:Forward()
 
 	-- Update visibility calculation
-	self.Visibility = util_pixvis( self.Position + (self.Angles:Forward() * self.ForwardVisibilityOffset), self.VisibilityRadius, self.PixVisHandle )
-	-- self.Visibility = 1
+	if ( self.UIMode ) then
+		self.Visibility = 1
+	else
+		self.Visibility = util_pixvis( self.Position + (self.Angles:Forward() * self.ForwardVisibilityOffset), self.VisibilityRadius, self.PixVisHandle )
+	end
+	
 	if ( self.Visibility == 0 and (not self.Persist) ) then self.ShouldDraw = false end
 	
 	if ( self.ShouldDraw ) then
@@ -434,10 +439,14 @@ function Light:DoPreRender()
 		end
 
 
-		self.ViewNormal:Set( self.Position )
-		self.ViewNormal:Sub( EyePos() )
-		self.ViewNormal:Normalize()
-		self.ViewDot = (- self.ViewNormal:Dot( self.Angles:Forward() )) * self.Visibility
+		if ( not self.UIMode ) then
+			self.ViewNormal:Set( self.Position )
+			self.ViewNormal:Sub( EyePos() )
+			self.ViewNormal:Normalize()
+			self.ViewDot = (- self.ViewNormal:Dot( self.Angles:Forward() )) * self.Visibility
+		else
+			self.ViewDot = 1
+		end
 		
 		-- local viewNorm = EyeAngles():Forward()
 		

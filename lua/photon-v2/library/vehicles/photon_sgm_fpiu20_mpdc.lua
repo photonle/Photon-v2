@@ -17,42 +17,59 @@ local livery = PhotonMaterial.New({
 	Name = "schmal_fpiu20_mpdc",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-	["$basetexture"] = "schmal/liveries/sgm_fpiu20/mpdc.png",
-	["$bumpmap"] = "photon/common/flat",
-	["$phong"] = 1,
-	["$envmap"] = "env_cubemap",
-	["$envmaptint"] = Vector(0.1, 0.1, 0.1),
-	["$phongboost"] = 1.25,
-	["$phongexponent"] = 23,
-	["$nodecal"] = 1
+		["$basetexture"] = "schmal/liveries/sgm_fpiu20/mpdc.png",
+		["$bumpmap"] = "photon/common/flat",
+		
+		["$envmap"] = "env_cubemap",
+		["$envmaptint"] = Vector( 0.3, 0.3, 0.3 ),
+		["$envmapfresnel"] = 1,
+
+		["$phong"] = 1,
+		["$phongboost"] = 15,
+		["$phongexponent"] = 3,
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+
+		["$rimlight"] = 1,
+		["$rimlightexponent"] = 2,
+		["$rimlightboost"] = 1,
+		["$rimmask"] = 1,
+
+		["$phongexponenttexture"] = "photon/common/flat_exp",
+		["$basemapluminancephongmask"] = 1,
+		["$phongalbedotint"] = 1,
+
+		["$nodecal"] = 1
 	}
 })
 
-VEHICLE.SubMaterials = {
-	[3] = "photon/common/blank"
-}
+-- VEHICLE.SubMaterials = {
+-- 	[3] = "photon/common/blank"
+-- 	-- [3] = "photon/common/blank"
+-- }
 
 VEHICLE.Siren = { "sos_nergy400" }
 
+VEHICLE.Livery = livery.MaterialName
+
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
-	{
-		Category = "Liveries",
-		Options = {
-			{
-				Option = "MPDC",
-				SubMaterials = {
-					{ Id = 20, Material = livery.MaterialName },
-				}
-			},
-			{
-				Option = "None",
-				SubMaterials = {
-					{ Id = 20, Material = nil }
-				}
-			}
-		}
-	},
+	-- {
+	-- 	Category = "Liveries",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "MPDC",
+	-- 			SubMaterials = {
+	-- 				{ Id = "SKIN", Material = livery.MaterialName },
+	-- 			}
+	-- 		},
+	-- 		{
+	-- 			Option = "None",
+	-- 			SubMaterials = {
+	-- 				{ Id = 20, Material = nil }
+	-- 			}
+	-- 		}
+	-- 	}
+	-- },
 	{
 		Category = "Controller Sound",
 		Options = {
@@ -109,7 +126,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4_lic_h",
 						Angles = Angle( 0, -90, 0 ),
 						Position = Vector( 0, -125, 49 ),
-						Scale = 0.96
+						Scale = 0.96,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					}
 				}
 			}
@@ -120,12 +140,15 @@ VEHICLE.Equipment = {
 		Options = {
 			{
 				Option = "Standard Lighting",
-				VirtualComponents = {
+				Components = {
 					{
 						Component = "photon_standard_sgmfpiu20",
 						States = { "B", "B" },
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
 				}
@@ -142,7 +165,10 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_intersector_surf",
 						Position = Vector( -11, 116.2, 48 ),
 						Angles = Angle( 0, 7, 12 ),
-						Scale = 1
+						Scale = 1,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 					{
 						Component = "photon_sos_intersector_surf",
@@ -150,7 +176,10 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, -7, 12 ),
 						States = { "B", "R" },
 						Phase = "B",
-						Scale = 1
+						Scale = 1,
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					}
 				}
 			}
@@ -169,6 +198,9 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
 					{
@@ -179,6 +211,9 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
+						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
 				}
@@ -199,6 +234,9 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 					{
 						Component = "photon_sos_intersector_surf",
@@ -209,6 +247,9 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
+						Flags = {
+							ParkMode = { "Emergency.Warning", "MODE2" },
+						}
 					},
 				}
 			}
@@ -253,7 +294,10 @@ VEHICLE.Equipment = {
 								Component = "photon_sos_nforce_54",
 								Position = Vector( 0, -15, 87.55 ),
 								Angles = Angle( 0, 0, -1 ),
-								Scale = 1.029
+								Scale = 1.029,
+								Flags = {
+									ParkMode = { "Emergency.Warning", "MODE2" },
+								}
 							}
 						}
 					},
@@ -312,10 +356,10 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Spotlights (Decorative)",
+		Category = "Spotlights",
 		Options = {
 			{
-				Option = "Decorative",
+				Option = "Spotlights",
 				Components = {
 					{
 						Component = "photon_whe_par46_left",

@@ -8,9 +8,15 @@ COMPONENT.Credits = {
 	Model = "Mighty, Schmal, et. al",
 }
 
-COMPONENT.PrintName = [[Setina Push Bumper - 2016 Ford Police Utility]]
-
+COMPONENT.Title = [[Setina Push Bumper - 2016 Ford Police Utility]]
+COMPONENT.Category = "Bumper"
 COMPONENT.Model = "models/schmal/fpiu16_setina.mdl"
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, -90, 0 ),
+	Zoom = 0.3
+}
 
 COMPONENT.Templates = {
 	["2D"] = {

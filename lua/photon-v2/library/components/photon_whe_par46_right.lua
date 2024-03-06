@@ -1,8 +1,9 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
+COMPONENT.Title = "Whelen PAR46 LED Spotlight (Right)"
 COMPONENT.Base = "photon_whe_par46_left"
-
+COMPONENT.Category = "Spotlight"
 COMPONENT.Model = "models/sentry/props/spotlightpar46_right_up.mdl"
 
 -- Most other properties are set in the par46_left file. The ones here
@@ -20,8 +21,8 @@ COMPONENT.Templates = {
 		},
 		Lamp = {
 			States = {
-				["DOWN"] = { Activity = "Fixed", Target = 270, Speed = 75, DeactivateOnTarget = true, Direction = -1 },
-				["UP"] = { Activity = "Fixed", Target = 0, Speed = 300, Direction = 1 },
+				["DOWN"] = { Activity = "Fixed", Target = 270, Speed = 200, DeactivateOnTarget = true, Direction = 0 },
+				["UP"] = { Activity = "Fixed", Target = 0, Speed = 300, Direction = 0 },
 			},
 		}
 	}
