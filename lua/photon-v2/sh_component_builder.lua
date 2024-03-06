@@ -102,6 +102,13 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 						["Vehicle.Engine"] = { "ON" },
 						["Vehicle.Transmission"] = { "PARK" }
 					}
+				},
+				{
+					Mode = "DRL",
+					Conditions = {
+						["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
+						["Vehicle.Lights"] = { "AUTO" },
+					}
 				}
 			}
 		},
@@ -110,8 +117,9 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 		},
 		Inputs = {
 			["Vehicle.AutomaticLighting"] = {
-				["HEADLIGHTS"] = table.Copy(component.Inputs["Vehicle.Lights"]["HEADLIGHTS"]),
-				["PARKING"] = table.Copy(component.Inputs["Vehicle.Lights"]["PARKING"])
+				["HEADLIGHTS"] = table.Copy( component.Inputs["Vehicle.Lights"]["HEADLIGHTS"] or {} ),
+				["PARKING"] = table.Copy( component.Inputs["Vehicle.Lights"]["PARKING"] or {} ),
+				["DRL"] = table.Copy( component.Inputs["Vehicle.Lights"]["DRL"] or {} )
 			}
 		}
 	}
@@ -190,7 +198,7 @@ end
 -- but it plays nicely with the component registration and compilation process. This might be somewhat
 -- laggy on very complex components but it probably doesn't matter.
 function Photon2.ComponentBuilder.ApplyDebugSequences( entryName, inputAction )
-	local component = Photon2.Library.Components:GetInherited( entryName, true )
+	local component = Photon2.Library.Components:Get( entryName )
 	component.Segments = component.Segments or {}
 	-- This will probably be necessary for the sequence creation UI
 	-- component.Segments["#DEBUG"] = {

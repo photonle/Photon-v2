@@ -303,7 +303,7 @@ COMPONENT.Inputs = {
 		["PARKING"] = {
 			Parking = "ON"
 		},
-		["AUTO"] = {
+		["DRL"] = {
 			DRL = "ON"
 		}
 	},

@@ -129,8 +129,11 @@ function Sequence:OnPulse()
 	return false
 end
 
-function Sequence:IncrementFrame( frame )
-
+---comment
+---@param frame number Parent frame count. Will be ignored if sequence isn't synchronized.
+---@param force? boolean If true, forces squence to use frame parameter and not discard it. (Used for previewing.)
+function Sequence:IncrementFrame( frame, force )
+	-- print("Frame parameter: " .. tostring( frame ))
 	if ( self.FrameDuration ) then
 		local nextFrame = self.NextFrame + self.FrameDuration
 		-- Resets frame timing in case things get fucked
@@ -145,12 +148,13 @@ function Sequence:IncrementFrame( frame )
 	-- allow empty sequences to silently fail
 	if ( #self < 1 ) then return end
 
-	if ( not self.Synchronize ) then
+	if ( not self.Synchronize and ( not force ) ) then
 		frame = self.CurrentFrame
 	end
 
 	if ( self.IsRepeating and self.RestartFrame == 1 ) then
 		self.CurrentFrame = (frame % #self) + 1
+		-- print("Normal current frame: " .. tostring( self.CurrentFrame ) .. " Frame: " .. tostring( frame ) )
 	elseif ( not self.IsRepeating ) then
 
 		if ( not self.PreviousFrame ) then self.CurrentFrame = 0 end
@@ -175,7 +179,6 @@ function Sequence:IncrementFrame( frame )
 	-- 		self.CurrentFrame = #self
 	-- 	end
 	-- end
-
 	self.ActiveFrame = self[self.CurrentFrame]
 	if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
