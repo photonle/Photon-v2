@@ -5,7 +5,7 @@ COMPONENT.Author = "Photon"
 
 COMPONENT.Credits = {
 	Model = "SGM",
-	Code = "Schmal"
+	Code = "anemolis72"
 }
 
 -- photon_s[ound]o[ff]s[ignal]_mp[ower]f[ascia]4[inch]lic[ense plate]_h[orizontal]
