@@ -252,7 +252,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["QUAD_FLASH"] = sequence():QuadFlash( 0, 2 ),
+			["QUAD_FLASH"] = sequence():QuadFlash( 0, 2 )
 		}
 	}
 }

@@ -235,8 +235,8 @@ local components = {
 		if ( unique ) then data = Photon2.Util.UniqueCopy( data ) end
 		if ( data.Base ) then
 			local dataInputs
-			if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-			Photon2.Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+			if ( istable( data.Inputs ) ) then dataInputs = Photon2.Util.UniqueCopy( data.Inputs ) end
+			Photon2.Util.Inherit( data, Photon2.Util.UniqueCopy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
 			Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 			Photon2.Library.ComponentsGraph[data.Base][data.Name] = true
 	

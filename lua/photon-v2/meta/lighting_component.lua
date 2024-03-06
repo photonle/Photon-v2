@@ -638,21 +638,22 @@ function Component:SetPaused( pause )
 end
 
 function Component:ManualThink()
-	if ( self.IsPaused ) then return end
+	if ( not self.IsPaused ) then
+		self:Pulse()
+		self.LastFrameTick = self.LastFrameTick or CurTime()
+		
+		local frameDuration = 1/24
 
-	self:Pulse()
-	self.LastFrameTick = self.LastFrameTick or CurTime()
-	
-	local frameDuration = 1/24
-
-	if ( CurTime() >= self.LastFrameTick + frameDuration ) then
-		self:IndependentFrameTick()
-		self.LastFrameTick = self.LastFrameTick + frameDuration
-		-- Prevents a frame change "backlog"
 		if ( CurTime() >= self.LastFrameTick + frameDuration ) then
-			self.LastFrameTick = CurTime()
+			self:IndependentFrameTick()
+			self.LastFrameTick = self.LastFrameTick + frameDuration
+			-- Prevents a frame change "backlog"
+			if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+				self.LastFrameTick = CurTime()
+			end
 		end
 	end
+	return self.FrameIndex
 end
 
 -- Developer function that turns all active modes to OFF.
@@ -709,10 +710,20 @@ function Component:RemoveActiveSequence( segmentName, sequence)
 	self.ActiveDependentSequences[sequence] = nil
 end
 
+function Component:SetFrameIndex( index )
+	self.FrameIndex = index
+	for sequence, _ in pairs( self.ActiveSequences ) do
+		sequence:IncrementFrame( self.FrameIndex, true )
+	end
+	for i=1, #self.Elements do
+		self.Elements[i]:UpdateState()
+	end
+end
+
 function Component:IndependentFrameTick( all, change )
 	if ( not self.FrameIndex ) then self.FrameIndex = 0 end
 	self.FrameIndex = self.FrameIndex + ( change or 1 )
-	print( self.FrameIndex )
+	-- print( self.FrameIndex )
 	if ( all ) then
 		for sequence, _ in pairs( self.ActiveSequences ) do
 			sequence:IncrementFrame( self.FrameIndex, true )
