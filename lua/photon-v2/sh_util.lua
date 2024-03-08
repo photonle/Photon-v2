@@ -222,3 +222,45 @@ function Photon2.Util.GetVehicleStartAndIdleSounds( vehicle )
 	
 	return vehicleScriptSoundCache[scriptFile]
 end
+
+local function getKeys( tbl )
+
+	local keys = {}
+
+	for k in pairs( tbl ) do
+		table.insert( keys, k )
+	end
+
+	return keys
+
+end
+
+function Photon2.Util.SortedPairs( pTable, Desc )
+	local keys = getKeys( pTable )
+
+	if ( Desc ) then
+		table.sort( keys,function( a, b )
+			local numA = tonumber( a:match("(%d+)" ) or 0 )
+			local numB = tonumber( b:match("(%d+)" ) or 0 )
+			if numA ~= numB then
+				return numA > numB
+			end
+			return a > b
+		end )
+	else
+		table.sort( keys, function( a, b )
+			local numA = tonumber( a:match("(%d+)" ) or 0 )
+			local numB = tonumber( b:match("(%d+)" ) or 0 )
+			if numA ~= numB then
+				return numA < numB
+			end
+			return a < b
+		end )
+	end
+
+	local i, key
+	return function()
+		i, key = next( keys, i )
+		return key, pTable[key]
+	end
+end

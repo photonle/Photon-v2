@@ -1,9 +1,12 @@
-local class = "Photon2UIComponentPreviewer"
-local base = "DPanel"
+--[[
 
-local PANEL = {}
+	Component Preview Panel
 
-PANEL.AllowAutoRefresh = true
+--]]
+
+local PANEL = {
+	AllowAutoRefresh = true
+}
 
 function PANEL:Init()
 	self.BaseClass.Init( self )
@@ -16,24 +19,34 @@ function PANEL:PostAutoRefresh()
 end
 
 local function IsKeyBindDown( cmd )
-
-	-- Yes, this is how engine does it for input.LookupBinding
 	for keyCode = 1, BUTTON_CODE_LAST do
-
 		if ( input.LookupKeyBinding( keyCode ) == cmd and input.IsKeyDown( keyCode ) ) then
 			return true
 		end
-
 	end
 
 	return false
-
 end
 
-function PANEL:SetEntry( entryName )
+function PANEL:DoComponentReload()
+	self.CurrentEntry = Photon2.Library.Components:GetInherited( self.CurrentEntryName )
+	if ( IsValid( self.ModelPanel ) ) then
+		self.ModelPanel:SetComponent( self.CurrentEntryName, true )
+		local selected = self.Tree:GetSelectedItem()
+		if ( IsValid( selected ) ) then
+			selected:OnNodeSelected()
+		end
+	end
+end
+
+---`
+---@param entryName string
+---@param isComponentReload? boolean If this was triggered by a component reload.
+function PANEL:SetEntry( entryName, isComponentReload )
+	-- Ignore loading reload because it's handled internally.
+	if ( isComponentReload ) then return end
+	
 	self:Clear()
-
-
 
 	local this = self
 
@@ -116,15 +129,16 @@ function PANEL:SetEntry( entryName )
 			if ( IsValid( PHOTON2_PREVIEW_COMPONENT ) ) then
 				PHOTON2_PREVIEW_COMPONENT:Remove()
 			end
+
 			local component = Photon2.GetComponent( componentId )
 			local ent = component:CreateForUI()
+			ent.UseStrictFrameTiming = false
 			ent:SetScale( ent.Preview.Zoom )
 			self.Entity = ent
 			
 			PHOTON2_PREVIEW_COMPONENT = ent
 			
 			ent:SetChannelMode( "Emergency.Warning", "MODE3" )
-
 			if ( not static ) then
 				local newZ = ent.Preview.Position.Z + 20
 				self:SetLookAng( Angle( newZ, 0, 0 ) )
@@ -139,12 +153,13 @@ function PANEL:SetEntry( entryName )
 				-- ent:SetupBones()
 				-- ent:SetPropertiesFromEquipment( component )
 			end)
-			hook.Add( "Photon2:ComponentReloaded", self, function( hookName, id )
+			hook.Add( "Photon2:ComponentReloaded", this, function( hookName, id )
 				if ( id == entryName or component.Ancestors[id] ) then
-					this:SetEntry( entryName )
+					-- this:SetEntry( entryName )
+					this:DoComponentReload()
 				end
 			end )
-			activeComponent = ent
+			this.ActiveComponent = ent
 		end
 
 		function modelPanel:FirstPersonControls()
@@ -211,6 +226,7 @@ function PANEL:SetEntry( entryName )
 			self.Entity:SetAngles( self.Entity.Preview.Angles )
 		end
 
+		self.ModelPanel = modelPanel
 	end
 
 	local overviewTab = vgui.Create( "DPanel", scrollPanel )
@@ -231,23 +247,21 @@ function PANEL:SetEntry( entryName )
 	sequencePlayer:DockMargin( 0, 4, 0, 0 )
 	sequencePlayer:DockPadding( 4, 0, 4, 0 )
 
-	function sequencePlayer:OnPause() activeComponent:SetPaused( true ) end
-	function sequencePlayer:OnPlay() activeComponent:SetPaused( false ) end
+	function sequencePlayer:OnPause() this.ActiveComponent:SetPaused( true ) end
+	function sequencePlayer:OnPlay() this.ActiveComponent:SetPaused( false ) end
 
-	function sequencePlayer:OnForwardOne() activeComponent:IndependentFrameTick( true ) end
-	function sequencePlayer:OnBackOne() activeComponent:IndependentFrameTick( true, -1 ) end
+	function sequencePlayer:OnForwardOne() this.ActiveComponent:IndependentFrameTick( true ) end
+	function sequencePlayer:OnBackOne() this.ActiveComponent:IndependentFrameTick( true, -1 ) end
 
 	function sequencePlayer:OnFrameSliderChange( value )
-		-- activeComponent.FrameIndex = value
-		print("setting frame index to: " .. tostring( value ) )
-		activeComponent:SetFrameIndex( value - 1 )
-		-- ErrorNoHaltWithStack()
+		this.ActiveComponent:SetFrameIndex( value - 1 )
 	end
 
 	self.PlayerControls = sequencePlayer
 
-	local tree = vgui.Create( "EXDTree", overviewTab )
-	tree:SetLineHeight( 22 )
+	local tree = vgui.Create( "Photon2UIComponentPreviewTree", overviewTab )
+	self.Tree = tree
+	-- tree:SetLineHeight( 22 )
 	tree:Dock( FILL )
 	
 
@@ -298,7 +312,7 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
-	local function sequenceSelected( segment, sequence )
+	function tree:OnSequenceSelected( segment, sequence )
 		local sequenceData = this.CurrentEntry.Segments[segment].Sequences[sequence]
 		this.PlayerControls:SetSequence( sequenceData )
 		this.PlayerControls:DoPlay()
@@ -309,7 +323,7 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
-	local function segmentSelected( segment )
+	function tree:OnPatternSelected( segment )
 		this.PlayerControls:SetSliderVisible( false )
 		this.PlayerControls:DoPlay()
 		if ( modelPanel ) then
@@ -319,11 +333,11 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
-	local function modeSelected( channel, mode )
+	function tree:OnModeSelected( channel, mode )
 		this.PlayerControls:SetSliderVisible( false )
 		if ( modelPanel ) then
 			modelPanel.Entity:SetChannelMode( channel, mode, true )
-			self.PlayerControls:Show()
+			this.PlayerControls:Show()
 		end
 	end
 	
@@ -334,82 +348,8 @@ function PANEL:SetEntry( entryName )
 		end
 	end
 
-	-- Override function because selecting a node will do nothing
-	-- function tree:SetSelectedItem( node ) 
-	-- 	-- if ( not node.Selectable ) then return end
-	-- end
 
-	if ( entry.States ) then
-		local slotsNode = tree:AddNode( "State Slots", "numeric", true )
-		for i, state in ipairs( entry.States ) do
-			local stateNode = slotsNode:AddNode( state, "numeric-" .. tostring( i ) .. "-circle-outline")
-		end
-		slotsNode:SetExpanded( true )
-	end
-
-	local inputsNode = tree:AddNode( "Inputs", "power-plug", true )
-	for channelName, modes in pairs( entry.Inputs or {} ) do
-		if ( channelName == "#DEBUG" ) then continue end
-		local channelNode = inputsNode:AddNode( channelName, "ray-vertex", true )
-		for modeName, sequences in SortedPairs( modes ) do
-			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
-			function modeNode:OnNodeSelected()
-				if ( activeComponent.CurrentModes[channelName] ~= modeName ) then
-					if ( activeComponent ) then
-						modeSelected( channelName, modeName )
-					end
-				else
-					modeOff()
-					modeNode:SetSelected( false )
-				end
-			end
-			if ( istable( sequences ) ) then
-				for k, v in pairs( sequences ) do
-					local sequenceNode = modeNode:AddNode( string.format("%s/%s", k, v), "filmstrip" )
-					function sequenceNode:OnNodeSelected()
-						sequenceSelected( k, v)
-					end
-				end
-			elseif ( isstring( sequences ) ) then
-				local patternNode = modeNode:AddNode( sequences, "play-box" )
-				function patternNode:OnNodeSelected()
-					sequenceSelected( k, v)
-				end
-			end
-		end
-		-- channelNode:SetExpanded( true )
-	end
-	-- inputsNode:SetExpanded( true )
-
-	if ( entry.Patterns ) then
-		local patternsNode = tree:AddNode( "Patterns", "animation-play", true )
-		for patternName, sequences in pairs( entry.Patterns ) do
-			local patternNode = patternsNode:AddNode( patternName, "play-box" )
-			for i, sequence in pairs( sequences or {} ) do
-				local sequenceNode = patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
-				function sequenceNode:OnNodeSelected()
-					sequenceSelected( sequence[1], sequence[2] )
-				end
-			end
-			function patternNode:OnNodeSelected()
-				segmentSelected( patternName )
-			end
-		end
-	end
-
-	local segmentsNode = tree:AddNode( "Sequences", "movie-roll", true )
-	for segmentName, segment in SortedPairs( entry.Segments or {} ) do
-		local segmentNode = segmentsNode:AddNode( segmentName, "film", true )
-		for sequenceName, sequence in SortedPairs( segment.Sequences or {}) do
-			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip" )
-			function sequenceNode:OnNodeSelected()
-				sequenceSelected( segmentName, sequenceName )
-			end
-		end
-	end
-	-- segmentsNode:SetExpanded( true )
-
-
+	tree:SetComponent( entry )
 
 end
 
@@ -423,7 +363,9 @@ end
 
 
 --[[
+
 	Sequence Player Controls
+
 --]]
 
 local PLAYER = {
@@ -610,5 +552,119 @@ function PLAYER:PostAutoRefresh()
 	-- self:Init()
 end
 
+
+--[[
+
+	Component Preview Tree
+
+--]]
+
+local TREE = {}
+
+function TREE:OnPatternSelected( patternName ) end
+
+function TREE:OnSequenceSelected( segmentName, sequenceName ) end
+
+function TREE:OnModeSegmentSelected( segmentName ) end
+
+function TREE:OnModeSelected( channelName, modeName ) end
+
+function TREE:OnModeDeselected() end
+
+function TREE:BuildStateSlotsSignature( states )
+	local signature = "[STATES]"
+	for i, state in ipairs( states ) do
+		signature = signature .. "(" .. tostring( i ) .. "=" .. tostring( state ) .. ")"
+	end
+	signature = signature .. "[/STATES]"
+end
+
+function TREE:UpdateStateSlots( states )
+	local slotsNode = self.SlotsNode or self:AddNode( "State Slots", "numeric", true )
+	for i, state in ipairs( states ) do
+		local stateNode = slotsNode:AddNode( state, "numeric-" .. tostring( i ) .. "-circle-outline" )
+	end
+	self.SlotsNode = slotsNode
+end
+
+function TREE:UpdateInputs( inputs )
+	local this = self
+	local signature = ""
+	local inputsNode = self.InputsNode or self:AddNode( "Inputs", "power-plug", true )
+	for channelName, modes in pairs( inputs ) do
+		if ( channelName == "#DEBUG" ) then continue end
+		signature = signature .. "[" .. tostring( signature ) .. "]"
+		local channelNode = inputsNode:AddNode( channelName, "ray-vertex", true )
+		for modeName, sequences in SortedPairs( modes ) do
+			signature = signature .. "(" .. tostring( modeName ) .. ")"
+			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
+			function modeNode:OnNodeSelected()
+				this:OnModeSelected( channelName, modeName )
+			end
+
+			if ( istable( sequences ) ) then
+				for segmentName, sequenceName in pairs( sequences ) do
+					local sequenceNode = modeNode:AddNode( string.format("%s/%s", segmentName, sequenceName), "filmstrip" )
+					function sequenceNode:OnNodeSelected()
+						this:OnSequenceSelected( segmentName, sequenceName)
+					end
+				end
+			elseif( isstring( sequences ) ) then
+				local patternNode = modeNode:AddNode( sequences, "play-box" )
+				function patternNode:OnNodeSelected()
+					this:OnPatternSelected( sequences )
+				end
+			end
+		end
+	end
+	this.InputsNode = inputsNode
+end
+
+function TREE:UpdatePatterns( patterns )
+	local this = self
+	local patternsNode = self.PatternsNode or self:AddNode( "Patterns", "animation-play", true )
+	for patternName, sequences in SortedPairs( patterns ) do
+		local patternNode = patternsNode:AddNode( patternName, "play-box" )
+		for i, sequence in ipairs( sequences or {} ) do
+			local sequenceNode = patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
+			function sequenceNode:OnNodeSelected()
+				this:OnSequenceSelected( sequence[1], sequence[2] )
+			end
+		end
+		function patternNode:OnNodeSelected()
+			this:OnPatternSelected( patternName )
+		end
+	end
+	self.PatternsNode = patternsNode
+end
+
+function TREE:UpdateSegments( segments )
+	local this = self
+	local segmentsNode = self.SegmentsNode or self:AddNode( "Sequences", "movie-roll", true )
+	for segmentName, segment in SortedPairs( segments ) do
+		local segmentNode = segmentsNode:AddNode( segmentName, "film", true )
+		for sequenceName, sequence in SortedPairs( segment.Sequences or {} ) do
+			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip")
+			function sequenceNode:OnNodeSelected()
+				this:OnSequenceSelected( segmentName, sequenceName )
+			end
+		end
+	end
+	self.SegmentsNode = segmentsNode
+end
+
+function TREE:SetComponent( component )
+	self:Clear()
+	if ( component.States ) then self:UpdateStateSlots( component.States ) end
+	if ( component.Inputs ) then self:UpdateInputs( component.Inputs ) end
+	if ( component.Patterns ) then self:UpdatePatterns( component.Patterns ) end
+	if ( component.Segments ) then self:UpdateSegments( component.Segments ) end
+end
+
+function TREE:Init()
+	self:SetLineHeight( 22 )
+end
+
+derma.DefineControl( "Photon2UIComponentPreviewTree", "Photon 2 Component Preview Tree", TREE, "EXDTree" )
 derma.DefineControl( "Photon2UISequencePlayerControls", "Photon 2 component previewer", PLAYER, "DPanel" )
-derma.DefineControl( class, "Photon 2 component previewer", PANEL, base )
+derma.DefineControl( "Photon2UIComponentPreviewer", "Photon 2 component previewer", PANEL, "DPanel" )

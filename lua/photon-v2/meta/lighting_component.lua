@@ -30,7 +30,8 @@ local print = Photon2.Debug.Print
 ---@field Synchronized boolean If true, the component will synchronize with the controller's frame schedule (can be overridden by segments or sequences).
 ---@field VirtualOutputs table
 ---@field Title string
----@field IsPaused boolean
+---@field IsPaused boolean If component timing is paused.
+---@field UseStrictFrameTiming boolean (Default = `true`) If false, frame timing will be never be faster than the client's current FPS. 
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -39,7 +40,7 @@ local Util = Photon2.Util
 Component.UseControllerModes = true
 Component.IsPhotonLightingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
-
+Component.StrictFrameTiming = true
 
 Component.ClassMap = {
 	Default = "PhotonLightingComponent",
@@ -560,7 +561,7 @@ function Component:OnScaleChange( newScale, oldScale )
 end
 
 function Component:Pulse( frameChange )
-	local frameChange = false
+	-- local frameChange = false
 	
 	for sequence, _ in pairs( self.ActiveIndependentSequences ) do
 		if ( sequence:OnPulse( frameChange ) ) then frameChange = true end
@@ -646,11 +647,16 @@ function Component:ManualThink()
 
 		if ( CurTime() >= self.LastFrameTick + frameDuration ) then
 			self:IndependentFrameTick()
-			self.LastFrameTick = self.LastFrameTick + frameDuration
-			-- Prevents a frame change "backlog"
-			if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+			if ( self.UseStrictFrameTiming ) then
+				-- Prevents a frame change "backlog"
+				self.LastFrameTick = self.LastFrameTick + frameDuration
+				if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+					self.LastFrameTick = CurTime()
+				end
+			else
 				self.LastFrameTick = CurTime()
 			end
+			
 		end
 	end
 	return self.FrameIndex

@@ -147,7 +147,8 @@ COMPONENT.Segments = {
 			-- [7] = "1 5 9 13 17 21 25 4 8 12 16 20 24 28"
 		},
 		Sequences = {
-			["DEV"] = { 5, 5 },
+			["DEV"] = { 1, 2, 3 },
+			-- ["DEV"] = sequence():Alternate( 5, 6, 8 ),
 			-- ["T"] = { 6, 5 },
 			["MIX"] = { 2, 0, 2, 0, 2, 2, 2, 2, 0, 3, 0, 3, 0, 3, 3, 3, 3 },
 			-- ["MIX"] = sequence():Add(2):Do(16):Add(3):Do(16)
@@ -381,6 +382,13 @@ COMPONENT.Patterns = {
 		{ "P26_FRONT", "P26" },
 		{ "P26_REAR", "P26" },
 		{ "P26_WOR", "P26" },
+	},
+	PURSUIT = {
+		{ "Pursuit", "PURSUIT" }
+	},
+	PURSUITW = {
+		{ "PursuitWO", "PURSUIT" },
+		{ "Pursuit", "PURSUIT" }
 	}
 }
 

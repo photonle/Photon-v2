@@ -19,7 +19,7 @@ COMPONENT.Category = "Interior"
 COMPONENT.Model = "models/sentry/props/dominator2.mdl"
 
 COMPONENT.Preview = {
-	Position = Vector(),
+	Position = Vector( 0, 0, -2),
 	Angles = Angle( 0, -90, 0 ),
 	Zoom = 1.8
 }

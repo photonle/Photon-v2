@@ -171,7 +171,7 @@ function PANEL:OnItemDoubleClick( value )
 	self:OnFileConfirmed( value )
 end
 
-function PANEL:PopulateEntries()
+function PANEL:PopulateEntries( isUpdate )
 	local files = self.EntriesPanel
 	if ( not IsValid( files ) ) then return end
 	files:Clear()
@@ -211,7 +211,9 @@ function PANEL:PopulateEntries()
 		local line = files:AddLine( unpack( columns ) )
 		line.EntryName = name
 		if ( name == self.SelectedEntryName ) then
+			if ( isUpdate ) then self.Suppress = true end
 			files:SelectItem( line )
+			self.Suppress = false
 		end
 		if ( self.FileMode =="SAVE" and entry.ReadOnly ) then
 			line.LineDisabled = true
@@ -386,7 +388,7 @@ function PANEL:SetSelected( entryName )
 	self.SelectedEntry = entry
 	self.FileNameTextBox:SetText( entryName )
 	if ( self.PreviewPanel ) then
-		self.PreviewPanel:SetEntry( entryName )
+		self.PreviewPanel:SetEntry( entryName, self.Suppress )
 	end
 end
 
@@ -457,7 +459,7 @@ function PANEL:Setup( library, mode )
 	end
 
 	hook.Add( "Photon2:" .. library .. "Changed", self, function()
-		self:PopulateEntries()
+		self:PopulateEntries( true )
 	end)
 end
 
