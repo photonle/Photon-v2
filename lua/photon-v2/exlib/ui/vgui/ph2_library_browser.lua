@@ -211,9 +211,9 @@ function PANEL:PopulateEntries( isUpdate )
 		local line = files:AddLine( unpack( columns ) )
 		line.EntryName = name
 		if ( name == self.SelectedEntryName ) then
-			if ( isUpdate ) then self.Suppress = true end
+			if ( isUpdate ) then self.IsComponentReload = true end
 			files:SelectItem( line )
-			self.Suppress = false
+			self.IsComponentReload = nil
 		end
 		if ( self.FileMode =="SAVE" and entry.ReadOnly ) then
 			line.LineDisabled = true
@@ -388,7 +388,7 @@ function PANEL:SetSelected( entryName )
 	self.SelectedEntry = entry
 	self.FileNameTextBox:SetText( entryName )
 	if ( self.PreviewPanel ) then
-		self.PreviewPanel:SetEntry( entryName, self.Suppress )
+		self.PreviewPanel:SetEntry( entryName, self.IsComponentReload )
 	end
 end
 

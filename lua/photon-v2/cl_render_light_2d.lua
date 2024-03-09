@@ -197,7 +197,7 @@ function Photon2.RenderLight2D.Render()
 				
 				render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.ShapeGlowColor, light.Angles[3] - 180 )
 			end
-
+			
 		end
 			
 	end
@@ -251,6 +251,8 @@ function Photon2.RenderLight2D.DrawUI()
 			
 			render.DrawQuadEasy( light.Position, light.Angles:Forward(), light.Width * 1, light.Height * 1, light.ShapeGlowColor, light.Angles[3] - 180 )
 		end
+		light.ScreenPosition = light.Position:ToScreen()
+
 	end
 	render.OverrideColorWriteEnable( false, false )
 end

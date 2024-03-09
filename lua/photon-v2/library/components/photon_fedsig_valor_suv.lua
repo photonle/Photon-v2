@@ -147,8 +147,8 @@ COMPONENT.Segments = {
 			-- [7] = "1 5 9 13 17 21 25 4 8 12 16 20 24 28"
 		},
 		Sequences = {
-			["DEV"] = { 1, 2, 3 },
-			-- ["DEV"] = sequence():Alternate( 5, 6, 8 ),
+			["DEV"] = { 2, 3 },
+			-- ["DEV"] = sequence():Alternate( 2, 3, 10 ),
 			-- ["T"] = { 6, 5 },
 			["MIX"] = { 2, 0, 2, 0, 2, 2, 2, 2, 0, 3, 0, 3, 0, 3, 3, 3, 3 },
 			-- ["MIX"] = sequence():Add(2):Do(16):Add(3):Do(16)

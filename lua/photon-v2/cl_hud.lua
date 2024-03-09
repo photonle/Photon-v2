@@ -735,3 +735,13 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	surface.DrawTexturedRect(ScrW() - 528, ScrH() - drawHeight - 32, 496, 496)
 	surface.SetAlphaMultiplier( 1 )
 end)
+
+hook.Add( "HUDPaint", "Photon2OverlayTest", function() 
+	-- if ( IsValid( PHOTON2_PREVIEW_COMPONENT ) ) then
+	-- 	for i, element in pairs( PHOTON2_PREVIEW_COMPONENT.Elements ) do
+	-- 		if ( element.DrawDebug ) then
+	-- 			element:DrawDebug()
+	-- 		end
+	-- 	end
+	-- end
+end)

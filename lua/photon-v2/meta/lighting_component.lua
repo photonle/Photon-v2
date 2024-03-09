@@ -3,9 +3,12 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonLightingComponent"
 BASE = "PhotonBaseEntity"
 
-local printf, warn = Photon2.Debug.Declare( "Component" )
+local printonly = print
 
+local printf, warn = Photon2.Debug.Declare( "Component" )
 local print = Photon2.Debug.Print
+
+local RealTime = RealTime
 
 ---@class PhotonLightingComponent : PhotonBaseEntity
 ---@field Name string
@@ -641,20 +644,20 @@ end
 function Component:ManualThink()
 	if ( not self.IsPaused ) then
 		self:Pulse()
-		self.LastFrameTick = self.LastFrameTick or CurTime()
+		self.LastFrameTick = self.LastFrameTick or RealTime()
 		
-		local frameDuration = 1/24
+		local frameDuration = 1/10
 
-		if ( CurTime() >= self.LastFrameTick + frameDuration ) then
+		if ( RealTime() >= self.LastFrameTick + frameDuration ) then
 			self:IndependentFrameTick()
 			if ( self.UseStrictFrameTiming ) then
 				-- Prevents a frame change "backlog"
 				self.LastFrameTick = self.LastFrameTick + frameDuration
-				if ( CurTime() >= self.LastFrameTick + frameDuration ) then
-					self.LastFrameTick = CurTime()
+				if ( RealTime() >= self.LastFrameTick + 1 ) then
+					self.LastFrameTick = RealTime()
 				end
 			else
-				self.LastFrameTick = CurTime()
+				self.LastFrameTick = RealTime()
 			end
 			
 		end

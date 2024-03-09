@@ -39,7 +39,7 @@ function PANEL:DoComponentReload()
 	end
 end
 
----`
+---
 ---@param entryName string
 ---@param isComponentReload? boolean If this was triggered by a component reload.
 function PANEL:SetEntry( entryName, isComponentReload )
@@ -77,7 +77,9 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		modelPanel:SetFOV( 60 )
 		modelPanel:SetAnimated( false )
 
-		
+		local scrW = ScrW()
+		local scrH = ScrH()
+
 		-- modelPanel:SetFOV( this.FOV or 45 )
 		-- modelPanel.Angles = angle_zero
 		-- modelPanel:SetSize( 200, 200 )
@@ -102,7 +104,6 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			render.ResetModelLighting( self.colAmbientLight.r / 255, self.colAmbientLight.g / 255, self.colAmbientLight.b / 255 )
 			render.SetColorModulation( self.colColor.r / 255, self.colColor.g / 255, self.colColor.b / 255 )
 			render.SetBlend( ( self:GetAlpha() / 255 ) * ( self.colColor.a / 255 ) ) -- * surface.GetAlphaMultiplier()
-		
 			for i = 0, 6 do
 				local col = self.DirectionalLight[ i ]
 				if ( col ) then
@@ -112,17 +113,40 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			
 			self.Entity:SetupBones()
 			self:DrawModel()
-			
+
 			Photon2.RenderLightMesh.OnPreRender()
 			Photon2.RenderLightMesh.DrawUI()
 			Photon2.RenderLight2D.OnPreRender()
 			Photon2.RenderLight2D.DrawUI()
-			
+			-- cam.Start3D()
+			-- cam.End3D()
+			-- cam.Start2D()
+			for i=1, #self.Entity.Elements do
+				if ( self.Entity.Elements[i].DrawDebug ) then
+					self.Entity.Elements[i]:DoPreRender( true )
+					if ( not self.Entity.Elements[i].Position ) then continue end
+					self.Entity.Elements[i].ScreenPosition = self.Entity.Elements[i].Position:ToScreen()
+					local scrPos = self.Entity.Elements[i].ScreenPosition
+
+					-- :ToScreen() does not account for viewport size so it needs to be scaled manually
+					scrPos.x = scrPos.x * ( w / scrW )
+					scrPos.y = scrPos.y * ( h / scrH )
+					-- self.Entity.Elements[i]:DrawDebug()
+				end
+			end
+			-- cam.End2D()
 			render.SuppressEngineLighting( false )
 			cam.End3D()
-		
+			cam.Start3D()
+			cam.End3D()
+			
 			self.LastPaint = RealTime()
-		
+
+			for i, element in pairs( self.Entity.Elements ) do
+				if ( element.DrawDebug ) then
+					element:DrawDebug()
+				end
+			end
 		end
 
 		function modelPanel:SetComponent( componentId, static )
@@ -263,7 +287,6 @@ function PANEL:SetEntry( entryName, isComponentReload )
 	self.Tree = tree
 	-- tree:SetLineHeight( 22 )
 	tree:Dock( FILL )
-	
 
 	local componentInfoPanel = vgui.Create( "DPanel", overviewTab )
 	componentInfoPanel:Dock( TOP )
@@ -536,6 +559,12 @@ function PLAYER:Init()
 	
 	function stepForwardButton:OnDepressed() this:DoForwardOne() end
 
+	local frameRateOption = vgui.Create( "DComboBox", playerControls )
+	frameRateOption:SetSize( 64, 28 )
+	frameRateOption:MoveRightOf( stepForwardButton, 4 )
+	frameRateOption:AlignTop( 6 )
+	frameRateOption:AddChoice( "1/24s" )
+	frameRateOption:SetText( "1/24s" )
 
 	local currentFrame = vgui.Create( "DLabel", playerControls )
 	currentFrame:Dock( RIGHT )

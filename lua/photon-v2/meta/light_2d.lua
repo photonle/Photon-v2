@@ -354,10 +354,12 @@ local LocalToWorld = LocalToWorld
 -- Micro-optimization to reuse Vector
 local normalRef = Vector()
 
-function Light:DoPreRender()
-	if ( #self.SortedInputActions < 1 ) and ( self.CurrentStateId == "OFF" ) then self.Deactivate = true end
-	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
-	if ( not self.IsActivated ) then return nil end
+function Light:DoPreRender( force )
+	if ( not force ) then
+		if ( #self.SortedInputActions < 1 ) and ( self.CurrentStateId == "OFF" ) then self.Deactivate = true end
+		if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
+		if ( not self.IsActivated ) then return nil end
+	end
 
 	self:UpdateProxyState()
 
@@ -489,6 +491,43 @@ function Light:DoPreRender()
 	end
 
 	return self
+end
+
+function Light:DrawDebug()
+	-- if ( self.Id ~= 1 ) then return end
+	-- cam.Start3D2D( self.Position, self.Angles, 1 )
+	-- surface.SetFont( "DebugOverlay" )
+	-- surface.SetDrawColor( 255, 255, 255 )
+	-- self:DoPreRender()
+	-- cam.Start3D()
+	
+	-- cam.Start2D()
+
+	-- local pos = self.Position:ToScreen()
+	-- render.DrawSphere( self.Position, 3, 4, 4, Color( 255, 0, 0 ) )
+	-- PrintTable( pos )
+	-- cam.End3D()
+	-- cam.Start3D2D( self.Position, self.Angles, 1 )
+	-- 	surface.SetDrawColor( 255, 0, 0, 255 )
+	-- 	surface.DrawRect( 0, 0, 8, 8 )
+	-- cam.End3D2D()
+	-- cam.Start2D()
+	if ( self.ScreenPosition ) then
+		local color = Color( 255, 255, 255, 255 )
+		if ( self.CurrentStateId == "OFF" ) then color = Color( 255, 255, 255, 100 ) end
+		draw.DrawText( self.Id, "DebugOverlay", self.ScreenPosition.x, self.ScreenPosition.y - 6, color, TEXT_ALIGN_CENTER )
+		-- local pos = self.Position:ToScreen()
+		-- draw.DrawText( self.Id, "DebugOverlay",pos.x,pos.y, Color( 0, 255, 0 ) )
+	end
+	-- cam.End2D()
+	-- cam.End3D2D()
+ 
+	-- cam.End2D()
+	-- surface.SetTextPos( pos.x, pos.y )
+	-- surface.DrawText( "HELLO" )
+	-- debugoverlay.Text( self.Position, "hi", 0, false)
+	-- cam.End3D2D()
+
 end
 
 function Light:OnStateChange( state )
