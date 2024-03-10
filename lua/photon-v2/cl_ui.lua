@@ -419,8 +419,11 @@ properties.Add("photon2_equipment", {
 		end
 		return true
 	end,
+	Action = function()
+	end,
 	---@param ent PhotonController
 	MenuOpen = function(self, option, ent)
+		local hasAnyOptions = false
 		local controller = ent:GetPhotonController()
 		local currentSelections = controller.CurrentSelections
 		local selections = controller:GetProfile().EquipmentSelections
@@ -428,6 +431,7 @@ properties.Add("photon2_equipment", {
 		local subMenu = option:AddSubMenu()
 		for i, category in ipairs( selections ) do
 			if ( not category.Options ) or ( #category.Options < 2 ) then continue end
+			hasAnyOptions = true
 			-- Create category's sub-menu
 			local categoryMenu = subMenu:AddSubMenu( category.Category )
 			-- Process each option
@@ -456,6 +460,9 @@ properties.Add("photon2_equipment", {
 
 				end
 			end
+		end
+		if ( not hasAnyOptions ) then
+			subMenu:AddOption( "(No equipment options)" )
 		end
 	end
 })
