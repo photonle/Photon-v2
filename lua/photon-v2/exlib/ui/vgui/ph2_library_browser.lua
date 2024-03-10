@@ -177,8 +177,12 @@ function PANEL:PopulateEntries( isUpdate )
 	files:Clear()
 
 	for name, entry in pairs( self.CurrentLibrary.Repository ) do
-		entry = self.CurrentLibrary:GetInherited( name )
+		local inheritanceSucceeded
+
+		entry, inheritanceSucceeded = self.CurrentLibrary:TryGetInherited( name )
 		
+		if ( not inheritanceSucceeded ) then continue end
+
 		if ( self.SearchFilter ) then
 			local column, propertyValue
 			local pass = false

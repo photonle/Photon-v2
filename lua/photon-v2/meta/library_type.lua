@@ -394,6 +394,15 @@ function meta:GetInherited( data )
 	return data
 end
 
+function meta:TryGetInherited( data )
+	local success, result = pcall( self.GetInherited, self, data )
+	if ( not success ) then
+		warn( "Failed to load: [" .. tostring( data ) .. "]. You are likely missing required content or have a naming error in your code.", result )
+		return {}, false
+	end
+	return result, true
+end
+
 function meta:DoCompile( data )
 	return data
 end

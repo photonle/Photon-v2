@@ -122,7 +122,7 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			-- cam.End3D()
 			-- cam.Start2D()
 			for i=1, #self.Entity.Elements do
-				if ( self.Entity.Elements[i].DrawDebug ) then
+				if ( self.Entity.Elements[i].DrawDebug and self.Entity.Elements[i].DoPreRender ) then
 					self.Entity.Elements[i]:DoPreRender( true )
 					if ( not self.Entity.Elements[i].Position ) then continue end
 					self.Entity.Elements[i].ScreenPosition = self.Entity.Elements[i].Position:ToScreen()

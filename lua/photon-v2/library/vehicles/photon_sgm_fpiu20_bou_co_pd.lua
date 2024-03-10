@@ -310,6 +310,10 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Valor",
 				Components = {
+					{
+						Component = "",
+						Position = Vector( 0, 0, 100 )
+					},
 					-- {
 					-- 	Name = "@parent1",
 					-- 	Component = "photon_sos_undercover",
