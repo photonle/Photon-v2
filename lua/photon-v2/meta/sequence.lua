@@ -148,7 +148,7 @@ function Sequence:IncrementFrame( frame, force )
 	-- allow empty sequences to silently fail
 	if ( #self < 1 ) then return end
 
-	if ( not self.Synchronize and ( not force ) ) then
+	if ( ( not self.Synchronize ) and ( not force ) ) then
 		frame = self.CurrentFrame
 	end
 

@@ -395,6 +395,19 @@ local PLAYER = {
 	AllowAutoRefresh = true
 }
 
+local timingOptions = {
+	{ Label = "1/60s",	Value = 1/60 },
+	{ Label = "1/48s",	Value = 1/48 },
+	{ Label = "1/40s",	Value = 1/40 },
+	{ Label = "1/32s",	Value = 1/32 },
+	{ Label = "1/24s",	Value = 1/24 },
+	{ Label = "1/10s",	Value = 1/10 },
+	{ Label = "1/2s",	Value = 1/2  },
+	{ Label = "1s",  	Value = 1    },
+}
+
+function PLAYER:OnFrameDurationChange( new ) end
+
 function PLAYER:SetSequence( sequence )
 	self.CurrentSequence = sequence
 	self:SetSequenceLength( #sequence )
@@ -481,6 +494,8 @@ function PLAYER:SetSliderVisible( visible )
 	end
 end
 
+
+
 function PLAYER:Init()
 	self:Clear()
 	
@@ -560,11 +575,12 @@ function PLAYER:Init()
 	function stepForwardButton:OnDepressed() this:DoForwardOne() end
 
 	local frameRateOption = vgui.Create( "DComboBox", playerControls )
-	frameRateOption:SetSize( 64, 28 )
+	frameRateOption:SetSize( 56, 28 )
 	frameRateOption:MoveRightOf( stepForwardButton, 4 )
 	frameRateOption:AlignTop( 6 )
-	frameRateOption:AddChoice( "1/24s" )
-	frameRateOption:SetText( "1/24s" )
+	for i, value in ipairs( timingOptions ) do
+		frameRateOption:AddChoice( value.Label, value.Value )
+	end
 
 	local currentFrame = vgui.Create( "DLabel", playerControls )
 	currentFrame:Dock( RIGHT )

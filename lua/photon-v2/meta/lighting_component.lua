@@ -35,6 +35,7 @@ local RealTime = RealTime
 ---@field Title string
 ---@field IsPaused boolean If component timing is paused.
 ---@field UseStrictFrameTiming boolean (Default = `true`) If false, frame timing will be never be faster than the client's current FPS. 
+---@field ManualFrameDuration number Frame duration used in debugging.
 local Component = exmeta.New()
 
 local Builder = Photon2.ComponentBuilder
@@ -44,6 +45,7 @@ Component.UseControllerModes = true
 Component.IsPhotonLightingComponent = true
 Component.InputPriorities = PhotonBaseEntity.DefaultInputPriorities
 Component.StrictFrameTiming = true
+Component.ManualFrameDuration = 1/24
 
 Component.ClassMap = {
 	Default = "PhotonLightingComponent",
@@ -645,14 +647,12 @@ function Component:ManualThink()
 	if ( not self.IsPaused ) then
 		self:Pulse()
 		self.LastFrameTick = self.LastFrameTick or RealTime()
-		
-		local frameDuration = 1/10
 
-		if ( RealTime() >= self.LastFrameTick + frameDuration ) then
+		if ( RealTime() >= self.LastFrameTick + self.ManualFrameDuration ) then
 			self:IndependentFrameTick()
 			if ( self.UseStrictFrameTiming ) then
 				-- Prevents a frame change "backlog"
-				self.LastFrameTick = self.LastFrameTick + frameDuration
+				self.LastFrameTick = self.LastFrameTick + self.ManualFrameDuration
 				if ( RealTime() >= self.LastFrameTick + 1 ) then
 					self.LastFrameTick = RealTime()
 				end
@@ -729,6 +729,7 @@ function Component:SetFrameIndex( index )
 	end
 end
 
+-- Used for component previewing
 function Component:IndependentFrameTick( all, change )
 	if ( not self.FrameIndex ) then self.FrameIndex = 0 end
 	self.FrameIndex = self.FrameIndex + ( change or 1 )
@@ -742,7 +743,6 @@ function Component:IndependentFrameTick( all, change )
 			sequence:IncrementFrame( self.FrameIndex, false )
 		end
 	end
-	
 
 	for i=1, #self.Elements do
 		self.Elements[i]:UpdateState()
@@ -755,11 +755,11 @@ function Component:FrameTick( all )
 	-- end
 	if ( all ) then
 		for sequence, _ in pairs( self.ActiveSequences ) do
-			sequence:IncrementFrame( self.PhotonController.Frame, true )
+			sequence:IncrementFrame( self.PhotonController.Frame )
 		end
 	else
 		for sequence, _ in pairs( self.ActiveDependentSequences ) do
-			sequence:IncrementFrame( self.PhotonController.Frame, false )
+			sequence:IncrementFrame( self.PhotonController.Frame )
 		end
 	end
 	
