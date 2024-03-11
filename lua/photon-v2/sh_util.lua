@@ -225,7 +225,7 @@ function Photon2.Util.GetVehicleStartAndIdleSounds( vehicle )
 	return vehicleScriptSoundCache[scriptFile]
 end
 
-function Photon2.Util.TryGetStartAndIdleSounds( vehicle )
+function Photon2.Util.TryGetVehicleStartAndIdleSounds( vehicle )
 	local success, result = pcall( Photon2.Util.GetVehicleStartAndIdleSounds, vehicle )
 	if ( not success ) then
 		warnonce( "Failed to retrieve start and idle sounds from vehicle [" .. tostring( vehicle ) .. "]. ", result )
