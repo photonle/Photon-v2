@@ -515,7 +515,7 @@ function Light:DrawDebug()
 	if ( self.ScreenPosition ) then
 		local color = Color( 255, 255, 255, 255 )
 		if ( self.CurrentStateId == "OFF" ) then color = Color( 255, 255, 255, 100 ) end
-		draw.DrawText( self.Id, "DebugOverlay", self.ScreenPosition.x, self.ScreenPosition.y - 6, color, TEXT_ALIGN_CENTER )
+		draw.DrawText( self.Id, "DebugOverlay", self.ScreenPosition.x, self.ScreenPosition.y - 6, ColorAlpha( color, ( 255 * self.Intensity ) + 100 ) , TEXT_ALIGN_CENTER )
 		-- local pos = self.Position:ToScreen()
 		-- draw.DrawText( self.Id, "DebugOverlay",pos.x,pos.y, Color( 0, 255, 0 ) )
 	end

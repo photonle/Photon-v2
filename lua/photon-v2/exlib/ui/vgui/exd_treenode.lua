@@ -133,6 +133,10 @@ function PANEL:SetIcon( str )
 	self.Icon:SetIcon( str )
 end
 
+function PANEL:SetNumberic( number )
+	self.Icon:SetNumeric( number )
+end
+
 function PANEL:ShowIcons()
 	return self:GetParentNode():ShowIcons()
 end

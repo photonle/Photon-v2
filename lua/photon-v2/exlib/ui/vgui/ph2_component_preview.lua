@@ -4,6 +4,8 @@
 
 --]]
 
+local info, warn, warnonce = Photon2.Debug.Declare( "Library" )
+
 local PANEL = {
 	AllowAutoRefresh = true
 }
@@ -39,7 +41,6 @@ function PANEL:DoComponentReload()
 	end
 end
 
----
 ---@param entryName string
 ---@param isComponentReload? boolean If this was triggered by a component reload.
 function PANEL:SetEntry( entryName, isComponentReload )
@@ -65,6 +66,32 @@ function PANEL:SetEntry( entryName, isComponentReload )
 	titleLabel:SetFont( "PhotonUI.Header")
 	titleLabel:SetText( entry.Title or "(Untitled)" )
 	
+	local overviewTab = vgui.Create( "DPanel", scrollPanel )
+	overviewTab:SetPaintBackground( false )
+
+	local viewTab = vgui.Create( "DScrollPanel", scrollPanel )
+
+	local modelTab = vgui.Create( "DPanel", scrollPanel )
+	modelTab:DockMargin( -4, -4, 0, 0 )
+
+	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
+	propertySheet:DockMargin( 0, 8, 0, 0 )
+	propertySheet:Dock( FILL )
+	propertySheet:AddSheet( "Component", overviewTab )
+	propertySheet:AddSheet( "Model", modelTab )
+	propertySheet:AddSheet( "View", viewTab )
+	propertySheet:DockPadding( 0, 0, 0, 0 )
+
+	modelTab:SetPaintBackground( false )
+	
+	modelTab.Title = vgui.Create( "Photon2UICopyInfoTitle", modelTab )
+	modelTab.Title:Dock( TOP )
+	modelTab.Title:DockMargin( 0, 0, 0, 4)
+
+	modelTab.Tree = vgui.Create( "Photon2UIModelPreviewTree", modelTab )
+	modelTab.Tree:Dock( FILL )
+
+
 	local activeComponent
 	local modelPanel
 
@@ -76,6 +103,8 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		modelPanel:SetLookAng( Angle( 20, 0, 0 ) )
 		modelPanel:SetFOV( 60 )
 		modelPanel:SetAnimated( false )
+
+		modelTab.Title:SetEntry( entry.Model, (entry.Credits or {}).Model or "Unknown", "model name", true )
 
 		local scrW = ScrW()
 		local scrH = ScrH()
@@ -158,6 +187,9 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			local ent = component:CreateForUI()
 			ent.UseStrictFrameTiming = false
 			ent:SetScale( ent.Preview.Zoom )
+			if ( this.PlayerControls ) then
+				ent.ManualFrameDuration = this.PlayerControls.CurrentFrameDuration
+			end
 			self.Entity = ent
 			
 			PHOTON2_PREVIEW_COMPONENT = ent
@@ -184,6 +216,8 @@ function PANEL:SetEntry( entryName, isComponentReload )
 				end
 			end )
 			this.ActiveComponent = ent
+			
+			modelTab.Tree:SetModel( this.ActiveComponent )
 		end
 
 		function modelPanel:FirstPersonControls()
@@ -244,7 +278,6 @@ function PANEL:SetEntry( entryName, isComponentReload )
 
 		modelPanel:SetComponent( entryName )
 
-
 		function modelPanel:LayoutEntity()
 			self.Entity:SetPos( self.Entity.Preview.Position )
 			self.Entity:SetAngles( self.Entity.Preview.Angles )
@@ -253,18 +286,7 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		self.ModelPanel = modelPanel
 	end
 
-	local overviewTab = vgui.Create( "DPanel", scrollPanel )
-	overviewTab:SetPaintBackground( false )
 
-	-- local modelTab = vgui.Create( "DPanel", scrollPanel )
-	-- modelTab:DockMargin( -4, -4, 0, 0 )
-
-	local propertySheet = vgui.Create ("DPropertySheet", scrollPanel )
-	propertySheet:DockMargin( 0, 8, 0, 0 )
-	propertySheet:Dock( FILL )
-	propertySheet:AddSheet( "Component", overviewTab )
-	-- propertySheet:AddSheet( "Model", modelTab )
-	propertySheet:DockPadding( 0, 0, 0, 0 )
 
 	local sequencePlayer = vgui.Create( "Photon2UISequencePlayerControls", overviewTab )
 	sequencePlayer:Dock( BOTTOM )
@@ -279,6 +301,10 @@ function PANEL:SetEntry( entryName, isComponentReload )
 
 	function sequencePlayer:OnFrameSliderChange( value )
 		this.ActiveComponent:SetFrameIndex( value - 1 )
+	end
+
+	function sequencePlayer:OnFrameDurationChange( value )
+		this.ActiveComponent.ManualFrameDuration = value
 	end
 
 	self.PlayerControls = sequencePlayer
@@ -578,8 +604,16 @@ function PLAYER:Init()
 	frameRateOption:SetSize( 56, 28 )
 	frameRateOption:MoveRightOf( stepForwardButton, 4 )
 	frameRateOption:AlignTop( 6 )
+	frameRateOption:SetSortItems( false )
+	frameRateOption:SetValue( "1/24s" )
+	self.CurrentFrameDuration = 1/24
 	for i, value in ipairs( timingOptions ) do
-		frameRateOption:AddChoice( value.Label, value.Value )
+		frameRateOption:AddChoice( value.Label, value )
+	end
+
+	function frameRateOption:OnSelect( index, value, data )
+		this.CurrentFrameDuration = data.Value
+		this:OnFrameDurationChange( data.Value )
 	end
 
 	local currentFrame = vgui.Create( "DLabel", playerControls )
@@ -710,6 +744,157 @@ function TREE:Init()
 	self:SetLineHeight( 22 )
 end
 
+---@class Photon2UIComponentPreviewer : Panel
+local TITLE = {}
+
+function TITLE:SetEntry( title, subTitle, descriptor, enabled )
+	self.TitleText = title
+	self.SubTitleText = subTitle
+	self.SubTitleLabel:SetText( subTitle )
+	self.Enabled = enabled
+	self.Descriptor = descriptor
+	self.TitleLabel:SetText( title )
+	if ( enabled ) then
+		self:SetCursor( "hand" )
+	else
+		self:SetCursor( "no" )
+	end
+end
+
+function TITLE:Init()
+	self:SetCursor( "hand" )
+	self:SetHeight( 48 )
+	self:DockPadding( 8, 4, 8, 4 )
+
+	local titleLabel = vgui.Create( "DLabel", self )
+	titleLabel:Dock( TOP )
+	titleLabel:SetFont( "PhotonUI.Mono" )
+
+	local subTitle = vgui.Create( "DLabel", self )
+	subTitle:Dock( TOP )
+
+	self.TitleLabel = titleLabel
+	self.SubTitleLabel = subTitle
+end
+
+function TITLE:OnCursorEntered()
+	if ( self.Enabled ) then
+		self.SubTitleLabel:SetText( "Click to copy " .. self.Descriptor .. "..." )
+	end
+end
+
+function TITLE:OnCursorExited()
+	self.SubTitleLabel:SetText( self.SubTitleText )
+end
+
+function TITLE:OnMousePressed( keyCode )
+	if ( keyCode == MOUSE_LEFT ) then
+		self.SubTitleLabel:SetText( "" )
+		SetClipboardText( self.TitleText )
+	end
+end
+
+function TITLE:OnMouseReleased( keyCode )
+	if ( keyCode == MOUSE_LEFT ) then
+		self.SubTitleLabel:SetText( "Copied." )
+	end
+end
+
+---@class Photon2UIModelPreviewTree : Panel
+local MODELTREE = {}
+
+function MODELTREE:Init()
+	self:SetLineHeight( 22 )
+end
+
+function MODELTREE:SetModel( ent )
+
+	local bgData = ent:GetBodyGroups()
+	local bodyGroupsNode = self:AddNode( "Body Groups", "group", true )
+
+	for i, bodyGroup in ipairs( bgData or {} ) do
+		local bodyGroupNode = bodyGroupsNode:AddNode( bodyGroup.name, "numeric-" .. tostring( bodyGroup.id ) .. "-circle-outline", true )
+		for index=0, bodyGroup.num - 1 do
+			local modelName = bodyGroup.submodels[index]
+			if ( modelName == "" ) then modelName = "(Blank)" end
+			local subModelNode = bodyGroupNode:AddNode( modelName, "numeric-" .. tostring( index ) .. "-circle" )
+		end
+	end
+
+	ent:SetupBones()
+	
+	-- model's bone hierarchy needs to be constructed manually
+	local hierarchy = {}
+	for i=0, ent:GetBoneCount() - 1 do
+		local thisHierarchy = {}
+		local currentStep = i
+		local building = true
+		while ( building ) do
+			thisHierarchy[#thisHierarchy+1] = currentStep
+
+			if ( ent:GetBoneParent( currentStep ) > -1 ) then
+				currentStep = ent:GetBoneParent( currentStep )
+			else
+				building = false
+			end
+			
+			-- prevent game crash
+			if ( #thisHierarchy > 1000 ) then
+				Error( "Bone child depth has exceeded 1000 levels! This should NEVER happen. Model: " .. tostring( ent:GetModel() ) )
+			end
+		end
+		
+		local currentTableStep = hierarchy
+		
+		for _i = #thisHierarchy, 1, -1 do
+			if ( i > 0 ) then
+				currentTableStep[thisHierarchy[_i]] = currentTableStep[thisHierarchy[_i]] or {}
+				currentTableStep = currentTableStep[thisHierarchy[_i]]
+			end
+		end
+
+	end
+
+	-- PrintTable( hierarchy )
+
+	local function addBones( tbl, node )
+		for boneId, children in pairs( tbl ) do
+			local boneNode = node:AddNode( ent:GetBoneName( boneId ), boneId )
+			addBones( children, boneNode )
+		end
+	end
+
+	local bonesNode = self:AddNode( "Bones", "bone", true )
+	addBones( hierarchy, bonesNode )
+
+	local materialsNode = self:AddNode( "Materials", "texture", true )
+	for i, material in pairs( ent:GetMaterials() ) do
+		materialsNode:AddNode( material, i - 1 )
+	end
+
+	local numPoseParameters = ent:GetNumPoseParameters()
+
+	if ( numPoseParameters and ( numPoseParameters >= 1 ) ) then
+		local poseParametersNode = self:AddNode( "Pose Parameters", "ruler-square", true )
+		for i = 0, numPoseParameters - 1 do
+			local poseParamName = ent:GetPoseParameterName( i )
+			poseParametersNode:AddNode( poseParamName, "ruler" )
+		end
+	end
+
+	local sequences = ent:GetSequenceList()
+
+	if ( sequences and #sequences > 0 ) then
+		local sequencesNode = self:AddNode( "Sequences", "run", true )
+		for i = 0, #sequences do
+			sequencesNode:AddNode( sequences[i], "play" )
+		end
+	end
+end
+
+
+derma.DefineControl( "Photon2UIModelPreviewTree", "Photon 2 Model Preview Tree", MODELTREE, "EXDTree" )
 derma.DefineControl( "Photon2UIComponentPreviewTree", "Photon 2 Component Preview Tree", TREE, "EXDTree" )
 derma.DefineControl( "Photon2UISequencePlayerControls", "Photon 2 component previewer", PLAYER, "DPanel" )
+derma.DefineControl( "Photon2UICopyInfoTitle", "Photon 2 Copyable Info Title", TITLE, "DPanel" )
 derma.DefineControl( "Photon2UIComponentPreviewer", "Photon 2 component previewer", PANEL, "DPanel" )

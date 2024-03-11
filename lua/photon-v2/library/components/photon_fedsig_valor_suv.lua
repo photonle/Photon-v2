@@ -4,7 +4,7 @@ local COMPONENT = Photon2.LibraryComponent()
 COMPONENT.Author = "Schmal"
 
 COMPONENT.Credits = {
-	Model = "Twurtleee",
+	Model = "Twurtleee, Schmal",
 	Code = "Schmal"
 }
 

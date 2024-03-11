@@ -19,7 +19,8 @@ function PANEL:GetIconSize()
 	return self.iconSize
 end
 
-function PANEL:SetIcon(name, size)
+function PANEL:SetIcon( name, size )
+	if ( isnumber( name ) ) then return self:SetNumeric( name ) end
 	self.icon = name
 	if isnumber(size) then
 		self:SetIconSize(size)
@@ -29,6 +30,11 @@ end
 
 function PANEL:GetIcon()
 	return self.icon
+end
+
+function PANEL:SetNumeric( number )
+	self:SetFont( "PhotonUI.Mono" )
+	self:SetText( number )
 end
 
 function PANEL:OnDepressed()

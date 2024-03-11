@@ -22,7 +22,7 @@ VEHICLE.Siren = {
 	-- 	MAN = "fedsig_touchmaster_delta/manual",
 	-- },
 	-- [1] = "fedsig_touchmaster_delta",
-	[1] = "fedsig_pathfinder_unitrol"
+	[1] = "fedsig_pathfinder_ssp"
 }
 
 local livery = PhotonMaterial.New({
@@ -310,10 +310,6 @@ VEHICLE.Equipment = {
 			{
 				Option = "Federal Signal Valor",
 				Components = {
-					{
-						Component = "",
-						Position = Vector( 0, 0, 100 )
-					},
 					-- {
 					-- 	Name = "@parent1",
 					-- 	Component = "photon_sos_undercover",
