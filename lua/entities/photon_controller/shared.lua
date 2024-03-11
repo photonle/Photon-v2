@@ -940,15 +940,19 @@ function ENT:SetupProfile( name, isReload )
 		self:GetParent().PhotonEngineIdleEnabled = profile.EngineIdleEnabled
 
 		if ( SERVER ) then
-			local soundData = Photon2.Util.GetVehicleStartAndIdleSounds( self:GetParent() )
-			self.EngineIdleData = {
-				StartSound = soundData.StartSound,
-				StartDuration = soundData.StartDuration,
-				IdleSound = soundData.IdleSound,
-				StopIdleTimer = "Photon.StopIdleSound[" .. self:EntIndex() .. "]",
-				StopStartTimer = "Photon.StopStartSound[" .. self:EntIndex() .. "]",
+			local soundData = Photon2.Util.TryGetVehicleStartAndIdleSounds( self:GetParent() )
+			if ( soundData ) then
+				self.EngineIdleData = {
+					StartSound = soundData.StartSound,
+					StartDuration = soundData.StartDuration,
+					IdleSound = soundData.IdleSound,
+					StopIdleTimer = "Photon.StopIdleSound[" .. self:EntIndex() .. "]",
+					StopStartTimer = "Photon.StopStartSound[" .. self:EntIndex() .. "]",
 
-			}
+				}
+			else
+				self.EngineIdleEnabled = false
+			end
 		end
 	else
 		self.EngineIdleEnabled = false

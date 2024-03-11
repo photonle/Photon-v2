@@ -2,7 +2,7 @@ if (exmeta.ReloadFile()) then return end
 
 NAME = "PhotonLibraryType"
 
-local info, warn = Photon2.Debug.Declare( "Library" )
+local info, warn, warnonce = Photon2.Debug.Declare( "Library" )
 
 local print = info
 local printf = info
@@ -397,7 +397,7 @@ end
 function meta:TryGetInherited( data )
 	local success, result = pcall( self.GetInherited, self, data )
 	if ( not success ) then
-		warn( "Failed to load: [" .. tostring( data ) .. "]. You are likely missing required content or have a naming error in your code.", result )
+		warnonce( "Failed to load: [" .. tostring( data ) .. "]. You are likely missing required content or have a naming error in your code.", result )
 		return {}, false
 	end
 	return result, true

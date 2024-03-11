@@ -79,6 +79,9 @@ function Photon2.Debug.Declare( section )
 	end,
 	function( text, ... )
 		Photon2.Debug.Warn( section, text, ... )
+	end,
+	function( text, ... )
+		Photon2.Debug.WarnOnce( section, text, ... )
 	end
 end
 
@@ -99,12 +102,22 @@ function Photon2.Debug.PrintD( type, text, ... )
 	Photon2.Debug.Print( "[" .. tostring( type ) .. "] " .. string.format( text, ... ) )
 end
 
-local warnings = {}
 
 function Photon2.Debug.Warn( section, text, ... )
 	if ( ... ) then
 		text = string.format( text, ... )
 	end
+	Photon2.Debug.Log( "WARN", section, text )
+end
+
+local warnings = {}
+function Photon2.Debug.WarnOnce( section, text, ... )
+	warnings[section] = warnings[section] or {}
+	if ( ... ) then
+		text = string.format( text, ... )
+	end
+	if ( warnings[section][text] ) then return end
+	warnings[section][text] = true
 	Photon2.Debug.Log( "WARN", section, text )
 end
 

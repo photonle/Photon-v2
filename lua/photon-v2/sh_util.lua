@@ -3,6 +3,8 @@ Photon2.Util = {
 	ModelMeshMap = {}
 }
 
+local info, warn, warnonce = Photon2.Debug.Declare( "Util" )
+
 local Util = Photon2.Util
 
 ---@param target table
@@ -221,6 +223,15 @@ function Photon2.Util.GetVehicleStartAndIdleSounds( vehicle )
 	}
 	
 	return vehicleScriptSoundCache[scriptFile]
+end
+
+function Photon2.Util.TryGetStartAndIdleSounds( vehicle )
+	local success, result = pcall( Photon2.Util.GetVehicleStartAndIdleSounds, vehicle )
+	if ( not success ) then
+		warnonce( "Failed to retrieve start and idle sounds from vehicle [" .. tostring( vehicle ) .. "]. ", result )
+		return false
+	end
+	return result
 end
 
 local function getKeys( tbl )
