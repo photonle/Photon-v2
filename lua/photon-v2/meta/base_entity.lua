@@ -12,6 +12,7 @@ NAME = "PhotonBaseEntity"
 ---@field RenderGroup? RENDERGROUP
 ---@field EquipmentData? table Data from this entity's coresponding equipment entry.
 ---@field IsParentPending? boolean If this entity is to be parented to another but hasn't been setup yet.
+---@field UniqueId? number (Internal) Running index of created Photon entities.
 local ENT = exmeta.New()
 
 local print = Photon2.Debug.PrintF
@@ -53,18 +54,24 @@ ENT.Preview = {
 	Zoom = 1
 }
 
+local photonUniqueEntId = 0
+
 -- Connect component to corresponding entity and its controller.
 ---@param ent Entity
 ---@param controller PhotonController
 ---@param uiMode? boolean If the entity is intended to be rendered in a UI element.
 ---@return PhotonBaseEntity
 function ENT:Initialize( ent, controller, uiMode )
+	photonUniqueEntId = photonUniqueEntId + 1
+
 	---@type PhotonBaseEntity
 	local photonEnt = {
 		Entity = ent,
 		PhotonController = controller,
-		UIMode = uiMode
+		UIMode = uiMode,
+		UniqueId = photonUniqueEntId
 	}
+
 	setmetatable( photonEnt, { __index = self } )
 	
 	if ( ent:GetClass() == "photon_entity" ) then
@@ -485,4 +492,42 @@ function ENT:Remove()
 	if ( not self.IsVirtual ) then
 		self.Entity:Remove()
 	end
+end
+
+function ENT:ResetSubMaterials()
+	for i=0, 31 do
+		if ( i ~= index ) then
+			self:SetSubMaterial( i, nil )
+		end
+	end
+end
+
+function ENT:SoftHighlightSubMaterial( index )
+	local timerId = "Photon2.SubMaterialHighlight[" .. tostring( self.UniqueId ) .."]"
+	local alt = true
+	for i=0, 31 do
+		if ( i ~= index ) then
+			self:SetSubMaterial( i, nil )
+		end
+	end
+	self:SetSubMaterial( index, "photon/common/debug_highlight" )
+	timer.Create( timerId, 0.5, 0, function()
+		if ( not IsValid( self ) ) then
+			timer.Destroy( timerId)
+			return
+		end
+		if ( alt ) then
+			alt = false
+			self:SetSubMaterial( index, nil )
+		else
+			alt = true
+			self:SetSubMaterial( index, "photon/common/debug_highlight" )
+		end
+	end)
+end
+
+function ENT:ClearMaterialHighlight()
+	local timerId = "Photon2.SubMaterialHighlight[" .. tostring( self.UniqueId ) .."]"
+	timer.Destroy( timerId )
+	self:ResetSubMaterials()
 end

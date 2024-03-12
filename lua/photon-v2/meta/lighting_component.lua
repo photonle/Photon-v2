@@ -673,6 +673,20 @@ function Component:ClearAllModes()
 	self:ApplyModeUpdate()
 end
 
+function Component:SuspendAllModes()
+	self.SuspendedModes = table.Copy( self.CurrentModes )
+	self:ClearAllModes()
+end
+
+function Component:ResumeAllModes()
+	if ( self.SuspendedModes ) then
+		for channel, mode in pairs( self.SuspendedModes ) do
+			self.CurrentModes[channel] = mode
+		end
+		self:ApplyModeUpdate()
+	end
+end
+
 function Component:SetChannelMode( channel, new, exclusive )
 	
 	-- printf( "Component received mode change notification for [%s] => %s", channel, new )

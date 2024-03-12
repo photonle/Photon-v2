@@ -78,9 +78,22 @@ function PANEL:SetEntry( entryName, isComponentReload )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	propertySheet:Dock( FILL )
 	propertySheet:AddSheet( "Component", overviewTab )
-	propertySheet:AddSheet( "Model", modelTab )
+	
+	local actualModelTab = propertySheet:AddSheet( "Model", modelTab )
 	propertySheet:AddSheet( "View", viewTab )
 	propertySheet:DockPadding( 0, 0, 0, 0 )
+
+	function propertySheet:OnActiveTabChanged( oldPanel, newPanel )
+		if ( newPanel:GetPanel() == modelTab ) then
+			if ( this.ActiveComponent ) then
+				this.ActiveComponent:SuspendAllModes()
+			end
+		else
+			if ( this.ActiveComponent ) then
+				this.ActiveComponent:ResumeAllModes()
+			end
+		end
+	end
 
 	modelTab:SetPaintBackground( false )
 	
@@ -223,7 +236,7 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		function modelPanel:FirstPersonControls()
 
 			local x, y = self:CaptureMouse()
-		
+			
 			local scale = self:GetFOV() / 180
 			x = x * -0.5 * scale
 			y = y * 0.5 * scale
@@ -238,7 +251,6 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		
 				return
 			end
-		
 			-- Look around
 			self.aLookAngle = self.aLookAngle + Angle( y, x, 0 )
 			self.aLookAngle.p = math.Clamp( self.aLookAngle.p, -90, 90 )
@@ -284,6 +296,14 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		end
 
 		self.ModelPanel = modelPanel
+
+		function modelTab.Tree:OnHighlightMaterial( index )
+			this.ActiveComponent:SoftHighlightSubMaterial( index )
+		end
+
+		function modelTab.Tree:OnHighlightMaterialClear()
+			this.ActiveComponent:ClearMaterialHighlight()
+		end
 	end
 
 
@@ -807,7 +827,13 @@ function MODELTREE:Init()
 	self:SetLineHeight( 22 )
 end
 
+function MODELTREE:OnHighlightMaterial( index ) end
+
+function MODELTREE:OnHighlightMaterialClear() end
+
 function MODELTREE:SetModel( ent )
+
+	local this = self
 
 	local bgData = ent:GetBodyGroups()
 	local bodyGroupsNode = self:AddNode( "Body Groups", "group", true )
@@ -869,7 +895,18 @@ function MODELTREE:SetModel( ent )
 
 	local materialsNode = self:AddNode( "Materials", "texture", true )
 	for i, material in pairs( ent:GetMaterials() ) do
-		materialsNode:AddNode( material, i - 1 )
+		local node = materialsNode:AddNode( material, i - 1 )
+		local p = node:GetChildren()[1]
+		function p:OnCursorEntered()
+			this:OnHighlightMaterial( i - 1 )
+		end
+		function p:OnCursorExited()
+			this:OnHighlightMaterialClear()
+		end
+		function node:OnNodeSelected()
+			
+			this:OnHighlightMaterial( i - 1 )
+		end
 	end
 
 	local numPoseParameters = ent:GetNumPoseParameters()

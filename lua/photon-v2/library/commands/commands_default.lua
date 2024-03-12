@@ -1,5 +1,6 @@
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "toggle_warning_lights",
 	Title = "Lights On/Off",
 	Alt = "Emergency Lights",
@@ -21,6 +22,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "cycle_warning_lights",
 	Title = "Light Mode",
 	Category = "Emergency",
@@ -38,6 +40,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "manual_siren",
 	Title = "Manual Press",
 	Category = "Siren",
@@ -53,6 +56,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "airhorn",
 	Title = "Airhorn Press",
 	Category = "Siren",
@@ -68,6 +72,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "vehicle_lights",
 	Title = "Headlights/Parking",
 	Category = "Basic",
@@ -85,6 +90,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "vehicle_lights_cycle",
 	Title = "Cycle Lights",
 	Category = "Basic",
@@ -96,6 +102,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "vehicle_lights_auto",
 	Category = "Basic",
 	Title = "Automatic Lights",
@@ -107,6 +114,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "left_signal",
 	Title = "Turn Left",
 	Category = "Basic",
@@ -121,6 +129,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "right_signal",
 	Title = "Turn Right",
 	Category = "Basic",
@@ -135,6 +144,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "hazards",
 	Title = "Hazards",
 	Category = "Basic",
@@ -149,6 +159,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "signal_off",
 	Title = "Signal/Hazards Off",
 	Category = "Basic",
@@ -163,6 +174,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "directional_left",
 	Title = "Arrow Left",
 	Category = "Directional",
@@ -177,6 +189,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "directional_right",
 	Title = "Arrow Right",
 	Category = "Directional",
@@ -191,6 +204,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "directional_center_out",
 	Title = "Center-Out",
 	Category = "Directional",
@@ -205,6 +219,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "directional_off",
 	Title = "Off",
 	Category = "Directional",
@@ -219,6 +234,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "scene_left",
 	Title = "Illuminate Left",
 	Category = "Scene Lighting",
@@ -233,6 +249,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "scene_right",
 	Title = "Illuminate Right",
 	Category = "Scene Lighting",
@@ -247,6 +264,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "scene_forward",
 	Title = "Illuminate Front",
 	Category = "Scene Lighting",
@@ -264,6 +282,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "scene_off",
 	Title = "Turn Off All",
 	Category = "Scene Lighting",
@@ -292,6 +311,7 @@ local function generateSirenToggle( tone, siren, sirenLabel )
 	sirenLabel = sirenLabel or ""
 	tone = tostring( tone )
 	return Photon2.RegisterCommand({
+		Author = "Photon",
 		Name = "toggle_siren" .. siren .. "_" .. tone,
 		Title = "Tone " .. tone,
 		Category = category,
@@ -313,6 +333,7 @@ for i=1, 8 do
 end
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "activate_lights_siren",
 	Title = "Siren On/Off",
 	Alt = "Siren",
@@ -329,6 +350,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "toggle_cruise",
 	Title = "Cruise On/Off",
 	Category = "Emergency",
@@ -343,6 +365,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "toggle_warning_lights_m3",
 	Title = "Lights (MODE3) On/Off", 
 	Category = "Emergency",
@@ -358,6 +381,7 @@ Photon2.RegisterCommand({
 })
 
 Photon2.RegisterCommand({
+	Author = "Photon",
 	Name = "auxiliary_dual_toggle",
 	Title = "1-2 Toggle",
 	Category = "Auxiliary",

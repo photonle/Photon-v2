@@ -368,6 +368,14 @@ COMPONENT.Segments = {
 			["ON"] = sequence():Alternate( 0, 1, 16 ),
 		}
 	},
+	Command = {
+		Frames = {
+			[1] = "[G] 12 14 16 18 11 13 15 17"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	}
 }
 
 
@@ -392,6 +400,9 @@ COMPONENT.Patterns = {
 	}
 }
 
+COMPONENT.InputPriorities = {
+	["Emergency.Command"] = 41
+}
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
@@ -410,4 +421,9 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.SceneLeft"] = { ["ON"] = { AlleyLeft = "ON" } },
 	["Emergency.SceneRight"] = { ["ON"] = { AlleyRight = "ON" } },
+	["Emergency.Command"] = {
+		["ON"] = {
+			Command = "ON"
+		}
+	}
 }

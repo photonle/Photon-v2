@@ -401,7 +401,6 @@ hook.Add( "PopulateMenuBar", "Photon2:PopulateMenuBar", Photon2.UI.OnPopulateMen
 concommand.Add("ph2_component_browser", function() 
 	local browser = vgui.Create( "Photon2UILibraryBrowser" )
 	browser:Setup( "Components", "BROWSE" )
-
 	browser:SetSizing( 1280, 700, 400 )
 end)
 
