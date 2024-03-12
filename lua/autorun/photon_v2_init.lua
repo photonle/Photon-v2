@@ -24,7 +24,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.23 (BETA)"
+Photon2.Version = "2.0.24 (BETA)"
 
 --[[
 	Compatability
@@ -47,8 +47,7 @@ local libraries = {
 	"interaction_sounds",
 	"commands",
 	"input_configurations",
-	"schemas",
-	"new_components"
+	"schemas"
 }
 
 local function autoInclude( fol )
