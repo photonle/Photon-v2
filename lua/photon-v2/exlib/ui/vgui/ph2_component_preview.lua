@@ -304,6 +304,11 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		function modelTab.Tree:OnHighlightMaterialClear()
 			this.ActiveComponent:ClearMaterialHighlight()
 		end
+
+		function modelTab.Tree:OnIsolateMaterial( index )
+			this.ActiveComponent:IsolateSubMaterial( index )
+		end
+
 	end
 
 
@@ -831,8 +836,11 @@ function MODELTREE:OnHighlightMaterial( index ) end
 
 function MODELTREE:OnHighlightMaterialClear() end
 
-function MODELTREE:SetModel( ent )
+function MODELTREE:OnIsolateMaterial( index ) end
 
+function MODELTREE:SetModel( ent )
+	self:Clear()
+	
 	local this = self
 
 	local bgData = ent:GetBodyGroups()
@@ -905,7 +913,7 @@ function MODELTREE:SetModel( ent )
 		end
 		function node:OnNodeSelected()
 			
-			this:OnHighlightMaterial( i - 1 )
+			this:OnIsolateMaterial( i - 1 )
 		end
 	end
 

@@ -531,3 +531,15 @@ function ENT:ClearMaterialHighlight()
 	timer.Destroy( timerId )
 	self:ResetSubMaterials()
 end
+
+function ENT:IsolateSubMaterial( index )
+	local timerId = "Photon2.SubMaterialHighlight[" .. tostring( self.UniqueId ) .."]"
+	timer.Destroy( timerId )
+	for i=0, 31 do
+		if ( i ~= index ) then
+			self:SetSubMaterial( i, "photon/common/blank" )
+		else
+			self:SetSubMaterial( i, nil )
+		end
+	end
+end
