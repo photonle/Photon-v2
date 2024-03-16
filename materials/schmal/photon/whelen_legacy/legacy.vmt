@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/whelen_legacy/legacy"
+	"$bumpmap"	"schmal/photon/whelen_legacy/legacy_nm"
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[0.02 0.02 0.02]"
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"1"
+	"$rimlight"	"1"
+	"$rimlightexponent"	"17"
+	"$rimlightboost"	"1.2"
+	"$phongfix"	"[1 1 1]"
+	"$nocull"		"1"	
+}
