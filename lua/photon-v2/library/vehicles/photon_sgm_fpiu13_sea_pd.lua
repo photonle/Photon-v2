@@ -152,8 +152,8 @@ VEHICLE.Equipment = {
 						Angles = Angle( 1, 90, 0 ),
 						Scale = 1,
 						Bones = {
-							["foot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
-							["foot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
+							["hotfoot_right"] = { Vector(0.2, 0, 0), Angle(0, 0, 0), 1 },
+							["hotfoot_left"] = { Vector(-0.2, 0, 0), Angle(0, 0, 0), 1 },
 						},
 						Inputs = {
 							["Emergency.Warning"] = {
