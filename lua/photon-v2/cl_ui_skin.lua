@@ -144,8 +144,8 @@ SKIN.tex.Tab_Bar					= GWEN.CreateTextureBorder( 128, 352, 127, 31, 4, 4, 4, 4 )
 
 SKIN.tex.Window = {}
 
-SKIN.tex.Window.Normal			= GWEN.CreateTextureBorder( 0, 0, 127, 127, 8, 24, 8, 8 )
-SKIN.tex.Window.Inactive		= GWEN.CreateTextureBorder( 128, 0, 127, 127, 8, 24, 8, 8 )
+SKIN.tex.Window.Normal			= GWEN.CreateTextureBorder( 0, 0, 127, 127, 8, 24, 8, 3 )
+SKIN.tex.Window.Inactive		= GWEN.CreateTextureBorder( 128, 0, 127, 127, 8, 24, 8, 2 )
 
 SKIN.tex.Window.Close			= GWEN.CreateTextureNormal( 32, 448, 31, 24 )
 SKIN.tex.Window.Close_Hover		= GWEN.CreateTextureNormal( 64, 448, 31, 24 )

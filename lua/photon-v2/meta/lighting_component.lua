@@ -473,12 +473,15 @@ function Component.New( name, data )
 					error( string.format("Invalid segment: '%s'", segmentName) )
 				end
 
+				local validPhases = { 0, 45, 90, 135, 180, 225, 270, 315, 360 }
+
 				-- PHASING
 				local phase = component.Phase
+				local autoPhase
 
 				if ( phase ) then
 					local newSequenceName = sequenceName .. ":" .. phase
-					if ( component.Segments[segmentName].Sequences[newSequenceName] ) then
+					if ( component.Segments[segmentName].Sequences[newSequenceName] or validPhases[num] ) then
 						sequenceName = newSequenceName
 					else
 						-- print( "Phase NOT found." )

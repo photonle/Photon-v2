@@ -22,7 +22,7 @@ function Photon2.SequenceBuilder:Add( ... )
 	return self:Append( { ... } )
 end
 
-
+-- (Internal) You should use :ToClipboard() instead of calling this function directly.
 function Photon2.SequenceBuilder:ToLua()
 	local result = "{ "
 	for i=1, #self do
@@ -35,6 +35,8 @@ function Photon2.SequenceBuilder:ToLua()
 	return result
 end
 
+-- Copies the entire sequence in Lua syntax form to your clipboard. You can paste the result
+-- to help with complex synchronization.
 function Photon2.SequenceBuilder:ToClipboard()
 	if ( CLIENT ) then SetClipboardText( self:ToLua() ) end
 	return self

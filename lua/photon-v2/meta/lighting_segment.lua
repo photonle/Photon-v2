@@ -429,6 +429,17 @@ end
 function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
 	-- printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
 
+	local autoPhase
+	local phaseStart = string.find( sequence, ":", 1, true )
+	if ( phaseStart ) then
+		autoPhase = tonumber( string.sub( sequence, phaseStart + 1 ) )
+		if ( isnumber( autoPhase ) ) then
+			sequence = string.sub( sequence, 1, phaseStart - 1 )
+		else
+			autoPhase = nil
+		end
+	end
+
 	-- Create sequence variant with rank and score information
 	local sequenceName = channelMode .. "/" .. self.Name .. "/" .. sequence
 	self.Sequences[sequenceName] = self.Sequences[sequence]

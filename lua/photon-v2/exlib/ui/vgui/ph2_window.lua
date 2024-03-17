@@ -28,6 +28,71 @@ function PANEL:UpdateTitle()
 	self:SetTitle( self.TitlePrefix .. self.TitleMain .. self.TitleSuffix )
 end
 
+function PANEL:RecordState()
+	self.RestorePlacement = {
+		State = "NORMAL",
+		W = self:GetWide(),
+		H = self:GetTall(),
+		X = self:GetX(),
+		Y = self:GetY()
+	}
+end
+
+function PANEL:Maximize()
+
+	if ( self.IsMinimized ) then
+		self:UnMinimize()
+	else
+		self:RecordState()
+	end
+
+	self:SetPos( 0, 0 )
+	self:SetSize( ScrW(), ScrH() )
+	self.WindowState = "MAX"
+	self:SetDraggable( false )
+	self:SetSizable( false )
+end
+
+function PANEL:Restore()
+	if ( not self.RestorePlacement ) then return end
+	self.WindowState = self.RestorePlacement.State
+	self:SetSize( self.RestorePlacement.W, self.RestorePlacement.H )
+	self:SetPos( self.RestorePlacement.X, self.RestorePlacement.Y )
+	self:SetDraggable( true )
+	self:SetSizable( true )
+	if ( self.IsMinimized ) then self:UnMinimize() end
+end
+
+function PANEL:Minimize()
+	if ( self.WindowState == "NORMAL" ) then self:RecordState() end
+	local visiblePanels = {}
+	for _, pnl in pairs( self:GetChildren() ) do
+		if ( pnl:IsVisible() ) then
+			if ( self.EssentialChildren[pnl] ) then continue end
+			visiblePanels[#visiblePanels+1] = pnl
+			pnl:SetVisible( false )
+		end
+	end
+	self.MinimizedPanels = visiblePanels
+	self.IsMinimized = true
+	self.btnMinim:SetEnabled( false )
+	self:SetSize( 260, 48 )
+	self:SetPos( 4, ScrH() - 24 )
+	self:SetDraggable( false )
+	self:SetSizable( false )
+end
+
+function PANEL:UnMinimize()
+	for i=1, #self.MinimizedPanels do
+		if ( IsValid( self.MinimizedPanels[i] ) ) then
+			self.MinimizedPanels[i]:SetVisible( true )
+		end
+	end
+	self.IsMinimized = false
+	self.btnMinim:SetEnabled( true )
+	self:SetDraggable( true )
+end
+
 function PANEL:GetOrBuildMenuBar()
 	if ( not IsValid(self.MenuBar) ) then
 		if ( not self.DockPaddingModified ) then
@@ -46,21 +111,70 @@ end
 function PANEL:Init()
 	self:SetSkin("PhotonStudio")
 	self:SetIcon("photon/ui/photon_2_icon_16.png")
+	self:SetMinHeight( 8 )
+	self.WindowState = "NORMAL"
 	self:SetSize( 400, 600 )
 	self:SetScreenLock( true )
 	self:Center()
 	self:SetSizable(true)
+
 	hook.Add( "OnTextEntryGetFocus", self, function( panel ) 
 		self:StartKeyFocus( panel )
 	end )
+	
 	hook.Add( "OnTextEntryLoseFocus", self, function( panel) 
 		self:EndKeyFocus( panel )
 	end )
+
+	self.EssentialChildren = {
+		[self.btnClose] = true,
+		[self.btnMaxim] = true,
+		[self.btnMinim] = true,
+		[self.lblTitle] = true,
+		[(self.imgIcon)] = true
+	}
 
 	local this = self
 	function self.btnClose:DoClick()
 		this:DoClose()
 	end
+
+	self.btnMaxim:SetEnabled( true )
+	function self.btnMaxim:DoClick()
+		if ( this.IsMinimized ) then
+			if ( this.WindowState == "MAX" ) then return this:Maximize() end
+			return this:Restore()
+		end
+		if ( this.WindowState == "MAX" ) then return this:Restore() end
+		return this:Maximize()
+	end
+
+	function self.btnMaxim:Paint( w, h )
+		if ( this.IsMinimized ) then
+			if ( this.WindowState == "MAX" ) then
+				derma.SkinHook( "Paint", "WindowMaximizeButton", self, w, h )
+			else
+				derma.SkinHook( "Paint", "WindowRestoreButton", self, w, h )
+			end
+		else
+			if ( this.WindowState == "MAX" ) then
+				derma.SkinHook( "Paint", "WindowRestoreButton", self, w, h )
+			else
+				derma.SkinHook( "Paint", "WindowMaximizeButton", self, w, h )
+			end
+		end
+		
+	end
+
+	self.btnMinim:SetEnabled( true )
+	function self.btnMinim:DoClick()
+		if ( this.IsMinimized ) then
+			this:UnMinimize()
+		else
+			this:Minimize()
+		end
+	end
+
 	-- Pretty but negates translucency 
 	self:SetPaintShadow( false )
 end
@@ -78,6 +192,32 @@ end
 function PANEL:EndKeyFocus( panel )
 	if ( self.KeyFocusPanel ~= panel ) then return end
 	self:SetKeyboardInputEnabled( false )
+end
+
+function PANEL:OnMousePressed()
+
+	local screenX, screenY = self:LocalToScreen( 0, 0 )
+
+	if ( self.m_bSizable && gui.MouseX() > ( screenX + self:GetWide() - 20 ) && gui.MouseY() > ( screenY + self:GetTall() - 20 ) ) then
+		self.Sizing = { gui.MouseX() - self:GetWide(), gui.MouseY() - self:GetTall() }
+		self:MouseCapture( true )
+		return
+	end
+
+	if ( self:GetDraggable() && gui.MouseY() < ( screenY + 24 ) ) then
+		self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
+		self:MouseCapture( true )
+		return
+	end
+
+end
+
+function PANEL:OnMouseReleased()
+
+	self.Dragging = nil
+	self.Sizing = nil
+	self:MouseCapture( false )
+
 end
 
 derma.DefineControl( class, "Photon 2 Window", PANEL, base )
