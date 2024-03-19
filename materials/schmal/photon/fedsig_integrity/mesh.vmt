@@ -2,14 +2,23 @@
 {
 	"$basetexture"	"schmal/photon/fedsig_integrity/mesh"
 	"$bumpmap"	"schmal/photon/fedsig_integrity/mesh_nm"
+
 	"$envmap"	"env_cubemap"
-	"$envmaptint"	"[0.02 0.02 0.02]"
+	"$envmaptint"	"[0.1 0.1 0.1]"
+	"$envmapfresnel"	"1"
+	
 	"$phong"		"1"
 	"$phongexponent"	"1"
-	"$phongboost"	"1"
+	"$phongboost"	"10"
+	"$phongfresnelranges"	"[0.01 0.001 0.1]"
+
 	"$rimlight"	"1"
-	"$rimlightexponent"	"17"
-	"$rimlightboost"	"1.2"
-	"$phongfix"	"[1 1 1]"
-	"$nocull"		"1"	
+	"$rimlightexponent"	"2"
+	"$rimlightboost"	"1"
+	"$rimmask"	"1"
+	
+	"$nocull"		"1"
+
+	"$phongexponenttexture"	"photon/common/flat_exp"
+
 }

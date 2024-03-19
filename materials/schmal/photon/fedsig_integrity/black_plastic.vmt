@@ -1,18 +1,27 @@
 "VertexLitGeneric"
 {
 	"$basetexture"	"color/white"
-	"$bumpmap"	"photon/common/flat"
-	"$envmap" "env_cubemap"
-	"$envmaptint" "[.02 0.02 0.02]"
-   	 $phong "1"
-    	$phongexponent 10
-   	 $phongboost 1
-   	 $phongfresnelranges "[0 5 1]"
-	"$rimlight" "1"
-	"$rimlightexponent"	"120"
-	"$rimlightboost"	"10"
-	"$nocull" "1"
-	"$nodecal" "1"
+	"$bumpmap"	"photon/common/flat"	
+	
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[0.3 0.3 0.3]"
+	"$envmapfresnel"	"1"
+	
+	"$phong"		"1"
+	"$phongexponent"	"3"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[0.1 0.02 1]"
+
+	"$rimlight"	"1"
+	"$rimlightexponent"	"2"
+	"$rimlightboost"	"1"
+	"$rimmask"	"1"
+	
+	"$nocull"		"1"
+
+	"$phongexponenttexture"	"photon/common/flat_exp"
+	"$basemapluminancephongmask"	"1"
+	"$phongalbedotint"	"1"
 	"$color2" "{16 16 16}"
 	
 }
