@@ -1,11 +1,11 @@
 "VertexlitGeneric"
 {
 	"$basetexture" "schmal/photon/whelen_legacy/legacy"
-	"$bumpmap" "schmal/photon/whelen_legacy/glass_nm"
+	"$bumpmap" "schmal/photon/whelen_legacy/legacy_nm"
 	"$rimlight" "1"
 	"$rimlightexponent" "1"
 	"$rimlightboost"	"10"
-	"$translucent" 1
+	"$translucent" 0
 	"$phong" 1
 	"$phongtint" "[1 1 1]"
 	"$phongexponent" 5

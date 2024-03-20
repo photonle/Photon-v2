@@ -42,15 +42,15 @@ local livery = PhotonMaterial.New({
 	}
 })
 
-VEHICLE.Schema = {
-	["Emergency.Warning"] = {
-		{ Label = "PRIMARY" },
-		{ Mode = "MODE1", Label = "STAGE 1" },
-		{ Mode = "MODE2", Label = "STAGE 2" },
-		{ Mode = "MODE3", Label = "STAGE 3" },
-		{ Mode = "MODE4", Label = "STAGE 4" },
-	}
-}
+-- VEHICLE.Schema = {
+-- 	["Emergency.Warning"] = {
+-- 		{ Label = "PRIMARY" },
+-- 		{ Mode = "MODE1", Label = "STAGE 1" },
+-- 		{ Mode = "MODE2", Label = "STAGE 2" },
+-- 		{ Mode = "MODE3", Label = "STAGE 3" },
+-- 		{ Mode = "MODE4", Label = "STAGE 4" },
+-- 	}
+-- }
 
 -- VEHICLE.SubMaterials = {
 -- 	[3] = "photon/common/blank"

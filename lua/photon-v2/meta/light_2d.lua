@@ -186,11 +186,12 @@ Light.States = {
 		ShapeGlowColor = PhotonColor(255, 48, 48):Blend(redHalogen):GetBlendColor()
 	},
 	["#DEBUG"] = {
-		SourceDetailColor = Color( 255, 255, 255 ),
-		SourceFillColor = Color( 255, 255, 0 ),
-		GlowColor = Color( 255, 0, 255 ),
-		InnerGlowColor = Color( 0, 255, 0 ),
-		ShapeGlowColor = Color( 255, 0, 0 )
+		SourceDetailColor = Color( 0, 255, 0 ),
+		SourceFillColor = PhotonColor( 0, 255, 0 ):Negative( true ):GetBlendColor(),
+		GlowColor = Color( 0, 0, 0 ),
+		InnerGlowColor = Color( 0, 0, 0 ),
+		ShapeGlowColor = Color( 0, 0, 0 ),
+		Intensity = 0.5
 	}
 }
 function Light.OnLoad()

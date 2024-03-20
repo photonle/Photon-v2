@@ -12,6 +12,11 @@ COMPONENT.Title = [[Federal Signal Valor (51")]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
 
+COMPONENT.Deprecated = {
+	Description = "New model added with different dimensions.",
+	Use  = "photon_fedsig_valor_51"
+}
+
 COMPONENT.States = {
 	[1] = "R",
 	[2] = "B",

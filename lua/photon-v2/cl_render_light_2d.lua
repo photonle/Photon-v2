@@ -70,6 +70,12 @@ function Photon2.RenderLight2D.DrawDebug()
 		render.DrawLine(position, position + angles:Right() * 3, Color(255,0,0))
 		render.DrawLine(position, position + angles:Forward() * 3, Color(0,255,0))
 		debugoverlay.Text( position, light.Id )
+
+		if ( IsValid( light.Parent ) ) then
+			render.DrawLine(position - light.Parent:GetAngles():Right() * 5, position + light.Parent:GetAngles():Right() * 5, Color(0,255,255))
+			render.DrawLine(position - light.Parent:GetAngles():Forward() * 5, position + light.Parent:GetAngles():Forward() * 5, Color(255,255,0))
+		end
+
 		-- debugoverlay.Text(position, light.Id .. "(" .. tostring(  math.Round(light.ViewDot * 100) ) .. ") VIS: " .. tostring(math.Round(light.Visibility * 100)) .. "%", 0, false)
 		end
 	end
@@ -256,3 +262,4 @@ function Photon2.RenderLight2D.DrawUI()
 	end
 	render.OverrideColorWriteEnable( false, false )
 end
+
