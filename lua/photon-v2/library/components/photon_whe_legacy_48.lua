@@ -34,7 +34,9 @@ COMPONENT.Templates = {
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/legacy_module_detail.png").MaterialName,
 			Scale = 0.9,
 			ForwardVisibilityOffset = 0,
-			VisibilityRadius = 0.6
+			VisibilityRadius = 0.6,
+			IntensityGainFactor = 5,
+			IntensityLossFactor = 5,
 		},
 		TIR3 = {
 			Width 	= tirW,
@@ -48,6 +50,7 @@ COMPONENT.Templates = {
 		}
 	}
 }
+
 
 COMPONENT.Elements = {
 	[1] = { "Primary", Vector( 6.85, 5.67, 0.22 ), Angle( 0, -90, 0 ) },
@@ -114,23 +117,65 @@ COMPONENT.Elements = {
 	[42] = { "TIR3", Vector( 0, -30.75, 0.23 ), Angle( 0, 180, 0 ) },
 }
 
+
+COMPONENT.ElementStates = {
+	["2D"] = {
+		["~R"] = {
+			Inherit = "R",
+			IntensityTransitions = true
+		},
+		["~B"] = {
+			Inherit = "B",
+			IntensityTransitions = true
+		}
+	}
+}
+
+COMPONENT.ElementGroups = {
+	["@1"] = { 1, 3 },
+	["@2"] = { 2, 4 },
+	["@3"] = { 5, 7 },
+	["@4"] = { 6, 8 },
+	["@5"] = { 9, 11 },
+	["@6"] = { 10, 12 },
+	["@7"] = { 13, 15, 17 },
+	["@8"] = { 14, 16, 18 },
+	["@9"] = { 19, 21, 23 },
+	["@10"] = { 20, 22, 24 },
+	["@11"] = { 25, 27 },
+	["@12"] = { 26, 28 },
+	["@13"] = { 29, 31 },
+	["@14"] = { 30, 32 },
+	["@15"] = { 33, 35 },
+	["@16"] = { 34, 36 },
+	["@17"] = { 37 },
+	["@18"] = { 38 },
+}
+
 COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 [W] 39 40 41 42"
+
+local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Segments = {
 	All = {
 		Frames = {
+			-- [1] = "@13",
+			[0] = "[~OFF] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
 			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
+			[2] = "[~R] @1 @3 @5 @7 @9 @11 @13 @15 @17",
+			[3] = "[~B] @2 @4 @6 @8 @10 @12 @14 @16 @18"
 		},
 		Sequences = {
 			["ON"] = { 1 },
+			["ALT"] = sequence():Alternate( 2, 3, 12 )
 		}
 	},
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			All = "ON"
-		}
+		["MODE1"] = { All = "ALT" },
+		["MODE2"] = { All = "ON" },
+		["MODE3"] = { All = "ON" },
 	}
 }

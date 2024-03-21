@@ -2,19 +2,6 @@ if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 local sequence = Photon2.SequenceBuilder.New
 
---[[
-
-	I M P O R T A N T
-
-	2024-03-20
-
-	This model is still being revised to adjust feet dimensions. Positioning data
-	used for it now has a high probability of needing to change in the future.
-
-	This comment will be removed once this is resolved.
-
---]]
-
 COMPONENT.Author = "Photon"
 
 COMPONENT.Credits = {

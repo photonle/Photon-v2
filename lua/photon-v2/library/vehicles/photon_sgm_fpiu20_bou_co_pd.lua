@@ -327,16 +327,16 @@ VEHICLE.Equipment = {
 					-- },
 					{
 						Name = "@valor",
-						Component = "photon_fedsig_valor_suv",
-						Position = Vector(0, -15, 86.1),
-						Angles = Angle(1.5, 90, 0),
-						Scale = 1.14,
-						PoseParameters = {
-							extend_feet = 0.55
-						},
+						Component = "photon_fedsig_valor_51",
+						Position = Vector(0, -11, 87.5),
+						Angles = Angle(2, 90, 0),
+						Scale = 1.04,
+						-- PoseParameters = {
+						-- 	extend_feet = 0.55
+						-- },
 						Bones = {
-							["right_bone_rod"] = { Vector(-3, 0, -1), Angle(0, 0, 0), 1 },
-							["left_bone_rod"] = { Vector(-3, 0, -1), Angle(0, 0, 0), 1 },
+							["valor_51_feet_left"] = { Vector(-0.34, 0, 1.1), Angle(0, 0, 0), 1 },
+							["valor_51_feet_right"] = { Vector(0.34, 0, 1.1), Angle(0, 0, 0), 1 },
 						},
 						Options = {
 							FeetHeight = 0.55,
