@@ -4,6 +4,7 @@ local description = "Photon 2 Library Asset Browser"
 local PANEL = {}
 
 PANEL.AllowAutoRefresh = true
+PANEL.IsPhotonWindow = true
 
 local padding = 8
 local margin = 8
@@ -457,6 +458,7 @@ function PANEL:Setup( library, mode )
 	self:PopulateEntries()
 
 	self:MakePopup()
+	self:SetKeyboardInputEnabled( false )
 
 	if ( self.UI.DefaultFilter ) then
 		self:SetSourceFilter( self.UI.DefaultFilter )

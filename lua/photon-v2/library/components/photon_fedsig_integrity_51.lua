@@ -19,6 +19,12 @@ COMPONENT.Preview = {
 	Zoom = 1.2
 }
 
+COMPONENT.Poses = {
+	Height = {
+		[""] = {}
+	}
+}
+
 COMPONENT.Templates = {
 	["2D"] = {
 		Primary = {
