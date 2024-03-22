@@ -135,7 +135,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		return result
 	end
 
-	local function buildZeroFrame( frames )
+	local function buildZeroFrame( frames, offState )
 		local usedLights = {}
 		local returnFrame = {}
 		-- Get all used lights
@@ -160,7 +160,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		end
 		-- Build 0 frame
 		for light, _ in pairs( usedLights ) do
-			returnFrame[#returnFrame+1] = { light, "OFF" }
+			returnFrame[#returnFrame+1] = { light, offState or "OFF" }
 		end
 		return returnFrame
 	end
@@ -245,7 +245,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 	if ( not processedFrames[0] ) then
 		-- error("no zero frame")
 	-- if ( not segmentData.Frames[0] ) then
-		processedFrames[0] = buildZeroFrame( processedFrames )
+		processedFrames[0] = buildZeroFrame( processedFrames, segmentData.Off )
 	-- elseif ( isstring(segmentData.Frames[0] ) ) then
 	-- 	processedFrames[0] = processFrameString( segmentData.Frames[0] )
 	-- else

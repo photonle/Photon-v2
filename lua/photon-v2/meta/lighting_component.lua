@@ -160,6 +160,24 @@ function Component.New( name, data )
 
 
 	--[[
+			Process element state inheritance from state slots.
+	--]]
+
+	if ( istable( data.States ) ) then
+		data.ElementStates = data.ElementStates or {}
+		for elementType, states in pairs( data.ElementStates ) do
+			for slotId, stateId in pairs( data.States ) do
+				states[slotId] = {
+					Inherit = stateId,
+					SuppressInheritanceFailure = true
+				}
+			end
+		end
+		PrintTable( data.ElementStates )
+	end
+
+
+	--[[
 			Compile COMPONENT-Wide Light States
 	--]]
 

@@ -16,7 +16,7 @@ COMPONENT.Model = "models/supermighty/whelen_liberty_ii.mdl"
 COMPONENT.Preview = {
 	Position = Vector(),
 	Angles = Angle( 0, 180, 0 ),
-	Zoom = 1
+	Zoom = 0.9
 }
 
 COMPONENT.States = {

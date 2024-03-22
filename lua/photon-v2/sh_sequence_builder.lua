@@ -22,6 +22,12 @@ function Photon2.SequenceBuilder:Add( ... )
 	return self:Append( { ... } )
 end
 
+-- Adds frame zero for one frame or the for the length specified. 
+---@param count? number (Default = `1`) Gap length.
+function Photon2.SequenceBuilder:Gap( count )
+	return self:Add( 0 ):Hold( ( count or 1 ) - 1 )
+end
+
 -- (Internal) You should use :ToClipboard() instead of calling this function directly.
 function Photon2.SequenceBuilder:ToLua()
 	local result = "{ "
@@ -212,7 +218,7 @@ end
 -- Takes the previous *frame* and holds (pauses) it for the length specified.
 function Photon2.SequenceBuilder:Hold( length )
 	local previous = self[#self]
-	for j=1, length do
+	for j=1, length-1 do
 		self[#self+1] = previous
 	end
 	return self
@@ -313,7 +319,7 @@ end
 -- Adds frame [0] for the specified duration
 function Photon2.SequenceBuilder:Off( duration )
 	local result = {}
-	for i=0, duration do
+	for i=1, duration do
 		result[#result+1] = 0
 	end
 	return self:Append( result )

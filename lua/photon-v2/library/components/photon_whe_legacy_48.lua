@@ -16,7 +16,7 @@ COMPONENT.Model = "models/schmal/whelen_legacy_48.mdl"
 COMPONENT.Preview = {
 	Position = Vector( 0, 0, -0.5 ),
 	Angles = Angle( 0, 180, 0 ),
-	Zoom = 1.2
+	Zoom = 1
 }
 
 local priW = 3.1
@@ -24,6 +24,11 @@ local priH = priW / 2
 
 local tirW = 3.16
 local tirH = tirW / 2
+
+COMPONENT.States = {
+	[1] = "R",
+	[2] = "B"
+}
 
 COMPONENT.Templates = {
 	["2D"] = {
@@ -35,8 +40,8 @@ COMPONENT.Templates = {
 			Scale = 0.9,
 			ForwardVisibilityOffset = 0,
 			VisibilityRadius = 0.6,
-			IntensityGainFactor = 5,
-			IntensityLossFactor = 5,
+			IntensityGainFactor = 3,
+			IntensityLossFactor = 3,
 		},
 		TIR3 = {
 			Width 	= tirW,
@@ -120,13 +125,22 @@ COMPONENT.Elements = {
 
 COMPONENT.ElementStates = {
 	["2D"] = {
-		["~R"] = {
-			Inherit = "R",
+		-- Create an intensity-transition enabled state
+		["~1"] = {
+			-- Inherit this state from state slot [1]
+			Inherit = 1,
 			IntensityTransitions = true
 		},
-		["~B"] = {
-			Inherit = "B",
+		["~2"] = {
+			-- Inherit this state from state slot [2]
+			Inherit = 2,
 			IntensityTransitions = true
+		}
+	},
+	["Bone"] = {
+		[1] = {
+			Inherit = "B",
+			SuppressInheritanceFailure = true
 		}
 	}
 }
@@ -150,32 +164,98 @@ COMPONENT.ElementGroups = {
 	["@16"] = { 34, 36 },
 	["@17"] = { 37 },
 	["@18"] = { 38 },
+	["Takedown"] = { 39, 40 },
+	["Left"] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37 },
+	["Left_Front"] = { 1, 3, 5, 7, 9, 11, 13, 15, 17 },
+	["Left_Corner"] = { 13, 15, 17, 19, 21, 23 },
+	["Left_Alley"] = { 41 },
+	["Right"] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38 },
+	["Right_Front"] = { 2, 4, 6, 8, 10, 12, 14, 16, 18 },
+	["Right_Alley"] = { 42 },
+	["Right_Corner"] = { 14, 16, 18, 20, 22, 24 },
 }
 
-COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 [W] 39 40 41 42"
-
-local sequence = Photon2.SequenceBuilder.New
+COMPONENT.StateMap = "[1/2] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 [1/2] 2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 [W] 39 40 41 42"
 
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			-- [1] = "@13",
-			[0] = "[~OFF] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
 			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
-			[2] = "[~R] @1 @3 @5 @7 @9 @11 @13 @15 @17",
-			[3] = "[~B] @2 @4 @6 @8 @10 @12 @14 @16 @18"
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["ALT"] = sequence():Alternate( 2, 3, 12 )
+			-- ["ALT"] = sequence():Alternate( 4, 5, 12 )
 		}
 	},
+	Cut = {
+		Frames = {
+			[1] = "[OFF] Left_Front Right_Front"
+		},
+		Sequences = {
+			["FRONT"] = { 1 }
+		}
+	},
+	DVI = {
+		Off = "~OFF",
+		Frames = {
+			[1] = "[~1] @1 @3 @5 @7 @9 @11 @13 @15 @17",
+			[2] = "[~2] @2 @4 @6 @8 @10 @12 @14 @16 @18",
+
+			[3] = "[~1] @1 @3 @13 @15 @17 [~2] @2 @4 @14 @16 @18",
+			[4] = "[~1] @5 @7 @9 @11 [~2] @6 @8 @10 @12",
+
+			[5] = "[~1] @1 @5 @9 @13 @17 [~2] @4 @8 @12 @16",
+			[6] = "[~1] @3 @7 @11 @15 [~2] @2 @6 @10 @14 @18",
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 12 ),
+			["CEN"] = sequence():Alternate( 3, 4, 12 ),
+			["MIX"] = sequence():Alternate( 5, 6, 12 ),
+		}
+	},
+	Full = {
+		Frames = {
+			[1] = "[1] @1 @3 @5 @7 @9 @11 @13 @15 @17",
+			[2] = "[2] @2 @4 @6 @8 @10 @12 @14 @16 @18",
+
+			[3] = "[1] @1 @3 @13 @15 @17 [2] @2 @4 @14 @16 @18",
+			[4] = "[1] @5 @7 @9 @11 [2] @6 @8 @10 @12",
+
+			[5] = "[1] @1 @5 @9 @13 @17 [2] @4 @8 @12 @16",
+			[6] = "[1] @3 @7 @11 @15 [2] @2 @6 @10 @14 @18",
+
+			[7] = "[1] Left [2] Right"
+		},
+		Sequences = {
+			["SCAN"] = sequence()
+			:FlashHold( { 5, 6 }, 2, 4 ):Do( 2 ):Gap()
+			:Alternate( 3, 4, 9 ):Do( 2 ):Gap()
+			:FlashHold( 7, 3, 6 ):Gap( 6 ):FlashHold( 7, 3, 6 ):Gap( 6 )
+			:Alternate( 1, 2, 9 ):Do( 2 ):Gap()
+		}
+	}
+}
+
+
+COMPONENT.Patterns = {
+	["DVI/ALT"] = { { "DVI", "ALT" } },
+	["DVI/CEN"] = { { "DVI", "CEN" } },
+	["DVI/MIX"] = { { "DVI", "MIX" } },
+	["DVI/REAR_ALT"] = { 
+		{ "DVI", "ALT" },
+		{ "Cut", "FRONT" }
+	},
+	["DVI/REAR_MIX"] = { 
+		{ "DVI", "MIX" },
+		{ "Cut", "FRONT" }
+	},
+	["SCAN"] = { { "Full", "SCAN" } }
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { All = "ALT" },
-		["MODE2"] = { All = "ON" },
+		["MODE1"] = { "DVI/REAR_ALT" },
+		["MODE2"] = { "SCAN" },
 		["MODE3"] = { All = "ON" },
 	}
 }

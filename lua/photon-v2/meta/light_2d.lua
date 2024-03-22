@@ -197,6 +197,18 @@ Light.States = {
 function Light.OnLoad()
 	for k, v in pairs( Light.States ) do
 		Light.States[k] = PhotonElement2DState:New( k, v, Light.States )
+
+		-- Temproray measure to automatically make fading states
+		if ( not Light.States[ "~" .. tostring( k ) ] ) then
+			Light.States["~" .. tostring( k )] = PhotonElement2DState:New(
+				"~" .. tostring( k ),
+				{
+					Inherit = k,
+					IntensityTransitions = true,
+				},
+				Light.States
+			)
+		end
 	end
 end
 

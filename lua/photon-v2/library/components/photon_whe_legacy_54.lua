@@ -16,7 +16,7 @@ COMPONENT.Model = "models/schmal/whelen_legacy_54.mdl"
 COMPONENT.Preview = {
 	Position = Vector( 0, 0, -0.5 ),
 	Angles = Angle( 0, 180, 0 ),
-	Zoom = 1.2
+	Zoom = 0.9
 }
 
 COMPONENT.States = {
