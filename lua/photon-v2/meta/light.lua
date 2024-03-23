@@ -48,7 +48,14 @@ function Light:Initialize( id, component )
 
 	if CLIENT then
 		if ( isstring( self.BoneParent ) ) then
-			self.BoneParent = light.Parent:LookUpBoneOrError( self.BoneParent )
+			local boneName = self.BoneParent
+			self.BoneParent = 0
+			-- has to be delayed because the entity may not be valid 
+			-- in the same tick
+			timer.Simple( 0.01, function() 
+				if ( not IsValid( self.Parent ) ) then return end
+				self.BoneParent = light.Parent:LookUpBoneOrError( boneName )
+			end)
 		end
 	end
 
@@ -63,6 +70,8 @@ function Light:CheckBodyGroupRequirements()
 			if ( not metaTable.Processed ) then
 				for bodyGroupName, selection in pairs( self.RequiredBodyGroups ) do
 					
+					if ( not istable( selection ) ) then selection = { selection } end
+
 					local index = bodyGroupName
 
 					if ( isstring( bodyGroupName ) ) then

@@ -11,7 +11,13 @@ COMPONENT.Credits = {
 
 COMPONENT.Title = [[Federal Signal Legend (45")]]
 COMPONENT.Category = "Lightbar"
-COMPONENT.Model = "models/schmal/fedsig_legend_45in.mdl"
+COMPONENT.Model = "models/schmal/fedsig_legend_45.mdl"
+
+
+-- COMPONENT.Deprecated = {
+-- 	Description = "New model with body-grouped mounting options and mesh tweaks.",
+-- 	Use = "photon_fedsig_legend_45"
+-- }
 
 COMPONENT.Preview = {
 	Position = Vector(),

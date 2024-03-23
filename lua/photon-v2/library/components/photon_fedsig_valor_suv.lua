@@ -1,7 +1,7 @@
 if (Photon2.ReloadComponentFile()) then return end
 local COMPONENT = Photon2.LibraryComponent()
 
-COMPONENT.Author = "Schmal"
+COMPONENT.Author = "Photon"
 
 COMPONENT.Credits = {
 	Model = "Twurtleee, Schmal",
@@ -11,6 +11,11 @@ COMPONENT.Credits = {
 COMPONENT.Title = [[Federal Signal Valor (51")]]
 COMPONENT.Category = "Lightbar"
 COMPONENT.Model = "models/schmal/fedsig_valor_51in.mdl"
+
+COMPONENT.Deprecated = {
+	Description = "New model added with different dimensions.",
+	Use  = "photon_fedsig_valor_51"
+}
 
 COMPONENT.States = {
 	[1] = "R",
@@ -515,10 +520,10 @@ COMPONENT.Segments = {
 			["COLORBURST"] = {
 				6, 3, 3, 5, 5, 4, 4, 6, 6, 3, 3, 5, 5, 4, 4, 6,
 				-- 0, 3, 0, 5, 0, 4, 0, 6, 0, 3, 0, 5, 0, 4, 0, 6,
-				0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0,
+				0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 
+				0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 
+				0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 
+				0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 
 			},
 		}
 	},

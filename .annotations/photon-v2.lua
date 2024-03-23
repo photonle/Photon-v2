@@ -159,9 +159,10 @@ PhotonMaterial = PhotonMaterial
 ---@field Siren string Default siren name.
 
 ---@class PhotonLibraryComponentSegment
+---@field Off? string Off state that should be used for elements in this segment. (Note: this has no effect when frame [0] is manually defined.)
 ---@field FrameDuration? number Overrides the default duration of each frame. (In seconds.)
----@field Frames table<number, string | table>
----@field Sequences table<string, table<integer, integer>>
+---@field Frames table<number, string | table> Individual frames that can be used in sequences.
+---@field Sequences table<string, table<integer, integer>> One or more frames that, together, make up a sequence.
 
 ---@class PhotonLibraryVehicle
 ---@field Name string (Internal) Overwritten by the filename. Cannot be set by user.

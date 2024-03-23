@@ -1,0 +1,25 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/fedsig_integrity/mesh"
+	"$bumpmap"	"schmal/photon/fedsig_integrity/mesh_nm"
+
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[1 1 1]"
+	"$envmapfresnel"	"1"
+	
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"10"
+	"$phongfresnelranges"	"[0.01 0.01 0.1]"
+	"$phongtint"		"[0.2 0.30.2]"
+
+	"$rimlight"	"1"
+	"$rimlightexponent"	"2"
+	"$rimlightboost"	"1"
+	"$rimmask"	"1"
+	
+	"$nocull"		"1"
+
+	"$phongexponenttexture"	"photon/common/flat_exp"
+
+}

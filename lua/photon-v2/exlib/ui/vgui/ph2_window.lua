@@ -117,7 +117,6 @@ function PANEL:Init()
 	self:SetScreenLock( true )
 	self:Center()
 	self:SetSizable(true)
-
 	hook.Add( "OnTextEntryGetFocus", self, function( panel ) 
 		self:StartKeyFocus( panel )
 	end )
@@ -177,6 +176,8 @@ function PANEL:Init()
 
 	-- Pretty but negates translucency 
 	self:SetPaintShadow( false )
+
+	hook.Run( "Photon2.WindowCreated", self )
 end
 
 function PANEL:DoClose()
@@ -218,6 +219,12 @@ function PANEL:OnMouseReleased()
 	self.Sizing = nil
 	self:MouseCapture( false )
 
+end
+
+function PANEL:OnKeyCodePressed( keyCode )
+	if ( keyCode == KEY_F3 ) then
+		Photon2.UI.ToggleCursorRelease()
+	end
 end
 
 derma.DefineControl( class, "Photon 2 Window", PANEL, base )

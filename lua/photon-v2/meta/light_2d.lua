@@ -186,16 +186,29 @@ Light.States = {
 		ShapeGlowColor = PhotonColor(255, 48, 48):Blend(redHalogen):GetBlendColor()
 	},
 	["#DEBUG"] = {
-		SourceDetailColor = Color( 255, 255, 255 ),
-		SourceFillColor = Color( 255, 255, 0 ),
-		GlowColor = Color( 255, 0, 255 ),
-		InnerGlowColor = Color( 0, 255, 0 ),
-		ShapeGlowColor = Color( 255, 0, 0 )
+		SourceDetailColor = Color( 0, 255, 0 ),
+		SourceFillColor = PhotonColor( 0, 255, 0 ):Negative( true ):GetBlendColor(),
+		GlowColor = Color( 0, 0, 0 ),
+		InnerGlowColor = Color( 0, 0, 0 ),
+		ShapeGlowColor = Color( 0, 0, 0 ),
+		Intensity = 0.5
 	}
 }
 function Light.OnLoad()
 	for k, v in pairs( Light.States ) do
 		Light.States[k] = PhotonElement2DState:New( k, v, Light.States )
+
+		-- Temproray measure to automatically make fading states
+		if ( not Light.States[ "~" .. tostring( k ) ] ) then
+			Light.States["~" .. tostring( k )] = PhotonElement2DState:New(
+				"~" .. tostring( k ),
+				{
+					Inherit = k,
+					IntensityTransitions = true,
+				},
+				Light.States
+			)
+		end
 	end
 end
 

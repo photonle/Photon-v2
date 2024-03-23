@@ -15,13 +15,160 @@ VEHICLE.Author		= "Schmal"
 
 -- VEHICLE.Siren = { "code3_z3" }
 -- VEHICLE.Siren = { "dr_iqelitepro" }
-VEHICLE.Siren = { "motorola_spectra" }
+-- VEHICLE.Siren = { "motorola_spectra" }
+VEHICLE.Siren = { "whelen_epsilon_alt" }
+-- VEHICLE.Siren = {
+	-- This an example of using mixed siren tones (also a real-world recreation)
+	-- [1] = {
+	-- 	T1 = "fedsig_touchmaster_delta/wail",
+	-- 	T2 = "fedsig_touchmaster_delta/yelp",
+	-- 	T3 = "fedsig_smartsiren/priority",
+	-- 	T4 = "fedsig_smartsiren/hilo",
+	-- 	AIR = "fedsig_smartsiren/airhorn",
+	-- 	MAN = "fedsig_touchmaster_delta/manual",
+	-- },
+-- }
 
 -- Category -> Option (-> Variant)
 VEHICLE.Equipment = {
 	{
 		Category = "Lightbar",
 		Options = {
+			{
+				Option = "Legacy (48\")",
+				Components = {
+					{
+						Component = "photon_whe_legacy_48",
+						Position = Vector( 0, -15, 87.7 ),
+						-- Position = Vector( 0, -15, 100 ),
+						Angles = Angle( 1, 90, 0 ),
+						-- Angles = Angle( 0, 90, 0 ),
+						-- Scale = 1,
+						Scale = 1.02,
+						Bones = {
+							[11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
+							[10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
+						},
+					}
+				},
+			},
+			{
+				Option = "Legacy (44\")",
+				Components = {
+					{
+						Component = "photon_whe_legacy_44",
+						-- Position = Vector( 0, -15, 87.7 ),
+						Position = Vector( 0, -15, 100 ),
+						-- Angles = Angle( 1, 90, 0 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						-- Scale = 1.02,
+						Bones = {
+							-- [11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
+							-- [10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
+						},
+					}
+				},
+			},
+			{
+				Option = "Liberty (48\")",
+				Components = {
+					{
+						Component = "photon_whe_libertyii_48",
+						-- Position = Vector( 0, -15, 87.7 ),
+						Position = Vector( 0, -15, 100 ),
+						-- Angles = Angle( 1, 90, 0 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						-- Scale = 1.02,
+						Bones = {
+							-- [11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
+							-- [10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
+						},
+					}
+				},
+			},
+			{
+				Option = "Legacy (54\")",
+				Components = {
+					{
+						Component = "photon_whe_legacy_54",
+						-- Position = Vector( 0, -15, 87.7 ),
+						Position = Vector( 0, -15, 100 ),
+						-- Angles = Angle( 1, 90, 0 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						-- Scale = 1.02,
+						Bones = {
+							-- [11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
+							-- [10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
+						},
+					}
+				},
+			},
+			{
+				Option = "Integrity (51\")",
+				Components = {
+					{
+						Component = "photon_fedsig_integrity_51",
+						Position = Vector( 0, -15, 100 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						Bones = {
+
+						},
+						SubMaterials = {
+							-- [3] = "photon/common/blank"
+						}
+					}
+				},
+			},
+			{
+				Option = "Valor (51\")",
+				Components = {
+					{
+						Component = "photon_fedsig_valor_51",
+						Position = Vector( 0, -15, 90 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						Bones = {
+
+						},
+						SubMaterials = {
+							-- [3] = "photon/common/blank"
+						}
+					}
+				},
+			},
+			{
+				Option = "Valor (44\")",
+				Components = {
+					{
+						Component = "photon_fedsig_valor_44",
+						Position = Vector( 0, -15, 100 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						Bones = {
+
+						},
+					}
+				},
+			},
+			{
+				Option = "Integrity (44\")",
+				Components = {
+					{
+						Component = "photon_fedsig_integrity_44",
+						Position = Vector( 0, -15, 100 ),
+						Angles = Angle( 0, 90, 0 ),
+						Scale = 1,
+						Bones = {
+
+						},
+					}
+				},
+			},
+
 			{
 				Option = "Liberty II",
 				Components = {

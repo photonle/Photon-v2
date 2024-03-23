@@ -275,3 +275,37 @@ function Photon2.Util.SortedPairs( pTable, Desc )
 		return key, pTable[key]
 	end
 end
+
+function Photon2.Util.PhaseOffset( length, degrees )
+	return math.Round( length * ( degrees / 360 ) )
+end
+
+function Photon2.Util.ParseSequenceName( sequence )
+
+	local namedPhase, phaseDegrees
+
+	local sections = {}
+
+	for section in string.gmatch( sequence, "([^:]+)" ) do
+		sections[#sections+1] = section
+	end
+
+	sequence = sections[1]
+
+	for i=2, #sections do
+		local asNum = tonumber( sections[i] )
+		if ( asNum ) then
+			phaseDegrees = ( phaseDegrees or 0 ) + asNum
+		else
+			namedPhase = sections[i]
+		end
+	end
+
+	if ( namedPhase ) then
+		sequence = sequence .. ":" .. tostring( namedPhase )
+	end
+
+	if ( isnumber( phaseDegrees ) ) then phaseDegrees = phaseDegrees % 360 end
+
+	return sequence, phaseDegrees
+end

@@ -1,7 +1,27 @@
 Photon2.UI = Photon2.UI or {
 	CursorReleased = false,
-	HUD = {}
+	HUD = {},
+	Windows = {}
 }
+
+function Photon2.UI.SetEnableWindowInput( enable )
+	local remove = {}
+	for window, _ in pairs( Photon2.UI.Windows ) do
+		if ( not IsValid( window ) ) then
+			remove[window] = true
+			continue
+		end
+		window:SetKeyboardInputEnabled( enable )
+		window:SetMouseInputEnabled( enable )
+	end
+	for window, _ in pairs( remove ) do
+		Photon2.UI.Windows[window] = nil
+	end
+end
+
+hook.Add( "Photon2.WindowCreated", "Photon2.UI:WindowTracker", function( window )
+	Photon2.UI.Windows[window] = true
+end)
 
 Photon2.UI.Icons = Photon2.UI.Icons or {
 	Index = {}
@@ -631,13 +651,24 @@ if ( PHOTON2_STUDIO_ENABLED ) then
 	-- 	spawnmenu.AddToolMenuOption( "Utilities", "Photon 2", "photon2_utilities_blendining", "Blending Options", "", "", Photon2.UI.BuildBlendingController )
 	-- end )
 end
-PHOTON2_CL_CVAR_F3CURSORTOGGLE = CreateClientConVar( "ph2_f3cursor_enable", "0", true, false, "Toggle cursor with F3", 0, 1 )
+
+local trackedWindows = {}
+
+
+
+PHOTON2_CL_CVAR_F3CURSORTOGGLE = CreateClientConVar( "ph2_f3cursor_enable", "1", true, false, "Toggle cursor with F3", 0, 1 )
 
 function Photon2.UI.ToggleCursorRelease()
-	if ( Photon2.UI.CursorReleased ) then RememberCursorPosition() end
+	if ( Photon2.UI.CursorReleased ) then
+		RememberCursorPosition()
+		Photon2.UI.SetEnableWindowInput( false )
+	end
 	Photon2.UI.CursorReleased = !Photon2.UI.CursorReleased
 	gui.EnableScreenClicker( Photon2.UI.CursorReleased )
-	if ( Photon2.UI.CursorReleased ) then RestoreCursorPosition() end
+	if ( Photon2.UI.CursorReleased ) then
+		RestoreCursorPosition() 
+		Photon2.UI.SetEnableWindowInput( true )
+	end
 end
 
 hook.Add( "PlayerBindPress", "Photon2.UI:F3CursorRelease", function( ply, bind, press )

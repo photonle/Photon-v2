@@ -19,7 +19,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Component PhotonLightingComponent
 -- [string] = Pattern Name
 ---@field Inputs table<string, string> Key = Input Channel, Value = Associated sequence
----@field InputActions table<string, { Sequence: string, Priority: number, Rank: number }>
+---@field InputActions table<string, { Sequence: string, Priority: number, Rank: number, Phase: number }>
 ---@field Frames table<integer, table> 
 ---@field InitializedFrames table<integer, table<PhotonElement, string>>
 ---@field QuickInputs table
@@ -135,7 +135,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		return result
 	end
 
-	local function buildZeroFrame( frames )
+	local function buildZeroFrame( frames, offState )
 		local usedLights = {}
 		local returnFrame = {}
 		-- Get all used lights
@@ -160,7 +160,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 		end
 		-- Build 0 frame
 		for light, _ in pairs( usedLights ) do
-			returnFrame[#returnFrame+1] = { light, "OFF" }
+			returnFrame[#returnFrame+1] = { light, offState or "OFF" }
 		end
 		return returnFrame
 	end
@@ -245,7 +245,7 @@ function Segment.New( name, segmentData, lightGroups, componentInputPriorities )
 	if ( not processedFrames[0] ) then
 		-- error("no zero frame")
 	-- if ( not segmentData.Frames[0] ) then
-		processedFrames[0] = buildZeroFrame( processedFrames )
+		processedFrames[0] = buildZeroFrame( processedFrames, segmentData.Off )
 	-- elseif ( isstring(segmentData.Frames[0] ) ) then
 	-- 	processedFrames[0] = processFrameString( segmentData.Frames[0] )
 	-- else
@@ -348,7 +348,7 @@ function Segment:Initialize( componentInstance )
 		if ( not self.Sequences[sequenceData.Sequence] ) then
 			error( "Sequence [" .. tostring( sequenceData.Sequence ) .."] does not exist." )
 		end
-		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank )
+		segment.Sequences[sequenceData.Sequence] = self.Sequences[sequenceData.Sequence]:Initialize( sequenceData.Sequence, segment, sequenceData.Priority, sequenceData.Rank, sequenceData.Phase )
 		if ( segment.Sequences[sequenceData.Sequence].AcceptControllerPulse ) then
 			segment.AcceptPulse = true
 		end
@@ -429,24 +429,15 @@ end
 function Segment:AddPattern( channelMode, sequence, priorityScore, rank )
 	-- printf("Adding pattern. Mode: %s. Sequence: %s. Priority: %s. Rank: %s.", channelMode, sequence, priorityScore, rank)
 
-	local autoPhase
-	local phaseStart = string.find( sequence, ":", 1, true )
-	if ( phaseStart ) then
-		autoPhase = tonumber( string.sub( sequence, phaseStart + 1 ) )
-		if ( isnumber( autoPhase ) ) then
-			sequence = string.sub( sequence, 1, phaseStart - 1 )
-		else
-			autoPhase = nil
-		end
-	end
+	local parsedSequence, newAutoPhase = Photon2.Util.ParseSequenceName( sequence )
 
 	-- Create sequence variant with rank and score information
-	local sequenceName = channelMode .. "/" .. self.Name .. "/" .. sequence
-	self.Sequences[sequenceName] = self.Sequences[sequence]
+	local sequenceName = channelMode .. "/" .. self.Name .. "/" .. parsedSequence
+	self.Sequences[sequenceName] = self.Sequences[parsedSequence]
 	-- if (isstring(sequence)) then
 	-- 	sequence = self.Sequences[sequence]
 	-- end
-	self.InputActions[channelMode] = { Sequence = sequenceName, Rank = rank, Priority = priorityScore }
+	self.InputActions[channelMode] = { Sequence = sequenceName, Rank = rank, Priority = priorityScore, Phase = newAutoPhase }
 	self.Inputs[channelMode] = sequenceName --[[@as string]]
 end
 

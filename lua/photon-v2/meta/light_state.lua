@@ -11,6 +11,7 @@ NAME = "PhotonElementState"
 ---@field Inherit? string | PhotonElementState
 ---@field Proxy? table (Special) Allows the rendered state to be based on an external variable look-up rathern than being directly determined by the frame. Made for the Vision SLR.
 ---@field DeactivationState? string
+---@field SuppressInheritanceFailure? boolean (Internal) Silently fails if the inherited state isn't found. Used when states are automatically generated.
 local State = exmeta.New()
 
 State.Intensity = 1
@@ -48,10 +49,15 @@ function State.New( self, name, data, collection )
 	if ( state.Inherit ) then
 		local inherit
 		if ( collection and istable(collection) )then
-			if ( isstring( state.Inherit ) ) then
+			if ( isstring( state.Inherit ) or isnumber( state.Inherit ) ) then
 				local parent = collection[state.Inherit]
 				if ( not parent ) then
-					error(string.format("Light state [%s] failed to inherit from [%s] because it is not defined in the supplied 'collections' table (received [%s]).", name, state.Inherit, tostring(collections)))
+					if ( data.SuppressInheritanceFailure ) then
+						-- TODO: Entirely returning nil may be better?
+						parent = {}
+					else
+						error(string.format("Light state [%s] failed to inherit from [%s] because it is not defined in the supplied 'collections' table (received [%s]).", name, state.Inherit, tostring(collections)))
+					end
 				end
 				inherit = parent
 			end
