@@ -26,11 +26,12 @@ local RealTime = RealTime
 Sequence.IsRepeating = true
 Sequence.RestartFrame = 1
 Sequence.FrameDuration = nil
+Sequence.PhaseOffset = 0
 
 -- Returns initialized Sequence for a spawned component.
 ---@param segment PhotonElementingSegment
 ---@return PhotonSequence
-function Sequence:Initialize( name, segment, priorityScore, rank )
+function Sequence:Initialize( name, segment, priorityScore, rank, phase )
 	---@type PhotonSequence
 	local instance = {
 		Name = name,
@@ -40,6 +41,12 @@ function Sequence:Initialize( name, segment, priorityScore, rank )
 		PriorityScore = priorityScore or 0,
 		Rank = rank or 0
 	}
+
+	if ( phase ) then
+		-- ErrorNoHalt("\n\n\nSequence initialized with a PHASE OFFSET: " .. tostring( phase ) .. "\n\n\n")
+		instance.PhaseOffset = Photon2.Util.PhaseOffset( #self.FramesByIndex, phase )
+		-- print("Actual phase offset: " .. tostring( instance.PhaseOffset ) )
+	end
 
 	local lights = segment.Elements
 
@@ -179,7 +186,9 @@ function Sequence:IncrementFrame( frame, force )
 	-- 		self.CurrentFrame = #self
 	-- 	end
 	-- end
-	self.ActiveFrame = self[self.CurrentFrame]
+	local phasedCurrentFrame = ( ( self.CurrentFrame + self.PhaseOffset - 1 ) % #self ) + 1
+	-- print("======\nCurrentFrame: " .. tostring( self.CurrentFrame ) .. "\nNew: " .. tostring(( )) )
+	self.ActiveFrame = self[phasedCurrentFrame]
 	if not (self.PreviousFrame == self.ActiveFrame) then
 		-- print( "current frame: " .. tostring(self.CurrentFrame) )
 		if ( not self.ActiveFrame ) then

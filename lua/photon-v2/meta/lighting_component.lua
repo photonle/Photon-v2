@@ -173,7 +173,6 @@ function Component.New( name, data )
 				}
 			end
 		end
-		PrintTable( data.ElementStates )
 	end
 
 
@@ -430,11 +429,22 @@ function Component.New( name, data )
 
 					if ( data.Patterns ) then
 						if ( data.Patterns[autoPatternName] ) then
+
+							local _, phaseDegrees = Photon2.Util.ParseSequenceName( autoPatternName )
+							
 							for index, sequence in pairs( data.Patterns[autoPatternName] ) do
+								
+								local sequenceName = sequence[2]
+								
+								if ( phaseDegrees ) then
+									sequenceName = sequenceName .. ":" .. tostring( phaseDegrees )
+								end
+
 								addSequences[sequence[1]] = {
 									sequence[2],
 									Order = sequence.Order or ( order + index )
 								}
+
 							end
 						else
 							warn( "Pattern [%s] does not appear to be defined in COMPONENT.Patterns.", autoPatternName )
@@ -491,15 +501,13 @@ function Component.New( name, data )
 					error( string.format("Invalid segment: '%s'", segmentName) )
 				end
 
-				local validPhases = { 0, 45, 90, 135, 180, 225, 270, 315, 360 }
-
 				-- PHASING
 				local phase = component.Phase
 				local autoPhase
 
 				if ( phase ) then
 					local newSequenceName = sequenceName .. ":" .. phase
-					if ( component.Segments[segmentName].Sequences[newSequenceName] or validPhases[num] ) then
+					if ( component.Segments[segmentName].Sequences[newSequenceName] or ( isnumber( phase ) ) ) then
 						sequenceName = newSequenceName
 					else
 						-- print( "Phase NOT found." )

@@ -167,10 +167,12 @@ COMPONENT.ElementGroups = {
 	["Takedown"] = { 39, 40 },
 	["Left"] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37 },
 	["Left_Front"] = { 1, 3, 5, 7, 9, 11, 13, 15, 17 },
+	["Left_Rear"] = { 19, 21, 23, 25, 27, 29, 31, 33, 35, 37 },
 	["Left_Corner"] = { 13, 15, 17, 19, 21, 23 },
 	["Left_Alley"] = { 41 },
 	["Right"] = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38 },
 	["Right_Front"] = { 2, 4, 6, 8, 10, 12, 14, 16, 18 },
+	["Right_Rear"] = { 20, 22, 24, 26, 28, 30, 32, 34, 36, 38 },
 	["Right_Alley"] = { 42 },
 	["Right_Corner"] = { 14, 16, 18, 20, 22, 24 },
 }
@@ -215,8 +217,8 @@ COMPONENT.Segments = {
 	},
 	Full = {
 		Frames = {
-			[1] = "[1] @1 @3 @5 @7 @9 @11 @13 @15 @17",
-			[2] = "[2] @2 @4 @6 @8 @10 @12 @14 @16 @18",
+			[1] = "[1] Left_Front [2] Right_Rear",
+			[2] = "[2] Right_Front [1] Left_Rear",
 
 			[3] = "[1] @1 @3 @13 @15 @17 [2] @2 @4 @14 @16 @18",
 			[4] = "[1] @5 @7 @9 @11 [2] @6 @8 @10 @12",
@@ -228,10 +230,26 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["SCAN"] = sequence()
-			:FlashHold( { 5, 6 }, 2, 4 ):Do( 2 ):Gap()
-			:Alternate( 3, 4, 9 ):Do( 2 ):Gap()
-			:FlashHold( 7, 3, 6 ):Gap( 6 ):FlashHold( 7, 3, 6 ):Gap( 6 )
-			:Alternate( 1, 2, 9 ):Do( 2 ):Gap()
+				:FlashHold( { 5, 6 }, 2, 4 ):Do( 2 ):Gap()
+				:Alternate( 3, 4, 9 ):Do( 2 ):Gap()
+				:FlashHold( 7, 3, 6 ):Gap( 6 ):FlashHold( 7, 3, 6 ):Gap( 6 )
+				:Alternate( 1, 2, 9 ):Do( 2 ):Gap()
+		}
+	},
+	Left = {
+		Frames = {
+			[1] = "[1] Left_Front Left_Rear"
+		},
+		Sequences = {
+			["FLASH"] = sequence():Alternate( 1, 0, 16 )
+		}
+	},
+	Right = {
+		Frames = {
+			[1] = "[2] Right_Front Right_Rear"
+		},
+		Sequences = {
+			["FLASH"] = sequence():Alternate( 1, 0, 16 )
 		}
 	}
 }
@@ -249,13 +267,20 @@ COMPONENT.Patterns = {
 		{ "DVI", "MIX" },
 		{ "Cut", "FRONT" }
 	},
-	["SCAN"] = { { "Full", "SCAN" } }
+	["SCAN"] = { { "Full", "SCAN" } },
+	["PHASETEST"] = {
+		{ "Left", "FLASH:180" },
+		{ "Right", "FLASH" },
+	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = { "DVI/REAR_ALT" },
-		["MODE2"] = { "SCAN" },
+		["MODE2"] = { 
+			Left = "FLASH:0",
+			Right = "FLASH:180"
+		},
 		["MODE3"] = { All = "ON" },
 	}
 }
