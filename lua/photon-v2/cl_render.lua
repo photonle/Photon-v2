@@ -180,7 +180,9 @@ local defaultBloomOptions = {
 
 		InnerBlurPasses 		= 1,
 		InnerBlurX 				= 1,
-		InnerBlurY 				= 1
+		InnerBlurY 				= 1,
+		Draw2DSubtractive 		= 0,
+		Draw2DAdditive 			= 0
 	},
 	Default = {
 		AdditiveSourcePasses 	= 2,
@@ -193,7 +195,10 @@ local defaultBloomOptions = {
 
 		InnerBlurPasses 		= 1,
 		InnerBlurX 				= 1,
-		InnerBlurY 				= 1
+		InnerBlurY 				= 1,
+
+		Draw2DSubtractive 		= 1,
+		Draw2DAdditive 			= 1
 	},
 	Vivid = {
 		AdditiveSourcePasses 	= 4,
@@ -206,7 +211,10 @@ local defaultBloomOptions = {
 
 		InnerBlurPasses 		= 4,
 		InnerBlurX 				= 1,
-		InnerBlurY 				= 1
+		InnerBlurY 				= 1,
+
+		Draw2DSubtractive 		= 1,
+		Draw2DAdditive 			= 1
 	},
 	Max = {
 		AdditiveSourcePasses 	= 4,
@@ -219,7 +227,10 @@ local defaultBloomOptions = {
 
 		InnerBlurPasses 		= 8,
 		InnerBlurX 				= 0.5,
-		InnerBlurY 				= 0.5
+		InnerBlurY 				= 0.5,
+
+		Draw2DSubtractive 		= 1,
+		Draw2DAdditive 			= 1
 	},
 }
 
@@ -238,4 +249,7 @@ function Photon2.Render.ApplyBloomSettings( options )
 	GetConVar( "ph2_bloom_inner_blur_passes" ):SetInt( options.InnerBlurPasses )
 	GetConVar( "ph2_bloom_inner_blur_x" ):SetFloat( options.InnerBlurX )
 	GetConVar( "ph2_bloom_inner_blur_y" ):SetFloat( options.InnerBlurY )
+
+	GetConVar( "ph2_enable_subtractive_sprites" ):SetInt( options.Draw2DSubtractive )
+	GetConVar( "ph2_enable_additive_sprites" ):SetInt( options.Draw2DAdditive )
 end

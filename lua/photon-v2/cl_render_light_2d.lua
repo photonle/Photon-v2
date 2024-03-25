@@ -10,7 +10,6 @@ local this = Photon2.RenderLight2D
 local overlayConVar = GetConVar("ph2_debug_light_overlay")
 local drawLights = GetConVar("ph2_draw_light2d")
 
-
 local render = render
 
 ---@param color PhotonElementColor
@@ -91,7 +90,7 @@ local drawShape 		= true
 local drawGlow 			= true
 local drawBloom 		= true
 local drawSubtractive 	= GetConVar( "ph2_enable_subtractive_sprites" )
-local drawAdditive 		= true
+local drawAdditive 		= GetConVar("ph2_enable_additive_sprites")
 
 
 
@@ -130,7 +129,7 @@ function Photon2.RenderLight2D.Render()
 
 	render.OverrideColorWriteEnable( true, true )
 	local activeLights = this.Active
-
+	local shouldDrawAdditive = drawAdditive:GetBool()
 	-- benchmark test
 
 	-- local vectors = {}
@@ -148,25 +147,34 @@ function Photon2.RenderLight2D.Render()
 				light = activeLights[i] --[[@as PhotonElement2D]]
 				if ( not light or not light.ShouldDraw or not light.DrawLightPoints or ( light.UIMode ) ) then continue end
 				
+				local subDot = math.pow( light.ViewDot, 1.2 ) * 0.9
+
 				if (drawSubtractive:GetBool()) then
 					render.OverrideBlend( true, 1, 1, 2, 0, 0, 0 )
 					render.SetMaterial( mat1 )
-					render.DrawSprite( light.EffectPosition, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.Intensity) * light.ViewDot, light.GlowColor )
-					render.DrawSprite( light.EffectPosition, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, (subtractiveGlowMid * light.Scale * light.Intensity) * light.ViewDot, light.SubtractiveMid )
+					render.DrawSprite( light.EffectPosition, (subtractiveGlowOuter * light.Scale * light.Intensity) * subDot, (subtractiveGlowOuter * light.Scale * light.Intensity) * subDot, light.GlowColor )
+					render.DrawSprite( light.EffectPosition, (subtractiveGlowMid * light.Scale * light.Intensity) * subDot, (subtractiveGlowMid * light.Scale * light.Intensity) * subDot, light.SubtractiveMid )
 					if ( light.LightMatrixEnabled ) then
 						for i=1, #light.WorldLightMatrix do
-							render.DrawSprite( light.WorldLightMatrix[i], (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * light.ViewDot, (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, light.GlowColor )
+							render.DrawSprite( light.WorldLightMatrix[i], (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * subDot, (subtractiveGlowOuter * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, light.GlowColor )
 						end
 					end
 					render.OverrideBlend( false, 0, 0, 0 )
 				end
-				render.SetMaterial( mat1_add )
-					render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * light.ViewDot, (glow1 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 64) )
-				render.SetMaterial( mat_add )
-					render.DrawSprite( light.EffectPosition, (glow2 * light.Scale * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.Intensity) * light.ViewDot, ColorAlpha(light.InnerGlowColor, 255) )
-				if ( light.LightMatrixEnabled ) then
-					for i=1, #light.WorldLightMatrix do
-						render.DrawSprite( light.WorldLightMatrix[i], (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * light.ViewDot, (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * light.ViewDot, light.InnerGlowColor )
+				
+				if ( shouldDrawAdditive ) then
+					local newDot = math.pow( light.ViewDot, 1.5 ) * 1.3
+
+					render.SetMaterial( mat1_add )
+					render.DrawSprite( light.EffectPosition, (glow1 * light.Scale * light.Intensity) * newDot, (glow1 * light.Scale * light.Intensity) * newDot, ColorAlpha(light.InnerGlowColor, 64) )
+					
+					render.SetMaterial( mat_add )
+					render.DrawSprite( light.EffectPosition, (glow2 * light.Scale * light.Intensity) * newDot, (glow2 * light.Scale * light.Intensity) * newDot, ColorAlpha(light.InnerGlowColor, 255) )
+					
+					if ( light.LightMatrixEnabled ) then
+						for i=1, #light.WorldLightMatrix do
+							render.DrawSprite( light.WorldLightMatrix[i], (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity) * newDot, (glow2 * light.Scale * light.LightMatrixScaleMultiplier * light.Intensity ) * newDot, light.InnerGlowColor )
+						end
 					end
 				end
 			end

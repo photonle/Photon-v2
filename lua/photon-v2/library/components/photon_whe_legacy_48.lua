@@ -248,7 +248,7 @@ COMPONENT.Segments = {
 				:Alternate( 1, 2, 4 ):Do( 2 ):Gap(),
 			["STEADYBURN"] = { 7 },
 			["YELP"] = { 7, 7, 7, 0, 0, 7, 7, 7, 0, 0 },
-			["WAIL"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/12, 1/4, 0.66 ),
+			["WAIL"] = sequence():Add( 1, 1, 0, 2, 2, 0 ):SetVariableTiming( 1/32, 1/12, 0.66 ),
 			["ALERT"] = { 7, 7, 0 },
 			["PIER"] = { 7, 0 },
 			["TIMING"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/24, 1/4, 1 ),
@@ -344,8 +344,6 @@ COMPONENT.Segments = {
 			[13] = "[W] @09 @07 @05 @02 @04",
 			[14] = "[W] @01 @03 @05 @07 @09 @02 @04 @06 @08 @10",
 			[15] = "[W] @03 @01 @06 @08 @10"
-			
-
 		},
 		Sequences = {
 			["FLASH"] = sequence()
@@ -354,7 +352,7 @@ COMPONENT.Segments = {
 							:Add( 9, 9, 0, 10, 10, 0, 11, 11, 0, 10, 10, 0 ):Do( 4 )
 							:Alternate( 7, 8, 10 ):Do( 2 ),
 			["YELP"] = sequence():Add( 1, 1, 1, 0, 0, 2, 2, 2, 0, 0 ),
-			["WAIL"] = sequence():Add( 8, 7 ):SetVariableTiming( 1/12, 1/4, 0.66 ),
+			["WAIL"] = sequence():Add( 8, 8, 0, 7, 7, 0 ):SetVariableTiming( 1/32, 1/12, 0.66 ),
 			["PIER"] = sequence():Add( 13, 0, 13, 0, 14, 0, 15, 0, 15, 0, 14, 0 ),
 			["ALERT"] = sequence():Add( 0, 12 ),
 			["HORN"] = { 12 }
