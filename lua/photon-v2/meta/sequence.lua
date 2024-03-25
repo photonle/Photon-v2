@@ -231,7 +231,7 @@ function Sequence:Activate()
 	if ( not self.Synchronize ) then
 		self.CurrentFrame = 0
 		if ( self.UseVariableFrameDuration ) then
-			self.VariableFrameDurationTime = RealTime()
+			self.VariableFrameDurationTime = self.VariableFrameDurationTime or RealTime()
 			self:UpdateVariableFrameDuration()
 		end
 		if ( self.FrameDuration ) then
@@ -250,6 +250,7 @@ function Sequence:UpdateVariableFrameDuration()
 end
 
 function Sequence:Deactivate() 
+	self.VariableFrameDurationTime = nil
 	local usedLights = self.UsedLights
 	for i=1, #usedLights do
 		-- usedLights[i].Deactivate = true
