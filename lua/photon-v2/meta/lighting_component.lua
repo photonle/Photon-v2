@@ -428,11 +428,10 @@ function Component.New( name, data )
 					end
 
 					if ( data.Patterns ) then
-						if ( data.Patterns[autoPatternName] ) then
-
-							local _, phaseDegrees = Photon2.Util.ParseSequenceName( autoPatternName )
-							
-							for index, sequence in pairs( data.Patterns[autoPatternName] ) do
+						local parsedPatternname, phaseDegrees = Photon2.Util.ParseSequenceName( autoPatternName )
+						
+						if ( data.Patterns[parsedPatternname] ) then
+							for index, sequence in pairs( data.Patterns[parsedPatternname] ) do
 								
 								local sequenceName = sequence[2]
 								
@@ -441,7 +440,7 @@ function Component.New( name, data )
 								end
 
 								addSequences[sequence[1]] = {
-									sequence[2],
+									sequenceName,
 									Order = sequence.Order or ( order + index )
 								}
 
