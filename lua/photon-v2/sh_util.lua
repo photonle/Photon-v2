@@ -309,3 +309,11 @@ function Photon2.Util.ParseSequenceName( sequence )
 
 	return sequence, phaseDegrees
 end
+
+function Photon2.Util.DynamicTimer( startTime, speed, floor, ceil )
+    local timePassed = ( CurTime() - startTime ) * speed
+    local fluctuation = math.sin(timePassed)
+    local range = ceil - floor
+    local increment = ((fluctuation + 1) / 2) * range + floor
+    return increment
+end

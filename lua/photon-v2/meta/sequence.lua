@@ -16,6 +16,11 @@ NAME = "PhotonSequence"
 ---@field AcceptControllerPulse boolean (Internal) If the sequence is configured to utilize pulses (used for variable frame timing).
 ---@field FrameDuration number
 ---@field Synchronize boolean If the sequence should always synchronize to its controller's rolling frame index.
+---@field UseVariableFrameDuration boolean
+---@field VariableFrameDurationTime number
+---@field VariableFrameDurationSlow number
+---@field VariableFrameDurationFast number
+---@field VariableFrameDurationRate number
 local Sequence = exmeta.New()
 
 local print = Photon2.Debug.Print
@@ -85,8 +90,24 @@ function Sequence.New( name, frameSequence, segment, data )
 	local sequence = {
 		Name = name,
 		IsRepeating = shouldRepeat,
-		Synchronize = frameSequence.Synchronize
+		Synchronize = frameSequence.Synchronize,
+		FrameDuration = frameSequence.FrameDuration
 	}
+
+	if ( frameSequence.VariableFrameDuration ) then
+		local var = frameSequence.VariableFrameDuration
+		sequence.Synchronize = false
+		sequence.UseVariableFrameDuration = true
+		sequence.VariableFrameDurationSlow = var.Slow or 0.1
+		sequence.VariableFrameDurationFast = var.Fast or 1
+		sequence.VariableFrameDurationRate = var.Rate or 0.5
+		sequence.AcceptControllerPulse = true
+		if ( sequence.VariableFrameDurationSlow > sequence.VariableFrameDurationFast ) then
+			local slow = sequence.VariableFrameDurationFast
+			sequence.VariableFrameDurationFast = sequence.VariableFrameDurationSlow
+			sequence.VariableFrameDurationSlow = slow
+		end
+	end
 
 	-- If not set, sequence will use the Segment's setting
 	if ( sequence.Synchronize == nil ) then 
@@ -95,11 +116,12 @@ function Sequence.New( name, frameSequence, segment, data )
 
 	if ( frameSequence.FrameDuration == nil ) then
 		sequence.FrameDuration = segment.FrameDuration
-		if ( sequence.FrameDuration ) then
-			sequence.AcceptControllerPulse = true
-		end
 	end
-	
+
+	if ( sequence.FrameDuration ) then
+		sequence.AcceptControllerPulse = true
+		sequence.Synchronize = false
+	end
 
 	local usedLightsByKey = {}
 	local checkedFrames = {}
@@ -142,6 +164,9 @@ end
 function Sequence:IncrementFrame( frame, force )
 	-- print("Frame parameter: " .. tostring( frame ))
 	if ( self.FrameDuration ) then
+		if ( self.UseVariableFrameDuration ) then
+			self:UpdateVariableFrameDuration()
+		end
 		local nextFrame = self.NextFrame + self.FrameDuration
 		-- Resets frame timing in case things get fucked
 		if ( nextFrame < RealTime() ) then
@@ -205,8 +230,11 @@ end
 function Sequence:Activate()
 	if ( not self.Synchronize ) then
 		self.CurrentFrame = 0
+		if ( self.UseVariableFrameDuration ) then
+			self.VariableFrameDurationTime = RealTime()
+			self:UpdateVariableFrameDuration()
+		end
 		if ( self.FrameDuration ) then
-			-- self.NextFrame = RealTime()
 			self.NextFrame = RealTime() + self.FrameDuration
 		end
 	end
@@ -217,6 +245,9 @@ function Sequence:Activate()
 	end
 end
 
+function Sequence:UpdateVariableFrameDuration()
+	self.FrameDuration = Photon2.Util.DynamicTimer( self.VariableFrameDurationTime, self.VariableFrameDurationRate, self.VariableFrameDurationSlow, self.VariableFrameDurationFast )
+end
 
 function Sequence:Deactivate() 
 	local usedLights = self.UsedLights

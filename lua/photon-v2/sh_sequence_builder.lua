@@ -347,6 +347,21 @@ function Photon2.SequenceBuilder:PrependPhaseGap()
 	return self:Prepend( result )
 end
 
+-- Configures the sequence to use variable frame timing between a "fast" and "slow" speed that changes at the specified rate.
+function Photon2.SequenceBuilder:SetVariableTiming( slow, fast, rate )
+	self.VariableFrameDuration = {
+		Slow = slow,
+		Fast = fast,
+		Rate = rate or ( 1/3 )
+	}
+	return self
+end
+
+function Photon2.SequenceBuilder:SetTiming( frameDuration )
+	self.FrameDuration = frameDuration
+	return self
+end
+
 setmetatable( Photon2.SequenceBuilder, {
 	__call = function()
 		return setmetatable( { _previous = {} }, Photon2.SequenceBuilder )
