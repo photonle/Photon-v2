@@ -7,6 +7,8 @@ AddCSLuaFile("cl_init.lua")
 ---@field IsLinkedToStandardVehicle boolean
 ENT = ENT
 
+local globalEngineIdleEnabled = GetConVar( "ph2_engine_idle_enabled" )
+
 function ENT:Initialize()
 	self:InitializeShared()
 	self:DrawShadow( false )
@@ -65,6 +67,7 @@ function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
 end
 
 function ENT:ActivateEngineIdle()
+	if ( globalEngineIdleEnabled:GetBool() == false ) then return end
 	local vehicle = self:GetParent() --[[@as Vehicle]]
 	if ( not self.EngineIdleData ) then return end
 	self.EngineIdleActive = true

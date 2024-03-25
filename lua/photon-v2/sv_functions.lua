@@ -2,6 +2,8 @@ local saveSteeringOnExit = true
 
 local CurTime = CurTime
 
+local globalEngineIdleEnabled = CreateConVar( "ph2_engine_idle_enabled", 1, FCVAR_ARCHIVE, "Enables or disables Photon 2's engine idling functionality.", 0, 1 )
+
 -- local ENT = FindMetaTable( "Entity" )
 
 -- if not ENT._oldSetKeyValue then
@@ -41,6 +43,7 @@ local vehicleEntryPause = {}
 local activeUseHeld = {}
 
 hook.Add( "StartCommand", "Photon2:StartCommand", function( ply, ucmd ) 
+	if ( not globalEngineIdleEnabled:GetBool() ) then return end
 	if ( IsValid( ply ) and IsValid( ply:GetVehicle() ) and ( ply:GetVehicle().PhotonEngineIdleEnabled ) ) then
 		if ( ucmd:KeyDown( IN_USE ) ) then
 			if ( not vehicleEntryPause[ply] ) then
@@ -89,7 +92,6 @@ end
 hook.Add( "PlayerEnteredVehicle", "Photon2:OnPlayerEnteredVehicle", Photon2.OnPlayerEnteredVehicle )
 
 function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
-
 	local controller = vehicle:GetPhotonControllerFromAncestor()
 	if ( IsValid( controller ) ) then
 		if ( controller.IsLinkedToStandardVehicle ) then
