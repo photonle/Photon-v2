@@ -49,7 +49,7 @@ COMPONENT.Templates = {
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/legacy_tir3_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/legacy_tir3_shape.png").MaterialName,
 			-- Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sm_whe_lib_ii_primary_detail.png").MaterialName,
-			Scale = 1,
+			Scale = 2,
 			ForwardVisibilityOffset = 0,
 			VisibilityRadius = 0.6
 		}
@@ -120,6 +120,7 @@ COMPONENT.Elements = {
 
 	[41] = { "TIR3", Vector( 0, 30.75, 0.23 ), Angle( 0, 0, 0 ) },
 	[42] = { "TIR3", Vector( 0, -30.75, 0.23 ), Angle( 0, 180, 0 ) },
+
 }
 
 
@@ -129,7 +130,8 @@ COMPONENT.ElementStates = {
 		["~1"] = {
 			-- Inherit this state from state slot [1]
 			Inherit = 1,
-			IntensityTransitions = true
+			IntensityTransitions = true,
+			Col
 		},
 		["~2"] = {
 			-- Inherit this state from state slot [2]
@@ -146,15 +148,15 @@ COMPONENT.ElementStates = {
 }
 
 COMPONENT.ElementGroups = {
-	["@1"] = { 1, 3 },
-	["@2"] = { 2, 4 },
-	["@3"] = { 5, 7 },
-	["@4"] = { 6, 8 },
-	["@5"] = { 9, 11 },
-	["@6"] = { 10, 12 },
-	["@7"] = { 13, 15, 17 },
-	["@8"] = { 14, 16, 18 },
-	["@9"] = { 19, 21, 23 },
+	["@01"] = { 1, 3 },
+	["@02"] = { 2, 4 },
+	["@03"] = { 5, 7 },
+	["@04"] = { 6, 8 },
+	["@05"] = { 9, 11 },
+	["@06"] = { 10, 12 },
+	["@07"] = { 13, 15, 17 },
+	["@08"] = { 14, 16, 18 },
+	["@09"] = { 19, 21, 23 },
 	["@10"] = { 20, 22, 24 },
 	["@11"] = { 25, 27 },
 	["@12"] = { 26, 28 },
@@ -183,9 +185,14 @@ COMPONENT.Segments = {
 	All = {
 		Frames = {
 			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
+			[2] = "[1] Left_Front [2] Right_Rear",
+			[3] = "[2] Right_Front [1] Left_Rear",
+			[4] = "[1] Left_Front Left_Rear [2] Right_Front Right_Rear"
 		},
 		Sequences = {
 			["ON"] = { 1 },
+			["ALT"] = sequence():Alternate( 2, 3, 2 ),
+			["BLINK"] = sequence():Alternate( 4, 0, 4 )
 			-- ["ALT"] = sequence():Alternate( 4, 5, 12 )
 		}
 	},
@@ -200,40 +207,106 @@ COMPONENT.Segments = {
 	DVI = {
 		Off = "~OFF",
 		Frames = {
-			[1] = "[~1] @1 @3 @5 @7 @9 @11 @13 @15 @17",
-			[2] = "[~2] @2 @4 @6 @8 @10 @12 @14 @16 @18",
+			[1] = "[~1] @01 @03 @05 @07 @09 @11 @13 @15 @17",
+			[2] = "[~2] @02 @04 @06 @08 @10 @12 @14 @16 @18",
 
-			[3] = "[~1] @1 @3 @13 @15 @17 [~2] @2 @4 @14 @16 @18",
-			[4] = "[~1] @5 @7 @9 @11 [~2] @6 @8 @10 @12",
+					[3] = "[~1] @01 @03 @13 @15 @17 [~2] @02 @04 @14 @16 @18",
+					[4] = "[~1] @05 @07 @09 @11 [~2] @06 @08 @10 @12",
 
-			[5] = "[~1] @1 @5 @9 @13 @17 [~2] @4 @8 @12 @16",
-			[6] = "[~1] @3 @7 @11 @15 [~2] @2 @6 @10 @14 @18",
-		},
-		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 12 ),
-			["CEN"] = sequence():Alternate( 3, 4, 12 ),
-			["MIX"] = sequence():Alternate( 5, 6, 12 ),
-		}
-	},
+					[5] = "[~1] @01 @05 @09 @13 @17 [~2] @04 @08 @12 @16",
+					[6] = "[~1] @03 @07 @11 @15 [~2] @02 @06 @10 @14 @18",
+				},
+				Sequences = {
+					["ALT"] = sequence():Alternate( 01, 02, 12 ),
+					["CEN"] = sequence():Alternate( 03, 04, 12 ),
+					["MIX"] = sequence():Alternate( 05, 06, 12 ),
+				}
+			},
 	Full = {
 		Frames = {
 			[1] = "[1] Left_Front [2] Right_Rear",
 			[2] = "[2] Right_Front [1] Left_Rear",
 
-			[3] = "[1] @1 @3 @13 @15 @17 [2] @2 @4 @14 @16 @18",
-			[4] = "[1] @5 @7 @9 @11 [2] @6 @8 @10 @12",
+			[3] = "[1] @01 @03 @13 @15 @17 [2] @02 @04 @14 @16 @18",
+			[4] = "[1] @05 @07 @09 @11 [2] @06 @08 @10 @12",
 
-			[5] = "[1] @1 @5 @9 @13 @17 [2] @4 @8 @12 @16",
-			[6] = "[1] @3 @7 @11 @15 [2] @2 @6 @10 @14 @18",
+			[5] = "[1] @01 @05 @09 @13 @17 [2] @04 @08 @12 @16",
+			[6] = "[1] @03 @07 @11 @15 [2] @02 @06 @10 @14 @18",
 
-			[7] = "[1] Left [2] Right"
+			[7] = "[1] Left [2] Right",
 		},
 		Sequences = {
 			["SCAN"] = sequence()
 				:FlashHold( { 5, 6 }, 2, 4 ):Do( 2 ):Gap()
 				:Alternate( 3, 4, 9 ):Do( 2 ):Gap()
 				:FlashHold( 7, 3, 6 ):Gap( 6 ):FlashHold( 7, 3, 6 ):Gap( 6 )
-				:Alternate( 1, 2, 9 ):Do( 2 ):Gap()
+				:Alternate( 1, 2, 9 ):Do( 2 ):Gap(),
+			["SCAN_FAST"] = sequence()
+				:FlashHold( { 5, 6 }, 2, 2 ):Do( 2 ):Gap()
+				:Alternate( 3, 4, 4 ):Do( 2 ):Gap()
+				:FlashHold( 7, 3, 4 ):Gap( 3 ):FlashHold( 7, 3, 4 ):Gap( 3 )
+				:Alternate( 1, 2, 4 ):Do( 2 ):Gap(),
+			["STEADYBURN"] = { 7 },
+			["YELP"] = { 7, 7, 7, 0, 0, 7, 7, 7, 0, 0 },
+			["WAIL"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/12, 1/4, 0.66 ),
+			["ALERT"] = { 7, 7, 0 },
+			["PIER"] = { 7, 0 },
+			["TIMING"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/24, 1/4, 1 ),
+			["HORN"] = { 7 },
+		}
+	},
+	Takedown = {
+		Frames = {
+			[1] = "[W] 39",
+			[2] = "[W] 40",
+			[3] = "[W] 39 40",
+		},
+		Sequences = {
+			["ON"] = { 3 },
+			["ALT"] = sequence():Alternate( 1, 2, 8 )
+		}
+	},
+	Flood = {
+		Frames = {
+			[1] = "[W] Left_Front Right_Front 39 40"
+		},
+		Sequences = {
+			["FLOOD"] = { 1 },
+		}
+	},
+	Flood_Left = {
+		Frames = {
+			[1] = "[W] 41 @07 @09"
+		},
+		Sequences = {
+			["FULL"] = { 1 },
+		}
+	},
+	Flood_Right = {
+		Frames = {
+			[1] = "[W] 42 @08 @10"
+		},
+		Sequences = {
+			["FULL"] = { 1 },
+		}
+	},
+	Alley_Left = {
+		Frames = {
+			[1] = "[W] 41",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["ALT"] = sequence():Alternate( 0, 1, 8 )
+
+		}
+	},
+	Alley_Right = {
+		Frames = {
+			[1] = "[W] 42",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["ALT"] = sequence():Alternate( 0, 1, 8 )
 		}
 	},
 	Left = {
@@ -250,6 +323,41 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["FLASH"] = sequence():Alternate( 1, 0, 16 )
+		}
+	},
+	White = {
+		Off = "PASS",
+		-- FrameDuration = 1/24,
+		Frames = {
+			[1] = "[W] @01 @05 @04 @08 @09",
+			[2] = "[W] @02 @06 @03 @07 @10",
+			[3] = "[W] @01 @08 @09",
+			[4] = "[W] @03 @06",
+			[5] = "[W] @04 @05",
+			[6] = "[W] @02 @07 @10",
+			[7] = "[W] Left_Front @10",
+			[8] = "[W] Right_Front @09",
+			[9] = "[W] @07 @05 @02 @04 @10",
+			[10] = "[W] @05 @03 @04 @06",
+			[11] = "[W] @03 @01 @06 @08 @09",
+			[12] = "[W] Left_Front @10 Right_Front @09",
+			[13] = "[W] @09 @07 @05 @02 @04",
+			[14] = "[W] @01 @03 @05 @07 @09 @02 @04 @06 @08 @10",
+			[15] = "[W] @03 @01 @06 @08 @10"
+			
+
+		},
+		Sequences = {
+			["FLASH"] = sequence()
+							:Add( 9, 9, 0, 10, 10, 0, 11, 11, 0, 10, 10, 0 ):Do( 4 )
+							:FlashHold( { 1, 2 }, 3, 4 ):Do( 2 )
+							:Add( 9, 9, 0, 10, 10, 0, 11, 11, 0, 10, 10, 0 ):Do( 4 )
+							:Alternate( 7, 8, 10 ):Do( 2 ),
+			["YELP"] = sequence():Add( 1, 1, 1, 0, 0, 2, 2, 2, 0, 0 ),
+			["WAIL"] = sequence():Add( 8, 7 ):SetVariableTiming( 1/12, 1/4, 0.66 ),
+			["PIER"] = sequence():Add( 13, 0, 13, 0, 14, 0, 15, 0, 15, 0, 14, 0 ),
+			["ALERT"] = sequence():Add( 0, 12 ),
+			["HORN"] = { 12 }
 		}
 	}
 }
@@ -271,16 +379,93 @@ COMPONENT.Patterns = {
 	["PHASETEST"] = {
 		{ "Left", "FLASH:180" },
 		{ "Right", "FLASH" },
+	},
+	["CLEAR"] = {
+		{ "Full", "SCAN_FAST" },
+		{ "White", "FLASH" },
+		{ "Takedown", "ALT" },
+		{ "Alley_Left", "ALT" },
+		{ "Alley_Right", "ALT" }
+	},
+	["WAIL"] = {
+		{ "Full", "WAIL" },
+		{ "White", "WAIL" }
+	},
+	["YELP"] = {
+		{ "Full", "YELP" },
+		{ "White", "YELP" }
+	},
+	["PIER"] = {
+		{ "Full", "PIER" },
+		{ "White", "PIER" }
+	},
+	["ALERT"] = {
+		{ "Full", "ALERT" },
+		{ "White", "ALERT" },
 	}
+}
+
+COMPONENT.InputPriorities = {
+	["Virtual.WarningSiren"] = 63
+}
+
+COMPONENT.VirtualOutputs = {
+	["Virtual.WarningSiren"] = {
+		{
+			Mode = "AIR",
+			Conditions = {
+				["Emergency.Warning"] = { "MODE3" },
+				["Emergency.SirenOverride"] = { "AIR", "MAN" }
+			}
+		},
+		{
+			Mode = "T1",
+			Conditions = {
+				["Emergency.Warning"] = { "MODE3" },
+				["Emergency.Siren"] = { "T1" }
+			}
+		},
+		{
+			Mode = "T2",
+			Conditions = {
+				["Emergency.Warning"] = { "MODE3" },
+				["Emergency.Siren"] = { "T2" }
+			}
+		},
+		{
+			Mode = "T3",
+			Conditions = {
+				["Emergency.Warning"] = { "MODE3" },
+				["Emergency.Siren"] = { "T3" }
+			}
+		},
+	} 
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { "DVI/REAR_ALT" },
-		["MODE2"] = { 
-			Left = "FLASH:0",
-			Right = "FLASH:180"
-		},
-		["MODE3"] = { All = "ON" },
+		["MODE1"] = "DVI/REAR_ALT",
+		["MODE2"] = "SCAN",
+		["MODE3"] = "CLEAR",
+	},
+	["Virtual.WarningSiren"] = {
+		["T1"] = "WAIL",
+		["T2"] = "YELP",
+		["T3"] = "PIER",
+		["AIR"] = "ALERT"
+	},
+	["Emergency.SirenOverride"] = {
+		["AIR"] = { White = "HORN" },
+		["MAN"] = { Full = "STEADYBURN" }
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = { Takedown = "ON" },
+		["FLOOD"] = { Flood = "FLOOD" }
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = { Flood_Left = "FULL" }
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = { Flood_Right = "FULL" }
 	}
 }
