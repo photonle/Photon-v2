@@ -53,3 +53,11 @@ end)
 concommand.Add( "ph2_next_frame", function()
 	Photon2.NextFrame()
 end)
+
+PhotonMaterial.New({
+	Name = "flashlight/wide",
+	Shader = "UnlitGeneric",
+	Parameters = {
+		["$basetexture"] = "photon/flashlight/wide.png"
+	}
+})

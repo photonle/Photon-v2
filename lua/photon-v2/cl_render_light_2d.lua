@@ -24,16 +24,16 @@ end
 function Photon2.RenderLight2D.OnPreRender()
 	local activeLights = this.Active
 	local nextTable = alternateActive
-
+	local start = SysTime()
 	for i=1, #activeLights do
 		if (activeLights[i]) then
 			nextTable[#nextTable+1] = activeLights[i]:DoPreRender()
 		end
 		activeLights[i] = nil
 	end
-
 	alternateActive = activeLights
 	this.Active = nextTable
+	this.PreRenderTime = SysTime() - start
 end
 hook.Add( "PreRender", "Photon2.Light2D:OnPreRender", this.OnPreRender )
 -- hook.Remove( "PreRender", "Photon2.Light2D:OnPreRender")
@@ -121,6 +121,7 @@ local glow1 = subtractiveGlowOuter * 2
 local glow2 = glowSize * 3
 
 function Photon2.RenderLight2D.Render()
+	local start = SysTime()
 	-- if true then return end
 	-- render.SetGoalToneMappingScale(090)
 	-- render.SetAmbientLight(512,0,0)
@@ -220,7 +221,7 @@ function Photon2.RenderLight2D.Render()
 		this.DrawDebug()
 	end
 	render.OverrideColorWriteEnable( false, false )
-	
+	this.RenderTime = SysTime() - start
 end
 
 

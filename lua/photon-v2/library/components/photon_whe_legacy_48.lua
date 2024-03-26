@@ -53,6 +53,14 @@ COMPONENT.Templates = {
 			ForwardVisibilityOffset = 0,
 			VisibilityRadius = 0.6
 		}
+	},
+	["Projected"] = {
+		Illumination = {
+			Material = "photon/flashlight/led_linear.png",
+			NearZ = 100,
+			FOV = 50,
+			Brightness = 3
+		}
 	}
 }
 
@@ -121,6 +129,11 @@ COMPONENT.Elements = {
 	[41] = { "TIR3", Vector( 0, 30.75, 0.23 ), Angle( 0, 0, 0 ) },
 	[42] = { "TIR3", Vector( 0, -30.75, 0.23 ), Angle( 0, 180, 0 ) },
 
+	[43] = { "Illumination", Vector( 7.5, 0, 0.23 ), Angle( 5, -90, 0 ), },
+	[44] = { "Illumination", Vector( 7.5, 0, 0.23 ), Angle( 2, -90, 0 ), FOV = 90, Brightness = 1.5, Material = "photon/flashlight/wide.png" },
+
+	[45] = { "Illumination", Vector( 0, 31, 0.23 ), Angle( 0, 0, 0 ), FOV = 90, Brightness = 1.5},
+	[46] = { "Illumination", Vector( 0, -31, 0.23 ), Angle( 5, 180, 0 ), FOV = 90, Brightness = 1.5 },
 }
 
 
@@ -137,6 +150,11 @@ COMPONENT.ElementStates = {
 			-- Inherit this state from state slot [2]
 			Inherit = 2,
 			IntensityTransitions = true
+		},
+		["~TA"] = {
+			Inherit = "~A",
+			IntensityGainFactor = 5,
+			IntensityLossFactor = 5,
 		}
 	},
 	["Bone"] = {
@@ -198,10 +216,26 @@ COMPONENT.Segments = {
 	},
 	Cut = {
 		Frames = {
+			[1] = "[OFF] Left_Front Right_Front",			
+		},
+		Sequences = {
+			["FRONT"] = { 1 },
+		}
+	},
+	Cut_Front = {
+		Frames = {
 			[1] = "[OFF] Left_Front Right_Front"
 		},
 		Sequences = {
-			["FRONT"] = { 1 }
+			["ENABLED"] = { 1 }
+		}
+	},
+	Cut_Rear = {
+		Frames = {
+			[1] = "[OFF] Left_Rear Right_Rear"
+		},
+		Sequences = {
+			["ENABLED"] = { 1 }
 		}
 	},
 	DVI = {
@@ -253,13 +287,14 @@ COMPONENT.Segments = {
 			["PIER"] = { 7, 0 },
 			["TIMING"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/24, 1/4, 1 ),
 			["HORN"] = { 7 },
+			["T4"] = sequence():FlashHold( { 1, 2 }, 3, 4 ),
 		}
 	},
 	Takedown = {
 		Frames = {
 			[1] = "[W] 39",
 			[2] = "[W] 40",
-			[3] = "[W] 39 40",
+			[3] = "[W] 39 40 43",
 		},
 		Sequences = {
 			["ON"] = { 3 },
@@ -268,7 +303,7 @@ COMPONENT.Segments = {
 	},
 	Flood = {
 		Frames = {
-			[1] = "[W] Left_Front Right_Front 39 40"
+			[1] = "[W] Left_Front Right_Front 39 40 44"
 		},
 		Sequences = {
 			["FLOOD"] = { 1 },
@@ -276,7 +311,7 @@ COMPONENT.Segments = {
 	},
 	Flood_Left = {
 		Frames = {
-			[1] = "[W] 41 @07 @09"
+			[1] = "[W] 41 @07 @09 45"
 		},
 		Sequences = {
 			["FULL"] = { 1 },
@@ -284,7 +319,7 @@ COMPONENT.Segments = {
 	},
 	Flood_Right = {
 		Frames = {
-			[1] = "[W] 42 @08 @10"
+			[1] = "[W] 42 @08 @10 46"
 		},
 		Sequences = {
 			["FULL"] = { 1 },
@@ -343,7 +378,11 @@ COMPONENT.Segments = {
 			[12] = "[W] Left_Front @10 Right_Front @09",
 			[13] = "[W] @09 @07 @05 @02 @04",
 			[14] = "[W] @01 @03 @05 @07 @09 @02 @04 @06 @08 @10",
-			[15] = "[W] @03 @01 @06 @08 @10"
+			[15] = "[W] @03 @01 @06 @08 @10",
+			[16] = "[W] @07 @09 @08 @10 @01 @02",
+			[17] = "[W] @07 @05 @06 @08",
+			[18] = "[W] @05 @03 @04 @06",
+			[19] = "[W] @03 @01 @02 @04",
 		},
 		Sequences = {
 			["FLASH"] = sequence()
@@ -353,9 +392,50 @@ COMPONENT.Segments = {
 							:Alternate( 7, 8, 10 ):Do( 2 ),
 			["YELP"] = sequence():Add( 1, 1, 1, 0, 0, 2, 2, 2, 0, 0 ),
 			["WAIL"] = sequence():Add( 8, 8, 0, 7, 7, 0 ):SetVariableTiming( 1/32, 1/12, 0.66 ),
-			["PIER"] = sequence():Add( 13, 0, 13, 0, 14, 0, 15, 0, 15, 0, 14, 0 ),
+			["PIER"] = sequence():Add( 16, 17, 18, 19 ),
+			-- ["PIER"] = sequence():Add( 13, 0, 13, 0, 14, 0, 15, 0, 15, 0, 14, 0 ),
 			["ALERT"] = sequence():Add( 0, 12 ),
+			["T4"] = sequence():FlashHold( { 8, 7 }, 3, 4 ),
 			["HORN"] = { 12 }
+		}
+	},
+	Traffic = {
+		Off = "~OFF",
+		Frames = {
+			-- [0] = "[~R] @11 @13 @15 @17 [~B] @18 @16 @14 @12",
+			[1] = "[~TA] @12",
+			[2] = "[~TA] @12 @14",
+			[3] = "[~TA] @12 @14 @16",
+			[4] = "[~TA] @12 @14 @16 @18 @17",
+			[5] = "[~TA] @12 @14 @16 @18 @17 @15",
+			[6] = "[~TA] @12 @14 @16 @18 @17 @15 @13",
+			[7] = "[~TA] @12 @14 @16 @18 @17 @13 @15 @11",
+			[8] = "[~TA] @14 @16 @18 @17 @13 @15 @11",
+			[9] = "[~TA] @16 @18 @17 @13 @15 @11",
+			[10] = "[~TA] @18 @17 @15 @13 @11",
+			[11] = "[~TA] @15 @13 @11",
+			[12] = "[~TA] @13 @11",
+			[13] = "[~TA] @11",
+			[14] = "[~TA] @17 @18",
+			[15] = "[~TA] @15 @17 @18 @16",
+			[16] = "[~TA] @13 @15 @17 @18 @16 @14",
+			[17] = "[~TA] @11 @13 @15 @17 @18 @16 @14 @12",
+			[18] = "[~TA] @11 @13 @15 @16 @14 @12",
+			[19] = "[~TA] @11 @13 @14 @12",
+			[20] = "[~TA] @11 @12",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 13 ):Add( 0, 13, 0, 13, 0 ):StretchAll( 4 ),
+			["RIGHT"] = sequence():Sequential( 13, 1 ):Add( 0, 1, 0, 1, 0 ):StretchAll( 4 ),
+			["CENOUT"] = sequence():Sequential( 14, 20 ):Add( 0, 20, 0, 20, 0 ):StretchAll( 6 )
+		}
+	},
+	Brake = {
+		Frames = {
+			[1] = "[1] @11 @13 @15 @17 [2] @18 @16 @14 @12"
+		},
+		Sequences = {
+			BRAKE = sequence():Add( 1, 0, 1, 0, 1 ):SetRepeating( false )
 		}
 	}
 }
@@ -400,11 +480,16 @@ COMPONENT.Patterns = {
 	["ALERT"] = {
 		{ "Full", "ALERT" },
 		{ "White", "ALERT" },
+	},
+	["T4"] = {
+		{ "Full", "T4" },
+		{ "White", "T4" }
 	}
 }
 
 COMPONENT.InputPriorities = {
-	["Virtual.WarningSiren"] = 63
+	["Virtual.WarningSiren"] = 63,
+	["Virtual.Brake"] = 101
 }
 
 COMPONENT.VirtualOutputs = {
@@ -437,7 +522,23 @@ COMPONENT.VirtualOutputs = {
 				["Emergency.Siren"] = { "T3" }
 			}
 		},
-	} 
+		{
+			Mode = "T4",
+			Conditions = {
+				["Emergency.Warning"] = { "MODE3" },
+				["Emergency.Siren"] = { "T4" }
+			}
+		},
+	},
+	["Virtual.Brake"] = {
+		{
+			Mode = "BRAKE",
+			Conditions = {
+				["Vehicle.Brake"] = { "BRAKE" },
+				["Emergency.Warning"] = { "MODE1", "MODE2", "MODE3" }
+			}
+		}
+	}
 }
 
 COMPONENT.Inputs = {
@@ -450,7 +551,8 @@ COMPONENT.Inputs = {
 		["T1"] = "WAIL",
 		["T2"] = "YELP",
 		["T3"] = "PIER",
-		["AIR"] = "ALERT"
+		["T4"] = "T4",
+		["AIR"] = "ALERT",
 	},
 	["Emergency.SirenOverride"] = {
 		["AIR"] = { White = "HORN" },
@@ -465,5 +567,17 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.SceneRight"] = {
 		["ON"] = { Flood_Right = "FULL" }
+	},
+	["Emergency.Directional"] = {
+		["LEFT"] = { Traffic = "LEFT" },
+		["RIGHT"] = { Traffic = "RIGHT" },
+		["CENOUT"] = { Traffic = "CENOUT" }
+	},
+	["Virtual.Brake"] = {
+		["BRAKE"] = { Brake = "BRAKE" }
+	},
+	["Emergency.Cut"] = {
+		["FRONT"] = { Cut_Front = "ENABLED" },
+		["REAR"] = { Cut_Rear = "ENABLED" }
 	}
 }
