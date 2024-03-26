@@ -168,6 +168,100 @@ function Light:RemoveInput( sequenceId )
 	-- if ( #self.SortedInputActions < 1 ) then self.Deactivate = true end
 end
 
+-- Returns if the state exists, and if the state is defined DIRECTLY on the element.
+---@return boolean?, table?
+function Light:VerifyStateForGeneration( stateId )
+	if ( not self.States[stateId] ) then return false end
+
+	local fromTemplate = getmetatable( self.States ).__index[stateid]
+	local fromSelf = rawget( self.States, stateId )
+
+	-- The extra if check is to rule out a misleading micro-optimization
+	if ( fromSelf and not ( fromTemplate == fromSelf ) ) then
+		return true, self.States
+	end
+
+	return true, getmetatable( self.States ).__index
+end
+
+function Light:FindOrAttemptTransitioningState( stateId )
+	local valid, target = self:VerifyStateForGeneration( stateId )
+	if ( not valid ) then return false end
+	local newId = "~" .. stateId
+	---@diagnostic disable-next-line: need-check-nil
+	if ( target[newId] ) then return target end
+	local stateClass = PhotonElementState.FindClass( self.Class )
+	target[newId] = stateClass:New( newId, {
+		Inherit = stateId,
+		IntensityTransitions = true
+	}, target )
+	return target
+end
+
+function Light:FlagInvalidState( stateId )
+	ErrorNoHalt( "Flagging invalid state: " .. tostring( stateId ) )
+	getmetatable( self.States ).__index[stateId] = {
+		Undefined = true
+	}
+	return false
+end
+
+local function parseStateString( input )
+	local useTransitions = string.sub( input, 1, 1 ) == "~"
+	local gainLoss = string.match( input, "%(([%d.,]+)%)")
+	local gain, loss = nil, nil
+	if gainLoss then
+		gain, loss = string.match( gainLoss, "([^,]+),?([^,]*)")
+		gain = tonumber( gain )
+		loss = tonumber( loss ) or gain
+	end
+	local baseState = string.match( input, "^~?%([^)]*%)(.-)%*?[0-9.]*$") or string.match( input, "^~?(.-)%*?[0-9.]*$")
+	local intensity = tonumber( string.match( input, "%*([0-9.]+)$")) or nil
+
+	return useTransitions, baseState, intensity, gain, loss
+end
+
+-- Takes the state identifer of a non-existing state and determines if it can be constructed automatically. 
+-- (~ prefix triggers intensity transitions, *0.X suffix triggers variable intensity)
+function Light:AttemptStateGeneration( stateId )
+	local transition, baseState, intensity, gain, loss = parseStateString( stateId )
+	print("Analyzing state for generation: " .. tostring(stateId) .. " | Transition: " .. tostring(transition) .. " | Base: " .. tostring(baseState) .. " | Intensity: " .. tostring(intensity) .. " | Gain: " .. tostring(gain) .. " | Loss: " .. tostring(loss))
+	if ( ( not transition ) and ( not intensity ) ) then
+		return self:FlagInvalidState( stateId )
+	end
+
+	if ( transition ) then
+		local targetTable = self:FindOrAttemptTransitioningState( baseState )
+		if ( not targetTable ) then return self:FlagInvalidState( stateId ) end
+		if ( intensity ) then
+			local stateClass = PhotonElementState.FindClass( self.Class )
+			local parentName = "~" .. baseState
+			targetTable[stateId] = stateClass:New( stateId, {
+				Inherit = parentName,
+				IntensityTransitions = true,
+				Intensity = intensity,
+				IntensityGainFactor = gain,
+				IntensityLossFactor = loss
+			}, targetTable )
+		end
+	else
+		local valid, targetTable = self:VerifyStateForGeneration( baseState )
+		if ( not valid ) then return self:FlagInvalidState( stateId ) end
+		local stateClass = PhotonElementState.FindClass( self.Class )
+		targetTable[stateId] = stateClass:New( stateId, {
+			Inherit = baseState,
+			Intensity = intensity
+		}, targetTable )
+	end
+
+	if ( not self.States[stateId] ) then
+		ErrorNoHalt( "State [" .. tostring( stateId ) .. "] was not generated successfully." )
+		return self:FlagInvalidState( stateId )
+	end
+
+	return self.States[stateId]
+end
+
 ---@param force boolean If true, forces lights to update their state, even if unchanged (necessary in case of exeternal mutations).
 function Light:UpdateState( force )
 	-- If a light state is not being updated, verify that component supports
@@ -185,9 +279,14 @@ function Light:UpdateState( force )
 	
 	if ( ( state ~= self.CurrentStateId ) or ( force ) ) then
 		self.CurrentStateId = state
-		if ( not self.States[state] ) then
-			error( "StateProxy [" .. tostring( state ) .."] is not defined on child light [" .. tostring( self.Id ) .. "]. Verify that you have all necessary light states configured (COMPONENT.ElementStates)."  )
+		-- .Undefined signifies an attempt was already made to generate the state, but it failed.
+		if ( not self.States[state] ) then self:AttemptStateGeneration( state ) end
+		
+		if ( self.States[state].Undefined ) then
+			ErrorNoHalt( "State [" .. tostring( state ) .."] is not defined on light [" .. tostring( self.Id ) .. "]. Verify that you have all necessary light states configured (COMPONENT.ElementStates)."  )
+			state = "OFF"
 		end
+		
 		self.StateProxy = self.States[state].Proxy
 		self.CurrentStateProxyId = nil
 		-- print("Setting light state to: " .. tostring(state))

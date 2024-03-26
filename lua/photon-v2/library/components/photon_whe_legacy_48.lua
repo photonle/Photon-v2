@@ -152,7 +152,8 @@ COMPONENT.ElementStates = {
 			IntensityTransitions = true
 		},
 		["~TA"] = {
-			Inherit = "~A",
+			Inherit = "A",
+			IntensityTransitions = true,
 			IntensityGainFactor = 5,
 			IntensityLossFactor = 5,
 		}
@@ -437,6 +438,15 @@ COMPONENT.Segments = {
 		Sequences = {
 			BRAKE = sequence():Add( 1, 0, 1, 0, 1 ):SetRepeating( false )
 		}
+	},
+	Test = {
+		Frames = {
+			[1] = "[~(1,1)B*0.5] @01 @02 @03 @04",
+			[2] = "[~(1,1)B*0.9] @01 @02 @03 @04",
+		},
+		Sequences = {
+			["TEST"] = sequence():Alternate( 1, 2 ):SetTiming( 1 )
+		}
 	}
 }
 
@@ -543,6 +553,7 @@ COMPONENT.VirtualOutputs = {
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
+		-- ["MODE1"] = { ["Test"] = "TEST" },
 		["MODE1"] = "DVI/REAR_ALT",
 		["MODE2"] = "SCAN",
 		["MODE3"] = "CLEAR",

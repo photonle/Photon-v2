@@ -12,6 +12,7 @@ NAME = "PhotonElementState"
 ---@field Proxy? table (Special) Allows the rendered state to be based on an external variable look-up rathern than being directly determined by the frame. Made for the Vision SLR.
 ---@field DeactivationState? string
 ---@field SuppressInheritanceFailure? boolean (Internal) Silently fails if the inherited state isn't found. Used when states are automatically generated.
+---@field Undefined? boolean
 local State = exmeta.New()
 
 State.Intensity = 1
@@ -35,6 +36,7 @@ end
 function State.New( self, name, data, collection )
 	local state = data
 	state.Name = name
+	state.Undefined = nil
 
 	local restoreValue = false
 
