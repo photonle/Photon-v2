@@ -1,6 +1,7 @@
 CreateClientConVar( "ph2_debug_light_overlay", "0", true )
 CreateClientConVar( "ph2_draw_light2d", "1", false )
 CreateClientConVar( "ph2_display_input", "0", true )
+CreateClientConVar( "ph2_debug_perf_overlay", "0", true, false, "Enables Photon 2 performance info on HUD.")
 
 CreateClientConVar( "ph2_enable_projectedtextures_mp", "0", true, true, "If projected texture lights should be rendered in multiplayer. Disabling will increase performance." )
 CreateClientConVar( "ph2_enable_subtractive_sprites", "1", true, false, "If subtractive sprite effects should be enabled (2D lighting)." )

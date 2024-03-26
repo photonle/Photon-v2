@@ -745,3 +745,31 @@ hook.Add( "HUDPaint", "Photon2OverlayTest", function()
 	-- 	end
 	-- end
 end)
+
+local showPerformanceInfo = GetConVar( "ph2_debug_perf_overlay" )
+
+function Photon2.HUD.DrawPerformanceInfo()
+	if ( not showPerformanceInfo:GetBool() ) then return end
+	local x = 16
+	local y = 240
+	local frameTime = FrameTime()
+	draw.DrawText( "Photon 2      " .. tostring( math.Round( FrameTime() * 1000 ) ) .."ms", "BudgetLabel", x, y, white )
+	y = y + 22
+	draw.DrawText( "Mesh (" .. tostring( #Photon2.RenderLightMesh.Active ) ..")", "BudgetLabel", x, y, white )
+	x = x + 96
+	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, white )
+	x = x + 96
+	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, white )
+	x = 16
+	y = y + 18
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLightMesh.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	y = y + 12
+	draw.DrawText( "D: " .. tostring( math.Round( ( Photon2.RenderBloom.DrawTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	x = 16 + 96
+	y = y - 12
+	draw.DrawText( "P: " .. tostring( math.Round( ( Photon2.RenderLight2D.PreRenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	y = y + 12
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLight2D.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+end
+
+hook.Add( "HUDPaint", "Photon2,HUD:PerformanceInfo", Photon2.HUD.DrawPerformanceInfo )
