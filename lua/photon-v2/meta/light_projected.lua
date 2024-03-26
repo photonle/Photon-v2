@@ -107,6 +107,9 @@ function Light:Initialize( id, component )
 	self.HorizontalFOV = self.HorizontalFOV or self.FOV
 	self.VerticalFOV = self.VerticalFOV or self.FOV
 	self.Color = PhotonElementColor()
+	if ( self.Material ) then
+		self.Texture = Material( self.Material ):GetTexture( "$basetexture" )
+	end
 	return self
 end
 
@@ -147,8 +150,8 @@ function Light:Activate()
 	projectedTexture:SetTexture( self.Texture )
 	projectedTexture:SetFarZ( self.FarZ )
 	projectedTexture:SetNearZ( self.NearZ )
-	projectedTexture:SetHorizontalFOV( self.HorizontalFOV or self.FOV)
-	projectedTexture:SetVerticalFOV( self.VerticalFOV or self.FOV)
+	projectedTexture:SetHorizontalFOV( self.HorizontalFOV )
+	projectedTexture:SetVerticalFOV( self.VerticalFOV )
 	projectedTexture:SetBrightness( self.Brightness * self.Intensity )
 	projectedTexture:SetEnableShadows( self.EnableShadows )
 	self.ProjectedTexture = projectedTexture
@@ -211,7 +214,7 @@ function Light:DoPreRender()
 	local disanceIntensity = ( math.Clamp( self.Intensity * self.IntensityDistanceFactor, 0, 1 ) )
 
 	self.ProjectedTexture:SetHorizontalFOV( self.HorizontalFOV * fovIntensity )
-	self.ProjectedTexture:SetVerticalFOV( self.HorizontalFOV * fovIntensity )
+	self.ProjectedTexture:SetVerticalFOV( self.VerticalFOV * fovIntensity )
 	self.ProjectedTexture:SetFarZ( self.FarZ * disanceIntensity )
 	self.ProjectedTexture:SetBrightness( self.Brightness * self.Intensity )
 	
