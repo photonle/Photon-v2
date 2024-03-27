@@ -167,10 +167,11 @@ function Component.New( name, data )
 		data.ElementStates = data.ElementStates or {}
 		for elementType, states in pairs( data.ElementStates ) do
 			for slotId, stateId in pairs( data.States ) do
-				states[slotId] = {
+				states[tostring(slotId)] = {
 					Inherit = stateId,
 					SuppressInheritanceFailure = true
 				}
+				states[slotId] = states[tostring(slotId)]
 			end
 		end
 	end

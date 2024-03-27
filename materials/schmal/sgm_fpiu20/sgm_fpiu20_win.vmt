@@ -1,0 +1,27 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/sgm_fpiu20_win_mpdc"
+	"$bumpmap"    "photon/common/flat"
+	"$envmap" env_cubemap
+	"$normalmapalphaenvmapmask" "0"
+	"$translucent" 1
+	"$halflambert" 1
+	"$phong" "1" 
+	"$phongboost" "0.1" 
+	"$phongexponent" "5"
+	"$phongfresnelranges" "[1 1 4]"
+	"$surfaceprop" "Glass"
+	"$envmapFresnel" "1"
+	"$envmaptint" "[.05 .052 .055]"
+	"$carproxenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // 
+		{
+			srcVar1 $carproxenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+ }
+

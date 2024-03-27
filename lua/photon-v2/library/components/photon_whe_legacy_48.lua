@@ -139,18 +139,6 @@ COMPONENT.Elements = {
 
 COMPONENT.ElementStates = {
 	["2D"] = {
-		-- Create an intensity-transition enabled state
-		["~1"] = {
-			-- Inherit this state from state slot [1]
-			Inherit = 1,
-			IntensityTransitions = true,
-			Col
-		},
-		["~2"] = {
-			-- Inherit this state from state slot [2]
-			Inherit = 2,
-			IntensityTransitions = true
-		},
 		["~TA"] = {
 			Inherit = "A",
 			IntensityTransitions = true,
@@ -225,7 +213,7 @@ COMPONENT.Segments = {
 	},
 	Cut_Front = {
 		Frames = {
-			[1] = "[OFF] Left_Front Right_Front"
+			[1] = "[OFF] Left_Front Right_Front 39 40 43 44"
 		},
 		Sequences = {
 			["ENABLED"] = { 1 }
@@ -245,18 +233,28 @@ COMPONENT.Segments = {
 			[1] = "[~1] @01 @03 @05 @07 @09 @11 @13 @15 @17",
 			[2] = "[~2] @02 @04 @06 @08 @10 @12 @14 @16 @18",
 
-					[3] = "[~1] @01 @03 @13 @15 @17 [~2] @02 @04 @14 @16 @18",
-					[4] = "[~1] @05 @07 @09 @11 [~2] @06 @08 @10 @12",
+			[3] = "[~1] @01 @03 @13 @15 @17 [~2] @02 @04 @14 @16 @18",
+			[4] = "[~1] @05 @07 @09 @11 [~2] @06 @08 @10 @12",
 
-					[5] = "[~1] @01 @05 @09 @13 @17 [~2] @04 @08 @12 @16",
-					[6] = "[~1] @03 @07 @11 @15 [~2] @02 @06 @10 @14 @18",
-				},
-				Sequences = {
-					["ALT"] = sequence():Alternate( 01, 02, 12 ),
-					["CEN"] = sequence():Alternate( 03, 04, 12 ),
-					["MIX"] = sequence():Alternate( 05, 06, 12 ),
-				}
-			},
+			[5] = "[~1] @01 @05 @09 @13 @17 [~2] @04 @08 @12 @16",
+			[6] = "[~1] @03 @07 @11 @15 [~2] @02 @06 @10 @14 @18",
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 01, 02, 12 ),
+			["CEN"] = sequence():Alternate( 03, 04, 12 ),
+			["MIX"] = sequence():Alternate( 05, 06, 12 ),
+		}
+	},
+	DVI_Marker = {
+		Frames = {
+			[0] = "[~1*0.5] Left [~2*0.5] Right",
+			[1] = "[~1] @01 @03 @13 @15 @17 [~2] @02 @04 @14 @16 @18",
+			[2] = "[~1] @05 @07 @09 @11 [~2] @06 @08 @10 @12",
+		},
+		Sequences = {
+			["CEN"] = sequence():Alternate( 1, 2, 12 ),
+		}
+	},
 	Full = {
 		Frames = {
 			[1] = "[1] Left_Front [2] Right_Rear",
@@ -298,6 +296,7 @@ COMPONENT.Segments = {
 			[3] = "[W] 39 40 43",
 		},
 		Sequences = {
+			["OFF"] = { 0 },
 			["ON"] = { 3 },
 			["ALT"] = sequence():Alternate( 1, 2, 8 )
 		}
@@ -331,9 +330,9 @@ COMPONENT.Segments = {
 			[1] = "[W] 41",
 		},
 		Sequences = {
+			["OFF"] = { 0 },
 			["ON"] = { 1 },
 			["ALT"] = sequence():Alternate( 0, 1, 8 )
-
 		}
 	},
 	Alley_Right = {
@@ -341,6 +340,7 @@ COMPONENT.Segments = {
 			[1] = "[W] 42",
 		},
 		Sequences = {
+			["OFF"] = { 0 },
 			["ON"] = { 1 },
 			["ALT"] = sequence():Alternate( 0, 1, 8 )
 		}
@@ -447,6 +447,16 @@ COMPONENT.Segments = {
 		Sequences = {
 			["TEST"] = sequence():Alternate( 1, 2 ):SetTiming( 1 )
 		}
+	},
+	Marker = {
+		Frames = {
+			[1] = "[1*0.6] @07 @09 [2*0.6] @08 @10",
+			[2] = "[1*0.6] @01 @03 @05 @07 @09 @11 @13 @15 @17 [2*0.6] @02 @04 @06 @08 @10 @12 @14 @16 @18",
+		},
+		Sequences = {
+			["CORNER"] = { 1 },
+			["FULL"] = { 2 }
+		}
 	}
 }
 
@@ -499,7 +509,9 @@ COMPONENT.Patterns = {
 
 COMPONENT.InputPriorities = {
 	["Virtual.WarningSiren"] = 63,
-	["Virtual.Brake"] = 101
+	["Virtual.Brake"] = 101,
+	["Virtual.ParkedWarning"] = 64,
+	["Virtual.NightParkedWarning"] = 65,
 }
 
 COMPONENT.VirtualOutputs = {
@@ -548,12 +560,31 @@ COMPONENT.VirtualOutputs = {
 				["Emergency.Warning"] = { "MODE1", "MODE2", "MODE3" }
 			}
 		}
+	},
+	["Virtual.ParkedWarning"] = {
+		{
+			Mode = "MODE3",
+			Conditions = {
+				["Vehicle.Transmission"] = { "PARK" },
+				["Emergency.Warning"] = { "MODE3" }
+			}
+		}
+	},
+	["Virtual.NightParkedWarning"] = {
+		{
+			Mode = "MODE3",
+			Conditions = {
+				["Vehicle.Transmission"] = { "PARK" },
+				["Emergency.Warning"] = { "MODE3" },
+				["Vehicle.Ambient"] = { "DARK" }
+			}
+		}
 	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		-- ["MODE1"] = { ["Test"] = "TEST" },
+		-- ["MODE1"] = { ["DVI_Marker"] = "CEN" },
 		["MODE1"] = "DVI/REAR_ALT",
 		["MODE2"] = "SCAN",
 		["MODE3"] = "CLEAR",
@@ -584,11 +615,30 @@ COMPONENT.Inputs = {
 		["RIGHT"] = { Traffic = "RIGHT" },
 		["CENOUT"] = { Traffic = "CENOUT" }
 	},
+	["Emergency.Marker"] = {
+		["ON"] = { Marker = "CORNER" }
+	},
 	["Virtual.Brake"] = {
 		["BRAKE"] = { Brake = "BRAKE" }
 	},
 	["Emergency.Cut"] = {
 		["FRONT"] = { Cut_Front = "ENABLED" },
 		["REAR"] = { Cut_Rear = "ENABLED" }
+	},
+	["Virtual.ParkedWarning"] = {
+		["MODE3"] = { 
+			DVI_Marker = "CEN",
+			Takedown = "OFF",
+			Alley_Left = "OFF",
+			Alley_Right = "OFF"
+		},
+	},
+	["Virtual.NightParkedWarning"] = {
+		["MODE3"] = { 
+			DVI_Marker = "CEN",
+			Takedown = "OFF",
+			Alley_Left = "OFF",
+			Alley_Right = "OFF"
+		},
 	}
 }

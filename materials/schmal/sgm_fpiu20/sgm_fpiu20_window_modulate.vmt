@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/sgm_fpiu20/police_modulate"
+	"$model" "1"
+	"$nocull" "0"
+}

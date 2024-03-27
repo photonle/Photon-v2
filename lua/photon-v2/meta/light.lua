@@ -215,7 +215,7 @@ local function parseStateString( input )
 		gain = tonumber( gain )
 		loss = tonumber( loss ) or gain
 	end
-	local baseState = string.match( input, "^~?%([^)]*%)(.-)%*?[0-9.]*$") or string.match( input, "^~?(.-)%*?[0-9.]*$")
+	local baseState = string.match( input, "^~?%([^)]*%)([%w.-]*)%*?[0-9.]*$") or string.match( input, "^~?([%w.-]*)%*?[0-9.]*$")
 	local intensity = tonumber( string.match( input, "%*([0-9.]+)$")) or nil
 
 	return useTransitions, baseState, intensity, gain, loss
@@ -225,7 +225,7 @@ end
 -- (~ prefix triggers intensity transitions, *0.X suffix triggers variable intensity)
 function Light:AttemptStateGeneration( stateId )
 	local transition, baseState, intensity, gain, loss = parseStateString( stateId )
-	print("Analyzing state for generation: " .. tostring(stateId) .. " | Transition: " .. tostring(transition) .. " | Base: " .. tostring(baseState) .. " | Intensity: " .. tostring(intensity) .. " | Gain: " .. tostring(gain) .. " | Loss: " .. tostring(loss))
+	-- print("Analyzing state for generation: " .. tostring(stateId) .. " | Transition: " .. tostring(transition) .. " | Base: " .. tostring(baseState) .. " | Intensity: " .. tostring(intensity) .. " | Gain: " .. tostring(gain) .. " | Loss: " .. tostring(loss))
 	if ( ( not transition ) and ( not intensity ) ) then
 		return self:FlagInvalidState( stateId )
 	end

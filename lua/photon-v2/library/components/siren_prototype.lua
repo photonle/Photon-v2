@@ -105,6 +105,6 @@ COMPONENT.Inputs = {
 		["MANOVRD"] = { Siren = "T3" }
 	},
 	["Emergency.SirenParkKill"] = {
-		-- ["PARK"] = { Siren = "KILL" }
+		["PARK"] = { Siren = "KILL" }
 	}
 }

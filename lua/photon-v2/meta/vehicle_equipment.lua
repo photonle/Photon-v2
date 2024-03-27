@@ -168,6 +168,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 		
 		local component = {
 			Base = entry.Component,
+			Model = entry.Model,
 			StateMap = entry.StateMap,
 			Phase = entry.Phase,
 			Generated = true,
