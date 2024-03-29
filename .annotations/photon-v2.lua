@@ -115,7 +115,7 @@ PhotonMaterial = PhotonMaterial
 
 ---@class PhotonEquipmentLibraryComponentProperties
 ---@field StateMap table<integer, string[]> | string
----@field Phase string Pattern variant identifier.
+---@field Phase string|number Pattern variant identifier.
 ---@field Segments table<string, PhotonLibraryComponentSegment>
 ---@field ElementGroups table<string, table<number>>
 ---@field ElementStates { SubMat: table, Mesh: table } Light states.

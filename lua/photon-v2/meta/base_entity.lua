@@ -69,7 +69,7 @@ function ENT:Initialize( ent, controller, uiMode )
 		Entity = ent,
 		PhotonController = controller,
 		UIMode = uiMode,
-		UniqueId = photonUniqueEntId
+		UniqueId = photonUniqueEntId,
 	}
 
 	setmetatable( photonEnt, { __index = self } )

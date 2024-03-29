@@ -281,7 +281,6 @@ function Photon2.Util.PhaseOffset( length, degrees )
 end
 
 function Photon2.Util.ParseSequenceName( sequence )
-
 	local namedPhase, phaseDegrees
 
 	local sections = {}

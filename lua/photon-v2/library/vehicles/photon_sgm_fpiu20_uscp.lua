@@ -95,7 +95,7 @@ VEHICLE.Equipment = {
 						Scale = 1.2,
 						SubMaterials = {
 							-- [1] = "",
-							-- [1] = usGovPlate.MaterialName
+							[1] = "photon/license/plates/ph2_us_gov"
 							-- [1] = "!ph2_mpdc_demo"
 						},
 						BodyGroups = {
@@ -139,7 +139,8 @@ VEHICLE.Equipment = {
 						Angles = Angle( -10, 90+8, 0 ),
 						Scale = 0.9,
 						Flags = {
-						}
+						},
+						RenderGroup = RENDERGROUP_OPAQUE,
 					},
 					{
 						Component = "photon_sos_mpf4",
@@ -147,7 +148,9 @@ VEHICLE.Equipment = {
 						Angles = Angle( -10, 90-8, 0 ),
 						Scale = 0.9,
 						Flags = {
-						}
+						},
+						Phase = 180,
+						RenderGroup = RENDERGROUP_OPAQUE,
 					},
 				}
 			}
@@ -160,22 +163,24 @@ VEHICLE.Equipment = {
 				Option = "Ion",
 				Components = {
 					{
-						Component = "photon_whe_ion_surface",
-						Position = Vector( -51.47, 32.5, 62.3 ),
-						Angles = Angle( 1, 30, 0 ),
-						Scale = 0.7,
+						Component = "photon_whe_ion",
+						Position = Vector( -53.1, 32.3, 62.5 ),
+						Angles = Angle( 0, 32, 0 ),
+						Scale = 0.8,
 						SubMaterials = {
 							[0] = "sentry/20fpiu_new/black"
 						}
 					},
 					{
-						Component = "photon_whe_ion_surface",
-						Position = Vector( 51.47, 32.5, 62.3 ),
-						Angles = Angle( -1, -30, 0 ),
-						Scale = 0.7,
+						Component = "photon_whe_ion",
+						Position = Vector( 53.1, 32.3, 62.5 ),
+						Angles = Angle( 0, -32, 0 ),
+						Scale = 0.8,
+						States = { "B" },
 						SubMaterials = {
 							[0] = "sentry/20fpiu_new/black"
-						}
+						},
+						Phase = 180
 					}
 				}
 			}
@@ -189,12 +194,24 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_standard_sgmfpiu20",
-						States = { "B", "B" },
+						States = { "R", "B" },
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
 						},
 						Flags = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE2"] = {
+									ReverseFlasher = "RFTR_FLASH",
+									Fog = "QUAD"
+								},
+								["MODE3"] = {
+									ReverseFlasher = "RFTR_FLASH",
+									Fog = "QUAD"
+								}
+							}
 						}
 					}
 				},
@@ -216,24 +233,31 @@ VEHICLE.Equipment = {
 						Position = Vector( -41.4, 88.4, 51.9 ),
 						Angles = Angle( -10, 165, 2 ),
 						Scale = 0.9,
+						RenderGroup = RENDERGROUP_OPAQUE,
 					},
 					{
 						Component = "photon_sos_mpf3",
 						Position = Vector( -39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 157, 2 ),
 						Scale = 0.9,
+						RenderGroup = RENDERGROUP_OPAQUE,
+
 					},
 					{
 						Component = "photon_sos_mpf4",
 						Position = Vector( 41.4, 88.4, 51.9 ),
 						Angles = Angle( -10, 180 - 165, -2 ),
 						Scale = 0.9,
+						RenderGroup = RENDERGROUP_OPAQUE,
+
 					},
 					{
 						Component = "photon_sos_mpf3",
 						Position = Vector( 39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 180 - 157, -2 ),
 						Scale = 0.9,
+						RenderGroup = RENDERGROUP_OPAQUE,
+
 					}
 				}
 			},
@@ -301,19 +325,50 @@ VEHICLE.Equipment = {
 				Option = "Ion",
 				Components = {
 					{
+						Name = "@INTERIOR_ION",
 						Component = "photon_whe_ion_surface_bracket",
 						Position = Vector( -33.8, -77, 75.4 ),
 						Angles = Angle( 178, 90, 0 ),
-						Scale = 0.8
+						RenderGroup = RENDERGROUP_OPAQUE,
+						Scale = 0.8,
+						Phase = 90
 					},
 					{
+						Inherit = "@INTERIOR_ION",
 						Component = "photon_whe_ion_surface_bracket",
 						Position = Vector( 33.8, -77, 75.4 ),
 						Angles = Angle( 182, -90, 0 ),
-						Scale = 0.8
+						States = { "B" },
+						Phase = 270
 					}
 				}
 			},
+		}
+	},
+	{
+		Category = "Front Visor",
+		Options = {
+			{
+				Option = "Inner Edge",
+				Components = {
+					{
+						Name = "@INNER_EDGE",
+						Component = "photon_whe_inner_edge_left",
+						Position = Vector( -21, 19.4, 77.3 ),
+						Angles = Angle( 0, 93, 0 ),
+						RenderGroup = RENDERGROUP_OPAQUE,
+						Scale = 0.9
+					},
+					{
+						Inherit = "@INNER_EDGE",
+						Component = "photon_whe_inner_edge_right",
+						Position = Vector( 21, 19.1, 77.3 ),
+						Angles = Angle( 0, 87, 0 ),
+						States = { "B" },
+						Phase = 180
+					}
+				}
+			}
 		}
 	},
 	{
@@ -323,19 +378,42 @@ VEHICLE.Equipment = {
 				Option = "Ion",
 				Components = {
 					{
+						Inherit = "@INTERIOR_ION",
 						Component = "photon_whe_ion_surface_bracket",
-						Position = Vector( -8, -107, 76.2 ),
+						Position = Vector( -10, -107, 76.2 ),
 						Angles = Angle( 180, 180, 0 ),
-						Scale = 0.8
+						Phase = 0
 					},
 					{
+						Inherit = "@INTERIOR_ION",
 						Component = "photon_whe_ion_surface_bracket",
-						Position = Vector( 8, -107, 76.2 ),
+						Position = Vector( 10, -107, 76.2 ),
 						Angles = Angle( 180, 180, 0 ),
-						Scale = 0.8
+						States = { "B" },
+						Phase = 180
 					}
 				}
 			},
+		}
+	},
+	{
+		Category = "Rear Spoiler",
+		Options = {
+			{
+				Option = "96T Traffic/Warning",
+				Components = {
+					{
+						Component = "photon_sos_ford96t",
+						Position = Vector( 0, -110.4, 78.1 ),
+						Angles = Angle( 0, -90, 0 ),
+						-- Note there are actally two of these combined in one model
+						Bones = {
+							["ford_96t_left"] = { Vector( 0, -20.9, 0 ), Angle( 0, -13.635, 0 ) },
+							["ford_96t_right"] = { Vector( 0, 20.9, 0 ), Angle( 0, 13.635, 0 ) },
+						}
+					},
+				}
+			}
 		}
 	},
 	{

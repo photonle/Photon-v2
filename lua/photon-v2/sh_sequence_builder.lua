@@ -313,7 +313,7 @@ end
 
 -- Simulates the Whelen Steady Flash pattern.
 function Photon2.SequenceBuilder:SteadyFlash( frame )
-	return self:Steady( frame, 64 ):TripleFlash( frame )
+	return self:Steady( frame, 64 ):TripleFlash( frame ):Steady( frame, 64 ):TripleFlash( frame )
 end
 
 -- Adds frame [0] for the specified duration
