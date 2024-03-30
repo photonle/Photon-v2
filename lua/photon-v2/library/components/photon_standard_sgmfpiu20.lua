@@ -59,6 +59,13 @@ COMPONENT.Templates = {
 				Vector( .9, 0, 0 ), Vector( -.9, 0, 0 )
 			}
 		},
+		Fog = {
+			Width = 5,
+			Height = 2.5,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/fpiu20_fog_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/fpiu20_fog_detail.png").MaterialName,
+			Scale = 1
+		}
 	},
 	["Mesh"] = {
 		Model = {
@@ -131,7 +138,7 @@ COMPONENT.ElementGroups = {
 	["Brake"] = { 17, 18, 19, 20, 21 }
 }
 
-COMPONENT.StateMap = "[DIM] TailL TailR [W] HeadL HeadR HighL HighR [W/1/2] RevL [W/2/1] RevR [R] 21 [A] SigFL SigFR [A/1/2] SigRL [A/2/1] SigRR"
+COMPONENT.StateMap = "[DIM] TailL TailR [W] HeadL HeadR HighL HighR [W/1/2] RevL [W/2/1] RevR [R] 21 [A] SigFL SigFR [A/1/2] SigRL [A/2/1] SigRR [W/1/2] 22 24 [W/2/1] 23 25"
 
 COMPONENT.Elements = {	
 	-- Headlights
@@ -173,7 +180,13 @@ COMPONENT.Elements = {
 	[20] = { "TailSubMaterial", Indexes = { 19 } },
 
 	-- Center Brake
-	[21] = { "MeshExtra", Vector( 0, 1.1, -1 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", Scale = 1.012 }
+	[21] = { "MeshExtra", Vector( 0, 1.1, -1 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", Scale = 1.012 },
+
+	-- Fog
+	[22] = { "Fog", Vector( -30.2, 113.7, 33.4 ), Angle( 0, 25, 5 ) },
+	[23] = { "Fog", Vector( 30.2, 113.7, 33.4 ), Angle( 0, -25, -5 ) },
+	[24] = { "Fog", Vector( -34, 112, 33.85 ), Angle( 0, 25, 5 ) },
+	[25] = { "Fog", Vector( 34, 112, 33.85 ), Angle( 0, -25, -5 ) },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -312,23 +325,41 @@ COMPONENT.Segments = {
 			[2] = "[2] RevR",
 			[3] = "[2] RevL [W] RevR",
 			[4] = "[W] RevL [2] RevR",
+			[5] = "[W] RevL RevR"
 		},
 		Sequences = {
+			["RFTR_FLASH"] = sequence():FlashHold( 5, 4, 3 ):Off( 4 ),
 			-- Slow left-right pattern (10 frames per side)
 			["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 ),
 			["MODE2"] = sequence():FlashHold( 2, 1, 5 ):FlashHold( 1, 1, 5 ),
 			["MODE3"] = sequence():FlashHold( 3, 2, 3 ):FlashHold( 4, 2, 3 )
 		}
+	},
+	Fog = {
+		Frames = {
+			[1] = "[2] 22 24 23 25",
+			[2] = "[2] 22 24",
+			[3] = "[2] 23 25",
+			[4] = "[W] 22 23 24 25",
+		},
+		Sequences = {
+			["ON"] = { 1 },
+			["MODE2"] = { 1 },
+			["MODE3"] = { 1 },
+			["CRUISE"] = { 4 },
+			["QUAD"] = sequence():FlashHold( { 2, 3 }, 3, 4 )
+		}
+	
 	}
 }
 
 COMPONENT.Inputs = {
 	["Vehicle.Lights"] = {
 		["HEADLIGHTS"] = {
-			Headlights = "HEADLIGHTS"
+			Headlights = "HEADLIGHTS",
 		},
 		["PARKING"] = {
-			Headlights = "PARK"
+			Headlights = "PARK",
 		}
 	},
 	["Vehicle.Brake"] = {

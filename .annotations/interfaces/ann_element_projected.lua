@@ -30,3 +30,4 @@
 ---@field TranslatedLocalAngles Angle
 ---@field Matrix? VMatrix
 ---@field TargetIntensity number
+---@field Material? string (Optional) Material that texture will be used from.

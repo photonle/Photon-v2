@@ -281,7 +281,6 @@ function Photon2.Util.PhaseOffset( length, degrees )
 end
 
 function Photon2.Util.ParseSequenceName( sequence )
-
 	local namedPhase, phaseDegrees
 
 	local sections = {}
@@ -308,4 +307,12 @@ function Photon2.Util.ParseSequenceName( sequence )
 	if ( isnumber( phaseDegrees ) ) then phaseDegrees = phaseDegrees % 360 end
 
 	return sequence, phaseDegrees
+end
+
+function Photon2.Util.DynamicTimer( startTime, speed, floor, ceil )
+    local timePassed = ( CurTime() - startTime ) * speed
+    local fluctuation = math.sin(timePassed)
+    local range = ceil - floor
+    local increment = ((fluctuation + 1) / 2) * range + floor
+    return increment
 end

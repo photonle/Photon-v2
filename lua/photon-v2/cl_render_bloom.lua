@@ -1,4 +1,7 @@
-Photon2.RenderBloom = Photon2.RenderBloom or {}
+Photon2.RenderBloom = Photon2.RenderBloom or {
+	RenderTime = 0,
+	DrawTime = 0
+}
 
 local copyMaterial = Material( "pp/copy" )
 local additiveMaterial = Material( "pp/add" )
@@ -124,6 +127,8 @@ end
 
 hook.Add( "PreDrawViewModels", "Photon2.RenderBloom:Draw", function( depth, sky )
 	if ( ( #Photon2.RenderLightMesh.Active < 1 ) and ( #Photon2.RenderLight2D.Active < 1 ) ) then return end
+	local start = SysTime()
 	Photon2.RenderBloom.Render( true )
 	Photon2.RenderBloom.DrawAdditive()
+	Photon2.RenderBloom.DrawTime = SysTime() - start
 end )

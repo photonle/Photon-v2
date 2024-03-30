@@ -397,3 +397,15 @@ Photon2.RegisterCommand({
 		{ Action = "TOGGLE", Channel = "Emergency.Auxiliary", Value = "MODE1" }
 	}
 })
+
+Photon2.RegisterCommand({
+	Author = "Photon",
+	Name = "cut_cycle",
+	Title = "Cut Lighting (Cycle)",
+	Category = "Emergency",
+	Description = "Cycles through front/rear cut modes (disables lights that face each direction).",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "CYCLE", Channel = "Emergency.Cut", Value = { "FRONT", "REAR", "OFF" } }
+	}
+})

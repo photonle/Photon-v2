@@ -414,6 +414,15 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			this.PlayerControls:Show()
 		end
 	end
+
+	function tree:OnElementGroupSelected( group )
+		this.PlayerControls:SetSliderVisible( false )
+		if ( modelPanel ) then
+			Photon2.ComponentBuilder.ApplyDebugElementGroup( entryName, group )
+			modelPanel:SetComponent( entryName, true )
+			modelPanel.Entity:SetChannelMode( "#DEBUG", "ON", true )
+		end
+	end
 	
 	local function modeOff()
 		if ( modelPanel ) then
@@ -675,6 +684,8 @@ function TREE:OnModeSelected( channelName, modeName ) end
 
 function TREE:OnModeDeselected() end
 
+function TREE:OnElementGroupSelected( groupName ) end
+
 function TREE:BuildStateSlotsSignature( states )
 	local signature = "[STATES]"
 	for i, state in ipairs( states ) do
@@ -724,6 +735,21 @@ function TREE:UpdateInputs( inputs )
 	this.InputsNode = inputsNode
 end
 
+function TREE:UpdateElementGroups( elementGroups )
+	local this = self
+	local groupsNode = self.GroupsNode or self:AddNode( "Element Groups", "folder", true )
+	for groupName, elements in SortedPairs( elementGroups ) do
+		local groupNode = groupsNode:AddNode( groupName, "folder" )
+		function groupNode:OnNodeSelected()
+			this:OnElementGroupSelected( groupName )
+		end
+		for i, element in ipairs( elements ) do
+			local elementNode = groupNode:AddNode( element, "cube-outline" )
+		end
+	end
+	self.GroupsNode = groupsNode
+end
+
 function TREE:UpdatePatterns( patterns )
 	local this = self
 	local patternsNode = self.PatternsNode or self:AddNode( "Patterns", "animation-play", true )
@@ -763,6 +789,7 @@ function TREE:SetComponent( component )
 	if ( component.Inputs ) then self:UpdateInputs( component.Inputs ) end
 	if ( component.Patterns ) then self:UpdatePatterns( component.Patterns ) end
 	if ( component.Segments ) then self:UpdateSegments( component.Segments ) end
+	if ( component.ElementGroups ) then self:UpdateElementGroups( component.ElementGroups ) end
 end
 
 function TREE:Init()

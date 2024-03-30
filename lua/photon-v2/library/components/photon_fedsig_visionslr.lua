@@ -57,11 +57,12 @@ COMPONENT.Templates = {
 	},
 	["Projected"] = {
 		PodProjected = {
-			HorizontalFOV = 40,
-			VerticalFOV = 120,
+			HorizontalFOV = 50,
+			VerticalFOV = 40,
 			Brightness = 0.22,
 			FarZ = 500,
-			NearZ = 1
+			NearZ = 1,
+			Texture = "photon/flashlight/led_linear.png"
 		}
 	}
 }

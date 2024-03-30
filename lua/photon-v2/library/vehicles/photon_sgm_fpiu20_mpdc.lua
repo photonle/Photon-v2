@@ -54,7 +54,7 @@ local livery = PhotonMaterial.New({
 
 -- VEHICLE.SubMaterials = {
 -- 	[3] = "photon/common/blank"
--- 	-- [3] = "photon/common/blank"
+-- -- 	-- [3] = "photon/common/blank"
 -- }
 
 VEHICLE.Siren = { "sos_nergy400" }
@@ -128,7 +128,7 @@ VEHICLE.Equipment = {
 					{
 						Model = "models/schmal/sgm_fpiu20_win.mdl",
 						Position = Vector(),
-						Angles = Angle(0, -90, 0)
+						Angles = Angle(0, 0, 0)
 					}
 				},
 				Components = {
@@ -141,6 +141,10 @@ VEHICLE.Equipment = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
+				},
+				SubMaterials = {
+					{ Id = 3, Material = "photon/common/blank" },
+					-- { Id = 1, Material = "photon/common/blank" },
 				}
 			}
 		}

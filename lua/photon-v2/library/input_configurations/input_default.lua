@@ -28,6 +28,9 @@ local default = {
 		[KEY_M] = {
 			{ Command = "toggle_cruise" }
 		},
+		[KEY_DELETE] = {
+			{ Command = "cut_cycle" }
+		},
 		[KEY_LEFT] = {
 			{ Command = "left_signal" },
 			{ Command = "scene_left", Modifiers = { KEY_RSHIFT } },

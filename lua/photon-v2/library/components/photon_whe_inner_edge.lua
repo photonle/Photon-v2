@@ -29,13 +29,15 @@ COMPONENT.Templates = {
 			Height	= 2,
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_inner_edge_detail.png").MaterialName,
-			Scale = 2
+			Scale = 2,
+			VisibilityRadius = 0.1,
 		},
 		Normal = {
 			Width 	= 4.3,
 			Height	= 4.4,
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/sm_whe_lib_ii_primary_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/sm_whe_lib_ii_primary_detail.png").MaterialName,
+			VisibilityRadius = 0.1,
 			Scale = 1.25
 		}
 	},

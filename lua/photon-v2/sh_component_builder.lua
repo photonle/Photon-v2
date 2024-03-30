@@ -211,3 +211,18 @@ function Photon2.ComponentBuilder.ApplyDebugSequences( entryName, inputAction )
 
 	Photon2.Library.Components:Compile( component )
 end
+
+function Photon2.ComponentBuilder.ApplyDebugElementGroup( entryName, elementGroup )
+	local component = Photon2.Library.Components:Get( entryName )
+	component.Segments = component.Segments or {}
+	component.Segments["#DEBUG"] = {
+		Frames = {
+			[1] = elementGroup
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	}
+
+	return Photon2.ComponentBuilder.ApplyDebugSequences( entryName, { ["#DEBUG"] = "ON" } )
+end

@@ -58,6 +58,11 @@ Vehicle.Schema = {
 		{ Mode = "PARKING", Label = "PRK" },
 		{ Mode = "HEADLIGHTS", Label = "HDL" },
 		{ Mode = "OFF" }
+	},
+	["Emergency.Cut"] = {
+		{ Label = "CUT" },
+		{ Mode = "FRONT", Label = "FRO" },
+		{ Mode = "REAR", Label = "REA" },
 	}
 }
 

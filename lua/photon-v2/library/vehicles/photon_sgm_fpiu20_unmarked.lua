@@ -16,7 +16,7 @@ VEHICLE.Author		= "Schmal"
 -- VEHICLE.Siren = { "code3_z3" }
 -- VEHICLE.Siren = { "dr_iqelitepro" }
 -- VEHICLE.Siren = { "motorola_spectra" }
-VEHICLE.Siren = { "whelen_epsilon_alt" }
+VEHICLE.Siren = { "whelen_epsilon" }
 -- VEHICLE.Siren = {
 	-- This an example of using mixed siren tones (also a real-world recreation)
 	-- [1] = {
@@ -268,6 +268,9 @@ VEHICLE.Equipment = {
 	{
 		Category = "Spotlight",
 		Options = {
+			{
+				Option = "None"
+			},
 			{
 				Option = "Whelen PAR6",
 				Components = {
