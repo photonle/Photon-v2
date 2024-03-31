@@ -182,6 +182,9 @@ function ENT:SetupDataTables()
 
 	self:NetworkVar( "Int",  0, "VehicleSpeed" )
 
+	self:NetworkVar( "String", 0, "ProfileName" )
+
+	self:NetworkVarNotify( "ProfileName", self.OnProfileNameChange )
 	self:NetworkVarNotify( "EngineRunning", self.OnEngineStateChange )
 end
 
@@ -269,9 +272,9 @@ end
 function ENT:SetChannelMode( channel, state )
 	state = state or "OFF"
 	
-	local oldState = self:GetNW2String("Photon2:CS:" .. channel, "OFF" )
+	local oldState = self:GetParent():GetNW2String("Photon2:CS:" .. channel, "OFF" )
 
-	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+	self:GetParent():SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
 
 	if CLIENT then
 		-- this line may be necessary for client prediction but it's doing some really weird shit
@@ -286,17 +289,18 @@ end
 ---@param channel string
 ---@return string
 function ENT:GetChannelMode( channel )
-    return self:GetNW2String( "Photon2:CS:" .. channel, "OFF" )
+    return self:GetParent():GetNW2String( "Photon2:CS:" .. channel, "OFF" )
 end
 
----@return string
-function ENT:GetProfileName()
-	return self:GetNW2String( "Photon2:ProfileName" )
-end
+-- -@return string
+-- function ENT:GetProfileName()
+	-- return self:GetDTProfileName()
+	-- return self:GetNW2String( "Photon2:ProfileName" )
+-- end
 
 
-function ENT:GetProfile( )
-	return Photon2.GetVehicle( self:GetProfileName() )
+function ENT:GetProfile( name )
+	return Photon2.GetVehicle( name or self:GetProfileName() )
 end
 
 ENT.UserCommands = {
@@ -922,7 +926,7 @@ end
 function ENT:SetupProfile( name, isReload )
 	name = name or self:GetProfileName()
 	---@type PhotonVehicle
-	local profile = self:GetProfile()
+	local profile = self:GetProfile( name )
 
 	if ( profile.InvalidVehicle ) then 
 		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
@@ -1097,7 +1101,7 @@ end
 
 
 function ENT:GetSelectionsString()
-	return self:GetNW2String( "Photon2:Selections" )
+	return self:GetParent():GetNW2String( "Photon2:Selections" )
 end
 
 function ENT:GetActiveComponents()
@@ -1283,6 +1287,11 @@ function ENT:OnEngineStateChange( name, old, new )
 	else
 		self:SetChannelMode( "Vehicle.Engine", "OFF" )
 	end
+end
+
+function ENT:OnProfileNameChange( name, old, new )
+	print("Profile name change: " .. tostring( new ) )
+	self:SetupProfile( new )
 end
 
 function ENT:GetSirenSelection( number )

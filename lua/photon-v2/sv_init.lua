@@ -79,6 +79,7 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	controller:SetLocalAngles(Angle(0, 0, 0))
 
 	controller:SetProfileName( profile )
+	controller:SetupProfile( profile )
 
 	if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
 

@@ -32,34 +32,45 @@ net.Receive( "Photon2:SetPlayerInputControllerTarget", Photon2.cl_Network.OnSetI
 
 function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 	if ( not IsValid( ent ) ) then return end
-	if ( ent:GetClass() == "photon_controller" ) then
+	
+	local isController = false
+	local controller = ent
+
+	if( IsValid( ent:GetPhotonController() ) ) then
+		controller = ent:GetPhotonController()
+		isController = true
+	elseif ( ent:GetClass() == "photon_controller" ) then
+		isController = true
+	end
+
+	if ( isController ) then
 		
-		if ( not ent.IsPhotonController ) then
+		if ( not controller.IsPhotonController ) then
 			-- This is to briefly keep change-notifications in a queue because 
 			-- the values sometimes change before the controller is fully
 			-- initialized on the client (no idea why).
 			local queue = Photon2.cl_Network.ControllerQueue
-			queue[ent] = queue[ent] or {
+			queue[controller] = queue[controller] or {
 				Time = CurTime(),
 				Channels = {},
 			}
 			
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )
-				queue[ent].Channels[name] = newValue
+				queue[controller].Channels[name] = newValue
 			elseif (name == "Photon2:ProfileName") then
-				queue[ent].Profile = newValue
+				queue[controller].Profile = newValue
 			elseif (name == "Photon2:Selections") then
-				queue[ent].SelectionsString = newValue
+				queue[controller].SelectionsString = newValue
 			end
 		else
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )
-				ent:OnChannelModeChanged( name, newValue, oldValue )
+				controller:OnChannelModeChanged( name, newValue, oldValue )
 			elseif (name == "Photon2:ProfileName") then
-				ent:SetupProfile( newValue )
+				controller:SetupProfile( newValue )
 			elseif (name == "Photon2:Selections") then
-				ent:ProcessSelectionsString( newValue )
+				controller:ProcessSelectionsString( newValue )
 			end
 		end
 	elseif ( ent:GetClass() == "prop_physics" ) then
