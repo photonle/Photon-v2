@@ -67,6 +67,7 @@ COMPONENT.Segments = {
 			["1"] = { 1 },
 			["2"] = { 2 },
 			["3"] = { 3 },
+			["TRI_FLASH_SOLO"] = sequence():Add( 1, 1, 0, 1, 1, 0, 1, 1 ):AppendPhaseGap()
 
 		}
 	}
@@ -78,7 +79,7 @@ COMPONENT.Inputs = {
 			Light = "MODE3"
 		},
 		["MODE2"] = {
-			Light = "MODE3"
+			Light = "TRI_FLASH_SOLO"
 		},
 		["MODE3"] = {
 			Light = "MODE3"

@@ -531,7 +531,7 @@ function Segment:ActivateCurrentSequence()
 	local sequence = self:GetCurrentSequence()
 	if (sequence) then
 		sequence:Activate()
-		self.Component:RegisterActiveSequence( "x", sequence )
+		self.Component:RegisterActiveSequence( sequence )
 	end
 end
 
@@ -539,7 +539,7 @@ function Segment:DectivateCurrentSequence()
 	local sequence = self:GetCurrentSequence()
 	if (sequence) then
 		sequence:Deactivate()
-		self.Component:RemoveActiveSequence( "x", sequence )
+		self.Component:RemoveActiveSequence( sequence )
 	end
 end
 

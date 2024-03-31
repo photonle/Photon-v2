@@ -147,6 +147,7 @@ VEHICLE.Equipment = {
 						Position = Vector( 11, 114.8, 48.7 ),
 						Angles = Angle( -10, 90-8, 0 ),
 						Scale = 0.9,
+						States = { "B", "R" },
 						Flags = {
 						},
 						Phase = 180,
@@ -240,22 +241,26 @@ VEHICLE.Equipment = {
 						Position = Vector( -39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 157, 2 ),
 						Scale = 0.9,
+						Phase = 180,
 						RenderGroup = RENDERGROUP_OPAQUE,
-
+						
 					},
 					{
 						Component = "photon_sos_mpf4",
 						Position = Vector( 41.4, 88.4, 51.9 ),
+						States = { "B", "R" },
 						Angles = Angle( -10, 180 - 165, -2 ),
 						Scale = 0.9,
 						RenderGroup = RENDERGROUP_OPAQUE,
-
+						
 					},
 					{
 						Component = "photon_sos_mpf3",
 						Position = Vector( 39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 180 - 157, -2 ),
+						States = { "B", "R" },
 						Scale = 0.9,
+						Phase = 180,
 						RenderGroup = RENDERGROUP_OPAQUE,
 
 					}
@@ -452,6 +457,19 @@ VEHICLE.Equipment = {
 					}
 				}
 			},
+		}
+	},
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				Components = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
 		}
 	},
 }

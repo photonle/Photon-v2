@@ -72,8 +72,8 @@ COMPONENT.Segments = {
 			["1"] = { 1 },
 			["2"] = { 2 },
 			["3"] = { 3 },
-			["DUO_ALT_MED"] = sequence():Alternate( 1, 2, 8 )
-
+			["DUO_ALT_MED"] = sequence():Alternate( 1, 2, 8 ),
+			["TRI_FLASH_SOLO"] = sequence():Add( 1, 1, 0, 1, 1, 0, 1, 1 ):AppendPhaseGap()
 		}
 	}
 }
@@ -81,13 +81,13 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Light = "1"
+			Light = { 1 }
 		},
 		["MODE2"] = {
-			Light = "DUO_ALT_MED"
+			Light = "TRI_FLASH_SOLO"
 		},
 		["MODE3"] = {
-			Light = "DUO_ALT_MED"
+			Light = "TRI_FLASH_SOLO"
 		}
 	},
 	["Emergency.Marker"] = {

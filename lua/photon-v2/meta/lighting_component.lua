@@ -740,7 +740,7 @@ end
 
 ---@param segmentName string
 ---@param sequence PhotonSequence
-function Component:RegisterActiveSequence( segmentName, sequence )
+function Component:RegisterActiveSequence( sequence )
 	-- local sequence = self.Segments[segmentName].Sequences[sequence]
 	-- printf("Adding sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = true
@@ -755,7 +755,7 @@ end
 
 ---@param segmentName string
 ---@param sequence PhotonSequence
-function Component:RemoveActiveSequence( segmentName, sequence)
+function Component:RemoveActiveSequence( sequence )
 	-- printf("Removing sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = nil
 	self.ActiveIndependentSequences[sequence] = nil
