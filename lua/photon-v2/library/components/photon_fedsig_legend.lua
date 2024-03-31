@@ -219,6 +219,10 @@ COMPONENT.Segments = {
 				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
 				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
 				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
+				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
+				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
+				:Sequential( 1, 4 ):Hold( 3 ):Sequential( 4, 7 ):Add( 0 ):Hold( 3 )
+				:Sequential( 7, 4 ):Hold( 3 ):Sequential( 4, 1 ):Add( 0 ):Hold( 3 )
 				:Add( 8, 0, 8, 9, 0, 10, 10, 11, 12, 0, 13, 13, 14, 0, 15, 15 ):Stretch( 2 )
 		}
 	},

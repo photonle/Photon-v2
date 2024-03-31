@@ -41,12 +41,16 @@ end
 -- when loading in next to an already active Photon vehicle, especially 
 -- if the vehicle relies on Photon's dynamic materials.
 function ENT:DoInitializationStandby()
-	if ( not Photon2.Materials.Ready ) then
+	if ( not Photon2.Materials.Ready or ( not self:GetProfileName() ) ) then
 		timer.Simple( 1, function() 
 			if ( not IsValid( self ) ) then return end
 			pcall( self.DoInitializationStandby, self )
 		end)
 		return
+	end
+
+	if ( self:GetProfileName() ) then
+		self:SetupProfile( self:GetProfileName() )
 	end
 
 	local queue = Photon2.cl_Network.ControllerQueue[self]
