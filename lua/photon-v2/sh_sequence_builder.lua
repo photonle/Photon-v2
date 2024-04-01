@@ -325,6 +325,14 @@ function Photon2.SequenceBuilder:Off( duration )
 	return self:Append( result )
 end
 
+-- Approximates the SoundOff Signal "Road Runner" pattern. (Frame C should be A+B)
+function Photon2.SequenceBuilder:RoadRunner( frameA, frameB, frameC )
+	return self
+		:FlashHold( { frameA, frameB }, 4, 4 ):Do( 4 )
+		:FlashHold( { frameA, frameB }, 3, 2 ):Do( 4 )
+		:Alternate( frameA, frameB, 4 ):Do( 6 )
+		:Alternate( frameC, 0, 4 ):Do( 4 )
+end
 
 function Photon2.SequenceBuilder:AppendPhaseGap()
 	local count = 0

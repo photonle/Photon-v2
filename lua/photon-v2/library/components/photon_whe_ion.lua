@@ -55,6 +55,7 @@ COMPONENT.Segments = {
 			["ALT_MED_DUO"] = sequence():Alternate( 1, 2, 8 ),
 			["ALT_MED_DUO:B"] = sequence():Alternate( 2, 1, 8 ),
 			["DOUBLE_FLASH"] = sequence():DoubleFlash( 1 ):AppendPhaseGap(),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( 1, 2, 3 ):AppendPhaseGap(),
 			["TRI_FLASH"] = sequence():DoubleFlash( 1 ):AppendPhaseGap(),
 			["TRI_FLASH_HOLD"] = sequence():FlashHold( { 1 }, 3, 4 ):AppendPhaseGap(),
 			["TRI_FLASH_HOLD:A"] = sequence():FlashHold( { 1, 0 }, 3, 4 ),
@@ -73,7 +74,7 @@ COMPONENT.Inputs = {
 			Light = "VARIABLE_SINGLE"
 		},
 		["MODE3"] = {
-			Light = "QUAD_FLASH"
+			Light = "DOUBLE_FLASH_HOLD"
 		}
 	}
 }

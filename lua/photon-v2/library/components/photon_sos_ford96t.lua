@@ -66,7 +66,8 @@ COMPONENT.Segments = {
 			["ON"] = { 1 },
 			["BLINK"] = { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
 			["ALT_SLOW"] = sequence():Alternate( 2, 3, 7 ),
-			["QUAD_SOLO"] = sequence():FlashHold( { 2, 3 }, 4, 3 )
+			["QUAD_SOLO"] = sequence():FlashHold( { 2, 3 }, 4, 3 ),
+			["ROAD_RUNNER"] = sequence():RoadRunner( 2, 3, 1 )
 		}
 	},
 	["Traffic"] = {
@@ -173,7 +174,7 @@ COMPONENT.Inputs = {
 			All = "QUAD_SOLO"
 		},
 		["MODE3"] = {
-			All = "QUAD_SOLO"
+			All = "ROAD_RUNNER"
 		}
 	},
 	["Emergency.Directional"] = {

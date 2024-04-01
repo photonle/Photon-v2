@@ -134,24 +134,22 @@ VEHICLE.Equipment = {
 				Option = "mPower",
 				Components = {
 					{
+						Name = "@GRILLE_MP4",
 						Component = "photon_sos_mpf4",
 						Position = Vector( -11, 114.8, 48.7 ),
 						Angles = Angle( -10, 90+8, 0 ),
 						Scale = 0.9,
 						Flags = {
+							FrontNoM1 = true
 						},
 						RenderGroup = RENDERGROUP_OPAQUE,
 					},
 					{
-						Component = "photon_sos_mpf4",
+						Inherit = "@GRILLE_MP4",
 						Position = Vector( 11, 114.8, 48.7 ),
 						Angles = Angle( -10, 90-8, 0 ),
-						Scale = 0.9,
 						States = { "B", "R" },
-						Flags = {
-						},
 						Phase = 180,
-						RenderGroup = RENDERGROUP_OPAQUE,
 					},
 				}
 			}
@@ -164,23 +162,24 @@ VEHICLE.Equipment = {
 				Option = "Ion",
 				Components = {
 					{
+						Name = "@MIRROR_ION",
 						Component = "photon_whe_ion",
 						Position = Vector( -53.1, 32.3, 62.5 ),
 						Angles = Angle( 0, 32, 0 ),
 						Scale = 0.8,
 						SubMaterials = {
 							[0] = "sentry/20fpiu_new/black"
+						},
+						Flags = {
+							FrontNoM1 = true
 						}
 					},
 					{
+						Inherit = "@MIRROR_ION",
 						Component = "photon_whe_ion",
 						Position = Vector( 53.1, 32.3, 62.5 ),
 						Angles = Angle( 0, -32, 0 ),
-						Scale = 0.8,
 						States = { "B" },
-						SubMaterials = {
-							[0] = "sentry/20fpiu_new/black"
-						},
 						Phase = 180
 					}
 				}
@@ -196,21 +195,23 @@ VEHICLE.Equipment = {
 					{
 						Component = "photon_standard_sgmfpiu20",
 						States = { "R", "B" },
-						Inputs = {
-							["Emergency.Marker"] = { ON = {} }
-						},
 						Flags = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						},
 						Inputs = {
+							["Emergency.Marker"] = { ON = {} },
 							["Emergency.Warning"] = {
 								["MODE2"] = {
 									ReverseFlasher = "RFTR_FLASH",
-									Fog = "QUAD"
+									Fog = "ROAD_RUNNER"
 								},
 								["MODE3"] = {
 									ReverseFlasher = "RFTR_FLASH",
-									Fog = "QUAD"
+									Fog = "ROAD_RUNNER",
+									HighBeamL = "WIGWAG",
+									HighBeamR = "WIGWAG",
+									HeadlightL = "WIGWAG",
+									HeadlightR = "WIGWAG",
 								}
 							}
 						}
@@ -230,38 +231,46 @@ VEHICLE.Equipment = {
 				Option = "Option",
 				Components = {
 					{
+						Name = "@HIDE_MP4",
 						Component = "photon_sos_mpf4",
 						Position = Vector( -41.4, 88.4, 51.9 ),
 						Angles = Angle( -10, 165, 2 ),
 						Scale = 0.9,
 						RenderGroup = RENDERGROUP_OPAQUE,
+						Flags = {
+							FrontNoM1 = true
+						}
 					},
 					{
+						Name = "@HIDE_MP3",
 						Component = "photon_sos_mpf3",
 						Position = Vector( -39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 157, 2 ),
 						Scale = 0.9,
 						Phase = 180,
 						RenderGroup = RENDERGROUP_OPAQUE,
-						
+						Flags = {
+							FrontNoM1 = true
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE3"] = { Light = "TRI_FLASH_SOLO" }
+							}
+						}
 					},
 					{
-						Component = "photon_sos_mpf4",
+						Inherit = "@HIDE_MP4",
 						Position = Vector( 41.4, 88.4, 51.9 ),
 						States = { "B", "R" },
 						Angles = Angle( -10, 180 - 165, -2 ),
-						Scale = 0.9,
-						RenderGroup = RENDERGROUP_OPAQUE,
 						
 					},
 					{
-						Component = "photon_sos_mpf3",
+						Inherit = "@HIDE_MP3",
 						Position = Vector( 39.6, 94.3, 51.7 ),
 						Angles = Angle( -10, 180 - 157, -2 ),
 						States = { "B", "R" },
-						Scale = 0.9,
 						Phase = 180,
-						RenderGroup = RENDERGROUP_OPAQUE,
 
 					}
 				}
@@ -318,6 +327,18 @@ VEHICLE.Equipment = {
 							[11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
 							[10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
 						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE3"] = {
+									Full = "TRIP_MODIFIED",
+									Takedown = "TRI_FLASH",
+								},
+								["MODE2"] = { Full = "QUAD" },
+							},
+							["Virtual.WarningSiren"] = { ["T1"] = {}, ["T2"] = {}, ["T3"] = {}, ["T4"] = {} },
+							["Virtual.ParkedWarning"] = { ["MODE3"] = {} },
+							["Virtual.NightParkedWarning"] = { ["MODE3"] = {} },
+						}
 					}
 				},
 			},
@@ -336,7 +357,14 @@ VEHICLE.Equipment = {
 						Angles = Angle( 178, 90, 0 ),
 						RenderGroup = RENDERGROUP_OPAQUE,
 						Scale = 0.8,
-						Phase = 90
+						Phase = 90,
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "DOUBLE_FLASH_HOLD" },
+								["MODE2"] = { Light = "DOUBLE_FLASH_HOLD" },
+								["MODE3"] = { Light = "DOUBLE_FLASH_HOLD" },
+							}
+						}
 					},
 					{
 						Inherit = "@INTERIOR_ION",
@@ -362,7 +390,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -21, 19.4, 77.3 ),
 						Angles = Angle( 0, 93, 0 ),
 						RenderGroup = RENDERGROUP_OPAQUE,
-						Scale = 0.9
+						Scale = 0.9,
+						Inputs = {
+							["Emergency.Warning"] = { ["MODE3"] = "QUAD_FLASH" }
+						}
 					},
 					{
 						Inherit = "@INNER_EDGE",
@@ -370,7 +401,10 @@ VEHICLE.Equipment = {
 						Position = Vector( 21, 19.1, 77.3 ),
 						Angles = Angle( 0, 87, 0 ),
 						States = { "B" },
-						Phase = 180
+						Phase = 180,
+						Inputs = {
+							-- ["Emergency.Warning"] = { ["MODE3"] = "QUINT_FLASH" }
+						}
 					}
 				}
 			}
