@@ -1152,8 +1152,9 @@ end
 ---@param selections string
 function ENT:ProcessSelectionsString( selections )
 	-- print("Processing selections string '" .. tostring(selections) .. "'")
+	if ( not selections ) then return end
 	local newSelections = string.Explode( " ", selections, false )
-	local currentSelections = self.CurrentSelections
+	local currentSelections = self.CurrentSelections or {}
 	for categoryIndex, optionIndex in pairs( newSelections ) do
 		optionIndex = tonumber( optionIndex ) --[[@as integer]]
 		newSelections[categoryIndex] = optionIndex

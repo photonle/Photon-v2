@@ -34,7 +34,7 @@ function Photon2.RenderLightMesh.DrawBloom()
 		-- light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", Vector(1, 0, 0) )
 		light.BloomMaterial:SetFloat( "$alpha", 1 )
 		light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", light.BloomColor:GetVector() )
-		light.Mesh:Draw()
+		if ( light.Mesh ) then light.Mesh:Draw() end
 		cam.PopModelMatrix()
 	end
 end
@@ -65,7 +65,7 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 			light.DrawMaterial--[[@as IMaterial]]:SetFloat( "$alpha", 1 )
 		end
 
-		light.Mesh:Draw()
+		if ( light.Mesh ) then light.Mesh:Draw() end
 
 		-- light.DrawMaterial--[[@as IMaterial]]:SetInt( "$alpha", light.Intensity )
 		-- local cMatrix = Matrix({{512, 512, 512, 512}, {512, 512, 512, 512}, {512,512,512,512}, {512,512,512,512}})
