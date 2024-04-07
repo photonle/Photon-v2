@@ -327,13 +327,21 @@ VEHICLE.Equipment = {
 							[11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
 							[10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
 						},
+						Phase = "A:180",
 						Inputs = {
 							["Emergency.Warning"] = {
 								["MODE3"] = {
 									Full = "TRIP_MODIFIED",
 									Takedown = "TRI_FLASH",
+									Alley_Left = "ALT",
+									Alley_Right = "ALT",
 								},
-								["MODE2"] = { Full = "QUAD" },
+								["MODE2"] = { Test = "PHASE" },
+								-- ["MODE2"] = { Full = "QUAD" },
+								["MODE1"] = {
+									Full = "QUAD",
+									Cut = "FRONT"
+								}
 							},
 							["Virtual.WarningSiren"] = { ["T1"] = {}, ["T2"] = {}, ["T3"] = {}, ["T4"] = {} },
 							["Virtual.ParkedWarning"] = { ["MODE3"] = {} },
@@ -392,7 +400,14 @@ VEHICLE.Equipment = {
 						RenderGroup = RENDERGROUP_OPAQUE,
 						Scale = 0.9,
 						Inputs = {
-							["Emergency.Warning"] = { ["MODE3"] = "QUAD_FLASH" }
+							["Emergency.Warning"] = { 
+								["MODE3"] = "QUAD_FLASH",
+								["MODE1"] = {}
+							},
+							["Emergency.SceneForward"] = { 
+								["ON"] = { Takedown = "CHEAP" },
+								["FLOOD"] = { Flood = "CHEAP" } 
+							}
 						}
 					},
 					{

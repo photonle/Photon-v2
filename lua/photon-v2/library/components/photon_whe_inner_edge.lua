@@ -88,18 +88,22 @@ COMPONENT.Segments = {
 	},
 	Takedown = {
 		Frames = {
-			[1] = "1 [TD] 7",
+			[1] = "[W] 1 [TD] 7",
+			[2] = "[W] 1",
 		},
 		Sequences = {
 			["TAKEDOWN"] = { 1 },
+			["CHEAP"] = { 2 }
 		}
 	},
 	Flood = {
 		Frames = {
 			[1] = "[W] 1 2 3 4 5 6 7",
+			[2] = "[W] 1 2 3 4 5 6 ",
 		},
 		Sequences = {
 			["FLOOD"] = { 1 },
+			["CHEAP"] = { 2 }
 		}
 	}
 }
