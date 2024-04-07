@@ -327,7 +327,7 @@ VEHICLE.Equipment = {
 							[11] = { Vector( 1, 0, 0 ), Angle( 0, 0, 0 ) },
 							[10] = { Vector( -1, 0, 0 ), Angle( 0, 0, 0 ) },
 						},
-						Phase = "A:180",
+						-- Phase = "A:180",
 						Inputs = {
 							["Emergency.Warning"] = {
 								["MODE3"] = {
@@ -336,8 +336,8 @@ VEHICLE.Equipment = {
 									Alley_Left = "ALT",
 									Alley_Right = "ALT",
 								},
-								["MODE2"] = { Test = "PHASE" },
-								-- ["MODE2"] = { Full = "QUAD" },
+								-- ["MODE2"] = { Test = "PHASE" },
+								["MODE2"] = { Full = "QUAD" },
 								["MODE1"] = {
 									Full = "QUAD",
 									Cut = "FRONT"
