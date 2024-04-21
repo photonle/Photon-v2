@@ -109,7 +109,7 @@ function ENT:DoPulse()
 	if ( self.RebuildPulseComponents ) then self:UpdatePulseComponentArray() end
 	self.NextPulse = RealTime() + self.PulseDuration
 	for i=1, #self.CurrentPulseComponents do
-		if ( not IsValid( self.CurrentPulseComponents[i] ) ) then
+		if ( not ( self.CurrentPulseComponents[i].IsVirtual ) and ( not IsValid( self.CurrentPulseComponents[i] ) ) ) then
 			self.RebuildPulseComponents = true
 			return
 		end
