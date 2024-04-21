@@ -68,7 +68,10 @@ function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
 end
 
 function ENT:ActivateEngineIdle()
-	if ( globalEngineIdleEnabled:GetBool() == false ) then return end
+	if ( globalEngineIdleEnabled:GetBool() == false ) then 
+		self:SetEngineRunning( false )
+		return 
+	end
 	local vehicle = self:GetParent() --[[@as Vehicle]]
 	if ( not self.EngineIdleData ) then return end
 	self.EngineIdleActive = true
