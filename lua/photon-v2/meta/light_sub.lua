@@ -20,6 +20,9 @@ end
 Light.States = {
 	["OFF"] = {
 		Material = nil
+	},
+	["HIDE"] = {
+		Material = "photon/common/blank"
 	}
 }
 
