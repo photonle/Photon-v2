@@ -53,7 +53,7 @@ function Light:Initialize( id, component )
 			-- has to be delayed because the entity may not be valid 
 			-- in the same tick
 			timer.Simple( 0.01, function() 
-				if ( not IsValid( self.Parent ) ) then return end
+				if ( not IsValid( light.Parent ) ) then return end
 				self.BoneParent = light.Parent:LookUpBoneOrError( boneName )
 			end)
 		end
