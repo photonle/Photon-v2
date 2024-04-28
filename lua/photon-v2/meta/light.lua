@@ -68,6 +68,9 @@ function Light:CheckBodyGroupRequirements()
 			self.HasBodyGroupRequirements = true
 			local metaTable = getmetatable( self.RequiredBodyGroups ) or {}
 			if ( not metaTable.Processed ) then
+				
+				local result = {}
+
 				for bodyGroupName, selection in pairs( self.RequiredBodyGroups ) do
 					
 					if ( not istable( selection ) ) then selection = { selection } end
@@ -80,9 +83,7 @@ function Light:CheckBodyGroupRequirements()
 						if ( index == -1 ) then
 							ErrorNoHaltWithStack( "Body group name [" .. tostring( bodyGroupName ) .. "] not found in model [" .. tostring( self.Parent:GetModel() ) .. "]" ) 
 						end
-						
-						self.RequiredBodyGroups[bodyGroupName] = nil
-						
+					
 					end
 
 					local newSelectionTable = {}
@@ -90,9 +91,12 @@ function Light:CheckBodyGroupRequirements()
 					for i=1, #selection do
 						newSelectionTable[selection[i]] = true
 					end
-					
-					self.RequiredBodyGroups[index] = newSelectionTable
+
+					result[index] = newSelectionTable
 				end
+
+				self.RequiredBodyGroups = result
+
 				metaTable.Processed = true
 				setmetatable( self.RequiredBodyGroups, metaTable )
 			end
