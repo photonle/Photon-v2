@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/photon/fedsig_valor/lens"
+	"$bumpmap" "schmal/photon/whelen_liberty/lens_nm"
+	"$rimlight" "1"
+	"$rimlightexponent" "1"
+	"$rimlightboost"	"10"
+	"$translucent" 1
+	"$phong" 1
+	"$phongtint" "[1 1 1]"
+	"$phongexponent" 5
+	"$phongboost" "2"
+	"$phongfresnelranges" "[1 1 1]"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.6 0.6 0.6]"
+	//"$normalmapalphaenvmapmask" 1
+	"$nodecal" "1"
+	"$nocull" 0
+	"$color2" "{255 255 255}"
+
+}

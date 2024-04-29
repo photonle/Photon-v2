@@ -1,0 +1,23 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0.005"
+	"$refracttint" "{255 140 0}"
+	"$dudvmap" "sentry/13caprice/ridges_nm"
+	"$normalmap" "sentry/13caprice/ridges_nm"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.15 0.15 0.15]"
+	"$carpenisenabled" "1"
+	"$nowritez"	"1"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color
+		}
+	}
+}
+
+
+

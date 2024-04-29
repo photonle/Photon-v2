@@ -90,9 +90,6 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_standard_sgmcvpi96",
-						Position = Vector( 0, 0, 0 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1
 					}
 				}
 			}

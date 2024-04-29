@@ -1,0 +1,23 @@
+"Refract"
+{
+	"$model" 1
+	"$refractamount" "0.0001"
+	"$refracttint" "{230 10 10}"
+	"$dudvmap" "sentry/shared/skin_nm"
+	"$normalmap" "sentry/shared/skin_nm"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[0.15 0.15 0.15]"
+	"$carpenisenabled" "1"
+	"$nowritez"	"1"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color
+		}
+	}
+}
+
+
+
