@@ -362,6 +362,7 @@ end
 ---@param controller PhotonController
 function ENT:CreateOn( ent, controller )
 	local ent = self:Initialize( ent, controller )
+	hook.Run( "Photon2:EntityCreated", ent, controller )
 	return ent
 end
 
