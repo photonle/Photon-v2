@@ -593,6 +593,8 @@ function Component:Initialize( ent, controller, uiMode )
 		component.Segments[name] = segment:Initialize( component )
 	end
 
+	hook.Run( "Photon2:ComponentCreated", component, controller )
+
 	return component
 end
 
