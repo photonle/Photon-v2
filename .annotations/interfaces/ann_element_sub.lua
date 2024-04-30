@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementSubStateProperties
+---@class PhotonElementSubStateProperties : PhotonElementProperties
 ---@field Material? string Material to apply to sub-material indexes.
 
 ---@class PhotonElementSubProperties : PhotonElementSubStateProperties

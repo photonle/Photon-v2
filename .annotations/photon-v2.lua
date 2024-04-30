@@ -334,6 +334,10 @@ function istable( object ) end
 ---@field OnRelease? PhotonCommandAction[] Actions executed when key is released.
 ---@field ExtendedTitle? string (Internal) Set automatically.
 
+
+---@class PhotonElementProperties
+---@field DeactivationState? string Deactivation state. This state is applied when the light has no more inputs. NOTE: If another state from a different input is set, the light will NOT deactivate.
+
 ---@class PhotonElementPropertiesIntensityTransitions
 ---@field IntensityTransitions? boolean If intensity transtions should be enabled.
 ---@field IntensityGainFactor? number How quickly intensity increases.

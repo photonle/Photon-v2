@@ -182,6 +182,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 7 ),
+			["TRIPLE_FLASH"] = sequence():TripleFlash( 1, 2 ),
 			["ILLUM"] = { 3 }
 		}
 	},
@@ -262,7 +263,7 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["ALT_W"] = {
 		{ "All", "TRIPLE_FLASH" },
-		{ "Takedown", "ALT" }
+		{ "Takedown", "TRIPLE_FLASH" }
 	},
 	["ALT"] = {
 		{ "All", "TRIPLE_FLASH" },

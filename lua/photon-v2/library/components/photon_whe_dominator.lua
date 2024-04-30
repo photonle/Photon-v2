@@ -56,7 +56,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			ALL = { 1 },
-			ALT = sequence():Alternate( 2, 3, 8 )
+			ALT = sequence():Alternate( 2, 3, 8 ),
+			DOUBLE_FLASH_HOLD = { 2, 0, 2, 2, 2, 3, 0, 3, 3, 3, 0 },
 		}
 	}
 }

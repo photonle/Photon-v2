@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementDynamicLightStateProperties
+---@class PhotonElementDynamicLightStateProperties : PhotonElementProperties
 ---@field Color? PhotonColor Color of dynamic light.
 ---@field Brightness? number Brightness of dynamic light.
 ---@field Size? number Size (spread) of dynamic light.

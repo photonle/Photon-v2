@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementMeshStateProperties
+---@class PhotonElementMeshStateProperties : PhotonElementProperties
 ---@field BloomColor? PhotonBlendColor
 ---@field DrawColor? PhotonBlendColor
 ---@field Intensity? number

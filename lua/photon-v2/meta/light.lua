@@ -4,14 +4,13 @@ NAME = "PhotonElement"
 
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElement
+---@class PhotonElement : PhotonElementProperties
 ---@field [1]? string Template
 ---@field Parent? Entity
 ---@field Component? PhotonLightingComponent
 ---@field Class? string Type of element (2D, Mesh, etc.)
 ---@field Disabled? boolean
 ---@field Deactivate? boolean When `true`, marks the light to be activated on the next frame.
----@field DeactivationState? string Deactivation state.
 ---@field IsActivated? boolean
 ---@field States? table<string, PhotonElementState> Table of available states.
 ---@field Id? integer Element's unique identifier (per-component).

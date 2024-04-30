@@ -162,6 +162,26 @@ COMPONENT.Segments = {
 			HIGHBEAMS = { 1 },
 			WIGWAG = sequence():Alternate( 2, 3, 8 )
 		}
+	},
+	["RearSignalFlasher"] = {
+		Off = "OFF",
+		Frames = {
+			[1] = "[W] 7",
+			[2] = "[W] 8",
+		},
+		Sequences = {
+			FLASH = sequence():Alternate( 1, 2, 9 )
+		}
+	},
+	["TailLightFlasher"] = {
+		Off = "~OFF",
+		Frames = {
+			[1] = "9",
+			[2] = "10",
+		},
+		Sequences = {
+			FLASH = sequence():Alternate( 2, 1, 9 )
+		}
 	}
 }
 
@@ -196,8 +216,20 @@ COMPONENT.Inputs = {
 		["HAZARD"] = { Signal = "HAZARD" }
 	},
 	["Emergency.Warning"] = {
+		["MODE1"] = {
+			RearSignalFlasher = "FLASH",
+			TailLightFlasher = "FLASH",
+		},
+		["MODE2"] = {
+			RearSignalFlasher = "FLASH",
+			TailLightFlasher = "FLASH",
+			
+		},
 		["MODE3"] = {
-			HighBeams = "WIGWAG"
+			HighBeams = "WIGWAG",
+			TailLightFlasher = "FLASH",
+			RearSignalFlasher = "FLASH"
+
 		}
 	}
 }
