@@ -186,6 +186,16 @@ COMPONENT.Segments = {
 			["ILLUM"] = { 3 }
 		}
 	},
+	Alley = {
+		Frames = {
+			[1] = "AlleyLeft",
+			[2] = "AlleyRight",
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 7 ),
+			["TRIPLE_FLASH"] = sequence():TripleFlash( 1, 2 ),
+		}
+	},
 	AlleyLeft = {
 		Frames = {
 			[1] = "AlleyLeft",
@@ -263,7 +273,8 @@ COMPONENT.Segments = {
 COMPONENT.Patterns = {
 	["ALT_W"] = {
 		{ "All", "TRIPLE_FLASH" },
-		{ "Takedown", "TRIPLE_FLASH" }
+		{ "Takedown", "TRIPLE_FLASH" },
+		{ "Alley", "TRIPLE_FLASH:180"}
 	},
 	["ALT"] = {
 		{ "All", "TRIPLE_FLASH" },

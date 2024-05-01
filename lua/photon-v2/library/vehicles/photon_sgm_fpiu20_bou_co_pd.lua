@@ -8,6 +8,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 VEHICLE.Title 		= "Boulder Police Department - Ford Police Interceptor (2020)"
 VEHICLE.Vehicle		= "20fpiu_new_sgm"
+-- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 

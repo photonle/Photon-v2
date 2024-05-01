@@ -3,6 +3,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 VEHICLE.Title 		= "Fort Collins Police Department - Ford Crown Victoria (1996)"
 VEHICLE.Vehicle		= "96cvpi_sgm"
+-- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 

@@ -76,8 +76,8 @@ COMPONENT.Elements = {
 	[7] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl" },
 	[8] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr" },
 
-	[9] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl" },
-	[10] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr" },
+	[9] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", IntensityGainFactor = 7, IntensityLossFactor = 7 },
+	[10] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", IntensityGainFactor = 7, IntensityLossFactor = 7 },
 	
 	[11] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_e", DeactivationState = "OFF" },
 
@@ -176,8 +176,8 @@ COMPONENT.Segments = {
 	["TailLightFlasher"] = {
 		Off = "~OFF",
 		Frames = {
-			[1] = "9",
-			[2] = "10",
+			[1] = "[~R] 9",
+			[2] = "[~R] 10",
 		},
 		Sequences = {
 			FLASH = sequence():Alternate( 2, 1, 9 )

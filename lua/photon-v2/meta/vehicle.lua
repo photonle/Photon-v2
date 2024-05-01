@@ -71,6 +71,28 @@ local equipmentTypeMap = {
 	["Props"] = "Prop"
 }
 
+-- This is to prevent 3rd party test vehicles from using the same category name as official demo vehicles.
+-- It's an issue because some people are uploading their test vehicles in the Photon 2 category without realizing.
+
+-- TODO: This should be abstracted and implemented for all library types to prevent similar issues.
+local categoryWhitelist = {
+	["Photon 2"] = {
+		Rename = "Photon 2: Addons",
+		Allow = {
+			["photon_sgm_chevcap13_ftc_co_cso"] = true,
+			["photon_sgm_cvpi96_ftc_co_pd"] = true,
+			["photon_sgm_durang21_co_csp"] = true,
+			["photon_sgm_fpiu13_sea_pd"] = true,
+			["photon_sgm_fpiu20_bou_co_pd"] = true,
+			["photon_sgm_fpiu20_bou_co_so"] = true,
+			["photon_sgm_fpiu20_mpdc"] = true,
+			["photon_sgm_fpiu20_unmarked"] = true,
+			["photon_sgm_fpiu20_uscp"] = true,
+			["photon_sm_fpiu16_lvmpd"] = true,
+		}
+	}
+}
+
 function Vehicle.GetError()
 	return {
 		Model = "models/error.mdl",
@@ -405,6 +427,15 @@ function Vehicle.New( data )
 		vehicleTable.Name				 = title
 		vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
 		vehicleTable.IsPhoton2Generated  = true
+
+		-- Category whitelist check
+		if ( categoryWhitelist[vehicleTable.Category] ) then
+			if ( not categoryWhitelist[vehicleTable.Category].Allow[data.Name] ) then
+				warn( "Vehicle [" .. data.Name .. "] is using a protected category name [" .. vehicleTable.Category .. "]. It has been moved to [" ..  categoryWhitelist[vehicleTable.Category].Rename .. "] to prevent conflicts." )
+				vehicleTable.Category = categoryWhitelist[vehicleTable.Category].Rename
+			end
+		end
+
 		list.Set( "Vehicles", vehicleListId, vehicleTable )
 	end
 	setmetatable( vehicle, { __index = PhotonVehicle } )

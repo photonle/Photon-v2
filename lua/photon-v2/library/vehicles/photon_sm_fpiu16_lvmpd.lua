@@ -3,6 +3,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 VEHICLE.Title 		= "Las Vegas Metropolitan Police - Ford Police Interceptor (2016)"
 VEHICLE.Vehicle		= "sm16fpiu"
+-- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
