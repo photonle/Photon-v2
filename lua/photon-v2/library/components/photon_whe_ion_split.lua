@@ -9,13 +9,14 @@ COMPONENT.Credits = {
 }
 COMPONENT.Model = "models/sentry/props/ion_photon.mdl"
 
-local size = 6
+local size = 2.7
 
 COMPONENT.Templates = {
 	["2D"] = {
 		Light = {
 			Width  = size,
-			Height = size/4,
+			Height = size/2,
+			-- Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_ion_half_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_ion_half_detail.png").MaterialName,
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/whe_ion_half_shape.png").MaterialName,
 		}
@@ -27,21 +28,26 @@ COMPONENT.States = {
 	[2] = "B",
 }
 
-COMPONENT.StateMap = "[1/2] 1"
+COMPONENT.StateMap = "[1] 1 [2] 2"
 
 COMPONENT.Elements = {
-	[1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
+	-- [1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
+	[1] = { "Light", Vector( -1.45, 0.5, 0 ), Angle( 0, 0, 0 ) },
+	[2] = { "Light", Vector( 1.4, 0.5, 0 ), Angle( 0, 0, 180 ) }
 }
 
 
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
-			[1] = "[1] 1",
-			[2] = "[2] 1",
+			[1] = "1",
+			[2] = "2",
+			[3] = "1 2"
 		},
 		Sequences = {
-			ON = { 1 },
+			ON = { 3 },
+			-- meaning, the hold duration is very short
+			["DOUBLE_FLASH_MED"] = sequence():FlashHold( { 1, 2 }, 2, 3 )
 		}
 	}
 }
@@ -49,11 +55,18 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
+			Light = "ON"
 		},
 		["MODE2"] = {
 		},
 		["MODE3"] = {
 		}
+	}
+}
+
+COMPONENT.Patterns = {
+	["DOUBLE_FLASH_MED"] = {
+		{ "Light", "DOUBLE_FLASH_MED" }
 	}
 }
 

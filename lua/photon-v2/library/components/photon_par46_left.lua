@@ -57,3 +57,17 @@ COMPONENT.Templates = {
 		}
 	}
 }
+
+local sequence = Photon2.SequenceBuilder.New
+
+COMPONENT.Segments = {
+	Flasher = {
+		Frames = {
+			[0] = "[~OFF] 1",
+			[1] = "1",
+		},
+		Sequences = {
+			["FLASH"] = sequence():Alternate( 1, 0, 12 ),
+		}
+	}
+}

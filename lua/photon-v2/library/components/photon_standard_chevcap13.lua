@@ -160,7 +160,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			HIGHBEAMS = { 1 },
-			WIGWAG = sequence():Alternate( 2, 3, 8 )
+			WIGWAG = sequence():Alternate( 2, 3, 7 )
 		}
 	},
 	["RearSignalFlasher"] = {

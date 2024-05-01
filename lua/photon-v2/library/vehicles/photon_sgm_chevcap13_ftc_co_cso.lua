@@ -11,6 +11,18 @@ VEHICLE.WorkshopRequirements = {
 
 }
 
+VEHICLE.Description = [[
+Fort Collins Community Service Officers (CSOs) are civilian police employees who respond to traffic accidents, assist with crime scene investigation, and a perform variety of non-enforcement duties.
+
+This is a rather fascinating vehicle, as it features an amber-only lightbar (except for takedowns) but red/white/blue lighting everywhere else. It also has a siren, although it's seemingly never used. 
+
+Special thanks to Fort Collins Police for providing detailed information to me about the equipment and graphics.
+]]
+
+-- This actually does have a siren
+VEHICLE.Siren = { "whelen_epsilon" }
+
+
 local livery = PhotonMaterial.New({
 	Name = "schmal_chevcap13_ftc_cso",
 	Shader = "VertexLitGeneric",
@@ -39,6 +51,8 @@ local livery = PhotonMaterial.New({
 		["$nodecal"] = 1
 	}
 })
+
+local sequence = Photon2.SequenceBuilder.New
 
 VEHICLE.SubMaterials = {
 	[13] = livery.MaterialName,
@@ -162,9 +176,9 @@ VEHICLE.Equipment = {
 							-- Clear the default illumination mode
 							["Emergency.SceneForward"] = { ["ON"] = {} },
 							["Emergency.Warning"] = {
-								["MODE1"] = { Light = "ON" },
+								["MODE1"] = {},
 								["MODE2"] = { Light = "ON" },
-								["MODE3"] = { Light = "ON" },
+								["MODE3"] = { Flasher = "FLASH" },
 							}
 						}
 					}
@@ -244,21 +258,47 @@ VEHICLE.Equipment = {
 				Option = "Ions",
 				Components = {
 					{
-						Component = "photon_whe_ion",
-						Position = Vector( 10, 102.3, 31.3 ),
-						Angles = Angle( -1, -7, 15 ),
-						States = { "W" },
-						Phase = 180,
-						Scale = 0.8
+						Name = "@grille_ion",
+						Component = "photon_whe_ion_split",
+						Position = Vector( -10, 102.3, 30 ),
+						Angles = Angle( 4, 8, 15 ),
+						States = { "R", "B" },
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = "DOUBLE_FLASH_MED",
+								["MODE2"] = "DOUBLE_FLASH_MED",
+								["MODE3"] = "DOUBLE_FLASH_MED",
+							}
+						},
+						Scale = 0.8,
 					},
 					{
-						Component = "photon_whe_ion",
-						Position = Vector( -10, 102.3, 31.3 ),
-						Angles = Angle( 1, 7, 15 ),
-						Scale = 0.8,
-					}
+						Inherit = "@grille_ion",
+						Position = Vector( 10, 102.3, 30 ),
+						Angles = Angle( -4, -8, 15 ),
+						-- This is truly the light color configuration
+						States = { "W", "R" },
+					},
 				}
 			},
+		}
+	},
+	{
+		Category = "Siren",
+		Options = {
+			{
+				Option = "Siren Prototype",
+				Components = {
+					{
+						Model = "models/sentry/props/whelensa315p_mounta.mdl",
+						Component = "siren_prototype",
+						Position = Vector(-10, 96, 31),
+						Angles = Angle(1.5, 0, 0),
+						Scale = 1,
+						Siren = 1
+					},
+				}
+			}
 		}
 	},
 	{
