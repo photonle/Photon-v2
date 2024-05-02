@@ -76,21 +76,22 @@ local equipmentTypeMap = {
 
 -- TODO: This should be abstracted and implemented for all library types to prevent similar issues.
 local categoryWhitelist = {
-	["Photon 2"] = {
-		Rename = "Photon 2: Addons",
-		Allow = {
-			["photon_sgm_chevcap13_ftc_co_cso"] = true,
-			["photon_sgm_cvpi96_ftc_co_pd"] = true,
-			["photon_sgm_durang21_co_csp"] = true,
-			["photon_sgm_fpiu13_sea_pd"] = true,
-			["photon_sgm_fpiu20_bou_co_pd"] = true,
-			["photon_sgm_fpiu20_bou_co_so"] = true,
-			["photon_sgm_fpiu20_mpdc"] = true,
-			["photon_sgm_fpiu20_unmarked"] = true,
-			["photon_sgm_fpiu20_uscp"] = true,
-			["photon_sm_fpiu16_lvmpd"] = true,
-		}
-	}
+	-- ["Photon 2"] = {
+	-- 	Rename = "Photon 2: Addons",
+	-- 	Allow = {
+	-- 		["photon_sgm_chevcap13_wa_wsp"] = true,
+	-- 		["photon_sgm_chevcap13_ftc_co_cso"] = true,
+	-- 		["photon_sgm_cvpi96_ftc_co_pd"] = true,
+	-- 		["photon_sgm_durang21_co_csp"] = true,
+	-- 		["photon_sgm_fpiu13_sea_pd"] = true,
+	-- 		["photon_sgm_fpiu20_bou_co_pd"] = true,
+	-- 		["photon_sgm_fpiu20_bou_co_so"] = true,
+	-- 		["photon_sgm_fpiu20_mpdc"] = true,
+	-- 		["photon_sgm_fpiu20_unmarked"] = true,
+	-- 		["photon_sgm_fpiu20_uscp"] = true,
+	-- 		["photon_sm_fpiu16_lvmpd"] = true,
+	-- 	}
+	-- }
 }
 
 function Vehicle.GetError()

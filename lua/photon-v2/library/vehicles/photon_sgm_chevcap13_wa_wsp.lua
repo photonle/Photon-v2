@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Fort Collins Community Service Officer - 2013 Chevrolet Caprice PPV"
+VEHICLE.Title 		= "Washington State Patrol - 2013 Chevrolet Caprice PPV"
 VEHICLE.Vehicle		= "13caprice_sgm"
 -- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
@@ -12,11 +12,11 @@ VEHICLE.WorkshopRequirements = {
 }
 
 VEHICLE.Description = [[
-Fort Collins Community Service Officers (CSOs) are civilian police employees who respond to traffic accidents, assist with crime scene investigation, and a perform variety of non-enforcement duties.
+The Washington State Patrol is responsible for enforcing traffic laws and investigating accidents on state highways and unincorporated roads.
 
-This is a rather fascinating vehicle, as it features an amber-only lightbar (except for takedowns) but red/white/blue lighting everywhere else. It also has a siren, although it's seemingly never used. 
+The Caprice was very common throughout the mid 2010s. They used a relatively unique lighting configuration that was primarily blue with some red and amber.
 
-Special thanks to Fort Collins Police for giving me very precise answers to some questions I couldn't figure out.
+Their vehicle designs are very simple with graphics only present on the driver and front-passenger doors.
 ]]
 
 -- This actually does have a siren
@@ -24,10 +24,10 @@ VEHICLE.Siren = { "whelen_epsilon" }
 
 
 local livery = PhotonMaterial.New({
-	Name = "schmal_chevcap13_ftc_cso",
+	Name = "schmal_chevcap13_wa_wsp",
 	Shader = "VertexLitGeneric",
 	Parameters = {
-		["$basetexture"] = "schmal/liveries/sgm_chevcap13/ftc_co_cso.png",
+		["$basetexture"] = "schmal/liveries/sgm_chevcap13/wa_wsp.png",
 		["$bumpmap"] = "photon/common/flat",
 		
 		["$envmap"] = "env_cubemap",
@@ -123,11 +123,11 @@ VEHICLE.Equipment = {
 							-- [3] = "photon/common/blank"
 						},
 						BodyGroups = {
-							["front_inner"] = 0,
-							["front_middle"] = 2,
+							["front_inner"] = 3,
+							["front_middle"] = 0,
 							["front_outer"] = 0,
 						},
-						States = { "A", "A", "A", "A" }
+						-- States = { "A", "A", "A", "A" }
 					}
 				}
 			}
@@ -154,34 +154,6 @@ VEHICLE.Equipment = {
 							}
 						}
 					},
-					{
-						Component = "photon_par46_right",
-						Position = Vector( 32, 27, 53 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1,
-						SubMaterials = {
-							[7] = "photon/common/red_glass",
-						},
-						States = {
-							"~HR"
-						},
-						Templates = {
-							Bone = {
-								Shaft = { DeactivationState = "UP" },
-								Lamp = { DeactivationState = "UP" },
-								Handle = { DeactivationState = "UP" },
-							}
-						},
-						Inputs = {
-							-- Clear the default illumination mode
-							["Emergency.SceneForward"] = { ["ON"] = {} },
-							["Emergency.Warning"] = {
-								["MODE1"] = {},
-								["MODE2"] = { Light = "ON" },
-								["MODE3"] = { Flasher = "FLASH" },
-							}
-						}
-					}
 				}
 			},
 		}
@@ -241,48 +213,51 @@ VEHICLE.Equipment = {
 				Option = "Setina",
 				Props = {
 					{
-						Model = "models/schmal/chevcap13_pushbar.mdl",
-						Position = Vector( 0, 114, 25 ),
+						Model = "models/schmal/chevcap13_bumper.mdl",
+						Position = Vector( 0, 113, 24.5 ),
 						Angles = Angle( 0, -90, 0 ),
-						Scale = 1
+						Scale = 1,
+						BodyGroups = {
+							["wrap"] = 1
+						}
 					}
 				}
 			}
 
 		}
 	},
-	{
-		Category = "Grille",
-		Options = {
-			{
-				Option = "Ions",
-				Components = {
-					{
-						Name = "@grille_ion",
-						Component = "photon_whe_ion_split",
-						Position = Vector( -10, 102.3, 30 ),
-						Angles = Angle( 4, 8, 15 ),
-						States = { "R", "B" },
-						Inputs = {
-							["Emergency.Warning"] = {
-								["MODE1"] = "DOUBLE_FLASH_MED",
-								["MODE2"] = "DOUBLE_FLASH_MED",
-								["MODE3"] = "DOUBLE_FLASH_MED",
-							}
-						},
-						Scale = 0.8,
-					},
-					{
-						Inherit = "@grille_ion",
-						Position = Vector( 10, 102.3, 30 ),
-						Angles = Angle( -4, -8, 15 ),
-						-- This is truly the light color configuration
-						States = { "W", "R" },
-					},
-				}
-			},
-		}
-	},
+	-- {
+	-- 	Category = "Grille",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Ions",
+	-- 			Components = {
+	-- 				{
+	-- 					Name = "@grille_ion",
+	-- 					Component = "photon_whe_ion_split",
+	-- 					Position = Vector( -10, 102.3, 30 ),
+	-- 					Angles = Angle( 4, 8, 15 ),
+	-- 					States = { "R", "B" },
+	-- 					Inputs = {
+	-- 						["Emergency.Warning"] = {
+	-- 							["MODE1"] = "DOUBLE_FLASH_MED",
+	-- 							["MODE2"] = "DOUBLE_FLASH_MED",
+	-- 							["MODE3"] = "DOUBLE_FLASH_MED",
+	-- 						}
+	-- 					},
+	-- 					Scale = 0.8,
+	-- 				},
+	-- 				{
+	-- 					Inherit = "@grille_ion",
+	-- 					Position = Vector( 10, 102.3, 30 ),
+	-- 					Angles = Angle( -4, -8, 15 ),
+	-- 					-- This is truly the light color configuration
+	-- 					States = { "W", "R" },
+	-- 				},
+	-- 			}
+	-- 		},
+	-- 	}
+	-- },
 	{
 		Category = "Siren",
 		Options = {
@@ -301,49 +276,44 @@ VEHICLE.Equipment = {
 			}
 		}
 	},
-	{
-		Category = "Rear",
-		Options = {
-			{
-				Option = "Dominator",
-				Components = {
-					{
-						Component = "photon_whe_dominator_4",
-						Position = Vector( 0, -86, 54.2 ),
-						Angles = Angle( 180, 0, 0 ),
-						Scale = 0.9,
-						RenderGroup = RENDERGROUP_OPAQUE,
-						States = { "B", "R" },
-						Inputs = {
-							["Emergency.Warning"] = {
-								["MODE1"] = { All = "DOUBLE_FLASH_HOLD" },
-								["MODE2"] = { All = "DOUBLE_FLASH_HOLD" },
-								["MODE3"] = { All = "DOUBLE_FLASH_HOLD" },
-							}
-						}
-					}
-				}
-			},
-		}
-	},
+	-- {
+	-- 	Category = "Rear",
+	-- 	Options = {
+	-- 		{
+	-- 			Option = "Dominator",
+	-- 			Components = {
+	-- 				{
+	-- 					Component = "photon_whe_dominator_4",
+	-- 					Position = Vector( 0, -86, 54.2 ),
+	-- 					Angles = Angle( 180, 0, 0 ),
+	-- 					Scale = 0.9,
+	-- 					RenderGroup = RENDERGROUP_OPAQUE,
+	-- 					States = { "B", "R" },
+	-- 					Inputs = {
+	-- 						["Emergency.Warning"] = {
+	-- 							["MODE1"] = { All = "DOUBLE_FLASH_HOLD" },
+	-- 							["MODE2"] = { All = "DOUBLE_FLASH_HOLD" },
+	-- 							["MODE3"] = { All = "DOUBLE_FLASH_HOLD" },
+	-- 						}
+	-- 					}
+	-- 				}
+	-- 			}
+	-- 		},
+	-- 	}
+	-- },
 	{
 		Category = "Antenna",
 		Options = {
 			{
 				Option = "Option",
 				Props = {
-					{
-						Model = "models/anemolis/props/antennas/anemolis_antenna6.mdl",
-						Position = Vector( 0, -34, 69.7 ),
-						Angles = Angle( 0, 0, 2 ),
-						Scale = 1
-					},
-					{
-						Model = "models/anemolis/props/antennas/anemolis_antenna3.mdl",
-						Position = Vector( 0, -43, 69 ),
-						Angles = Angle( 0, 0, 5 ),
-						Scale = 1
-					}
+					-- {
+					-- 	Model = "models/anemolis/props/antennas/anemolis_antenna6.mdl",
+					-- 	Position = Vector( 0, -34, 69.7 ),
+					-- 	Angles = Angle( 0, 0, 2 ),
+					-- 	Scale = 1
+					-- },
+
 				}
 			},
 		}

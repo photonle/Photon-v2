@@ -301,6 +301,7 @@ VEHICLE.Equipment = {
 				Option = "Siren Prototype",
 				Components = {
 					{
+						-- soundoff siren speaker?
 						Component = "photon_sos_siren",
 						Model = "models/sentry/props/whelensa315p_mounta.mdl",
 						Position = Vector(-11, 113, 39.5),
