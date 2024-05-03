@@ -152,7 +152,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["FLASH"] = sequence():TripleFlash( 2, 3 )
+			["FLASH"] = sequence():TripleFlash( 2, 3 ):SetTiming( 1/30 )
 		}
 	},
 	SignalFlasher = {

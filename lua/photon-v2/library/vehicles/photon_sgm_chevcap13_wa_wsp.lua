@@ -471,9 +471,14 @@ VEHICLE.Equipment = {
 	},
 }
 
-hook.Add( "HUDPaint", "Photon2:SGMChevCap13MatOverride", function() 
+hook.Add( "HUDPaint", "Photon2:SGMChevCap13MatOverride", function()
 	Material( "sentry/13caprice/turnsig_orange" ):SetInt( "$nowritez", 1 )
 	Material( "sentry/13caprice/red_glass" ):SetInt( "$nowritez", 1 )
 	Material( "sentry/13caprice/ridges_drl" ):SetInt( "$nowritez", 1 )
+	timer.Simple( 5, function()
+		Material( "sentry/13caprice/turnsig_orange" ):SetInt( "$nowritez", 1 )
+		Material( "sentry/13caprice/red_glass" ):SetInt( "$nowritez", 1 )
+		Material( "sentry/13caprice/ridges_drl" ):SetInt( "$nowritez", 1 )
+	end)
 	hook.Remove( "HUDPaint", "Photon2:SGMChevCap13MatOverride" )
 end)
