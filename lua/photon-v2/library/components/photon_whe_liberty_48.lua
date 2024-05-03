@@ -76,7 +76,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[1] 1 3 5 7 [3] 9 11 13 15 [2] 2 4 6 8 10 [4] 12 14 16 [W] 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43"
+COMPONENT.StateMap = "[1] 1 3 5 7 [3] 9 11 13 15 [2] 2 4 6 8 10 [4] 12 14 16"
 
 -- This model is so realistic, the modules aren't even centered accurately :)
 COMPONENT.Elements = {
@@ -163,7 +163,7 @@ local sequence = Photon2.SequenceBuilder.New
 COMPONENT.Segments = {
 	All = {
 		Frames = {
-			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43",
+			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 [W] 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43",
 			[2] = "1 3 5 7 9 11 13 15",
 			[3] = "2 4 6 8 10 12 14 16",
 			-- [1] = "17 18",
@@ -176,9 +176,9 @@ COMPONENT.Segments = {
 	},
 	Takedown = {
 		Frames = {
-			[1] = "TakedownLeft",
-			[2] = "TakedownRight",
-			[3] = "TakedownLeft TakedownRight TakedownLeftIllum TakedownRightIllum"
+			[1] = "[W] TakedownLeft",
+			[2] = "[W] TakedownRight",
+			[3] = "[W] TakedownLeft TakedownRight TakedownLeftIllum TakedownRightIllum"
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 7 ),
@@ -188,8 +188,8 @@ COMPONENT.Segments = {
 	},
 	Alley = {
 		Frames = {
-			[1] = "AlleyLeft",
-			[2] = "AlleyRight",
+			[1] = "[W] AlleyLeft",
+			[2] = "[W] AlleyRight",
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 7 ),
@@ -198,8 +198,8 @@ COMPONENT.Segments = {
 	},
 	AlleyLeft = {
 		Frames = {
-			[1] = "AlleyLeft",
-			[2] = "AlleyLeft AlleyLeftIllum"
+			[1] = "[W] AlleyLeft",
+			[2] = "[W] AlleyLeft AlleyLeftIllum"
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -208,8 +208,8 @@ COMPONENT.Segments = {
 	},
 	AlleyRight = {
 		Frames = {
-			[1] = "AlleyRight",
-			[2] = "AlleyRight AlleyRightIllum"
+			[1] = "[W] AlleyRight",
+			[2] = "[W] AlleyRight AlleyRightIllum"
 		},
 		Sequences = {
 			["ON"] = { 1 },
@@ -240,6 +240,30 @@ COMPONENT.Segments = {
 			["LEFT"] = sequence():Sequential( 1, 6 ):Stretch( 2 ):Hold( 1 ):Alternate( 0, 6, 4):Do( 2 ):Off( 1 ),
 			["RIGHT"] = sequence():Sequential( 6, 1 ):Stretch( 2 ):Hold( 1 ):Alternate( 0, 1, 4):Do( 2 ):Off( 1 ),
 			["CENOUT"] = sequence():Sequential( 7, 9 ):Stretch( 3 ):Hold( 1 ):Alternate( 0, 9, 4):Do( 2 ):Off( 1 ),
+		}
+	},
+	AmberTrafficFill = {
+		Frames = {
+			[1] = "[A] 12",
+			[2] = "[A] 12 14",
+			[3] = "[A] 12 14 16",
+			[4] = "[A] 12 14 16 15",
+			[5] = "[A] 12 14 16 15 13",
+			[6] = "[A] 12 14 16 15 13 11",
+			[7] = "[A] 11",
+			[8] = "[A] 11 13",
+			[9] = "[A] 11 13 15",
+			[10] = "[A] 11 13 15 16",
+			[11] = "[A] 11 13 15 16 14",
+			[12] = "[A] 11 13 15 16 14 12",
+			[13] = "[A] 15 16",
+			[14] = "[A] 13 15 16 14",
+			[15] = "[A] 11 13 15 16 14 12",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 6 ):Add( 5, 6, 5, 6, 5, 6 ):Off( 1 ):StretchAll( 3 ),
+			["RIGHT"] = sequence():Sequential( 7, 12 ):Add( 11, 12, 11, 12, 11, 12 ):Off( 1 ):StretchAll( 3 ),
+			["CENOUT"] = sequence():Sequential( 13, 15 ):Add( 14, 15, 14, 15 ):Off( 1 ):StretchAll( 4 ),
 		}
 	},
 	FrontCut = {

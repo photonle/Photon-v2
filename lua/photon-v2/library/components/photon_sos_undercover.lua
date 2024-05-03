@@ -60,7 +60,7 @@ COMPONENT.Templates = {
 COMPONENT.Elements = {
 	[1] = { "LED", Indexes = { 2 } },
 	[2] = { "Lens", Indexes = { 3 } }, -- lens,
-	[3] = { "Mid", Vector(0,0,1.2), Angle(-90,0,0) },
+	[3] = { "Mid", Vector( 0, 0, 1.2 ), Angle( -90, 0, 0 ) },
 	[4] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "schmal/photon/sos_underco/glass", DrawMaterial = "photon/common/glow_gradient_additive_a" }
 }
 

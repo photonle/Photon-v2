@@ -16,6 +16,11 @@ COMPONENT.Flags = {
 	AutomaticHeadlights = true
 }
 
+COMPONENT.States = {
+	[1] = "W",
+	[2] = "W"
+}
+
 COMPONENT.Templates = {
 	["Mesh"] = {
 		["Model"] = {
@@ -61,14 +66,14 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[~SW] 1 2 3 4 12 13 [~A] 5 6 7 8 [~RD] 9 10 [R] 11 [W] 14 15 [HIDE] 16 17"
+COMPONENT.StateMap = "[~SW] 1 2 3 4 12 13 [~A] 5 6 [~A/1] 7 [~A/2] 8 [~RD] 9 10 [R] 11 [W] 14 15 [HIDE] 16 17"
 
 COMPONENT.Elements = {
 	[1] = { "Headlights", Vector( -30.2, 90.2, 32.2 ), Angle( 0, 0, 0 ) },
 	[2] = { "Headlights", Vector( 30.2, 90.2, 32.2 ), Angle( 0, 0, 0 ) },
 
-	[3] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fl", DrawMaterial = "photon/common/glow_gradient_e", ManipulateAlpha = true },
-	[4] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fr", DrawMaterial = "photon/common/glow_gradient_e", ManipulateAlpha = true },
+	[3] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fl", DrawMaterial = "photon/common/glow_gradient_e", ManipulateAlpha = true, IntensityGainFactor = 10, IntensityLossFactor = 10 },
+	[4] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fr", DrawMaterial = "photon/common/glow_gradient_e", ManipulateAlpha = true, IntensityGainFactor = 10, IntensityLossFactor = 10 },
 
 	[5] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl" },
 	[6] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr" },
@@ -160,17 +165,21 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			HIGHBEAMS = { 1 },
-			WIGWAG = sequence():Alternate( 2, 3, 7 )
+			WIGWAG = sequence():Alternate( 2, 3, 7 ),
+			-- Added for the WSP demo because theirs are very fast
+			WIGWAG_RAPID = sequence():Alternate( 2, 3, 5 )
 		}
 	},
 	["RearSignalFlasher"] = {
 		Off = "OFF",
 		Frames = {
-			[1] = "[W] 7",
-			[2] = "[W] 8",
+			[1] = "[2] 7",
+			[2] = "[2] 8",
+			[3] = "[2] 7 8"
 		},
 		Sequences = {
-			FLASH = sequence():Alternate( 1, 2, 9 )
+			FLASH = sequence():Alternate( 1, 2, 9 ),
+			FLASH_ALT = sequence():FlashHold( 3, 3, 4 ):Off( 4 )
 		}
 	},
 	["TailLightFlasher"] = {
@@ -178,11 +187,27 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "[~R] 9",
 			[2] = "[~R] 10",
+			[3] = "[PASS] 9 10",
+			[4] = "[~R] 9 10"
 		},
 		Sequences = {
-			FLASH = sequence():Alternate( 2, 1, 9 )
+			FLASH = sequence():Alternate( 2, 1, 9 ),
+			FLASH_ALT = sequence():Alternate( 4, 3, 7 )
 		}
+	},
+	["ReverseFlasher"] = {
+		Off = "~OFF",
+		Frames = {
+			[1] = "12",
+			[2] = "13",
+			[3] = "12 13"
+		},
+		Sequences = {
+			FLASH_ALT = sequence():Alternate( 0, 3, 7 )
+		}
+	
 	}
+
 }
 
 COMPONENT.Inputs = {
@@ -223,13 +248,11 @@ COMPONENT.Inputs = {
 		["MODE2"] = {
 			RearSignalFlasher = "FLASH",
 			TailLightFlasher = "FLASH",
-			
 		},
 		["MODE3"] = {
 			HighBeams = "WIGWAG",
 			TailLightFlasher = "FLASH",
 			RearSignalFlasher = "FLASH"
-
 		}
 	}
 }

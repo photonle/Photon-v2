@@ -83,7 +83,10 @@ VEHICLE.Equipment = {
 						Model = "models/schmal/chevcap13_windows.mdl",
 						Position = Vector( 0, 0, 0 ),
 						Angles = Angle( 0, -90, 0 ),
-						Scale = 1
+						Scale = 1,
+						SubMaterials = {
+							[1] = "schmal/chevcap13/wsp_window",
+						}
 					}
 				}
 			},
@@ -97,6 +100,22 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_standard_chevcap13",
+						States = { "B", "B" },
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {
+								},
+								["MODE2"] = {
+									RearSignalFlasher = "FLASH_ALT",
+								},
+								["MODE3"] = {
+									TailLightFlasher = "FLASH_ALT",
+									ReverseFlasher = "FLASH_ALT",
+									RearSignalFlasher = "FLASH_ALT",
+									HighBeams = "WIGWAG_RAPID",
+								}
+							}
+						}
 					}
 				}
 			}
@@ -113,11 +132,86 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -19.2, 70.2 ),
 						Angles = Angle( 2, 90, 0 ),
 						Scale = 0.8,
+						StateMap = "[B] 1 2 3 4 [R] 5 6 [B] 7 8 9 10 [A] 11 12 [B] 13 14 [R] 15 16",
+						Segments = {
+							ForwardInboard = {
+								Frames = {
+									[1] = "3 6",
+									[2] = "4 5",
+									[3] = "5",
+									[4] = "6"
+								},
+								Sequences = {
+									["QUAD_FLASH"] = sequence():QuadFlash( 1, 2 ):Do( 4 ):Alternate( 1, 2, 4 ):Do( 4 ),
+									["SLOW"] = sequence():Steady( 4, 10 ):Off( 1 ):Steady( 3, 10 ):Off( 1 )
+								}
+							},
+							Corners = {
+								Frames = {
+									[1] = "7 9",
+									[2] = "8 10",
+									[3] = "7 8 9 10"
+								},
+								Sequences = {
+									["TRIPLE_FLASH_HOLD"] = { 1, 1, 0, 1, 0, 1, 0, 2, 2, 0, 2, 0, 2, 0 },
+									["ON"] = { 3 }
+								}
+							},
+							RearOuter = {
+								Frames = {
+									[1] = "11",
+									[2] = "12",
+								},
+								Sequences = {
+									["SLOW"] = sequence():Steady( 1, 10 ):Off( 2 ):Steady( 2, 10 ):Off( 2 )
+								}
+							},
+							RearInboard = {
+								Frames = {
+									[1] = "13 16",
+									[2] = "14 15",
+									[3] = "13",
+									[4] = "14"
+								},
+								Sequences = {
+									["QUAD_FLASH"] = sequence():QuadFlash( 1, 2 ):Do( 4 ):Alternate( 1, 2, 4 ):Do( 4 ),
+									["QUAD_FLASH_BLUE"] = sequence():QuadFlash( 3, 4 ):Do( 4 ):Alternate( 3, 4, 4 ):Do( 4 ),
+								}
+							}
+						},
 						Bones = {
 							["foot_l"] = { Vector( -0.2, 0, 0), Angle( 0, 0, 0 ), 1 },
 							["foot_r"] = { Vector( 0.2, 0, 0), Angle( 0, 0, 0 ), 1 },
 							["strap_l"] = { Vector( 0.3, 0, 0), Angle( 0, 0, 0 ), 1 },
 							["strap_r"] = { Vector( -0.3, 0, 0), Angle( 0, 0, 0 ), 1 },
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {
+									Corners = "ON",
+									ForwardInboard = "SLOW",
+									RearOuter = "SLOW",
+								},
+								["MODE2"] = {
+									ForwardInboard = "QUAD_FLASH",
+									Corners = "TRIPLE_FLASH_HOLD",
+									RearOuter = "SLOW",
+									RearInboard = "QUAD_FLASH_BLUE"
+								},
+								["MODE3"] = {
+									ForwardInboard = "QUAD_FLASH",
+									Corners = "TRIPLE_FLASH_HOLD",
+									RearOuter = "SLOW",
+									RearInboard = "QUAD_FLASH",
+									Takedown = "TRIPLE_FLASH",
+									Alley = "TRIPLE_FLASH:180"
+								}
+							},
+							["Emergency.Directional"] = {
+								["LEFT"] = { AmberTrafficFill = "LEFT" },
+								["RIGHT"] = { AmberTrafficFill = "RIGHT" },
+								["CENOUT"] = { AmberTrafficFill = "CENOUT" },
+							}
 						},
 						SubMaterials = {
 							-- [3] = "photon/common/blank"
@@ -172,7 +266,7 @@ VEHICLE.Equipment = {
 						Scale = 1.2,
 						SubMaterials = {
 							-- [1] = "",
-							[1] = "photon/license/plates/ph2_co_gvt"
+							[1] = "photon/license/plates/ph2_wsp"
 							-- [1] = "!ph2_mpdc_demo"
 						},
 						BodyGroups = {
@@ -214,7 +308,7 @@ VEHICLE.Equipment = {
 				Props = {
 					{
 						Model = "models/schmal/chevcap13_bumper.mdl",
-						Position = Vector( 0, 113, 24.5 ),
+						Position = Vector( 0, 113, 24 ),
 						Angles = Angle( 0, -90, 0 ),
 						Scale = 1,
 						BodyGroups = {
@@ -226,38 +320,6 @@ VEHICLE.Equipment = {
 
 		}
 	},
-	-- {
-	-- 	Category = "Grille",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "Ions",
-	-- 			Components = {
-	-- 				{
-	-- 					Name = "@grille_ion",
-	-- 					Component = "photon_whe_ion_split",
-	-- 					Position = Vector( -10, 102.3, 30 ),
-	-- 					Angles = Angle( 4, 8, 15 ),
-	-- 					States = { "R", "B" },
-	-- 					Inputs = {
-	-- 						["Emergency.Warning"] = {
-	-- 							["MODE1"] = "DOUBLE_FLASH_MED",
-	-- 							["MODE2"] = "DOUBLE_FLASH_MED",
-	-- 							["MODE3"] = "DOUBLE_FLASH_MED",
-	-- 						}
-	-- 					},
-	-- 					Scale = 0.8,
-	-- 				},
-	-- 				{
-	-- 					Inherit = "@grille_ion",
-	-- 					Position = Vector( 10, 102.3, 30 ),
-	-- 					Angles = Angle( -4, -8, 15 ),
-	-- 					-- This is truly the light color configuration
-	-- 					States = { "W", "R" },
-	-- 				},
-	-- 			}
-	-- 		},
-	-- 	}
-	-- },
 	{
 		Category = "Siren",
 		Options = {
@@ -276,44 +338,101 @@ VEHICLE.Equipment = {
 			}
 		}
 	},
-	-- {
-	-- 	Category = "Rear",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "Dominator",
-	-- 			Components = {
-	-- 				{
-	-- 					Component = "photon_whe_dominator_4",
-	-- 					Position = Vector( 0, -86, 54.2 ),
-	-- 					Angles = Angle( 180, 0, 0 ),
-	-- 					Scale = 0.9,
-	-- 					RenderGroup = RENDERGROUP_OPAQUE,
-	-- 					States = { "B", "R" },
-	-- 					Inputs = {
-	-- 						["Emergency.Warning"] = {
-	-- 							["MODE1"] = { All = "DOUBLE_FLASH_HOLD" },
-	-- 							["MODE2"] = { All = "DOUBLE_FLASH_HOLD" },
-	-- 							["MODE3"] = { All = "DOUBLE_FLASH_HOLD" },
-	-- 						}
-	-- 					}
-	-- 				}
-	-- 			}
-	-- 		},
-	-- 	}
-	-- },
+	{
+		Category = "Forward Hide-away Lights",
+		Options = {
+			{
+
+				Option = "Whelen Vertex", -- just kidding :)
+				Components = {
+					-- They could've used blue lights on the fender for enhanced intersection clearance,
+					-- but they installed these white upward-facing flashers next to the fucking wig-wags instead. 
+					--
+					-- ?????????????????????????????????
+					{
+						Name = "@undercover",
+						Component = "photon_sos_undercover",
+						Position = Vector( -28, 93, 29 ),
+						Angles = Angle( 5, 0, -2 ),
+						Scale = 0.5,
+						RenderGroup = RENDERGROUP_BOTH,
+						Elements = {
+							-- The angle of the 2D light is manually adjusted to face outward instead of up, giving a better effect
+							-- as to be one notch above completely and utterly useless.
+							[3] = { "Mid", Vector( 0, 0, 1.2 ), Angle( -45, 45, 0 ) },
+						},
+						Segments = {
+							WSP = {
+								Frames = { [1] = "[W] Light"},
+								Sequences = {
+									["ON"] = { 1 },
+									["DOUBLE_FLASH"] = sequence():Add( 1, 1, 1, 0, 1, 1, 0, 0 ):AppendPhaseGap()
+								}
+							}
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {},
+								["MODE2"] = {},
+								["MODE3"] = {
+									WSP = "DOUBLE_FLASH"
+								}
+							},
+							["Emergency.Marker"] = {
+								["ON"] = {}
+							}
+						}
+					},
+					{
+						Inherit = "@undercover",
+						Position = Vector( 28, 93, 29 ),
+						Angles = Angle( -5, 0, -2 ),
+						Elements = {
+							-- Same story as above, but mirrored because I couldn't be bothered to spend 45 seconds
+							-- to just change the component angles
+							[3] = { "Mid", Vector( 0, 0, 1.2 ), Angle( -45, -45, 0 ) },
+						},
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE3"] = { WSP = "DOUBLE_FLASH:180" }
+							}
+						}
+					}
+				}
+			},
+		}
+	},
 	{
 		Category = "Antenna",
 		Options = {
 			{
 				Option = "Option",
 				Props = {
-					-- {
-					-- 	Model = "models/anemolis/props/antennas/anemolis_antenna6.mdl",
-					-- 	Position = Vector( 0, -34, 69.7 ),
-					-- 	Angles = Angle( 0, 0, 2 ),
-					-- 	Scale = 1
-					-- },
-
+					-- models/sentry/antenna.mdl
+					{
+						Model = "models/sentry/antenna1.mdl",
+						Position = Vector( 0, -5, 67.3 ),
+						Angles = Angle( 0, 0, -8 ),
+						Scale = Vector( 1, 1, 1.5)
+					},
+					{
+						Model = "models/sentry/antenna.mdl",
+						Position = Vector( 0, -38, 68.5 ),
+						Angles = Angle( 0, 0, 5 ),
+						Scale = 1
+					},
+					{
+						Model = "models/anemolis/props/antennas/anemolis_antenna4.mdl",
+						Position = Vector( 12, -45, 69.3 ),
+						Angles = Angle( 3, 0, 6 ),
+						Scale = 1.2
+					},
+					{
+						Model = "models/anemolis/props/antennas/anemolis_antenna3.mdl",
+						Position = Vector( 0, -102, 53 ),
+						Angles = Angle( 0, 0, 2 ),
+						Scale = 1
+					},
 				}
 			},
 		}
