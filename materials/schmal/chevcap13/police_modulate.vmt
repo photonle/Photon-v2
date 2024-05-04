@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/chevcap13/police_modulate"
+	"$model" "1"
+	"$nocull" "0"
+}
