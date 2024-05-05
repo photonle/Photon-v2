@@ -33,7 +33,7 @@ COMPONENT.StateMap = "[1] 1 [2] 2"
 COMPONENT.Elements = {
 	-- [1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
 	[1] = { "Light", Vector( -1.45, 0.5, 0 ), Angle( 0, 0, 0 ) },
-	[2] = { "Light", Vector( 1.4, 0.5, 0 ), Angle( 0, 0, 180 ) }
+	[2] = { "Light", Vector( 1.45, 0.5, 0 ), Angle( 0, 0, 180 ) }
 }
 
 
@@ -47,7 +47,8 @@ COMPONENT.Segments = {
 		Sequences = {
 			ON = { 3 },
 			-- meaning, the hold duration is very short
-			["DOUBLE_FLASH_MED"] = sequence():FlashHold( { 1, 2 }, 2, 3 )
+			["DOUBLE_FLASH_MED"] = sequence():FlashHold( { 1, 2 }, 2, 3 ),
+			["QUINT_FLASH"] = sequence():QuintFlash( 1, 2 )
 		}
 	}
 }
@@ -65,9 +66,8 @@ COMPONENT.Inputs = {
 }
 
 COMPONENT.Patterns = {
-	["DOUBLE_FLASH_MED"] = {
-		{ "Light", "DOUBLE_FLASH_MED" }
-	}
+	["DOUBLE_FLASH_MED"] = { { "Light", "DOUBLE_FLASH_MED" } },
+	["QUINT_FLASH"] = { { "Light", "QUINT_FLASH" } },
 }
 
 Photon2.RegisterComponent( COMPONENT )
@@ -86,7 +86,7 @@ COMPONENT.WorkshopRequirements = {
 
 COMPONENT.Author = "Photon"
 COMPONENT.Title = "Whelen Ion (Surface)"
-COMPONENT.Base = "photon_whe_ion"
+COMPONENT.Base = "photon_whe_ion_split"
 COMPONENT.Credits = {
 	Model = "Mighty/SGM/Anemolis",
 	Code = "Schmal"
@@ -102,7 +102,8 @@ COMPONENT.Preview = {
 
 
 COMPONENT.Elements = {
-	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }
+	[1] = { "Light", Vector( -1.45, 1.8, 0 ), Angle( 0, 0, 0 ) },
+	[2] = { "Light", Vector( 1.45, 1.8, 0 ), Angle( 0, 0, 180 ) }
 }
 
 
@@ -119,7 +120,9 @@ COMPONENT.Base = "photon_whe_ion_split_surface"
 COMPONENT.Model = "models/anemolis/props/anemolis_lsurfaceion.mdl"
 
 COMPONENT.Elements = {
-	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }
+	-- [1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
+	[1] = { "Light", Vector( -1.45, 1.8, 0 ), Angle( 0, 0, 0 ) },
+	[2] = { "Light", Vector( 1.4, 1.8, 0 ), Angle( 0, 0, 180 ) }
 }
 
 Photon2.RegisterComponent( COMPONENT )

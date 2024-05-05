@@ -81,19 +81,22 @@ COMPONENT.Elements = {
 	[7] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl" },
 	[8] = { "Model" , Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr" },
 
-	[9] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", IntensityGainFactor = 7, IntensityLossFactor = 7 },
-	[10] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", IntensityGainFactor = 7, IntensityLossFactor = 7 },
+	[9] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl", IntensityGainFactor = 9, IntensityLossFactor = 9 },
+	[10] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr", IntensityGainFactor = 9, IntensityLossFactor = 9 },
 	
 	[11] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_e", DeactivationState = "OFF" },
 
-	[12] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl" },
-	[13] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr" },
+	[12] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rl", IntensityGainFactor = 9, IntensityLossFactor = 9  },
+	[13] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/rev_rr", IntensityGainFactor = 9, IntensityLossFactor = 9  },
 
 	[14] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/drl_fl", DeactivationState = "OFF" },
 	[15] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/drl_fr", DeactivationState = "OFF" },
 
 	[16] = { "SubMaterial", Indexes = { 25 } },
 	[17] = { "SubMaterial", Indexes = { 26 } },
+
+	[18] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl" },
+	[19] = { "Model", Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr" },
 
 }
 
@@ -192,7 +195,18 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			FLASH = sequence():Alternate( 2, 1, 9 ),
-			FLASH_ALT = sequence():Alternate( 4, 3, 7 )
+			FLASH_ALT = sequence():Alternate( 4, 3, 5 )
+		}
+	},
+	["TailLightLEDFlasher"] = {
+		Frames = {
+			[1] = "[R] 18",
+			[2] = "[R] 19",
+			[3] = "[R] 18 19"
+		},
+		Sequences = {
+			["ALT"] = sequence():QuintFlash( 1 ):Off( 6 ):QuintFlash( 2 ):Off( 6 ),
+			["FLASH"] = sequence():QuadFlash( 3 ):Off( 12 )
 		}
 	},
 	["ReverseFlasher"] = {
@@ -203,7 +217,7 @@ COMPONENT.Segments = {
 			[3] = "12 13"
 		},
 		Sequences = {
-			FLASH_ALT = sequence():Alternate( 0, 3, 7 )
+			FLASH_ALT = sequence():Alternate( 0, 3, 5 )
 		}
 	
 	}

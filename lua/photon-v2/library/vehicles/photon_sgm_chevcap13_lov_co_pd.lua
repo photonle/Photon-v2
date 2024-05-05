@@ -105,6 +105,29 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_standard_chevcap13",
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = {
+									TailLightFlasher = "FLASH_ALT",
+									ReverseFlasher = "FLASH_ALT",
+									-- They do actually mix a halogen and LED flasher and it does look odd
+									TailLightLEDFlasher = "ALT",
+								},
+								["MODE2"] = {
+									TailLightFlasher = "FLASH_ALT",
+									ReverseFlasher = "FLASH_ALT",
+									-- They do actually mix a halogen and LED flasher and it does look odd
+									TailLightLEDFlasher = "ALT",
+								},
+								["MODE3"] = {
+									TailLightFlasher = "FLASH_ALT",
+									ReverseFlasher = "FLASH_ALT",
+									-- They do actually mix a halogen and LED flasher and it does look odd
+									TailLightLEDFlasher = "ALT",
+									HighBeams = "WIGWAG_RAPID",
+								}
+							}
+						}
 					}
 				}
 			}
@@ -151,7 +174,8 @@ VEHICLE.Equipment = {
 				Option = "PAR46",
 				Components = {
 					{
-						Component = "photon_par46_left",
+						Name = "@spotlight",
+						Component = "photon_whe_par46_left",
 						Position = Vector( -32, 27, 53 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
@@ -162,34 +186,6 @@ VEHICLE.Equipment = {
 										["DOWN"] = { Target = 300 },
 									}
 								},
-							}
-						}
-					},
-					{
-						Component = "photon_par46_right",
-						Position = Vector( 32, 27, 53 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1,
-						SubMaterials = {
-							[7] = "photon/common/red_glass",
-						},
-						States = {
-							"~HR"
-						},
-						Templates = {
-							Bone = {
-								Shaft = { DeactivationState = "UP" },
-								Lamp = { DeactivationState = "UP" },
-								Handle = { DeactivationState = "UP" },
-							}
-						},
-						Inputs = {
-							-- Clear the default illumination mode
-							["Emergency.SceneForward"] = { ["ON"] = {} },
-							["Emergency.Warning"] = {
-								["MODE1"] = {},
-								["MODE2"] = { Light = "ON" },
-								["MODE3"] = { Flasher = "FLASH" },
 							}
 						}
 					}
@@ -266,31 +262,35 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Grille",
+		Category = "Mirror",
 		Options = {
 			{
 				Option = "Ions",
 				Components = {
 					{
 						Name = "@grille_ion",
-						Component = "photon_whe_ion_split",
-						Position = Vector( -10, 102.3, 30 ),
-						Angles = Angle( 4, 8, 15 ),
+						Component = "photon_whe_ion_split_surface",
+						Position = Vector( -42, 25.8, 47.7 ),
+						Angles = Angle( 2, 29, 5 ),
 						States = { "R", "W" },
+						SubMaterials = {
+							[0] = "sentry/13caprice/black"
+						},
 						Inputs = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {},
-								["MODE2"] = "DOUBLE_FLASH_MED",
-								["MODE3"] = "DOUBLE_FLASH_MED",
+								["MODE2"] = "QUINT_FLASH",
+								["MODE3"] = "QUINT_FLASH",
 							}
 						},
 						Scale = 0.8,
 					},
 					{
 						Inherit = "@grille_ion",
-						Position = Vector( 10, 102.3, 30 ),
-						Angles = Angle( -4, -8, 15 ),
+						Position = Vector( 42, 25.8, 47.7 ),
+						Angles = Angle( -2, -29, 5 ),
 						States = { "W", "B" },
+						Phase = 45
 					},
 				}
 			},
@@ -315,31 +315,6 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "Rear",
-		Options = {
-			{
-				Option = "Dominator",
-				Components = {
-					{
-						Component = "photon_whe_dominator_4",
-						Position = Vector( 0, -86, 54.2 ),
-						Angles = Angle( 180, 0, 0 ),
-						Scale = 0.9,
-						RenderGroup = RENDERGROUP_OPAQUE,
-						States = { "B", "R" },
-						Inputs = {
-							["Emergency.Warning"] = {
-								["MODE1"] = { All = "DOUBLE_FLASH_HOLD" },
-								["MODE2"] = { All = "DOUBLE_FLASH_HOLD" },
-								["MODE3"] = { All = "DOUBLE_FLASH_HOLD" },
-							}
-						}
-					}
-				}
-			},
-		}
-	},
-	{
 		Category = "Antenna",
 		Options = {
 			{
@@ -351,12 +326,6 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 2 ),
 						Scale = 1
 					},
-					{
-						Model = "models/anemolis/props/antennas/anemolis_antenna3.mdl",
-						Position = Vector( 0, -43, 69 ),
-						Angles = Angle( 0, 0, 5 ),
-						Scale = 1
-					}
 				}
 			},
 		}

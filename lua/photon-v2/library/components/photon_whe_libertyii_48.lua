@@ -126,12 +126,27 @@ COMPONENT.Segments = {
 			["ON"] = { 1 },
 		}
 	},
+	Main = {
+		Frames = {
+			[1] = "1 5 7 9 11 13 15 19 21 23 25",
+			[2] = "2 6 8 10 12 14 16 20 22 24 26",
+			[3] = "1 19 7 21 11 15 14 26 10 24 6",
+			[4] = "2 20 8 22 12 16 13 25 9 23 5",
+			[5] = "11 15 14 26 10 24",
+			[6] = "12 16 13 25 9 23"
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 8 ),
+			["MIX_ALT"] = { 3, 3, 0, 4, 4, 0 },
+			["MIX_ALT_REAR"] = { 5, 5, 0, 6, 6, 0 }
+		}
+	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { All = "ON" },
-		["MODE2"] = { All = "ON" },
-		["MODE3"] = { All = "ON" },
+		["MODE1"] = { Main = "MIX_ALT_REAR" },
+		["MODE2"] = { Main = "MIX_ALT" },
+		["MODE3"] = { Main = "MIX_ALT" },
 	}
 }
