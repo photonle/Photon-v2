@@ -393,7 +393,8 @@ ENT.PropertyFunctionMap = {
 	["BodyGroups"] = "UpdateAndApplyBodyGroups",
 	["PoseParameters"] = "UpdateAndApplyPoseParameters",
 	["Bones"] = "UpdateAndApplyStaticBoneData",
-	["RenderMode"] = "SetRenderMode"
+	["RenderMode"] = "SetRenderMode",
+	["Color"] = "SetColor"
 }
 
 ENT.PropertiesUpdatedOnSoftUpdate = {
@@ -405,7 +406,8 @@ ENT.PropertiesUpdatedOnSoftUpdate = {
 	["PoseParameters"] = true,
 	["FollowBone"] = true,
 	["Bones"] = true,
-	["RenderMode"] = true
+	["RenderMode"] = true,
+	["Color"] = true
 }
 
 function ENT:FollowParentBone( bone )

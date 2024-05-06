@@ -123,6 +123,7 @@ PhotonMaterial = PhotonMaterial
 ---@field RenderGroup RENDERGROUP
 ---@field BodyGroups table
 ---@field Inputs table
+---@field Color Color Component's model color override.
 ---@field Flags PhotonLibraryComponentFlags
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
@@ -232,6 +233,7 @@ PhotonMaterial = PhotonMaterial
 ---@field BodyGroups? table<string, integer | string>
 ---@field PoseParameters? table<string, number>
 ---@field Parent? string 
+---@field Color? Color Entity model's color override.
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>
