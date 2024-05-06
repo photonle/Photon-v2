@@ -64,7 +64,7 @@ Light.Brightness = 4
 Light.Texture = "effects/flashlight001"
 Light.EnableShadows = false
 
-Light.Intensity = 1
+Light.Intensity = 0
 Light.IntensityGainFactor = 2
 Light.IntensityLossFactor = 2
 Light.TargetIntensity = 1
