@@ -240,6 +240,10 @@ function ENT:OnMeshCachePurge()
 end
 
 function ENT:AttemptComponentReload( id )
+	if ( self.PerformedSoftReload ) then
+		-- This is to prevent soft-reload changes from being reverted by a component reload.
+		self:HardReload()
+	end
 	local success, code = pcall( self.OnComponentReloaded, self, id )
 	if ( not success ) then 
 		warn( "ERROR in [%s]: \n\t\t\t[%s]", id, code )
@@ -491,6 +495,7 @@ function ENT:HardReload()
 	end
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
+	self.PerformedSoftReload = false
 	self:SetupProfile()
 end
 
@@ -512,6 +517,9 @@ function ENT:SoftEquipmentReload()
 	end
 	
 	self:SetSchema( profile.Schema )
+
+	self.PerformedSoftReload = true
+
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
 	-- end
