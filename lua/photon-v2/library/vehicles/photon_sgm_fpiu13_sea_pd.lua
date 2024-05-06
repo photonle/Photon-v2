@@ -90,9 +90,9 @@ local newLivery = PhotonMaterial.New({
 		["$rimlightboost"] = 1,
 		["$rimmask"] = 1,
 
-		["$phongexponenttexture"] = "photon/common/flat_exp",
-		["$basemapluminancephongmask"] = 1,
-		["$phongalbedotint"] = 1,
+		-- ["$phongexponenttexture"] = "photon/common/flat_exp",
+		-- ["$basemapluminancephongmask"] = 1,
+		-- ["$phongalbedotint"] = 1,
 
 		["$nodecal"] = 1
 	}

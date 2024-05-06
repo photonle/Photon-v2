@@ -26,10 +26,20 @@ function ENTITY:SetPhotonController( controller )
 end
 
 function ENTITY:LookUpBoneOrError( boneName )
+	if ( not IsValid( self ) ) then ErrorNoHaltWithStack( "Attempted bone name lookup on an invalid entity." ) return -1 end
 	if CLIENT then self:SetupBones() end
 	local result = self:LookupBone( boneName )
 	local model = self:GetModel() or "ERROR"
 	if ( not result ) then
+		-- print("Bone count: " .. tostring( self:GetBoneCount() ) )
+		-- for i=0, self:GetBoneCount() - 1 do
+		-- 	print( "Comparing [" .. tostring( boneName ) .. "] to [" .. tostring( self:GetBoneName( i ) ) .. "]" )
+		-- 	if ( boneName == self:GetBoneName( i ) ) then
+		-- 		print( "FOUND BONE BY INDEX: " .. tostring( i ) )
+		-- 		return i
+		-- 	end
+		-- 	print( "Bone " .. tostring( i ) .. ": " .. tostring( self:GetBoneName( i ) ) )
+		-- end
 		ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( model ) .. "].")
 	end
 	return result or -1

@@ -86,11 +86,11 @@ COMPONENT.Elements = {
 	[23] = { "Primary", Vector( -11.86, 2.61, 1.2 ), Angle( 0, 90, 0 ), Width = 6.2 },
 	[24] = { "Primary", Vector( -11.86, -2.61, 1.2 ), Angle( 0, 90, 0 ), Width = 6.2  },
 
-	[25] = { "HotFoot", Vector( 23.8, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hotfoot_fwd_left" },
-	[26] = { "HotFoot", Vector( -23.8, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hotfoot_fwd_right" },
+	[25] = { "HotFoot", Vector( 23.8, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hootfoot_fwd_left" },
+	[26] = { "HotFoot", Vector( -23.8, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hootfoot_fwd_right" },
 
-	[27] = { "HotFoot", Vector( 27.3, 5.2, -1.8 ), Angle( 0, -95, 0 ), BoneParent = "valor_44_hotfoot_alley_left", Width = 4.7 --[[oops]] },
-	[28] = { "HotFoot", Vector( -27.3, 5.1, -1.8 ), Angle( 0, 180 - 85, 0 ), BoneParent = "valor_44_hotfoot_alley_right", Width = 4.7 },
+	[27] = { "HotFoot", Vector( 27.3, 5.2, -1.8 ), Angle( 0, -95, 0 ), BoneParent = "valor_44_hootfoot_alley_left", Width = 4.7 --[[oops]] },
+	[28] = { "HotFoot", Vector( -27.3, 5.1, -1.8 ), Angle( 0, 180 - 85, 0 ), BoneParent = "valor_44_hootfoot_alley_right", Width = 4.7 },
 }
 
 COMPONENT.StateMap = "[R] 1 3 5 7 9 11 13 15 17 19 21 23 25 27 [B] 2 4 6 8 10 12 14 16 18 20 22 24 26 28"

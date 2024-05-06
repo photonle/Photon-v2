@@ -123,11 +123,12 @@ COMPONENT.Elements = {
 	[27] = { "Primary", Vector( -11.98, 2.45, 1.15 ), Angle( 0, 90, 0 ), Width = 6 },
 	[28] = { "Primary", Vector( -11.98, -2.45, 1.15 ), Angle( 0, 90, 0 ), Width = 6 },
 
-	[29] = { "HotFoot", Vector( 26.6, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hotfoot_fwd_left" },
-	[30] = { "HotFoot", Vector( -26.6, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_44_hotfoot_fwd_right" },
+	-- yes... the bones are erroneously named hootfoot instead of hotfoot. It took me a very long time to realize why shit wasn't working because of it.
+	[29] = { "HotFoot", Vector( 26.6, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_51_hootfoot_fwd_left" },
+	[30] = { "HotFoot", Vector( -26.6, -3.48, -1.2 ), Angle( 0, 180, 0 ), BoneParent = "valor_51_hootfoot_fwd_right" },
 
-	[31] = { "HotFoot", Vector( 30.05, 5.2, -1.8 ), Angle( 0, -95, 0 ), BoneParent = "valor_44_hotfoot_alley_left", Width = 4.7 --[[oops]] },
-	[32] = { "HotFoot", Vector( -30.05, 5.1, -1.8 ), Angle( 0, 180 - 85, 0 ), BoneParent = "valor_44_hotfoot_alley_right", Width = 4.7 },
+	[31] = { "HotFoot", Vector( 30.05, 5.2, -1.8 ), Angle( 0, -95, 0 ), BoneParent = "valor_51_hootfoot_alley_left", Width = 4.7 --[[oops]] },
+	[32] = { "HotFoot", Vector( -30.05, 5.1, -1.8 ), Angle( 0, 180 - 85, 0 ), BoneParent = "valor_51_hootfoot_alley_right", Width = 4.7 },
 
 	-- [3] Vector( 6.968, 6.611, 1.15 ) w=6.2
 	-- [5] Vector( 3.922, 10.386, 1.15 ) w=5.9
