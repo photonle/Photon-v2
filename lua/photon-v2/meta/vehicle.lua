@@ -118,7 +118,7 @@ function Vehicle.BuildEquipmentSignature( tbl )
 				if (istable(entry.BaseClass)) then
 					baseClassName = entry.BaseClass.Name
 				end
-				sig = sig .. string.format("<%s:%s(%s/%s)>", index, entry[equipmentTypeMap[equipmentType]], baseClassName, entry.Name)
+				sig = sig .. string.format( "<%s:%s{%s}(%s/%s)>", index, entry[equipmentTypeMap[equipmentType]], entry.Model or "", baseClassName, entry.Name )
 			end
 			sig = sig .. "}"
 		end

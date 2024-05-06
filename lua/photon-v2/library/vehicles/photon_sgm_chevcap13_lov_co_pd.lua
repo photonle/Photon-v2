@@ -194,7 +194,7 @@ VEHICLE.Equipment = {
 		}
 	},
 	{
-		Category = "License Plate",
+	Category = "License Plate",
 		Options = {
 			{
 				Option = "Visible",
