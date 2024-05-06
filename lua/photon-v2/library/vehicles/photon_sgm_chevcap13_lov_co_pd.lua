@@ -175,7 +175,7 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Name = "@spotlight",
-						Component = "photon_whe_par46_left",
+						Component = "photon_par46_left",
 						Position = Vector( -32, 27, 53 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
