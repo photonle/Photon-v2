@@ -42,7 +42,7 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "1",
 			[2] = "2",
-			[3] = "1 2"
+			[3] = "1 2",
 		},
 		Sequences = {
 			ON = { 3 },

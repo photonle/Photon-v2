@@ -526,7 +526,10 @@ function ENT:SoftEquipmentReload()
 			self:GetParent():PhysWake()
 		end
 	end
-
+	
+	for id, data in pairs( self.Bones ) do
+		self:SetupBone( id, profile.Equipment.Bones[id] )
+	end
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
 	-- end
@@ -710,23 +713,22 @@ function ENT:SetupEquipmentProperties( id )
 	if ( data.Color ) then self:GetParent():SetColor( data.Color ) end
 end
 
-function ENT:SetupBone( id )
-	-- if CLIENT then return end
-	local data = self.Equipment.Bones[id]
-	local parent = self:GetParent()
+function ENT:SetupBone( id, data )
+	if CLIENT then return end
+	data = data or self.Equipment.Bones[id]
+	local parent = self:GetComponentParent()
 	if ( not IsValid( parent ) ) then return end
-	printf( "Setting up bone [%s]", id )
-	printf( "Searching for bone [%s]", data.Bone or "INVALID" )
+	-- printf( "Setting up bone [%s]", id )
+	-- printf( "Searching for bone [%s]", tostring( data.Bone ) )
 	local bone
-	if ( isstring( bone ) ) then
+	if ( isstring( data.Bone ) ) then
 		bone = parent:LookUpBoneOrError( data.Bone )
 	else
 		bone = data.Bone
 	end
-	ErrorNoHaltWithStack("setupbone")
-	print("Bone: " .. tostring ( bone ))
-	if ( not bone ) then print("NO BONE") return end
-	parent:ManipulateBoneScale( bone, data.Scale )
+	local scale = data.Scale
+	if ( isnumber( scale ) ) then scale = Vector( scale, scale, scale ) end
+	parent:ManipulateBoneScale( bone, scale )
 	parent:ManipulateBoneAngles( bone, data.Angles )
 	parent:ManipulateBonePosition( bone, data.Position )
 	self.Bones[id] = data
@@ -878,12 +880,18 @@ end
 
 function ENT:ResetBoneByIndex( index )
 	if ( CLIENT ) then return end
-	local parent = self:GetParent()
+	local parent = self:GetComponentParent()
 	if ( not IsValid( parent ) ) then return end
 	if ( self.Bones[index] ) then
-		parent:ManipulateBoneScale( self.Bones[index].Bone, Vector( 1, 1, 1 ) )
-		parent:ManipulateBoneAngles( self.Bones[index].Bone, Angle( 0, 0, 0 ) )
-		parent:ManipulateBonePosition( self.Bones[index].Bone, Vector( 0, 0, 0 ) )
+		local bone = self.Bones[index].Bone
+		if ( isstring( bone ) ) then
+			bone = parent:LookUpBoneOrError( bone )
+		else
+			bone = data.Bone
+		end
+		parent:ManipulateBoneScale( bone, Vector( 1, 1, 1 ) )
+		parent:ManipulateBoneAngles( bone, Angle( 0, 0, 0 ) )
+		parent:ManipulateBonePosition( bone, Vector( 0, 0, 0 ) )
 	end
 end
 
