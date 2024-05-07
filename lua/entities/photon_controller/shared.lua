@@ -521,6 +521,12 @@ function ENT:SoftEquipmentReload()
 
 	self.PerformedSoftReload = true
 
+	if ( SERVER ) then
+		if ( IsValid( self:GetParent() ) ) then
+			self:GetParent():PhysWake()
+		end
+	end
+
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
 	-- end
@@ -1047,6 +1053,12 @@ function ENT:SetupProfile( name, isReload )
 
 	self:ApplySubMaterials( self.CurrentProfile.SubMaterials )
 	self:RefreshParentMaterialsOnNextFrame()
+	
+	if ( SERVER ) then
+		if ( IsValid( self:GetParent() ) ) then
+			self:GetParent():PhysWake()
+		end
+	end
 end
 
 function ENT:SetSchema( schema )
