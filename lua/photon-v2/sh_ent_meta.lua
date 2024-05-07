@@ -31,16 +31,17 @@ function ENTITY:LookUpBoneOrError( boneName )
 	local result = self:LookupBone( boneName )
 	local model = self:GetModel() or "ERROR"
 	if ( not result ) then
-		-- print("Bone count: " .. tostring( self:GetBoneCount() ) )
-		-- for i=0, self:GetBoneCount() - 1 do
-		-- 	print( "Comparing [" .. tostring( boneName ) .. "] to [" .. tostring( self:GetBoneName( i ) ) .. "]" )
-		-- 	if ( boneName == self:GetBoneName( i ) ) then
-		-- 		print( "FOUND BONE BY INDEX: " .. tostring( i ) )
-		-- 		return i
-		-- 	end
-		-- 	print( "Bone " .. tostring( i ) .. ": " .. tostring( self:GetBoneName( i ) ) )
-		-- end
-		ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( model ) .. "].")
+		if ( model == "ERROR" ) then
+			ErrorNoHaltWithStack( "Attempted bone name lookup on an entity with an invalid or missing model." )
+		else
+			ErrorNoHaltWithStack( "Unable to find bone name [" .. tostring( boneName ) .. "] in model [" .. tostring( model ) .. "]. See log/console for more information." )
+			if ( model ~= "ERROR" ) then
+				print("\tBones found in [" .. tostring( model ) .. "]: " )
+				for i=0, self:GetBoneCount() - 1 do
+					print( "\t\t[" .. tostring( i ) .. "]: [" .. tostring( self:GetBoneName( i ) ) .. "] ~= [" .. tostring( boneName ) .. "]" )
+				end
+			end
+		end
 	end
 	return result or -1
 end

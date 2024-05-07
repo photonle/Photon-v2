@@ -193,6 +193,7 @@ function ENT:InitializeShared()
 	self.Props = {}
 	self.SubMaterials = {}
 	self.EquipmentProperties = {}
+	self.Bones = {}
 
 	self.ComponentArray = {}
 	self.PropArray = {}
@@ -703,6 +704,28 @@ function ENT:SetupEquipmentProperties( id )
 	if ( data.Color ) then self:GetParent():SetColor( data.Color ) end
 end
 
+function ENT:SetupBone( id )
+	-- if CLIENT then return end
+	local data = self.Equipment.Bones[id]
+	local parent = self:GetParent()
+	if ( not IsValid( parent ) ) then return end
+	printf( "Setting up bone [%s]", id )
+	printf( "Searching for bone [%s]", data.Bone or "INVALID" )
+	local bone
+	if ( isstring( bone ) ) then
+		bone = parent:LookUpBoneOrError( data.Bone )
+	else
+		bone = data.Bone
+	end
+	ErrorNoHaltWithStack("setupbone")
+	print("Bone: " .. tostring ( bone ))
+	if ( not bone ) then print("NO BONE") return end
+	parent:ManipulateBoneScale( bone, data.Scale )
+	parent:ManipulateBoneAngles( bone, data.Angles )
+	parent:ManipulateBonePosition( bone, data.Position )
+	self.Bones[id] = data
+end
+
 function ENT:SetupComponent( id )
 	self.AttemptingComponentSetup = true
 	local data = self.Equipment.Components[id]
@@ -808,6 +831,12 @@ function ENT:RemoveAllSubMaterials()
 	end
 end
 
+function ENT:ResetAllBones()
+	for id, boneData in pairs( self.Bones ) do
+		self:ResetBoneByIndex( id )
+	end
+end
+
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
 	if ( not self.Components[index] ) then return end
@@ -841,6 +870,17 @@ function ENT:RemoveSubMaterialByIndex( index )
 	self.SubMaterials[index] = nil
 end
 
+function ENT:ResetBoneByIndex( index )
+	if ( CLIENT ) then return end
+	local parent = self:GetParent()
+	if ( not IsValid( parent ) ) then return end
+	if ( self.Bones[index] ) then
+		parent:ManipulateBoneScale( self.Bones[index].Bone, Vector( 1, 1, 1 ) )
+		parent:ManipulateBoneAngles( self.Bones[index].Bone, Angle( 0, 0, 0 ) )
+		parent:ManipulateBonePosition( self.Bones[index].Bone, Vector( 0, 0, 0 ) )
+	end
+end
+
 ---@param equipmentTable PhotonEquipmentTable
 function ENT:AddEquipment( equipmentTable )
 	if ( not equipmentTable ) then return end
@@ -870,6 +910,10 @@ function ENT:AddEquipment( equipmentTable )
 	
 	for i=1, #equipmentTable.Properties do
 		self:SetupEquipmentProperties( equipmentTable.Properties[i] )
+	end
+
+	for i=1, #equipmentTable.Bones do
+		self:SetupBone( equipmentTable.Bones[i] )
 	end
 
 	self:UpdateComponentPendingParents()
@@ -946,6 +990,7 @@ function ENT:SetupProfile( name, isReload )
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
 	self:RemoveAllSubMaterials()
+	self:ResetAllBones()
 
 	if ( profile.EngineIdleEnabled and self:GetParent():IsVehicle() ) then
 		self.EngineIdleEnabled = profile.EngineIdleEnabled
@@ -989,6 +1034,7 @@ function ENT:SetupProfile( name, isReload )
 
 	-- This block is for static equipment which is technically
 	-- supported but also deprecated and should be removed.
+	-- ????????????
 	if ( profile.EquipmentSelections ) then
 		self:SetupSelections()
 	end

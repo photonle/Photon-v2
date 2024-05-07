@@ -10,6 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field Bones table
 ---@field Properties table
 local Equipment = exmeta.New()
 
@@ -31,6 +32,7 @@ function Equipment.GetTemplate()
 		BodyGroups = {},
 		SubMaterials = {},
 		InteractionSounds = {},
+		Bones = {},
 		Properties = {}
 	}
 end
