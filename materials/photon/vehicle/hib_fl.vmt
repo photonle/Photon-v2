@@ -2,7 +2,7 @@
 {
 	"$basetexture" "color/white"
 	"$translucent" "1"
-	"$nocull" "1"
+	"$nocull" "0"
 }
 
 

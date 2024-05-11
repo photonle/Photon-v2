@@ -1,0 +1,23 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "sentry/13fpis/lights"
+	"$bumpmap"    "sentry/shared/glass_nm"
+	"$envmap" env_cubemap
+	"$phong" "1" 
+	"$phongboost" "0.25" 
+	"$phongexponent" "3"
+	"$phongfresnelranges" "[4 1 4]"
+	"$surfaceprop" "Glass"
+	"$envmaptint" "[.125 .125 .125]"
+	"$colorproxy" "1"
+	"$translucent" "1"
+	Proxies
+	{
+		Equals
+		{
+			srcVar1 $colorproxy
+			resultVar	$color
+
+		}
+	}
+ }
