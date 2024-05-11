@@ -3,10 +3,18 @@ local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Name = "photon_whe_ion"
 COMPONENT.Title = "Whelen Ion"
+COMPONENT.Category = "Perimeter"
 COMPONENT.Credits = {
 	Model = "Sentry",
 	Code = "Schmal"
 }
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 3
+}
+
 COMPONENT.Model = "models/sentry/props/ion_photon.mdl"
 
 local size = 6

@@ -75,6 +75,7 @@ function PANEL:SetupTopControls()
 	local divider = vgui.Create( "EXDHorizontalDivider", panel )
 	divider:Dock( FILL )
 	divider:SetAnchor("R")
+	divider:SetRightMin( 140 )
 
 	local searchPanel = vgui.Create( "DPanel", panel )
 	searchPanel:DockPadding( 0, padding, padding, padding )
@@ -120,6 +121,7 @@ function PANEL:SetupMain()
 	local divider = vgui.Create( "EXDHorizontalDivider", main )
 	divider:Dock( FILL )
 	divider:SetAnchor("R")
+	divider:SetRightMin( 224 )
 
 	local browserPanel = vgui.Create( "DPanel", main )
 	browserPanel:SetPaintBackground( false )
@@ -130,10 +132,10 @@ function PANEL:SetupMain()
 	files:SetDataHeight( 20 )
 
 	for i, schema in ipairs( self.ColumnSchema ) do
+		if ( schema.Visible ~= nil and ( schema.Visible == false ) ) then continue end
 		local column = files:AddColumn( schema.Label )
-		if ( schema.MaxWidth ) then
-			column:SetMaxWidth( schema.MaxWidth )
-		end
+		if ( schema.MaxWidth ) then column:SetMaxWidth( schema.MaxWidth ) end
+		if ( schema.MinWidth ) then column:SetMinWidth( schema.MinWidth ) end
 	end
 
 	files:SetMultiSelect( false )
@@ -150,7 +152,7 @@ function PANEL:SetupMain()
 
 	local previewPanelParent = vgui.Create( "DPanel", main )
 	divider:SetRight( previewPanelParent )
-	
+	previewPanelParent:SetWidth( 200 )
 	if ( self.UI.PreviewPanel ) then
 		self.PreviewPanel = vgui.Create( self.UI.PreviewPanel, previewPanelParent )
 		self.PreviewPanel:Dock( FILL )

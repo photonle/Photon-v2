@@ -2,10 +2,15 @@ local COMPONENT = Photon2.LibraryComponent()
 local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Name = "photon_whe_ion_split"
-COMPONENT.Title = "Whelen Ion"
+COMPONENT.Title = "Whelen Ion Split"
 COMPONENT.Credits = {
 	Model = "Sentry",
 	Code = "Schmal"
+}
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 3
 }
 COMPONENT.Model = "models/sentry/props/ion_photon.mdl"
 
@@ -85,7 +90,7 @@ COMPONENT.WorkshopRequirements = {
 }
 
 COMPONENT.Author = "Photon"
-COMPONENT.Title = "Whelen Ion (Surface)"
+COMPONENT.Title = "Whelen Ion Split (Surface)"
 COMPONENT.Base = "photon_whe_ion_split"
 COMPONENT.Credits = {
 	Model = "Mighty/SGM/Anemolis",
@@ -114,7 +119,7 @@ COMPONENT.Elements = {
 Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
-COMPONENT.Title = "Whelen Ion (Surface Bracket)"
+COMPONENT.Title = "Whelen Ion Split (Surface Bracket)"
 COMPONENT.Name = "photon_whe_ion_split_surface_bracket"
 COMPONENT.Base = "photon_whe_ion_split_surface"
 COMPONENT.Model = "models/anemolis/props/anemolis_lsurfaceion.mdl"
