@@ -25,6 +25,11 @@ local singleEquipmentTypes = {
 	Properties = true
 }
 
+local equipmentMap = {
+	SubMaterials = { Key = "Id", Value = "Material" },
+	BodyGroups = { Key = "BodyGroup", Value = "Value" },
+}
+
 function Equipment.GetTemplate()
 	return {
 		Components = {},
@@ -79,11 +84,17 @@ function Equipment.ProcessTable( name, source, destination, master, nameTable, p
 	for key, entry in pairs( source ) do
 		if ( istable( entry ) ) then
 			destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
-		elseif ( isstring( entry ) ) then
+		else
 			-- Allow sub-materials to be setup like [1] = "material"
-			if ( name == "SubMaterials" ) then
-				entry = { Id = name, Material = entry }
+			if ( equipmentMap[name] ) then
+				local map = equipmentMap[name]
+				entry = { [map.Key] = key, [map.Value] = entry }
 				destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
+			
+			-- if ( name == "SubMaterials" ) then
+				
+				-- entry = { Id = name, Material = entry }
+				-- destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
 			else
 				-- Otherwise treat entry as pointing to an alias
 				-- to be resolved later.

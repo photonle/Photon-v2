@@ -660,6 +660,10 @@ end
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
+	if ( not istable( data ) ) then 
+		warn( "Failed to setup equipment BodyGroup [%s]. (Value = [%s])", tostring( id ), tostring( data ) )
+		return
+	end
 	-- printf( "Setting up BodyGroup [%s]", id )
 	local bodyGroup = data.BodyGroup
 	local value = data.Value

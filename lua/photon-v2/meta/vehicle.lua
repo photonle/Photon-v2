@@ -170,6 +170,10 @@ function Vehicle.New( data )
 
 	local sirenConfig = nil
 
+	if ( isstring( data.Siren ) ) then
+		data.Siren = { data.Siren }
+	end
+
 	-- Setup/build siren slots
 	if ( istable( data.Siren ) and ( #data.Siren > 0 ) ) then
 		sirenConfig = {}
