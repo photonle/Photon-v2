@@ -525,7 +525,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			hintInfoVisible = true
 		end
 
-		if ( not indicatorComponent ) then
+		if ( not indicatorComponent and ( istable( target.ComponentArray )) ) then
 			for k, v in pairs( target.ComponentArray ) do
 				if ( v.Title == "Photon 2 HUD" ) then
 					indicatorComponent = v

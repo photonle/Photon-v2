@@ -1115,7 +1115,7 @@ end
 
 function ENT:ApplySubMaterials( subMaterials )
 	for index, materialName in pairs( subMaterials ) do
-		self:GetParent():SetSubMaterial( index, materialName )
+		self:SetParentSubMaterial( index, materialName )
 	end
 end
 

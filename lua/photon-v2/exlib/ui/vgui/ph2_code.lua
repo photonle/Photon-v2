@@ -47,6 +47,10 @@ function PANEL:Setup()
 	richText:Dock( FILL )
 	self.RichText = richText
 
+	function richText:InsertColorChangeEx( color )
+		self:InsertColorChange( color.r, color.g, color.b, color.a )
+	end
+
 	self.RichText.Paint = function( panel )
 
 	    -- panel.m_FontName = DBugR.Prefix .. "LuaViewFont"
@@ -99,12 +103,43 @@ function PANEL:Setup()
 end
 
 
+local function startsWith(str, start)
+	return string.sub(str, 1, string.len(start)) == start
+end
+
+local function splitLine(line)
+    local parts = {}
+    for part in string.gmatch(line, "[^%s%.]+") do
+        table.insert(parts, part)
+    end
+    return parts
+end
+
 function PANEL:SetCode( code, title )
 	if ( title ) then self:SetMainTitle( title ) end
 	self.Code = code
 	if ( not IsValid( self.RichText ) ) then self:Setup() end
-	self.RichText:InsertColorChange( theme.Mono2.r, theme.Mono2.g, theme.Mono2.b, 255 )
-	self.RichText:AppendText( code )
+	local asLines = string.Explode( "\n", code, false )
+	for lineNumber, line in pairs( asLines ) do
+		-- Handle comments
+		if ( startsWith( string.Trim( line ), "--" ) ) then
+			if ( string.match( line, "^%-%-%s*(%d+)%." ) ) then
+				self.RichText:InsertColorChangeEx( theme.Red1 )
+			else
+				self.RichText:InsertColorChangeEx( theme.Mono3 )
+			end
+			self.RichText:AppendText( line .. "\n" )
+		else
+			-- for i, part in pairs( splitLine( line ) ) do
+			-- 	self.RichText:AppendText( part )
+			-- 	-- self.RichText:AppendText( part )
+			-- end
+			self.RichText:InsertColorChangeEx( theme.Mono1 )
+			self.RichText:AppendText( line .. "\n" )
+		end
+	end
+	-- self.RichText:InsertColorChange( theme.Mono2.r, theme.Mono2.g, theme.Mono2.b, 255 )
+	-- self.RichText:AppendText( code )
 end
 
 function PANEL:PostAutoRefresh()
