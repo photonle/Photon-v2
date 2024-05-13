@@ -850,3 +850,17 @@ Component.PropertyFunctionMap = {
 Component.PropertiesUpdatedOnSoftUpdate = {
 	["StateMap"] = true
 }
+
+function Component:GetNetworkedChannels()
+	local channels = {}
+	for channel, _ in pairs( self.InputActions ) do
+		if ( istable( self.VirtualOutputs ) ) then
+			if ( ( not self.VirtualOutputs[channel] ) ) then
+				channels[channel] = true
+			end
+		else
+			channels[channel] = true
+		end
+	end
+	return channels
+end

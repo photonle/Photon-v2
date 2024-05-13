@@ -2,8 +2,10 @@ Photon2.cl_Network = Photon2.cl_Network or {
 	ControllerQueue = {}
 }
 
-local print = Photon2.Debug.PrintF
-local printf = Photon2.Debug.PrintF
+local info, warn = Photon2.Debug.Declare( "NET" )
+
+local print = info
+local printf = info
 
 ---@param controller PhotonController
 ---@param channel string
@@ -31,7 +33,8 @@ end
 net.Receive( "Photon2:SetPlayerInputControllerTarget", Photon2.cl_Network.OnSetInputController )
 
 function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
-	if ( not IsValid( ent ) ) then return end
+	-- printf("Network change for [%s]. Name: [%s]  Old: [%s]  New: [%s]", ent, name, oldValue, newValue )
+	if ( not IsValid( ent ) ) then ErrorNoHaltWithStack("INVALID ENTITY NETWORK CHANGE") return end
 	
 	local isController = false
 	local controller = ent
@@ -45,7 +48,7 @@ function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 
 	if ( isController ) then
 		
-		if ( not controller.IsPhotonController ) then
+		if ( ( not IsValid( controller:GetParent() ) ) or ( not controller.IsPhotonController ) ) then
 			-- This is to briefly keep change-notifications in a queue because 
 			-- the values sometimes change before the controller is fully
 			-- initialized on the client (no idea why).
@@ -54,7 +57,7 @@ function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 				Time = CurTime(),
 				Channels = {},
 			}
-			
+			-- printf("Queueing change for controller [%s]. Name: [%s]  Old: [%s]  New: [%s]", controller, name, oldValue, newValue )
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )
 				queue[controller].Channels[name] = newValue
@@ -64,6 +67,7 @@ function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 				queue[controller].SelectionsString = newValue
 			end
 		else
+			-- printf("NOT queing change for controller [%s]. Name: [%s]  Old: [%s]  New: [%s]", controller, name, oldValue, newValue )
 			if (string.StartsWith(name,"Photon2:CS:")) then
 				name = string.sub( name, 12 )
 				controller:OnChannelModeChanged( name, newValue, oldValue )

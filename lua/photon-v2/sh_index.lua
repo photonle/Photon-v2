@@ -21,6 +21,8 @@ Photon2.Index.Profiles = Photon2.Index.Profiles or { Map = {}, Vehicles = {} }
 local print = Photon2.Debug.PrintF
 local printf = Photon2.Debug.PrintF
 
+local info, warn = Photon2.Debug.Declare( "Index" )
+
 local lastSave = SysTime()
 local doubleSaveThreshold = 1
 
@@ -164,6 +166,10 @@ function Photon2.Index.CompileInputConfiguration( config )
 		binds[key] = {}
 		for _, commandEntry in pairs ( commands ) do
 			local command = Photon2.GetCommand( commandEntry.Command )
+			if ( not command ) then
+				info( "Input profile [%s] references command [%s], which is not defined on this server. Ignoring.", commandEntry.Command, config.Name )
+				continue
+			end
 			for _, event in pairs( Photon2.ClientInput.KeyActivities ) do
 				if ( command[event] ) then
 					binds[key][event] = binds[key][event] or {}

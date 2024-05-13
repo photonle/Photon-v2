@@ -277,9 +277,11 @@ end
 function ENT:SetChannelMode( channel, state )
 	state = state or "OFF"
 	
-	local oldState = self:GetParent():GetNW2String("Photon2:CS:" .. channel, "OFF" )
-
-	self:GetParent():SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+	local oldState
+	if ( IsValid( self:GetParent() ) ) then
+		oldState = self:GetParent():GetNW2String("Photon2:CS:" .. channel, "OFF" )
+		self:GetParent():SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+	end
 
 	if CLIENT then
 		-- this line may be necessary for client prediction but it's doing some really weird shit
@@ -993,10 +995,30 @@ end
 
 ---@param name? string Name of profile to load.
 ---@param isReload? boolean
-function ENT:SetupProfile( name, isReload )
+function ENT:SetupProfile( name, isReload, attempt )
 	name = name or self:GetProfileName()
+	if ( not name or name == "" ) then 
+		ErrorNoHaltWithStack( string.format( "Attempted to setup a profile with an invalid name [%s].", tostring( name ) ) )
+		return
+	end
+
 	---@type PhotonVehicle
 	local profile = self:GetProfile( name )
+
+	if ( not profile ) then
+		attempt = attempt or 0
+		if ( attempt > 10 ) then
+			error("Failed to get vehicle profile [" .. tostring( name ) .."].")
+			return
+		else
+			timer.Simple( 0.1, function()
+				if ( IsValid( self ) ) then
+					self:SetupProfile( name, isReload, attempt + 1 )
+				end
+			end)
+			return
+		end
+	end
 
 	if ( profile.InvalidVehicle ) then 
 		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
@@ -1129,6 +1151,9 @@ function ENT:SetupSelections()
 	if (SERVER) then 
 		self--[[@as sv_PhotonController]]:SyncSelections()
 	end
+	if ( CLIENT ) then
+		self:SyncChannels()
+	end
 end
 
 function ENT:OnRemove()
@@ -1160,7 +1185,7 @@ end
 
 ---@param channel string Channel name.
 ---@param newState string New value.
----@param oldState string Old value.
+---@param oldState? string Old value.
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
 	-- print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
@@ -1360,7 +1385,7 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 end
 
 function ENT:OnEngineStateChange( name, old, new )
-	print("Engine state change: " .. tostring(new))
+	-- print("Engine state change: " .. tostring(new))
 	if ( new ) then
 		self:SetChannelMode( "Vehicle.Engine", "ON" )
 	else
@@ -1369,7 +1394,15 @@ function ENT:OnEngineStateChange( name, old, new )
 end
 
 function ENT:OnProfileNameChange( name, old, new )
-	print("Profile name change: " .. tostring( new ) )
+	if ( not IsValid( self ) or not ( IsValid( self:GetParent() ) ) ) then 
+		timer.Simple( 0.1, function()
+			if ( IsValid( self ) ) then
+				self:OnProfileNameChange( name, old, new )
+			end
+		end)
+		return
+	end
+	printf("Profile name change. Name: [%s] | Old: [%s] | New: [%s]", tostring( name ), tostring( old ), tostring( new ) )
 	self:SetupProfile( new )
 end
 
@@ -1385,4 +1418,16 @@ function ENT:UpdatePulseComponentArray()
 	end
 	self.CurrentPulseComponents = result
 	self.RebuildPulseComponents = false
+end
+
+function ENT:SyncChannels()
+	local channels = {}
+	for i=1, #self.ComponentArray do
+		for channel, _ in pairs( self.ComponentArray[i]:GetNetworkedChannels() ) do
+			channels[channel] = true
+		end
+	end
+	for channel, _ in pairs( channels ) do
+		self:OnChannelModeChanged( channel, self:GetChannelMode( channel ) )
+	end
 end

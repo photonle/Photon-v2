@@ -480,6 +480,7 @@ end
 
 local function addHintKey( tbl, cmd )
 	local map = Photon2.ClientInput.Active.Map
+	if ( not map ) then return end
 	if ( map[cmd] and map[cmd][1] ) then
 		tbl[#tbl+1] = { string.upper(map[cmd][1].Display), string.upper(Photon2.GetCommand(cmd).Alt or Photon2.GetCommand(cmd).Title)  }
 	end
@@ -487,6 +488,7 @@ end
 
 local function addHintKeyMultiple( tbl, cmd1, cmd2, label )
 	local map = Photon2.ClientInput.Active.Map
+	if ( not map ) then return end
 	if ( map[cmd1] and map[cmd1][1] and  map[cmd2] and map[cmd2][1] ) then
 		tbl[#tbl+1] = { string.upper(map[cmd1][1].Display .. "-" .. string.upper(map[cmd2][1].Display )), string.upper( label )  }
 	end

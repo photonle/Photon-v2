@@ -103,6 +103,21 @@ end
 
 Photon2.UI.DialogBox = {}
 
+function Photon2.UI.DialogBox.Message( message, title )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( title or "" )
+	dialog:SetMainText( message )
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 250 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "OK", function()
+		dialog:Close()
+	end)
+	return dialog
+end
+
 function Photon2.UI.DialogBox.UserError( message )
 	local dialog = vgui.Create( "Photon2UIDialogWindow" )
 	dialog:SetupDialog()
@@ -253,17 +268,17 @@ function Photon2.UI.PopulateMenuBar()
 		local menu = Photon2.UI.MenuBar
 		
 
-		local inputConfigOption = menu:AddOption( "Open Control Options", function()
+		local inputConfigOption = menu:AddOption( "Open Control Options...", function()
 			local form = vgui.Create ( "Photon2UIInputConfiguration" )
 		end)
 
-		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu", function()
+		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu...", function()
 			local form = vgui.Create ( "Photon2UIDesktop" )
 			form:MakePopup()
 			form:SetKeyBoardInputEnabled( false )
 		end)
 
-		local openWelcome = menu:AddOption( "Open Welcome Menu", function()
+		local openWelcome = menu:AddOption( "Open Welcome Menu...", function()
 			local form = vgui.Create ( "Photon2UIWelcome" )
 			-- form:SetAlpha( 0 )
 			-- form:AlphaTo( 255, 2, 0, function()
@@ -362,14 +377,22 @@ function Photon2.UI.PopulateMenuBar()
 		local debugMenu = debugOption:AddSubMenu()
 		debugMenu:SetDeleteSelf( false )
 
-		debugMenu:AddOption( "Open Channel Controller", function() 
+		debugMenu:AddOption( "Open Channel Controller...", function() 
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
 
-		debugMenu:AddOption( "Open Component Browser", function() 
+		debugMenu:AddOption( "Open Component Browser...", function() 
 			RunConsoleCommand( "ph2_component_browser" )
 		end)
 
+		debugMenu:AddSpacer()
+		
+		-- debugMenu:AddOption( "Create New Vehicle...", function()
+		-- 	local form = vgui.Create( "Photon2UIScaffoldBuilder" )
+		-- end)
+		
+		-- debugMenu:AddSpacer()
+		
 		-- debugMenu:AddOption( "Open Component Inspector", function() 
 		-- 	local form = vgui.Create( "Photon2UIComponentInspector" )
 		-- end)
