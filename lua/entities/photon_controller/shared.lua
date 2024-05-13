@@ -682,6 +682,7 @@ end
 
 function ENT:SetParentSubMaterial( index, material )
 	if ( index == "SKIN" ) then index = Photon2.Util.FindSkinSubMaterial( self:GetParent() ) end
+	if ( not IsValid( self:GetParent() ) ) then return end
 	self:GetParent():SetSubMaterial( index, material )
 	if ( self.SyncAttachedParentSubMaterials ) then
 		for i, child in pairs( self:GetParent():GetChildren() ) do
@@ -998,7 +999,7 @@ end
 function ENT:SetupProfile( name, isReload, attempt )
 	name = name or self:GetProfileName()
 	if ( not name or name == "" ) then 
-		ErrorNoHaltWithStack( string.format( "Attempted to setup a profile with an invalid name [%s].", tostring( name ) ) )
+		info( string.format( "Attempted to setup a profile with an invalid name [%s].", tostring( name ) ) )
 		return
 	end
 

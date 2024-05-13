@@ -15,7 +15,10 @@ NAME = "PhotonBaseEntity"
 ---@field UniqueId? number (Internal) Running index of created Photon entities.
 local ENT = exmeta.New()
 
-local print = Photon2.Debug.PrintF
+local info, warn = Photon2.Debug.Declare( "PhotonBaseEntity" )
+
+local print = info
+local printf = info
 
 ENT.DefaultInputPriorities = {
 	["#DEBUG"]						= 9999,
@@ -62,6 +65,8 @@ local photonUniqueEntId = 0
 ---@param uiMode? boolean If the entity is intended to be rendered in a UI element.
 ---@return PhotonBaseEntity
 function ENT:Initialize( ent, controller, uiMode )
+	if ( not IsValid( ent ) ) then info("Attempted to initialize on invalid entity.") return end
+
 	photonUniqueEntId = photonUniqueEntId + 1
 
 	---@type PhotonBaseEntity
@@ -74,7 +79,7 @@ function ENT:Initialize( ent, controller, uiMode )
 
 	setmetatable( photonEnt, { __index = self } )
 	
-	if ( ent:GetClass() == "photon_entity" ) then
+	if ( ent.GetClass and ( ent:GetClass() == "photon_entity" ) ) then
 		debug.setmetatable( ent:GetTable(), { __index = photonEnt } )
 	else
 		photonEnt.IsVirtual = true

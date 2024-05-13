@@ -34,7 +34,7 @@ net.Receive( "Photon2:SetPlayerInputControllerTarget", Photon2.cl_Network.OnSetI
 
 function Photon2.cl_Network.OnNetworkVarChanged( ent, name, oldValue, newValue )
 	-- printf("Network change for [%s]. Name: [%s]  Old: [%s]  New: [%s]", ent, name, oldValue, newValue )
-	if ( not IsValid( ent ) ) then ErrorNoHaltWithStack("INVALID ENTITY NETWORK CHANGE") return end
+	if ( not IsValid( ent ) ) then return end
 	
 	local isController = false
 	local controller = ent
@@ -95,6 +95,7 @@ hook.Add("EntityNetworkedVarChanged", "Photon2:OnNetworkVarChanged", Photon2.cl_
 
 function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
 	if ( ent:GetClass() == "photon_controller" ) then
+		if ( not IsValid( ent:GetParent() ) ) then return end
 		if ( not ent.IsPhotonController ) then return end
 		if ( shouldTransmit ) then
 			if ( ent.IsSuspended ) then
@@ -103,6 +104,19 @@ function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
 		else
 			if ( not ent.IsSuspended ) then
 				ent:OnSuspended()
+			end
+		end
+	else
+		local controller = ent:GetPhotonControllerFromAncestor()
+		if ( IsValid( controller ) ) then
+			if ( shouldTransmit ) then
+				if ( controller.IsSuspended ) then
+					controller:OnResumed()
+				end
+			else
+				if ( not controller.IsSuspended ) then
+					controller:OnSuspended()
+				end
 			end
 		end
 	end
