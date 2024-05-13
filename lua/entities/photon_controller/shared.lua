@@ -754,6 +754,8 @@ function ENT:SetupComponent( id )
 	---@type PhotonLightingComponent
 	local component = Photon2.GetComponent( data.Component )
 
+	-- info( "Setting up component [" .. id .. "] [" .. data.Component .. "]" )
+
 	local ent
 
 	if ( component.IsVirtual ) then

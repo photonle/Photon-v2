@@ -565,7 +565,7 @@ function Component:Initialize( ent, controller, uiMode )
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
 	local component = PhotonBaseEntity.Initialize( self, ent, controller, uiMode ) --[[@as PhotonLightingComponent]]
-
+	if ( not component ) then return end
 	if ( IsValid( controller ) ) then
 		if ( self.UseControllerModes ) then
 			component.CurrentModes = controller.CurrentModes

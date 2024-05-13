@@ -94,12 +94,13 @@ end
 hook.Add("EntityNetworkedVarChanged", "Photon2:OnNetworkVarChanged", Photon2.cl_Network.OnNetworkVarChanged)
 
 function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
-	if ( ent:GetClass() == "photon_controller" ) then
-		if ( not IsValid( ent:GetParent() ) ) then return end
+	if ( IsValid( ent ) and ent:GetClass() == "photon_controller" ) then
 		if ( not ent.IsPhotonController ) then return end
 		if ( shouldTransmit ) then
 			if ( ent.IsSuspended ) then
-				ent:OnResumed()
+				if ( IsValid( ent:GetComponentParent() ) ) then 
+					ent:OnResumed()
+				end
 			end
 		else
 			if ( not ent.IsSuspended ) then
@@ -111,7 +112,9 @@ function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
 		if ( IsValid( controller ) ) then
 			if ( shouldTransmit ) then
 				if ( controller.IsSuspended ) then
-					controller:OnResumed()
+					if ( IsValid( ent ) and IsValid( controller:GetComponentParent() ) ) then
+						controller:OnResumed()
+					end
 				end
 			else
 				if ( not controller.IsSuspended ) then
