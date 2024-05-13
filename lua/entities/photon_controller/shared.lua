@@ -871,7 +871,9 @@ end
 function ENT:RemoveEquipmentPropByIndex( index )
 	-- printf("Controller is removing virtual component equipment ID [%s]", index)
 	if ( self.Props[index] ) then
-		self.Props[index]:Remove()
+		if ( IsValid( self.Props[index] ) ) then
+			self.Props[index]:Remove()
+		end
 	end
 	self.Props[index] = nil
 end
@@ -1006,9 +1008,9 @@ function ENT:SetupProfile( name, isReload, attempt )
 	---@type PhotonVehicle
 	local profile = self:GetProfile( name )
 
-	if ( not profile ) then
+	if ( name == "" or ( not profile ) ) then
 		attempt = attempt or 0
-		if ( attempt > 10 ) then
+		if ( attempt > 50 ) then
 			error("Failed to get vehicle profile [" .. tostring( name ) .."].")
 			return
 		else
@@ -1023,8 +1025,11 @@ function ENT:SetupProfile( name, isReload, attempt )
 
 	if ( profile.InvalidVehicle ) then 
 		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
-		return 
+		return
 	end
+
+
+	info( "Setting up vehicle profile [%s] on entity [%s] (#%d)", name, tostring(self), attempt or 1 )
 
 	self:SetSchema( profile.Schema )
 
@@ -1094,6 +1099,11 @@ function ENT:SetupProfile( name, isReload, attempt )
 			self:GetParent():PhysWake()
 		end
 	end
+	
+	if ( CLIENT ) then
+		self:SyncChannels()
+	end
+
 end
 
 function ENT:SetSchema( schema )
@@ -1403,8 +1413,20 @@ function ENT:OnProfileNameChange( name, old, new )
 		end)
 		return
 	end
-	printf("Profile name change. Name: [%s] | Old: [%s] | New: [%s]", tostring( name ), tostring( old ), tostring( new ) )
-	self:SetupProfile( new )
+	-- printf("Profile name change. Name: [%s] | Old: [%s] | New: [%s]", tostring( name ), tostring( old ), tostring( new ) )
+	if SERVER then 
+		self:SetupProfile()
+	else
+		-- This is a necessary bullshit hackjob because DTVar change detection
+		-- spams while an entity is being initialized and also sends erroneous values
+		-- leftover from the previous entity that used the same index.
+		timer.Create( "Photon2:ProfileChange[" .. self:EntIndex() .. "]", 0.1, 1, function()
+			if ( IsValid( self ) ) then
+				-- It's really fucking stupid.
+				self:SetupProfile()
+			end
+		end)
+	end
 end
 
 function ENT:GetSirenSelection( number )
@@ -1421,6 +1443,8 @@ function ENT:UpdatePulseComponentArray()
 	self.RebuildPulseComponents = false
 end
 
+-- Manually polls the controller to get all channel modes as it otherwise
+-- relies on change notifications.
 function ENT:SyncChannels()
 	local channels = {}
 	for i=1, #self.ComponentArray do

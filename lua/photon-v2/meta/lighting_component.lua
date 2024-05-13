@@ -851,6 +851,8 @@ Component.PropertiesUpdatedOnSoftUpdate = {
 	["StateMap"] = true
 }
 
+-- Returns all channels the component uses which should be networked. Used
+-- by controllers when determining which channels should exist or be setup.
 function Component:GetNetworkedChannels()
 	local channels = {}
 	for channel, _ in pairs( self.InputActions ) do
