@@ -1,5 +1,16 @@
 Photon2.HUD = Photon2.HUD or {
-
+	ToneIcons = {
+		wail = Material("photon/ui/hud_icon_wail.png"),
+		yelp =  Material("photon/ui/hud_icon_yelp.png"),
+		hilo =  Material("photon/ui/hud_icon_hilo.png"),
+		pcall =  Material("photon/ui/hud_icon_pcall.png"),
+		tone =  Material("photon/ui/hud_icon_tone.png"),
+		bolt =  Material("photon/ui/hud_icon_bolt.png"),
+		speaker =  Material("photon/ui/hud_icon_speaker.png"),
+		airhorn =  Material("photon/ui/hud_icon_horn.png"),
+		manual =  Material("photon/ui/hud_icon_manual.png"),
+		siren =  Material("photon/ui/hud_icon_siren.png"),
+	}
 }
 
 local print = Photon2.Debug.Print
@@ -28,19 +39,7 @@ local lastUpdate = 0
 
 local cornerRadius = 4
 
-local icons = {
-	wail = Material("photon/ui/hud_icon_wail.png"),
-	yelp =  Material("photon/ui/hud_icon_yelp.png"),
-	hilo =  Material("photon/ui/hud_icon_hilo.png"),
-	pcall =  Material("photon/ui/hud_icon_pcall.png"),
-	tone =  Material("photon/ui/hud_icon_tone.png"),
-	bolt =  Material("photon/ui/hud_icon_bolt.png"),
-	speaker =  Material("photon/ui/hud_icon_speaker.png"),
-	airhorn =  Material("photon/ui/hud_icon_horn.png"),
-	manual =  Material("photon/ui/hud_icon_manual.png"),
-	siren =  Material("photon/ui/hud_icon_siren.png"),
-}
-
+local icons = Photon2.HUD.ToneIcons
 local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
 local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
 
@@ -772,6 +771,7 @@ function Photon2.HUD.DrawPerformanceInfo()
 	x = x + 96
 	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, white )
 	x = x + 96
+	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, white )
 	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, white )
 	x = 16
 	y = y + 18

@@ -213,6 +213,7 @@ local sirens = {
 		return Photon2.Index.CompileSiren( siren )
 	end,
 	UI = {
+		PreviewPanel = "Photon2UISirenPreviewer",
 		BrowserColumnSchema = {
 
 			{

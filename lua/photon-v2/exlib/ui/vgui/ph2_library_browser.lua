@@ -12,6 +12,8 @@ local margin = 8
 local printf = Photon2.Debug.PrintF
 local print = Photon2.Debug.Print
 
+-- Modes: OPEN, SAVE, SELECT, BROWSE
+
 local columnSchema = {
 	{
 		Label = "Name",
@@ -75,7 +77,7 @@ function PANEL:SetupTopControls()
 	local divider = vgui.Create( "EXDHorizontalDivider", panel )
 	divider:Dock( FILL )
 	divider:SetAnchor("R")
-	divider:SetRightMin( 140 )
+	divider:SetRightMin( 234 )
 
 	local searchPanel = vgui.Create( "DPanel", panel )
 	searchPanel:DockPadding( 0, padding, padding, padding )
@@ -98,7 +100,7 @@ function PANEL:SetupTopControls()
 
 	local pathTextBox = vgui.Create( "EXDTextEntry", pathPanel )
 	pathTextBox:Dock( FILL )
-	pathTextBox:SetText( "library/" .. tostring( self.CurrentLibrary.Folder ) )
+	pathTextBox:SetText( "photon-v2/library/" .. tostring( self.CurrentLibrary.Folder ) )
 	pathTextBox:SetEnabled( false )
 	searchTextBox:SetTextInset( 16, 16 )
 
@@ -171,6 +173,7 @@ function PANEL:SetupMain()
 end
 
 function PANEL:OnItemDoubleClick( value )
+	if ( self.FileMode == "BROWSE" ) then return end
 	self:OnFileConfirmed( value )
 end
 
@@ -488,3 +491,65 @@ function PANEL:PostAutoRefresh()
 end
 
 derma.DefineControl( class, description, PANEL, base )
+
+---@class Photon2UILibraryMetaPanel : Panel
+local PANEL = {}
+
+PANEL.AllowAutoRefresh = true
+
+function PANEL:Init()
+	self.BaseClass.Init( self )
+	local this = self
+	self:Setup()
+end
+
+function PANEL:PostAutoRefresh()
+	self:Setup()
+end
+
+function PANEL:SetValue( header, subHeader )
+	self.HeaderText = header
+	self.Header:SetText( header )
+	self.SubHeaderText = subHeader
+	self.SubHeader:SetText( subHeader )
+end
+
+function PANEL:Setup()
+	self:Clear()
+	self:DockPadding( 8, 4, 8, 4 )
+	self:SetCursor( "hand" )
+	self:SetHeight( 48 )
+	local header = vgui.Create( "DLabel", self )
+	header:Dock( TOP )
+	header:SetFont( "PhotonUI.Mono" )
+	header:SetText( self.HeaderText or "" )
+	self.Header = header
+
+	local subHeader = vgui.Create( "DLabel", self )
+	subHeader:Dock( TOP )
+	subHeader:SetText( self.SubHeaderText or "" )
+	self.SubHeader = subHeader
+end
+
+function PANEL:OnCursorEntered()
+	self.SubHeader:SetText( "Click to copy..." )
+end
+
+function PANEL:OnCursorExited()
+	self.SubHeader:SetText( self.SubHeaderText or "" )
+end
+
+function PANEL:OnMousePressed( key )
+	if ( key == MOUSE_LEFT ) then
+		SetClipboardText( self.Header:GetText() )
+		self.SubHeader:SetText( "" )
+	end
+end
+
+function PANEL:OnMouseReleased( key )
+	if ( key == MOUSE_LEFT ) then
+		self.SubHeader:SetText( "Copied." )
+	end
+end
+
+derma.DefineControl( "Photon2UILibraryMetaPanel", "Author and name display with easy copy functionality.", PANEL, "DPanel" )

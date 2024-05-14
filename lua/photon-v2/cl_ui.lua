@@ -385,6 +385,12 @@ function Photon2.UI.PopulateMenuBar()
 			RunConsoleCommand( "ph2_component_browser" )
 		end)
 
+		debugMenu:AddOption( "Open Siren Browser...", function()
+			local browser = vgui.Create( "Photon2UILibraryBrowser" )
+			browser:Setup( "Sirens", "BROWSE" )
+			browser:SetSizing( 1280, 700, 400 )
+		end)
+
 		debugMenu:AddSpacer()
 		
 		debugMenu:AddOption( "Create New Vehicle...", function()

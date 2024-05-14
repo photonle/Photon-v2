@@ -46,7 +46,7 @@ function meta.New( properties )
 	
 	result.Loaded = false
 	result.LuaPath = luaPath .. result.Folder .. "/"
-	-- ??????
+
 	result.GlobalName = "PHOTON_LIBRARY_" .. string.upper( result.Singular )
 	result.RefreshQueue = {}
 
@@ -58,7 +58,7 @@ function meta.New( properties )
 		return result:Register( entry )
 	end
 
-	-- what the fuck is this?
+	-- this is what enables code like local COMPONENT = Photon2.LibraryComponent()
 	Photon2["Library" .. result.Singular] = function()
 		_G[result.GlobalName] = {
 			SourceType = "Lua"

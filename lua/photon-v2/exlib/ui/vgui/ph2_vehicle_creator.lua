@@ -424,10 +424,10 @@ VEHICLE.Components = {]]
 
 -- Props Example:
 --	{
---		Model = "models/props_c17/oildrum001.mdl",
---		Position = Vector( 0, 0, 0 ),
---		Angle = Angle( 0, 0, 0 ),
---		Scale = 1
+--		Model = "models/tdmcars/emergency/equipment/setina_bodyguard.mdl",
+--		Position = Vector( 0, 100, 20 ),
+--		Angles = Angle( 0, 0, 0 ),
+--		Scale = 1,
 --	}
 VEHICLE.Props = {}
 ]]
