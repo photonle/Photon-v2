@@ -387,12 +387,12 @@ function Photon2.UI.PopulateMenuBar()
 
 		debugMenu:AddSpacer()
 		
-		-- debugMenu:AddOption( "Create New Vehicle...", function()
-		-- 	local form = vgui.Create( "Photon2UIScaffoldBuilder" )
-		-- end)
+		debugMenu:AddOption( "Create New Vehicle...", function()
+			local form = vgui.Create( "Photon2UIVehicleCreator" )
+		end)
 		
-		-- debugMenu:AddSpacer()
-		
+		debugMenu:AddSpacer()
+
 		-- debugMenu:AddOption( "Open Component Inspector", function() 
 		-- 	local form = vgui.Create( "Photon2UIComponentInspector" )
 		-- end)

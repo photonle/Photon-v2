@@ -1,6 +1,7 @@
 local class = "Photon2UICode"
 local base = "Photon2UIWindow"
 
+-- Colors from Atom's One Light
 local theme = {
 	Background = Color( 255, 255, 255 ),
 	Mono1 = Color( 56, 58, 66 ),
@@ -52,12 +53,7 @@ function PANEL:Setup()
 	end
 
 	self.RichText.Paint = function( panel )
-
-	    -- panel.m_FontName = DBugR.Prefix .. "LuaViewFont"
-	    -- panel:SetFontInternal( DBugR.Prefix .. "LuaViewFont" )	
 	    panel:SetBGColor( Color( theme.Background.r, theme.Background.g, theme.Background.b, 255 ) );
-	    -- panel.Paint = nil
-
 	end
 
 	local buttonsPanel = vgui.Create( "DPanel", content )
@@ -103,17 +99,22 @@ function PANEL:Setup()
 end
 
 
-local function startsWith(str, start)
-	return string.sub(str, 1, string.len(start)) == start
+local function startsWith( str, start )
+	return string.sub( str, 1, string.len( start ) ) == start
+end
+local function endsWith( str, ending )
+	return ending == "" or string.sub(str, -string.len( ending ) ) == ending
 end
 
-local function splitLine(line)
-    local parts = {}
-    for part in string.gmatch(line, "[^%s%.]+") do
-        table.insert(parts, part)
-    end
-    return parts
-end
+local scriptWords = {
+	["if"] = true,
+	["then"] = true,
+	["else"] = true,
+	["end"] = true,
+	["local"] = true,
+	["return"] = true,
+	["elseif"] = true
+}
 
 function PANEL:SetCode( code, title )
 	if ( title ) then self:SetMainTitle( title ) end
@@ -130,16 +131,36 @@ function PANEL:SetCode( code, title )
 			end
 			self.RichText:AppendText( line .. "\n" )
 		else
-			-- for i, part in pairs( splitLine( line ) ) do
-			-- 	self.RichText:AppendText( part )
-			-- 	-- self.RichText:AppendText( part )
-			-- end
+			local stringParts = string.Explode( "\"", line, false )
+			
+			for i, stringPart in ipairs( stringParts ) do
+				if ( i % 2 == 0 ) then
+					self.RichText:InsertColorChangeEx( theme.Green )
+					self.RichText:AppendText( "\"" .. stringPart .."\"" )
+				else
+					self.RichText:InsertColorChangeEx( theme.Mono1 )
+					
+					local words = string.Explode( " ", stringPart, false )
+					for _i, part in ipairs( words ) do
+						local scriptWord
+						-- Handle strings
+						if ( scriptWords[part] ) then
+							self.RichText:InsertColorChangeEx( theme.Purple )
+						end
+		
+						self.RichText:AppendText( part )
+						if ( _i < #words ) then self.RichText:AppendText( " " ) end
+						
+						if ( scriptWords[part] ) then
+							self.RichText:InsertColorChangeEx( theme.Mono1 )
+						end
+					end
+				end
+			end
 			self.RichText:InsertColorChangeEx( theme.Mono1 )
-			self.RichText:AppendText( line .. "\n" )
+			self.RichText:AppendText( "\n" )
 		end
 	end
-	-- self.RichText:InsertColorChange( theme.Mono2.r, theme.Mono2.g, theme.Mono2.b, 255 )
-	-- self.RichText:AppendText( code )
 end
 
 function PANEL:PostAutoRefresh()

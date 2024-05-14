@@ -619,43 +619,54 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			
 			if ( siren1Name ) then
 				-- local siren1 = Photon2.Index.Sirens[siren1Name]
-				local siren1 = Photon2.GetSiren(siren1Name)
-				-- local sirenTones1 = siren1
-				if ( hintInfoVisible ) then
-					addHintKey( keyHints, "activate_lights_siren" )
-					addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
-				end
-				
-				-- Siren 1 Indicator
-				local sirenDisplay
-				local label = target.CurrentModes["Emergency.Siren"]
-				local icon = icons["speaker"]
-				local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
-				local indicatorMode = 0
-
-				if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
-					sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.SirenOverride"]]
-					indicatorMode = 2
-				else
-					sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.Siren"]]
-					if ( (target.CurrentModes["Emergency.Siren"] ~= "OFF") and (sirenDisplay) ) then
-						indicatorMode = 1
+				local siren1 = Photon2.GetSiren( siren1Name )
+				if ( siren1 ) then
+					-- local sirenTones1 = siren1
+					if ( hintInfoVisible ) then
+						addHintKey( keyHints, "activate_lights_siren" )
+						addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
 					end
-				end
+					
+					-- Siren 1 Indicator
+					local sirenDisplay
+					local label = target.CurrentModes["Emergency.Siren"]
+					local icon = icons["speaker"]
+					local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
+					local indicatorMode = 0
 
-				if (sirenDisplay) then
-					icon = icons[sirenDisplay.Icon] or icons["siren"]
-					label = sirenDisplay.Label
-				end
+					if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
+						sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.SirenOverride"]]
+						indicatorMode = 2
+					else
+						sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.Siren"]]
+						if ( (target.CurrentModes["Emergency.Siren"] ~= "OFF") and (sirenDisplay) ) then
+							indicatorMode = 1
+						end
+					end
 
-				nextH = 32
-				HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
-					icon, 
-					label, 
-					#siren1.OrderedTones, 
-					sirenSelection, 
-					indicatorMode 
-				)
+					if (sirenDisplay) then
+						icon = icons[sirenDisplay.Icon] or icons["siren"]
+						label = sirenDisplay.Label
+					end
+
+					nextH = 32
+					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+						icon, 
+						label, 
+						#siren1.OrderedTones, 
+						sirenSelection, 
+						indicatorMode 
+					)
+				else
+					nextH = 32
+					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+						icons["speaker"], 
+						"ERROR", 
+						0, 
+						0, 
+						0 
+					)
+				end
 				-- HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, 
 				-- 	icons[sirenDisplay.Icon], 
 				-- 	sirenDisplay.Label, 

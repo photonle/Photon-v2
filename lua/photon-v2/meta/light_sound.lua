@@ -3,6 +3,8 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementSound"
 BASE = "PhotonElement"
 
+local info, warn, warn_once = Photon2.Debug.Declare( "SoundElement")
+
 ---@type PhotonElementSound
 local Sound = exmeta.New()
 
@@ -63,6 +65,7 @@ end
 function Sound:SetTone( tone )
 	if ( self.Component.Siren ) then
 		local siren = Photon2.GetSiren(self.Component.Siren)
+		if ( not siren ) then warn_once( "Unable to locate siren [%s]", self.Component.Siren ) return end
 		local data = siren.Tones[tone]
 		if ( data ) then
 			self.File = data.Sound
