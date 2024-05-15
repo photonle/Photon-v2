@@ -30,7 +30,7 @@ function PANEL:SetEntry( sirenName )
 
 	self.CurrentEntryName = sirenName
 	self.CurrentEntry = Photon2.GetSiren( sirenName )
-	PrintTable( self.CurrentEntry )
+	-- PrintTable( self.CurrentEntry )
 
 	local content = vgui.Create( "DPanel", self )
 	content:SetPaintBackground( false )
