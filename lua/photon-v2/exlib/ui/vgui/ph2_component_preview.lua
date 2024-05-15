@@ -10,6 +10,10 @@ local PANEL = {
 	AllowAutoRefresh = true
 }
 
+local displayElementDebugConVar = CreateClientConVar( "ph2_preview_debug_overlay", "0", true, false, "Display debug elements in the component preview." )
+
+local SortedPairs = Photon2.Util.SortedPairsToString
+
 function PANEL:Init()
 	self.BaseClass.Init( self )
 	local this = self
@@ -70,6 +74,10 @@ function PANEL:SetEntry( entryName, isComponentReload )
 	overviewTab:SetPaintBackground( false )
 
 	local viewTab = vgui.Create( "DScrollPanel", scrollPanel )
+	local showLightNumbersOption = vgui.Create( "DCheckBoxLabel", viewTab )
+	showLightNumbersOption:SetText( "Display Element Overlay" )
+	showLightNumbersOption:Dock( TOP )
+	showLightNumbersOption:SetConVar( "ph2_preview_debug_overlay" )
 
 	local modelTab = vgui.Create( "DPanel", scrollPanel )
 	modelTab:DockMargin( -4, -4, 0, 0 )
@@ -184,9 +192,11 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			
 			self.LastPaint = RealTime()
 
-			for i, element in pairs( self.Entity.Elements ) do
-				if ( element.DrawDebug ) then
-					element:DrawDebug()
+			if ( displayElementDebugConVar:GetBool() ) then
+				for i, element in pairs( self.Entity.Elements ) do
+					if ( element.DrawDebug ) then
+						element:DrawDebug()
+					end
 				end
 			end
 		end

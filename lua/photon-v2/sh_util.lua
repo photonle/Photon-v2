@@ -1,3 +1,4 @@
+Photon2 = Photon2 or {}
 Photon2.Util = {
 	ModelMeshes = {},
 	ModelMeshMap = {}
@@ -266,6 +267,26 @@ function Photon2.Util.SortedPairs( pTable, Desc )
 				return numA < numB
 			end
 			return a < b
+		end )
+	end
+
+	local i, key
+	return function()
+		i, key = next( keys, i )
+		return key, pTable[key]
+	end
+end
+
+function Photon2.Util.SortedPairsToString( pTable, Desc )
+	local keys = getKeys( pTable )
+
+	if ( Desc ) then
+		table.sort( keys, function( a, b )
+			return tostring( a ) > tostring( b )
+		end )
+	else
+		table.sort( keys, function( a, b )
+			return tostring( a ) < tostring( b )
 		end )
 	end
 

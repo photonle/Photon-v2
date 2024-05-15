@@ -83,6 +83,8 @@ end
 
 if SERVER then
 
+	AddCSLuaFile("photon-v2/sh_util.lua")
+
 	-- send meta files to client (required here for file reloading to work)
 	fol = "photon-v2/meta/"
 	files, folders = file.Find( fol .. "*.lua", "LUA" )
@@ -122,6 +124,7 @@ if SERVER then
 end
 
 if CLIENT then
+	include("photon-v2/sh_util.lua")
 	autoInclude("photon-v2/exlib/")
 	include("photon-v2/cl_init.lua")
 end
