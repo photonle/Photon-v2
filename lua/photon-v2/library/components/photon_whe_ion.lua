@@ -3,10 +3,18 @@ local sequence = Photon2.SequenceBuilder.New
 
 COMPONENT.Name = "photon_whe_ion"
 COMPONENT.Title = "Whelen Ion"
+COMPONENT.Category = "Perimeter"
 COMPONENT.Credits = {
 	Model = "Sentry",
 	Code = "Schmal"
 }
+
+COMPONENT.Preview = {
+	Position = Vector(),
+	Angles = Angle( 0, 90, 0 ),
+	Zoom = 3
+}
+
 COMPONENT.Model = "models/sentry/props/ion_photon.mdl"
 
 local size = 6
@@ -55,11 +63,12 @@ COMPONENT.Segments = {
 			["ALT_MED_DUO"] = sequence():Alternate( 1, 2, 8 ),
 			["ALT_MED_DUO:B"] = sequence():Alternate( 2, 1, 8 ),
 			["DOUBLE_FLASH"] = sequence():DoubleFlash( 1 ):AppendPhaseGap(),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( 1, 2, 3 ):AppendPhaseGap(),
 			["TRI_FLASH"] = sequence():DoubleFlash( 1 ):AppendPhaseGap(),
 			["TRI_FLASH_HOLD"] = sequence():FlashHold( { 1 }, 3, 4 ):AppendPhaseGap(),
 			["TRI_FLASH_HOLD:A"] = sequence():FlashHold( { 1, 0 }, 3, 4 ),
 			["TRI_FLASH_HOLD:B"] = sequence():FlashHold( { 0, 1 }, 3, 4 ),
-			["VARIABLE_SINGLE"] = sequence():Add( 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ):SetVariableTiming( 1/12, 1/40, 0.33 )
+			["VARIABLE_SINGLE"] = sequence():Add( 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ):SetVariableTiming( 1/12, 1/40, 0.66 )
 		}
 	}
 }
@@ -73,7 +82,7 @@ COMPONENT.Inputs = {
 			Light = "VARIABLE_SINGLE"
 		},
 		["MODE3"] = {
-			Light = "QUAD_FLASH"
+			Light = "DOUBLE_FLASH_HOLD"
 		}
 	}
 }

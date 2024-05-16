@@ -194,12 +194,13 @@ COMPONENT.Segments = {
 			[1] = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42",
 			[2] = "[1] Left_Front [2] Right_Rear",
 			[3] = "[2] Right_Front [1] Left_Rear",
-			[4] = "[1] Left_Front Left_Rear [2] Right_Front Right_Rear"
+			[4] = "[1] Left_Front Left_Rear [2] Right_Front Right_Rear",
+
 		},
 		Sequences = {
 			["ON"] = { 1 },
 			["ALT"] = sequence():Alternate( 2, 3, 2 ),
-			["BLINK"] = sequence():Alternate( 4, 0, 4 )
+			["BLINK"] = sequence():Alternate( 4, 0, 4 ),
 			-- ["ALT"] = sequence():Alternate( 4, 5, 12 )
 		}
 	},
@@ -267,6 +268,9 @@ COMPONENT.Segments = {
 			[6] = "[1] @03 @07 @11 @15 [2] @02 @06 @10 @14 @18",
 
 			[7] = "[1] Left [2] Right",
+
+			[8] = "[1] @01 @03 @05 @09 [2] @08 @18 @16 @14 @12",
+			[9] = "[2] @02 @04 @06 @10 [1] @11 @13 @15 @17 @07"
 		},
 		Sequences = {
 			["SCAN"] = sequence()
@@ -287,6 +291,10 @@ COMPONENT.Segments = {
 			["TIMING"] = sequence():Alternate( 1, 2 ):SetVariableTiming( 1/24, 1/4, 1 ),
 			["HORN"] = { 7 },
 			["T4"] = sequence():FlashHold( { 1, 2 }, 3, 4 ),
+			-- Based on USCP patterns
+			["QUAD"] = sequence():QuadFlash( 1, 2 ),
+			["QUAD_MODIFIED"] = sequence():QuadFlash( 8, 9 ),
+			["TRIP_MODIFIED"] = sequence():TripleFlash( 8, 9 ),
 		}
 	},
 	Takedown = {
@@ -298,7 +306,8 @@ COMPONENT.Segments = {
 		Sequences = {
 			["OFF"] = { 0 },
 			["ON"] = { 3 },
-			["ALT"] = sequence():Alternate( 1, 2, 8 )
+			["ALT"] = sequence():Alternate( 1, 2, 8 ),
+			["TRI_FLASH"] = sequence():TripleFlash( 2, 1 ),
 		}
 	},
 	Flood = {
@@ -400,7 +409,7 @@ COMPONENT.Segments = {
 			["HORN"] = { 12 }
 		}
 	},
-	Traffic = {
+	Traffic_DVI = {
 		Off = "~OFF",
 		Frames = {
 			-- [0] = "[~R] @11 @13 @15 @17 [~B] @18 @16 @14 @12",
@@ -431,6 +440,36 @@ COMPONENT.Segments = {
 			["CENOUT"] = sequence():Sequential( 14, 20 ):Add( 0, 20, 0, 20, 0 ):StretchAll( 6 )
 		}
 	},
+	Traffic = {
+		Frames = {
+			-- [0] = "[~R] @11 @13 @15 @17 [~B] @18 @16 @14 @12",
+			[1] = "[A] @12",
+			[2] = "[A] @12 @14",
+			[3] = "[A] @12 @14 @16",
+			[4] = "[A] @12 @14 @16 @18 @17",
+			[5] = "[A] @12 @14 @16 @18 @17 @15",
+			[6] = "[A] @12 @14 @16 @18 @17 @15 @13",
+			[7] = "[A] @12 @14 @16 @18 @17 @13 @15 @11",
+			[8] = "[A] @14 @16 @18 @17 @13 @15 @11",
+			[9] = "[A] @16 @18 @17 @13 @15 @11",
+			[10] = "[A] @18 @17 @15 @13 @11",
+			[11] = "[A] @15 @13 @11",
+			[12] = "[A] @13 @11",
+			[13] = "[A] @11",
+			[14] = "[A] @17 @18",
+			[15] = "[A] @15 @17 @18 @16",
+			[16] = "[A] @13 @15 @17 @18 @16 @14",
+			[17] = "[A] @11 @13 @15 @17 @18 @16 @14 @12",
+			[18] = "[A] @11 @13 @15 @16 @14 @12",
+			[19] = "[A] @11 @13 @14 @12",
+			[20] = "[A] @11 @12",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 13 ):Add( 0, 13, 0, 13, 0 ):StretchAll( 3 ),
+			["RIGHT"] = sequence():Sequential( 13, 1 ):Add( 0, 1, 0, 1, 0 ):StretchAll( 3 ),
+			["CENOUT"] = sequence():Sequential( 14, 20 ):Add( 0, 20, 0, 20, 0 ):StretchAll( 4 )
+		}
+	},
 	Brake = {
 		Frames = {
 			[1] = "[1] @11 @13 @15 @17 [2] @18 @16 @14 @12"
@@ -443,9 +482,13 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "[~(1,1)B*0.5] @01 @02 @03 @04",
 			[2] = "[~(1,1)B*0.9] @01 @02 @03 @04",
+			[3] = "[B] @01 @02 @03 @04 @05 @06 @07 @08 @09",
+			[4] = "[G] @01 @02 @03 @04 @05 @06 @07 @08 @09",
 		},
 		Sequences = {
-			["TEST"] = sequence():Alternate( 1, 2 ):SetTiming( 1 )
+			["TEST"] = sequence():Alternate( 1, 2 ):SetTiming( 1 ),
+			["PHASE"] = sequence():Alternate( 3, 4, 16 ),
+			["PHASE:A"] = sequence():Alternate( 3, 4, 16 ),
 		}
 	},
 	Marker = {

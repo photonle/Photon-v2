@@ -182,6 +182,9 @@ function ENT:SetupDataTables()
 
 	self:NetworkVar( "Int",  0, "VehicleSpeed" )
 
+	self:NetworkVar( "String", 0, "ProfileName" )
+
+	self:NetworkVarNotify( "ProfileName", self.OnProfileNameChange )
 	self:NetworkVarNotify( "EngineRunning", self.OnEngineStateChange )
 end
 
@@ -190,6 +193,7 @@ function ENT:InitializeShared()
 	self.Props = {}
 	self.SubMaterials = {}
 	self.EquipmentProperties = {}
+	self.Bones = {}
 
 	self.ComponentArray = {}
 	self.PropArray = {}
@@ -237,6 +241,10 @@ function ENT:OnMeshCachePurge()
 end
 
 function ENT:AttemptComponentReload( id )
+	if ( self.PerformedSoftReload ) then
+		-- This is to prevent soft-reload changes from being reverted by a component reload.
+		self:HardReload()
+	end
 	local success, code = pcall( self.OnComponentReloaded, self, id )
 	if ( not success ) then 
 		warn( "ERROR in [%s]: \n\t\t\t[%s]", id, code )
@@ -269,9 +277,11 @@ end
 function ENT:SetChannelMode( channel, state )
 	state = state or "OFF"
 	
-	local oldState = self:GetNW2String("Photon2:CS:" .. channel, "OFF" )
-
-	self:SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+	local oldState
+	if ( IsValid( self:GetParent() ) ) then
+		oldState = self:GetParent():GetNW2String("Photon2:CS:" .. channel, "OFF" )
+		self:GetParent():SetNW2String( "Photon2:CS:" .. channel, string.upper(state) )
+	end
 
 	if CLIENT then
 		-- this line may be necessary for client prediction but it's doing some really weird shit
@@ -286,17 +296,18 @@ end
 ---@param channel string
 ---@return string
 function ENT:GetChannelMode( channel )
-    return self:GetNW2String( "Photon2:CS:" .. channel, "OFF" )
+    return self:GetParent():GetNW2String( "Photon2:CS:" .. channel, "OFF" )
 end
 
----@return string
-function ENT:GetProfileName()
-	return self:GetNW2String( "Photon2:ProfileName" )
-end
+-- -@return string
+-- function ENT:GetProfileName()
+	-- return self:GetDTProfileName()
+	-- return self:GetNW2String( "Photon2:ProfileName" )
+-- end
 
 
-function ENT:GetProfile( )
-	return Photon2.GetVehicle( self:GetProfileName() )
+function ENT:GetProfile( name )
+	return Photon2.GetVehicle( name or self:GetProfileName() )
 end
 
 ENT.UserCommands = {
@@ -487,6 +498,7 @@ function ENT:HardReload()
 	end
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
+	self.PerformedSoftReload = false
 	self:SetupProfile()
 end
 
@@ -508,6 +520,18 @@ function ENT:SoftEquipmentReload()
 	end
 	
 	self:SetSchema( profile.Schema )
+
+	self.PerformedSoftReload = true
+
+	if ( SERVER ) then
+		if ( IsValid( self:GetParent() ) ) then
+			self:GetParent():PhysWake()
+		end
+	end
+	
+	for id, data in pairs( self.Bones ) do
+		self:SetupBone( id, profile.Equipment.Bones[id] )
+	end
 	-- for id, bodyGroupData in pairs( self.Equipment.BodyGroups ) do
 	-- 	self:SetupBodyGroup( id )
 	-- end
@@ -638,6 +662,10 @@ end
 function ENT:SetupBodyGroup( id )
 	if CLIENT then return end
 	local data = self.Equipment.BodyGroups[id]
+	if ( not istable( data ) ) then 
+		warn( "Failed to setup equipment BodyGroup [%s]. (Value = [%s])", tostring( id ), tostring( data ) )
+		return
+	end
 	-- printf( "Setting up BodyGroup [%s]", id )
 	local bodyGroup = data.BodyGroup
 	local value = data.Value
@@ -654,6 +682,7 @@ end
 
 function ENT:SetParentSubMaterial( index, material )
 	if ( index == "SKIN" ) then index = Photon2.Util.FindSkinSubMaterial( self:GetParent() ) end
+	if ( not IsValid( self:GetParent() ) ) then return end
 	self:GetParent():SetSubMaterial( index, material )
 	if ( self.SyncAttachedParentSubMaterials ) then
 		for i, child in pairs( self:GetParent():GetChildren() ) do
@@ -691,6 +720,27 @@ function ENT:SetupEquipmentProperties( id )
 	if ( data.Color ) then self:GetParent():SetColor( data.Color ) end
 end
 
+function ENT:SetupBone( id, data )
+	if CLIENT then return end
+	data = data or self.Equipment.Bones[id]
+	local parent = self:GetComponentParent()
+	if ( not IsValid( parent ) ) then return end
+	-- printf( "Setting up bone [%s]", id )
+	-- printf( "Searching for bone [%s]", tostring( data.Bone ) )
+	local bone
+	if ( isstring( data.Bone ) ) then
+		bone = parent:LookUpBoneOrError( data.Bone )
+	else
+		bone = data.Bone
+	end
+	local scale = data.Scale
+	if ( isnumber( scale ) ) then scale = Vector( scale, scale, scale ) end
+	parent:ManipulateBoneScale( bone, scale )
+	parent:ManipulateBoneAngles( bone, data.Angles )
+	parent:ManipulateBonePosition( bone, data.Position )
+	self.Bones[id] = data
+end
+
 function ENT:SetupComponent( id )
 	self.AttemptingComponentSetup = true
 	local data = self.Equipment.Components[id]
@@ -703,6 +753,8 @@ function ENT:SetupComponent( id )
 
 	---@type PhotonLightingComponent
 	local component = Photon2.GetComponent( data.Component )
+
+	-- info( "Setting up component [" .. id .. "] [" .. data.Component .. "]" )
 
 	local ent
 
@@ -796,6 +848,12 @@ function ENT:RemoveAllSubMaterials()
 	end
 end
 
+function ENT:ResetAllBones()
+	for id, boneData in pairs( self.Bones ) do
+		self:ResetBoneByIndex( id )
+	end
+end
+
 function ENT:RemoveEquipmentComponentByIndex( index )
 	-- printf("Controller is removing equipment ID [%s]", index)
 	if ( not self.Components[index] ) then return end
@@ -815,7 +873,9 @@ end
 function ENT:RemoveEquipmentPropByIndex( index )
 	-- printf("Controller is removing virtual component equipment ID [%s]", index)
 	if ( self.Props[index] ) then
-		self.Props[index]:Remove()
+		if ( IsValid( self.Props[index] ) ) then
+			self.Props[index]:Remove()
+		end
 	end
 	self.Props[index] = nil
 end
@@ -827,6 +887,23 @@ function ENT:RemoveSubMaterialByIndex( index )
 		self:SetParentSubMaterial( self.SubMaterials[index].Id, nil )
 	end
 	self.SubMaterials[index] = nil
+end
+
+function ENT:ResetBoneByIndex( index )
+	if ( CLIENT ) then return end
+	local parent = self:GetComponentParent()
+	if ( not IsValid( parent ) ) then return end
+	if ( self.Bones[index] ) then
+		local bone = self.Bones[index].Bone
+		if ( isstring( bone ) ) then
+			bone = parent:LookUpBoneOrError( bone )
+		else
+			bone = data.Bone
+		end
+		parent:ManipulateBoneScale( bone, Vector( 1, 1, 1 ) )
+		parent:ManipulateBoneAngles( bone, Angle( 0, 0, 0 ) )
+		parent:ManipulateBonePosition( bone, Vector( 0, 0, 0 ) )
+	end
 end
 
 ---@param equipmentTable PhotonEquipmentTable
@@ -858,6 +935,10 @@ function ENT:AddEquipment( equipmentTable )
 	
 	for i=1, #equipmentTable.Properties do
 		self:SetupEquipmentProperties( equipmentTable.Properties[i] )
+	end
+
+	for i=1, #equipmentTable.Bones do
+		self:SetupBone( equipmentTable.Bones[i] )
 	end
 
 	self:UpdateComponentPendingParents()
@@ -919,21 +1000,45 @@ end
 
 ---@param name? string Name of profile to load.
 ---@param isReload? boolean
-function ENT:SetupProfile( name, isReload )
+function ENT:SetupProfile( name, isReload, attempt )
 	name = name or self:GetProfileName()
+	if ( not name or name == "" ) then 
+		info( string.format( "Attempted to setup a profile with an invalid name [%s].", tostring( name ) ) )
+		return
+	end
+
 	---@type PhotonVehicle
-	local profile = self:GetProfile()
+	local profile = self:GetProfile( name )
+
+	if ( name == "" or ( not profile ) ) then
+		attempt = attempt or 0
+		if ( attempt > 50 ) then
+			error("Failed to get vehicle profile [" .. tostring( name ) .."].")
+			return
+		else
+			timer.Simple( 0.1, function()
+				if ( IsValid( self ) ) then
+					self:SetupProfile( name, isReload, attempt + 1 )
+				end
+			end)
+			return
+		end
+	end
 
 	if ( profile.InvalidVehicle ) then 
 		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
-		return 
+		return
 	end
+
+
+	info( "Setting up vehicle profile [%s] on entity [%s] (#%d)", name, tostring(self), attempt or 1 )
 
 	self:SetSchema( profile.Schema )
 
 	self:RemoveAllComponents()
 	self:RemoveAllProps()
 	self:RemoveAllSubMaterials()
+	self:ResetAllBones()
 
 	if ( profile.EngineIdleEnabled and self:GetParent():IsVehicle() ) then
 		self.EngineIdleEnabled = profile.EngineIdleEnabled
@@ -977,6 +1082,7 @@ function ENT:SetupProfile( name, isReload )
 
 	-- This block is for static equipment which is technically
 	-- supported but also deprecated and should be removed.
+	-- ????????????
 	if ( profile.EquipmentSelections ) then
 		self:SetupSelections()
 	end
@@ -989,6 +1095,17 @@ function ENT:SetupProfile( name, isReload )
 
 	self:ApplySubMaterials( self.CurrentProfile.SubMaterials )
 	self:RefreshParentMaterialsOnNextFrame()
+	
+	if ( SERVER ) then
+		if ( IsValid( self:GetParent() ) ) then
+			self:GetParent():PhysWake()
+		end
+	end
+	
+	if ( CLIENT ) then
+		self:SyncChannels()
+	end
+
 end
 
 function ENT:SetSchema( schema )
@@ -998,7 +1115,7 @@ end
 
 function ENT:ApplySubMaterials( subMaterials )
 	for index, materialName in pairs( subMaterials ) do
-		self:GetParent():SetSubMaterial( index, materialName )
+		self:SetParentSubMaterial( index, materialName )
 	end
 end
 
@@ -1047,6 +1164,9 @@ function ENT:SetupSelections()
 	if (SERVER) then 
 		self--[[@as sv_PhotonController]]:SyncSelections()
 	end
+	if ( CLIENT ) then
+		self:SyncChannels()
+	end
 end
 
 function ENT:OnRemove()
@@ -1078,7 +1198,7 @@ end
 
 ---@param channel string Channel name.
 ---@param newState string New value.
----@param oldState string Old value.
+---@param oldState? string Old value.
 function ENT:OnChannelModeChanged( channel, newState, oldState )
 	oldState = oldState or "OFF"
 	-- print("Controller channel state changed. " .. tostring(self) .. " (" .. channel .. ") '" .. oldState .."' ==> '" .. newState .. "'")
@@ -1097,7 +1217,7 @@ end
 
 
 function ENT:GetSelectionsString()
-	return self:GetNW2String( "Photon2:Selections" )
+	return self:GetParent():GetNW2String( "Photon2:Selections" )
 end
 
 function ENT:GetActiveComponents()
@@ -1148,8 +1268,9 @@ end
 ---@param selections string
 function ENT:ProcessSelectionsString( selections )
 	-- print("Processing selections string '" .. tostring(selections) .. "'")
+	if ( not selections ) then return end
 	local newSelections = string.Explode( " ", selections, false )
-	local currentSelections = self.CurrentSelections
+	local currentSelections = self.CurrentSelections or {}
 	for categoryIndex, optionIndex in pairs( newSelections ) do
 		optionIndex = tonumber( optionIndex ) --[[@as integer]]
 		newSelections[categoryIndex] = optionIndex
@@ -1277,11 +1398,36 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 end
 
 function ENT:OnEngineStateChange( name, old, new )
-	print("Engine state change: " .. tostring(new))
+	-- print("Engine state change: " .. tostring(new))
 	if ( new ) then
 		self:SetChannelMode( "Vehicle.Engine", "ON" )
 	else
 		self:SetChannelMode( "Vehicle.Engine", "OFF" )
+	end
+end
+
+function ENT:OnProfileNameChange( name, old, new )
+	if ( not IsValid( self ) or not ( IsValid( self:GetParent() ) ) ) then 
+		timer.Simple( 0.1, function()
+			if ( IsValid( self ) ) then
+				self:OnProfileNameChange( name, old, new )
+			end
+		end)
+		return
+	end
+	-- printf("Profile name change. Name: [%s] | Old: [%s] | New: [%s]", tostring( name ), tostring( old ), tostring( new ) )
+	if SERVER then 
+		self:SetupProfile()
+	else
+		-- This is a necessary bullshit hackjob because DTVar change detection
+		-- spams while an entity is being initialized and also sends erroneous values
+		-- leftover from the previous entity that used the same index.
+		timer.Create( "Photon2:ProfileChange[" .. self:EntIndex() .. "]", 0.1, 1, function()
+			if ( IsValid( self ) ) then
+				-- It's really fucking stupid.
+				self:SetupProfile()
+			end
+		end)
 	end
 end
 
@@ -1297,4 +1443,18 @@ function ENT:UpdatePulseComponentArray()
 	end
 	self.CurrentPulseComponents = result
 	self.RebuildPulseComponents = false
+end
+
+-- Manually polls the controller to get all channel modes as it otherwise
+-- relies on change notifications.
+function ENT:SyncChannels()
+	local channels = {}
+	for i=1, #self.ComponentArray do
+		for channel, _ in pairs( self.ComponentArray[i]:GetNetworkedChannels() ) do
+			channels[channel] = true
+		end
+	end
+	for channel, _ in pairs( channels ) do
+		self:OnChannelModeChanged( channel, self:GetChannelMode( channel ) )
+	end
 end

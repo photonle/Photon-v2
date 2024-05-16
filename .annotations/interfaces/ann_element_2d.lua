@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElement2DStateProperties : PhotonElementPropertiesIntensityTransitions
+---@class PhotonElement2DStateProperties : PhotonElementProperties, PhotonElementPropertiesIntensityTransitions
 ---@field SourceFillColor? PhotonBlendColor
 ---@field SourceDetailColor? PhotonBlendColor
 ---@field GlowColor? PhotonBlendColor

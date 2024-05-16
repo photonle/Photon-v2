@@ -328,7 +328,7 @@ COMPONENT.Segments = {
 			[5] = "[W] RevL RevR"
 		},
 		Sequences = {
-			["RFTR_FLASH"] = sequence():FlashHold( 5, 4, 3 ):Off( 4 ),
+			["RFTR_FLASH"] = sequence():FlashHold( 5, 3, 3 ):Off( 5 ),
 			-- Slow left-right pattern (10 frames per side)
 			["MODE1"] = sequence():Add( 1 ):Do( 10 ):Add( 2 ):Do( 10 ),
 			["MODE2"] = sequence():FlashHold( 2, 1, 5 ):FlashHold( 1, 1, 5 ),
@@ -347,7 +347,8 @@ COMPONENT.Segments = {
 			["MODE2"] = { 1 },
 			["MODE3"] = { 1 },
 			["CRUISE"] = { 4 },
-			["QUAD"] = sequence():FlashHold( { 2, 3 }, 3, 4 )
+			["QUAD"] = sequence():FlashHold( { 2, 3 }, 3, 4 ),
+			["ROAD_RUNNER"] = sequence():RoadRunner( 2, 3, 1 )
 		}
 	
 	}

@@ -103,6 +103,21 @@ end
 
 Photon2.UI.DialogBox = {}
 
+function Photon2.UI.DialogBox.Message( message, title )
+	local dialog = vgui.Create( "Photon2UIDialogWindow" )
+	dialog:SetupDialog()
+	dialog:SetTitle( title or "" )
+	dialog:SetMainText( message )
+	dialog:SetHeight( 128 )
+	dialog:SetWidth( 250 )
+	dialog:Center()
+	dialog:DoModal()
+	dialog:AddButton( "OK", function()
+		dialog:Close()
+	end)
+	return dialog
+end
+
 function Photon2.UI.DialogBox.UserError( message )
 	local dialog = vgui.Create( "Photon2UIDialogWindow" )
 	dialog:SetupDialog()
@@ -253,17 +268,17 @@ function Photon2.UI.PopulateMenuBar()
 		local menu = Photon2.UI.MenuBar
 		
 
-		local inputConfigOption = menu:AddOption( "Open Control Options", function()
+		local inputConfigOption = menu:AddOption( "Open Control Options...", function()
 			local form = vgui.Create ( "Photon2UIInputConfiguration" )
 		end)
 
-		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu", function()
+		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu...", function()
 			local form = vgui.Create ( "Photon2UIDesktop" )
 			form:MakePopup()
 			form:SetKeyBoardInputEnabled( false )
 		end)
 
-		local openWelcome = menu:AddOption( "Open Welcome Menu", function()
+		local openWelcome = menu:AddOption( "Open Welcome Menu...", function()
 			local form = vgui.Create ( "Photon2UIWelcome" )
 			-- form:SetAlpha( 0 )
 			-- form:AlphaTo( 255, 2, 0, function()
@@ -353,42 +368,41 @@ function Photon2.UI.PopulateMenuBar()
 		if not PHOTON2_STUDIO_ENABLED then return end
 
 		menu:AddSpacer()
-
+		
+		local browseOption = menu:AddOption( "Libraries" )
+		local browseMenu = browseOption:AddSubMenu()
+		browseMenu:SetDeleteSelf( false )
+		browseMenu:AddOption( "Browse Components...", function() 
+			RunConsoleCommand( "ph2_component_browser" )
+		end)
+		
+		browseMenu:AddOption( "Browse Sirens...", function()
+			local browser = vgui.Create( "Photon2UILibraryBrowser" )
+			browser:Setup( "Sirens", "BROWSE" )
+			browser:SetSizing( 1280, 700, 400 )
+		end)
 		-- local openStudioOption = menu:AddOption("Open Photon Studio", function()
 		-- 	Photon2.Studio:Initialize()
 		-- end)
+		menu:AddSpacer()
 
 		local debugOption = menu:AddOption( "Developer" )
 		local debugMenu = debugOption:AddSubMenu()
 		debugMenu:SetDeleteSelf( false )
 
-		debugMenu:AddOption( "Open Channel Controller", function() 
+		debugMenu:AddOption( "Open Channel Controller...", function() 
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
 
-		debugMenu:AddOption( "Open Component Browser", function() 
-			RunConsoleCommand( "ph2_component_browser" )
+
+
+		debugMenu:AddSpacer()
+		
+		debugMenu:AddOption( "Create New Vehicle...", function()
+			local form = vgui.Create( "Photon2UIVehicleCreator" )
 		end)
-
-		-- debugMenu:AddOption( "Open Component Inspector", function() 
-		-- 	local form = vgui.Create( "Photon2UIComponentInspector" )
-		-- end)
-
-		local newComponentPrintOption = debugMenu:AddOption( "Print Component to Console" )
-		local newComponentPrintOptionMenu = newComponentPrintOption:AddSubMenu()
-		newComponentPrintOptionMenu:SetDeleteSelf( false )
-
-		for id, entry in pairs( Photon2.Library.Components.Repository ) do
-			local innerOption = newComponentPrintOptionMenu:AddOption( id )
-			local innerOptionMenu = innerOption:AddSubMenu()
-			innerOptionMenu:SetDeleteSelf( false )
-			local printRepo = innerOptionMenu:AddOption( "Raw", function()
-				PrintTable( Photon2.Library.Components:Get( id ) )
-			end )
-			local printCompiled = innerOptionMenu:AddOption( "Compiled", function()
-				PrintTable( Photon2.GetComponent( id ) )
-			end )
-		end
+		
+		debugMenu:AddSpacer()
 
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
 		local drawInput = debugMenu:AddCVar( "Display Button Inputs", "ph2_display_input", "1", "0" )
@@ -401,6 +415,7 @@ function Photon2.UI.PopulateMenuBar()
 		debugMenu:AddOption( "Refresh Menubar", function()
 			Photon2.UI.ReloadMenubar()
 		end)
+
 
 	end)
 	

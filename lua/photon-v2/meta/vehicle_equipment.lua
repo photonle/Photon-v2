@@ -10,6 +10,7 @@ local printf = Photon2.Debug.PrintF
 ---@field Props table
 ---@field BodyGroups table
 ---@field SubMaterials table
+---@field Bones table
 ---@field Properties table
 local Equipment = exmeta.New()
 
@@ -24,6 +25,11 @@ local singleEquipmentTypes = {
 	Properties = true
 }
 
+local equipmentMap = {
+	SubMaterials = { Key = "Id", Value = "Material" },
+	BodyGroups = { Key = "BodyGroup", Value = "Value" },
+}
+
 function Equipment.GetTemplate()
 	return {
 		Components = {},
@@ -31,6 +37,7 @@ function Equipment.GetTemplate()
 		BodyGroups = {},
 		SubMaterials = {},
 		InteractionSounds = {},
+		Bones = {},
 		Properties = {}
 	}
 end
@@ -77,11 +84,17 @@ function Equipment.ProcessTable( name, source, destination, master, nameTable, p
 	for key, entry in pairs( source ) do
 		if ( istable( entry ) ) then
 			destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
-		elseif ( isstring( entry ) ) then
+		else
 			-- Allow sub-materials to be setup like [1] = "material"
-			if ( name == "SubMaterials" ) then
-				entry = { Id = name, Material = entry }
+			if ( equipmentMap[name] ) then
+				local map = equipmentMap[name]
+				entry = { [map.Key] = key, [map.Value] = entry }
 				destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
+			
+			-- if ( name == "SubMaterials" ) then
+				
+				-- entry = { Id = name, Material = entry }
+				-- destination[#destination+1] = Equipment.AddEntry( entry, master, nameTable )
 			else
 				-- Otherwise treat entry as pointing to an alias
 				-- to be resolved later.
@@ -176,6 +189,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			Segments = entry.Segments,
 			Inputs = entry.InputActions or entry.Inputs,
 			InputPriorities = entry.InputPriorities,
+			Elements = entry.Elements,
 			ElementGroups = entry.ElementGroups,
 			ElementStates = entry.ElementStates,
 			Siren = entry.Siren,

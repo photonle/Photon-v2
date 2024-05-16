@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementPoseStateProperties
+---@class PhotonElementPoseStateProperties : PhotonElementProperties
 ---@field Target number Pose target value.
 ---@field GainSpeed number Speed at which the pose value increases.
 ---@field LossSpeed number Speed at which the pose value decreases.

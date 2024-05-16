@@ -22,7 +22,7 @@ Light.BloomMaterial = "photon/common/glow"
 Light.EnableDraw = true
 Light.EnableBloom = true
 
-Light.Intensity = 1
+Light.Intensity = 0
 Light.IntensityGainFactor = 2
 Light.IntensityLossFactor = 2
 Light.TargetIntensity = 1

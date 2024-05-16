@@ -105,6 +105,10 @@ function Component.New( name, data )
 		Photon2.ComponentBuilder.SetupNightParkMode( data, data.Flags.NightParkMode )
 	end
 
+	if ( data.Flags.FrontNoM1 ) then
+		Photon2.ComponentBuilder.SetupFrontNoM1( data, data.Flags.FrontNoM1 )
+	end
+
 	---@type PhotonLightingComponent
 	local component = {
 		Name = name,
@@ -498,7 +502,7 @@ function Component.New( name, data )
 				end
 
 				if (not segment) then
-					error( string.format("Invalid segment: '%s'", segmentName) )
+					error( string.format( "Invalid segment: '%s'", segmentName ) )
 				end
 
 				-- PHASING
@@ -510,6 +514,12 @@ function Component.New( name, data )
 					if ( component.Segments[segmentName].Sequences[newSequenceName] or ( isnumber( phase ) ) ) then
 						sequenceName = newSequenceName
 					else
+						if ( string.find( phase, ":" ) ) then
+							local phaseName, phaseDegrees = Photon2.Util.ParseSequenceName( phase )
+							if ( phaseName and isnumber( phaseDegrees ) and component.Segments[segmentName].Sequences[sequenceName .. ":" .. phaseName]) then
+								sequenceName = newSequenceName
+							end
+						end
 						-- print( "Phase NOT found." )
 					end
 				end
@@ -555,7 +565,7 @@ function Component:Initialize( ent, controller, uiMode )
 	-- so LightingComponent is what's actually used for the metatable,
 	-- not PhotonBaseEntity.
 	local component = PhotonBaseEntity.Initialize( self, ent, controller, uiMode ) --[[@as PhotonLightingComponent]]
-
+	if ( not component ) then return end
 	if ( IsValid( controller ) ) then
 		if ( self.UseControllerModes ) then
 			component.CurrentModes = controller.CurrentModes
@@ -582,6 +592,8 @@ function Component:Initialize( ent, controller, uiMode )
 	for name, segment in pairs(self.Segments) do
 		component.Segments[name] = segment:Initialize( component )
 	end
+
+	hook.Run( "Photon2:ComponentCreated", component, controller )
 
 	return component
 end
@@ -740,7 +752,7 @@ end
 
 ---@param segmentName string
 ---@param sequence PhotonSequence
-function Component:RegisterActiveSequence( segmentName, sequence )
+function Component:RegisterActiveSequence( sequence )
 	-- local sequence = self.Segments[segmentName].Sequences[sequence]
 	-- printf("Adding sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = true
@@ -755,7 +767,7 @@ end
 
 ---@param segmentName string
 ---@param sequence PhotonSequence
-function Component:RemoveActiveSequence( segmentName, sequence)
+function Component:RemoveActiveSequence( sequence )
 	-- printf("Removing sequence [%s]", sequence.Name)
 	self.ActiveSequences[sequence] = nil
 	self.ActiveIndependentSequences[sequence] = nil
@@ -838,3 +850,19 @@ Component.PropertyFunctionMap = {
 Component.PropertiesUpdatedOnSoftUpdate = {
 	["StateMap"] = true
 }
+
+-- Returns all channels the component uses which should be networked. Used
+-- by controllers when determining which channels should exist or be setup.
+function Component:GetNetworkedChannels()
+	local channels = {}
+	for channel, _ in pairs( self.InputActions ) do
+		if ( istable( self.VirtualOutputs ) ) then
+			if ( ( not self.VirtualOutputs[channel] ) ) then
+				channels[channel] = true
+			end
+		else
+			channels[channel] = true
+		end
+	end
+	return channels
+end

@@ -6,6 +6,7 @@ local printf = Photon2.Debug.PrintF
 
 function Photon2.MeshCache.ClearCache()
 	Photon2.MeshCache.Cache = {}
+	collectgarbage("collect")
 	hook.Run( "Photon2.MeshCache:Purge" )
 end
 
@@ -34,10 +35,12 @@ function Photon2.MeshCache.GetMesh( model, material, index )
 			cache[model][_material] = cache[model][_material] or {}
 			-- Ignore meshes with no geometry
 			if ( istable( meshResult.triangles ) and #meshResult.triangles > 0 ) then
+				local mesh = Mesh()
+				mesh:BuildFromTriangles( meshResult.triangles )
 				cache[model][_material][#cache[model][_material] + 1] = {
 					MasterIndex = i,
 					Index = #cache[model][_material] + 1,
-					Triangles = meshResult.triangles
+					Mesh = mesh
 				}
 			end
 		end
@@ -54,12 +57,6 @@ function Photon2.MeshCache.GetMesh( model, material, index )
 		end
 	else
 		error( "Model " .. tostring( model ) .. " could not be found." )
-	end
-	
-
-	if ( not cache[model][material][index].Mesh ) then
-		cache[model][material][index].Mesh = Mesh()
-		cache[model][material][index].Mesh:BuildFromTriangles( cache[model][material][index].Triangles )
 	end
 
 	return cache[model][material][index].Mesh

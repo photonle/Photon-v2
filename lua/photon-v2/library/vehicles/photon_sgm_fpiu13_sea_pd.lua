@@ -3,6 +3,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 VEHICLE.Title 		= "Seattle Police Dept. - Ford Police Utility (2013-2015)"
 VEHICLE.Vehicle		= "13fpiu_sgm"
+-- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 
@@ -89,9 +90,9 @@ local newLivery = PhotonMaterial.New({
 		["$rimlightboost"] = 1,
 		["$rimmask"] = 1,
 
-		["$phongexponenttexture"] = "photon/common/flat_exp",
-		["$basemapluminancephongmask"] = 1,
-		["$phongalbedotint"] = 1,
+		-- ["$phongexponenttexture"] = "photon/common/flat_exp",
+		-- ["$basemapluminancephongmask"] = 1,
+		-- ["$phongalbedotint"] = 1,
 
 		["$nodecal"] = 1
 	}

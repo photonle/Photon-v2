@@ -3,6 +3,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 VEHICLE.Title 		= "Colorado State Patrol - Dodge Durango (2021)"
 VEHICLE.Vehicle		= "21durango_sgm"
+-- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
 

@@ -30,11 +30,12 @@ function ENT:Initialize()
 	end)
 end
 
-function ENT:SetProfileName( name )
-	-- Photon2.Debug.Print( "Setting controller profile name to " .. name )
-	self:SetNW2String( "Photon2:ProfileName", name )
-	self:SetupProfile( name )
-end
+-- function ENT:SetProfileName( name )
+-- 	-- Photon2.Debug.Print( "Setting controller profile name to " .. name )
+-- 	-- self:SetNW2String( "Photon2:ProfileName", name )
+-- 	self:SetDTString( 0, name )
+-- 	self:SetupProfile( name )
+-- end
 
 
 function ENT:SetSelectionOption( categoryIndex, optionIndex )
@@ -49,7 +50,7 @@ end
 
 -- 
 function ENT:SyncSelections()
-	self:SetNW2String( "Photon2:Selections", table.concat(self.CurrentSelections," "))
+	self:GetParent():SetNW2String( "Photon2:Selections", table.concat(self.CurrentSelections," "))
 end
 
 function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
@@ -67,7 +68,10 @@ function ENT:PlayerEnteredLinkedVehicle( ply, vehicle, role )
 end
 
 function ENT:ActivateEngineIdle()
-	if ( globalEngineIdleEnabled:GetBool() == false ) then return end
+	if ( globalEngineIdleEnabled:GetBool() == false ) then 
+		self:SetEngineRunning( false )
+		return 
+	end
 	local vehicle = self:GetParent() --[[@as Vehicle]]
 	if ( not self.EngineIdleData ) then return end
 	self.EngineIdleActive = true

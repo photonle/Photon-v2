@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementSequenceStateProperties
+---@class PhotonElementSequenceStateProperties : PhotonElementProperties
 ---@field Sequence string Sequence name.
 
 ---@class PhotonElementSequenceProperties : PhotonElementSequenceStateProperties

@@ -98,7 +98,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
-			["DELAY"] = sequence():Add( 1 ):Do( 6 ):Add( 2 ):SetRepeating( false )
+			["DELAY"] = sequence():Add( 1 ):Do( 6 ):Add( 2 ):SetRepeating( false ),
 		}
 	},
 	Lamp = {
@@ -112,7 +112,7 @@ COMPONENT.Segments = {
 			["LEFT"] = { 2 },
 			["RIGHT"] = { 3 },
 		}
-	}
+	},
 }
 
 COMPONENT.Inputs = {

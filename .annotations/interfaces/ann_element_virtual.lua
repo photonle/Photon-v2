@@ -1,6 +1,6 @@
 ---@meta
 
----@class PhotonElementVirtualStateProperties
+---@class PhotonElementVirtualStateProperties : PhotonElementProperties
 
 ---@class PhotonElementVirtualProperties : PhotonElementVirtualStateProperties
 ---@field States table<string, PhotonElementVirtualProperties> Element states.

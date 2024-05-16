@@ -24,7 +24,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.24 (BETA)"
+Photon2.Version = "2.0.29 (BETA)"
 
 --[[
 	Compatability
@@ -49,6 +49,8 @@ local libraries = {
 	"input_configurations",
 	"schemas"
 }
+
+local startTime = SysTime()
 
 local function autoInclude( fol )
 	if (SERVER) then
@@ -80,6 +82,8 @@ local function autoInclude( fol )
 end
 
 if SERVER then
+
+	AddCSLuaFile("photon-v2/sh_util.lua")
 
 	-- send meta files to client (required here for file reloading to work)
 	fol = "photon-v2/meta/"
@@ -120,6 +124,11 @@ if SERVER then
 end
 
 if CLIENT then
+	include("photon-v2/sh_util.lua")
 	autoInclude("photon-v2/exlib/")
 	include("photon-v2/cl_init.lua")
+end
+
+if (Photon2 and Photon2.Debug and Photon2.Debug.Print) then
+	Photon2.Debug.Info( "INIT", "Photon 2 initialized in " .. math.Round(SysTime() - startTime, 3) .. " seconds." )
 end

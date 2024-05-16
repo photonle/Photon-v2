@@ -55,3 +55,17 @@ function Component:Initialize( ent, controller )
 
 	return component
 end
+
+function Component:GetNetworkedChannels()
+	local channels = {}
+	for channel, _ in pairs( self.InputActions ) do
+		if ( istable( self.VirtualOutputs ) ) then
+			if ( ( not self.VirtualOutputs[channel] ) ) then
+				channels[channel] = true
+			end
+		else
+			channels[channel] = true
+		end
+	end
+	return channels
+end

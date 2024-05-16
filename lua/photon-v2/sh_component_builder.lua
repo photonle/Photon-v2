@@ -194,6 +194,35 @@ function Photon2.ComponentBuilder.SetupNightParkMode( component, params )
 	table.Merge( component, mixin )
 end
 
+function Photon2.ComponentBuilder.SetupFrontCut( component )
+	if ( not ( component.Segments or {} ).FrontCut ) then
+		component.Segments = component.Segments or {}
+		component.Segments.FrontCut = {
+			Frames = {
+				[0] = { }
+			},
+			Sequences = {
+				CUT = { 0 }
+			}
+		}
+		for i=1, #component.Elements do
+			component.Segments.FrontCut.Frames[0][i] = { i, "OFF" }
+		end
+	end
+	component.Inputs = component.Inputs or {}
+	component.Inputs["Emergency.Cut"] = component.Inputs["Emergency.Cut"] or {}
+	component.Inputs["Emergency.Cut"]["FRONT"] = component.Inputs["Emergency.Cut"]["FRONT"] or {}
+	component.Inputs["Emergency.Cut"]["FRONT"]["FrontCut"] = "CUT"
+end
+
+-- Disables Emergency.Warning:MODE1 for the component and sets up forward cut.
+function Photon2.ComponentBuilder.SetupFrontNoM1( component, params )
+	component.Inputs = component.Inputs or {}
+	component.Inputs["Emergency.Warning"] = component.Inputs["Emergency.Warning"] or {}
+	component.Inputs["Emergency.Warning"]["MODE1"] = {}
+	Photon2.ComponentBuilder.SetupFrontCut( component)
+end
+
 -- Modifies a component to add a special debug channel and _quietly_ recompiles. It's somewhat hacky-
 -- but it plays nicely with the component registration and compilation process. This might be somewhat
 -- laggy on very complex components but it probably doesn't matter.

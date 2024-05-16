@@ -39,7 +39,7 @@ Light.Rotation = Angle( 0, 90, 0 )
 Light.QuadRotation = Angle( 0, 90, 90 )
 Light.TranslatedLocalAngles = Angle( 0, 0, 0 )
 
-Light.Intensity = 1
+Light.Intensity = 0
 Light.IntensityGainFactor = 1
 Light.IntensityLossFactor = 10
 Light.TargetIntensity = 1

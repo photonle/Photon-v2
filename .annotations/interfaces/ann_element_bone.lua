@@ -1,7 +1,7 @@
 ---@meta
 
 -- Properties that are settable by element states.
----@class PhotonElementBoneStateProperties
+---@class PhotonElementBoneStateProperties : PhotonElementProperties
 ---@field Activity? PhotonBoneLightActivity
 ---@field Speed? number Controls how fast rotation is.
 ---@field Target? number Required for static and sweep modes.

@@ -123,6 +123,7 @@ PhotonMaterial = PhotonMaterial
 ---@field RenderGroup RENDERGROUP
 ---@field BodyGroups table
 ---@field Inputs table
+---@field Color Color Component's model color override.
 ---@field Flags PhotonLibraryComponentFlags
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
@@ -206,6 +207,7 @@ PhotonMaterial = PhotonMaterial
 -- User HUD sounds (i.e. beeps and clicks).
 ---@field InteractionSounds? PhotonEquipmentInteractionSoundEntry[]
 ---@field Properties? table
+---@field Bones? table<string, table>
 
 
 
@@ -232,6 +234,7 @@ PhotonMaterial = PhotonMaterial
 ---@field BodyGroups? table<string, integer | string>
 ---@field PoseParameters? table<string, number>
 ---@field Parent? string 
+---@field Color? Color Entity model's color override.
 
 ---@class PhotonClientInputEvents
 ---@field OnPress? table<PhotonClientInputAction>
@@ -333,6 +336,10 @@ function istable( object ) end
 ---@field OnHold? PhotonCommandAction[] Actions executed after key is pressed and held.
 ---@field OnRelease? PhotonCommandAction[] Actions executed when key is released.
 ---@field ExtendedTitle? string (Internal) Set automatically.
+
+
+---@class PhotonElementProperties
+---@field DeactivationState? string Deactivation state. This state is applied when the light has no more inputs. NOTE: If another state from a different input is set, the light will NOT deactivate.
 
 ---@class PhotonElementPropertiesIntensityTransitions
 ---@field IntensityTransitions? boolean If intensity transtions should be enabled.

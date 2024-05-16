@@ -2,7 +2,7 @@
 {
 	"$basetexture" "photon/common/glow_gradient_a"
 	"$translucent" "1"
-	"$nocull" "1"
+	"$nocull" "0"
 }
 
 

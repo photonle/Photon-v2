@@ -348,12 +348,10 @@ function PANEL:Setup()
 end
 
 function PANEL:PreAutoRefresh()
-	print("sdfs")
 end
 
 function PANEL:PostAutoRefresh()
 	self:Setup()
-	print("sdfs")
 	if ( self.WorkingCopy ) then
 		self:LoadInputConfiguration( self.WorkingCopy )
 	end

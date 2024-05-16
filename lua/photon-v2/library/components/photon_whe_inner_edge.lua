@@ -53,7 +53,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[W] 1 7 [1] 2 3 4 5 6"
+COMPONENT.StateMap = "[1/W] 1 7 [1] 2 3 4 5 6"
 
 COMPONENT.Elements = {
 	[1] = { "Takedown", Vector( 2.25, -10.6, -0.06 ), Angle( 0, -85, 0 ) },
@@ -72,33 +72,46 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "1 2 3 4 5 6",
 			[2] = "2 3 4 5 6",
+			[3] = "[W] 2 3 4 5 6",
 		},
 		Sequences = {
 			ON = { 1 },
 			STEADY_FLASH = sequence():SteadyFlash( 2 ),
-			["QUAD_FLASH"] = sequence():QuadFlash( 1 ),
+			["QUAD_FLASH"] = sequence():QuadFlash( 2 ):AppendPhaseGap(),
 			["QUAD_FLASH:A"] = sequence():QuadFlash( 1, 0 ),
 			["QUAD_FLASH:B"] = sequence():QuadFlash( 0, 1 ),
+			["QUAD_FLASH_WHITE"] = sequence():QuadFlash( 2, 0 ):QuadFlash( 3, 0 ),
 			["ALT_MED"] = sequence():Alternate( 2, 0, 8 ),
 			["ALT_MED:B"] = sequence():Alternate( 0, 2, 8 ),
+			["QUINT_FLASH"] = sequence():QuintFlash( 2 ):AppendPhaseGap()
 		}
 	},
 	Takedown = {
 		Frames = {
-			[1] = "1 [TD] 7",
+			[1] = "[W] 1 [TD] 7",
+			[2] = "[W] 1",
 		},
 		Sequences = {
 			["TAKEDOWN"] = { 1 },
+			["CHEAP"] = { 2 }
 		}
 	},
 	Flood = {
 		Frames = {
 			[1] = "[W] 1 2 3 4 5 6 7",
+			[2] = "[W] 1 2 3 4 5 6 ",
 		},
 		Sequences = {
 			["FLOOD"] = { 1 },
+			["CHEAP"] = { 2 }
 		}
 	}
+}
+
+COMPONENT.Patterns = {
+	QUAD_FLASH_WHITE = { { "All", "QUAD_FLASH_WHITE" } },
+	QUAD_FLASH = { { "All", "QUAD_FLASH" } },
+	QUINT_FLASH = { { "All", "QUINT_FLASH" } },
 }
 
 COMPONENT.Inputs = {

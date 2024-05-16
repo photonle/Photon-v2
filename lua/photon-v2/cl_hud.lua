@@ -1,5 +1,16 @@
 Photon2.HUD = Photon2.HUD or {
-
+	ToneIcons = {
+		wail = Material("photon/ui/hud_icon_wail.png"),
+		yelp =  Material("photon/ui/hud_icon_yelp.png"),
+		hilo =  Material("photon/ui/hud_icon_hilo.png"),
+		pcall =  Material("photon/ui/hud_icon_pcall.png"),
+		tone =  Material("photon/ui/hud_icon_tone.png"),
+		bolt =  Material("photon/ui/hud_icon_bolt.png"),
+		speaker =  Material("photon/ui/hud_icon_speaker.png"),
+		airhorn =  Material("photon/ui/hud_icon_horn.png"),
+		manual =  Material("photon/ui/hud_icon_manual.png"),
+		siren =  Material("photon/ui/hud_icon_siren.png"),
+	}
 }
 
 local print = Photon2.Debug.Print
@@ -28,19 +39,7 @@ local lastUpdate = 0
 
 local cornerRadius = 4
 
-local icons = {
-	wail = Material("photon/ui/hud_icon_wail.png"),
-	yelp =  Material("photon/ui/hud_icon_yelp.png"),
-	hilo =  Material("photon/ui/hud_icon_hilo.png"),
-	pcall =  Material("photon/ui/hud_icon_pcall.png"),
-	tone =  Material("photon/ui/hud_icon_tone.png"),
-	bolt =  Material("photon/ui/hud_icon_bolt.png"),
-	speaker =  Material("photon/ui/hud_icon_speaker.png"),
-	airhorn =  Material("photon/ui/hud_icon_horn.png"),
-	manual =  Material("photon/ui/hud_icon_manual.png"),
-	siren =  Material("photon/ui/hud_icon_siren.png"),
-}
-
+local icons = Photon2.HUD.ToneIcons
 local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
 local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
 
@@ -480,6 +479,7 @@ end
 
 local function addHintKey( tbl, cmd )
 	local map = Photon2.ClientInput.Active.Map
+	if ( not map ) then return end
 	if ( map[cmd] and map[cmd][1] ) then
 		tbl[#tbl+1] = { string.upper(map[cmd][1].Display), string.upper(Photon2.GetCommand(cmd).Alt or Photon2.GetCommand(cmd).Title)  }
 	end
@@ -487,6 +487,7 @@ end
 
 local function addHintKeyMultiple( tbl, cmd1, cmd2, label )
 	local map = Photon2.ClientInput.Active.Map
+	if ( not map ) then return end
 	if ( map[cmd1] and map[cmd1][1] and  map[cmd2] and map[cmd2][1] ) then
 		tbl[#tbl+1] = { string.upper(map[cmd1][1].Display .. "-" .. string.upper(map[cmd2][1].Display )), string.upper( label )  }
 	end
@@ -523,7 +524,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			hintInfoVisible = true
 		end
 
-		if ( not indicatorComponent ) then
+		if ( not indicatorComponent and ( istable( target.ComponentArray )) ) then
 			for k, v in pairs( target.ComponentArray ) do
 				if ( v.Title == "Photon 2 HUD" ) then
 					indicatorComponent = v
@@ -617,43 +618,54 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			
 			if ( siren1Name ) then
 				-- local siren1 = Photon2.Index.Sirens[siren1Name]
-				local siren1 = Photon2.GetSiren(siren1Name)
-				-- local sirenTones1 = siren1
-				if ( hintInfoVisible ) then
-					addHintKey( keyHints, "activate_lights_siren" )
-					addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
-				end
-				
-				-- Siren 1 Indicator
-				local sirenDisplay
-				local label = target.CurrentModes["Emergency.Siren"]
-				local icon = icons["speaker"]
-				local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
-				local indicatorMode = 0
-
-				if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
-					sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.SirenOverride"]]
-					indicatorMode = 2
-				else
-					sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.Siren"]]
-					if ( (target.CurrentModes["Emergency.Siren"] ~= "OFF") and (sirenDisplay) ) then
-						indicatorMode = 1
+				local siren1 = Photon2.GetSiren( siren1Name )
+				if ( siren1 ) then
+					-- local sirenTones1 = siren1
+					if ( hintInfoVisible ) then
+						addHintKey( keyHints, "activate_lights_siren" )
+						addHintKeyMultiple( keyHints, "toggle_siren_1", "toggle_siren_4", "Siren Tone" )
 					end
-				end
+					
+					-- Siren 1 Indicator
+					local sirenDisplay
+					local label = target.CurrentModes["Emergency.Siren"]
+					local icon = icons["speaker"]
+					local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
+					local indicatorMode = 0
 
-				if (sirenDisplay) then
-					icon = icons[sirenDisplay.Icon] or icons["siren"]
-					label = sirenDisplay.Label
-				end
+					if ( target.CurrentModes["Emergency.SirenOverride"] ~= "OFF" ) then
+						sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.SirenOverride"]]
+						indicatorMode = 2
+					else
+						sirenDisplay = siren1.Tones[target.CurrentModes["Emergency.Siren"]]
+						if ( (target.CurrentModes["Emergency.Siren"] ~= "OFF") and (sirenDisplay) ) then
+							indicatorMode = 1
+						end
+					end
 
-				nextH = 32
-				HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
-					icon, 
-					label, 
-					#siren1.OrderedTones, 
-					sirenSelection, 
-					indicatorMode 
-				)
+					if (sirenDisplay) then
+						icon = icons[sirenDisplay.Icon] or icons["siren"]
+						label = sirenDisplay.Label
+					end
+
+					nextH = 32
+					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+						icon, 
+						label, 
+						#siren1.OrderedTones, 
+						sirenSelection, 
+						indicatorMode 
+					)
+				else
+					nextH = 32
+					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+						icons["speaker"], 
+						"ERROR", 
+						0, 
+						0, 
+						0 
+					)
+				end
 				-- HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, 
 				-- 	icons[sirenDisplay.Icon], 
 				-- 	sirenDisplay.Label, 
@@ -759,6 +771,7 @@ function Photon2.HUD.DrawPerformanceInfo()
 	x = x + 96
 	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, white )
 	x = x + 96
+	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, white )
 	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, white )
 	x = 16
 	y = y + 18

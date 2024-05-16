@@ -4,14 +4,13 @@ NAME = "PhotonElement"
 
 local printf = Photon2.Debug.PrintF
 
----@class PhotonElement
+---@class PhotonElement : PhotonElementProperties
 ---@field [1]? string Template
 ---@field Parent? Entity
 ---@field Component? PhotonLightingComponent
 ---@field Class? string Type of element (2D, Mesh, etc.)
 ---@field Disabled? boolean
 ---@field Deactivate? boolean When `true`, marks the light to be activated on the next frame.
----@field DeactivationState? string Deactivation state.
 ---@field IsActivated? boolean
 ---@field States? table<string, PhotonElementState> Table of available states.
 ---@field Id? integer Element's unique identifier (per-component).
@@ -53,7 +52,7 @@ function Light:Initialize( id, component )
 			-- has to be delayed because the entity may not be valid 
 			-- in the same tick
 			timer.Simple( 0.01, function() 
-				if ( not IsValid( self.Parent ) ) then return end
+				if ( not IsValid( light.Parent ) ) then return end
 				self.BoneParent = light.Parent:LookUpBoneOrError( boneName )
 			end)
 		end
@@ -68,6 +67,9 @@ function Light:CheckBodyGroupRequirements()
 			self.HasBodyGroupRequirements = true
 			local metaTable = getmetatable( self.RequiredBodyGroups ) or {}
 			if ( not metaTable.Processed ) then
+				
+				local result = {}
+
 				for bodyGroupName, selection in pairs( self.RequiredBodyGroups ) do
 					
 					if ( not istable( selection ) ) then selection = { selection } end
@@ -80,9 +82,7 @@ function Light:CheckBodyGroupRequirements()
 						if ( index == -1 ) then
 							ErrorNoHaltWithStack( "Body group name [" .. tostring( bodyGroupName ) .. "] not found in model [" .. tostring( self.Parent:GetModel() ) .. "]" ) 
 						end
-						
-						self.RequiredBodyGroups[bodyGroupName] = nil
-						
+					
 					end
 
 					local newSelectionTable = {}
@@ -90,9 +90,12 @@ function Light:CheckBodyGroupRequirements()
 					for i=1, #selection do
 						newSelectionTable[selection[i]] = true
 					end
-					
-					self.RequiredBodyGroups[index] = newSelectionTable
+
+					result[index] = newSelectionTable
 				end
+
+				self.RequiredBodyGroups = result
+
 				metaTable.Processed = true
 				setmetatable( self.RequiredBodyGroups, metaTable )
 			end

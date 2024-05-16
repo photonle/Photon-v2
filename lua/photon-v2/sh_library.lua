@@ -211,7 +211,43 @@ local sirens = {
 	-- EagerLoading = true,
 	DoCompile = function( self, siren )
 		return Photon2.Index.CompileSiren( siren )
-	end
+	end,
+	UI = {
+		PreviewPanel = "Photon2UISirenPreviewer",
+		BrowserColumnSchema = {
+
+			{
+				Label = "Make",
+				Property = "Make",
+				Search = true
+			},
+			{
+				Label = "Model",
+				Property = "Model",
+				Search = true
+			},
+			{
+				Label = "Author",
+				Property = "Author",
+				Search = true,
+				MaxWidth = 80
+			},
+			{
+				Label = "Name",
+				Property = "Name",
+				Search = true,
+				Visible = false
+			},
+			{
+				Label = "Source",
+				Property = "SourceType",
+				MaxWidth = 56,
+				MinWidth = 56,
+				Visible = false
+			},
+
+		}
+	}
 }
 
 ---@type PhotonLibraryType
@@ -281,12 +317,8 @@ local components = {
 				Label = "Type",
 				Property = "Category",
 				Search = true,
-				MaxWidth = 96
-			},
-			{
-				Label = "Name",
-				Property = "Name",
-				Search = true
+				MinWidth = 80,
+				MaxWidth = 80
 			},
 			{
 				Label = "Title",
@@ -296,8 +328,16 @@ local components = {
 			{
 				Label = "Source",
 				Property = "SourceType",
-				MaxWidth = 56
-			}
+				MaxWidth = 56,
+				MinWidth = 56,
+				Visible = false
+			},
+			{
+				Label = "Name",
+				Property = "Name",
+				Search = true,
+				Visible = false
+			},
 		}
 	}
 }
@@ -357,6 +397,7 @@ function Photon2.BuildParentLibraryComponent( childId, parentId )
 end
 
 function Photon2.Library.Initialize()
+	local startTime = SysTime()
 	Photon2.LoadLibraries({
 		"Sirens",
 		"Components",
@@ -367,6 +408,7 @@ function Photon2.Library.Initialize()
 		"InputConfigurations"
 	})
 	hook.Run( "Photon2.PostInitializeLibrary" )
+	printf( "Photon 2 libraries loaded in %.2f seconds.", SysTime() - startTime )
 end
 
 local initializationErrorDisplayed = false
