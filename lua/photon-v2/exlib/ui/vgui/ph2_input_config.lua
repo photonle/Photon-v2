@@ -583,7 +583,10 @@ function PANEL:SetButtonsPanel( config )
 
 	function tree:AddCommandNode( key, commandIndex, command )
 		local keyNode = tree.KeyNodeMap[key]
-		local commandData = Photon2.Library.Commands:Get( command.Command )
+		local commandData = Photon2.Library.Commands:Get( command.Command ) or {
+			Title = "Unknown Command",
+			Category = "Unknown"
+		}
 		local commandNode = keyNode:AddNode( commandData.Title .. " (" .. commandData.Category .. ")", "console-line" )
 		commandNode.InputConfigurationLevel = "COMMAND"
 		commandNode.InputConfigurationLevelIndex = { key, commandIndex }
@@ -825,7 +828,12 @@ function PANEL:SetSelectedCommand( buttonIndex, index )
 		end
 	)
 
-	local command = Photon2.Library.Commands:Get( commandName )
+	local command = Photon2.Library.Commands:Get( commandName ) or {
+		Title = "Unknown",
+		Category = "Unknown",
+		Description = "This command could not be found. This could be caused by missing or lost content."
+	}
+
 	local format = string.format(
 [[
 	%s | %s
