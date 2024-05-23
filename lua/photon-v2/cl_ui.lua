@@ -4,6 +4,19 @@ Photon2.UI = Photon2.UI or {
 	Windows = {}
 }
 
+local UI = Photon2.UI
+
+-- This is the menu that appears when the "desktop" icon is clicked
+function Photon2.UI.GetOrCreatePhotonMenu()
+	if ( IsValid( Photon2.UI.PhotonMenu ) ) then
+		return Photon2.UI.PhotonMenu
+	end
+	local window = vgui.Create( "Photon2UIDesktop" )
+	window:Center()
+	Photon2.UI.PhotonMenu = window
+	return window
+end
+
 function Photon2.UI.SetEnableWindowInput( enable )
 	local remove = {}
 	for window, _ in pairs( Photon2.UI.Windows ) do
@@ -54,7 +67,7 @@ surface.CreateFont( "Photon2.UI:ExtraSmall", {
 
 --[[
 	SETUP PROCEDURE
-	1.
+	1. no fucking clue
 --]]
 
 local function utfChar(code)
@@ -273,7 +286,7 @@ function Photon2.UI.PopulateMenuBar()
 		end)
 
 		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu...", function()
-			local form = vgui.Create ( "Photon2UIDesktop" )
+			local form = Photon2.UI.GetOrCreatePhotonMenu()
 			form:MakePopup()
 			form:SetKeyBoardInputEnabled( false )
 		end)
@@ -394,8 +407,6 @@ function Photon2.UI.PopulateMenuBar()
 			local form = vgui.Create( "Photon2ChannelController" )
 		end)
 
-
-
 		debugMenu:AddSpacer()
 		
 		debugMenu:AddOption( "Create New Vehicle...", function()
@@ -406,6 +417,10 @@ function Photon2.UI.PopulateMenuBar()
 
 		local light2dDebugOption = debugMenu:AddCVar("Display Light Overlay", "ph2_debug_light_overlay", "1", "0")
 		local drawInput = debugMenu:AddCVar( "Display Button Inputs", "ph2_display_input", "1", "0" )
+
+		debugMenu:AddOption( "Open HUD Window...", function()
+			local form = vgui.Create( "Photon2HUDWindow" )
+		end)
 
 		debugMenu:AddOption( "Clear Mesh Cache", function()
 			Photon2.MeshCache.ClearCache()
@@ -511,15 +526,17 @@ list.Set("DesktopWindows", "Photon2", {
 	init = function( icon, window )
 		-- Needs a hacky workaround because the window is a defined Derma panel
 		-- and not just a mutated DFrame.
-		local parent = window:GetParent()
-		window:Remove()
-		if ( IsValid( icon.Photon2Window ) ) then
-			icon.Photon2Window:Center()
-			return
-		end
-		window = parent:Add( "Photon2UIDesktop" )
-		window.ContextParent = parent
-		icon.Photon2Window = window
+		
+		-- local parent = window:GetParent()
+		-- window:Remove()
+		-- if ( IsValid( icon.Photon2Window ) ) then
+		-- 	icon.Photon2Window:Center()
+		-- 	return
+		-- end
+		-- window = parent:Add( "Photon2UIDesktop" )
+		-- window.ContextParent = parent
+		-- icon.Photon2Window = window
+		local menu = Photon2.UI.GetOrCreatePhotonMenu()
 	end
 })
 
@@ -691,5 +708,29 @@ hook.Add( "PlayerBindPress", "Photon2.UI:F3CursorRelease", function( ply, bind, 
 		if ( string.find( bind, "gm_showspare1" ) ) then
 			Photon2.UI.ToggleCursorRelease()
 		end
+	end
+end)
+
+hook.Remove( "Think", "Photon2UIClickTest" )
+
+
+local isDown = false
+local debouncePeriod = 0.3
+local lastClick = 0
+
+-- Toggles the cursor release when the mouse is double-clicked
+-- over an empty area of the screen
+hook.Add( "Think", "Photon2.UI:MouseCheck", function()
+	if ( not Photon2.UI.CursorReleased ) then return end
+	if ( input.IsMouseDown( MOUSE_LEFT ) and not ( isDown ) ) then
+		if ( vgui.IsHoveringWorld() ) then
+			isDown = true
+			if ( RealTime() < lastClick + debouncePeriod ) then
+				Photon2.UI.ToggleCursorRelease()
+			end
+			lastClick = RealTime()
+		end
+	elseif ( not input.IsMouseDown( MOUSE_LEFT ) and isDown ) then
+		isDown = false
 	end
 end)
