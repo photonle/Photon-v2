@@ -4,7 +4,7 @@ local COMPONENT = Photon2.LibraryComponent()
 COMPONENT.Author = "Schmal"
 
 COMPONENT.Credits = {
-	Code = "anemolis72",
+	Code = "anemolis72, Schmal",
 	Model = "Schmal",
 }
 
@@ -27,24 +27,22 @@ local s = 1.6
 COMPONENT.Templates = {
 	["2D"] = {
 		main = {
-			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/fs_xstream_shape.png").MaterialName,
-			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/fs_xstream_detail.png").MaterialName,
+			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/opticom_shape.png").MaterialName,
+			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/opticom_detail.png").MaterialName,
 			Width = 45,
-			Height = 10.8,
+			Height = -11.4,
 			Ratio = .4,
 			Scale = .4,
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.1,
-			-- LightMatrix = { Vector(s, 0, 0), Vector(-s, 0, 0),  },
-			-- LightMatrixScaleMultiplier = 0.6
 		},
 	}
 }
 
-COMPONENT.StateMap = "[W] 1"
+COMPONENT.StateMap = "[R*0.2] 1"
 
 COMPONENT.Elements = {
-	[1] = { "main", Vector(-38, 0, 0 ), Angle(0, 90, 0) },
+	[1] = { "main", Vector(-38, 0, 0.3 ), Angle( 0, 90, 0 ) },
 }
 
 COMPONENT.Segments = {
@@ -52,23 +50,18 @@ COMPONENT.Segments = {
 		FrameDuration = 1/30,
 		Frames = {
 			[1] = "[1] 1",
+			[2] = "[#DEBUG] 1"
 		},
 		Sequences = {
-			["ON"] = { 1,0,0 },
+			["FLASH"] = { 1, 0, 0 },
+			["DEBUG"] = { 2 }
 		}
 	}
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = {
-			Opticom = "ON"
-		},
-		["MODE2"] = {
-			Opticom = "ON"
-		},
-		["MODE3"] = {
-			Opticom = "ON"
-		}
+		["MODE2"] = { Opticom = "FLASH" },
+		["MODE3"] = { Opticom = "FLASH" }
 	},
 }
