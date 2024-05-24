@@ -23,7 +23,8 @@ VEHICLE.Siren = {
 	-- 	MAN = "fedsig_touchmaster_delta/manual",
 	-- },
 	-- [1] = "fedsig_touchmaster_delta",
-	[1] = "fedsig_pathfinder_ssp"
+	[1] = "fedsig_pathfinder_unitrol",
+	[2] = "fedsig_pathfinder_ssp"
 }
 
 local livery = PhotonMaterial.New({
@@ -496,7 +497,7 @@ VEHICLE.Equipment = {
 		Category = "Siren",
 		Options = {
 			{
-				Option = "Siren Prototype",
+				Option = "Federal Signal PathFinder Unitrol",
 				Components = {
 					{
 						Component = "siren_prototype",
@@ -514,6 +515,19 @@ VEHICLE.Equipment = {
 					-- 	-- Siren = "fedsig_smartsiren"
 					-- 	Siren = 2
 					-- },
+				}
+			},
+			{
+				Option = "Federal Signal Pathfinder SSP",
+				Components = {
+					{
+						Component = "siren_prototype",
+						Position = Vector(-11, 125, 35),
+						Angles = Angle(1.5, -90, 0),
+						Scale = 1.4,
+						-- Siren = "fedsig_smartsiren"
+						Siren = 2
+					},
 				}
 			}
 		}

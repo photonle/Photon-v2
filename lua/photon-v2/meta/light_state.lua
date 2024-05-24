@@ -3,7 +3,7 @@ if (exmeta.ReloadFile()) then return end
 NAME = "PhotonElementState"
 
 ---@class PhotonElementState
----@field Name? string
+---@field Name? string Unique name of the element state.
 ---@field Intensity? number (Default = `1`) Target intensity of the light state.
 ---@field IntensityTransitions? boolean (Default = `false`) Whether intensity transitions (animation) should be used or not.
 ---@field IntensityGainFactor? number (Default = `20`)
@@ -20,6 +20,9 @@ State.IntensityTransitions = false
 -- State.IntensityGainFactor = 10
 -- State.IntensityLossFactor = 10
 
+-- Attempts to look up and return an element's state metatable based on the class name.
+---@param lightClassName string Name of the element class.
+---@return PhotonElementState
 function State.FindClass( lightClassName )
 	local lightStateClass = _G["PhotonElement" .. tostring( lightClassName ) .. "State"]
 	
