@@ -94,7 +94,11 @@ function PANEL:RestorePosition()
 		x = ScrW() - x
 	end
 
-	self:SetPos( x, y )
+	self:SetPos( 
+		math.Clamp( x, 0, ScrW() - self:GetWide() ),
+		math.Clamp( y, 0, ScrH() - self:GetTall() )
+	)
+	self:CheckLayout()
 end
 
 function PANEL:Setup()
@@ -141,6 +145,9 @@ function PANEL:Setup()
 		self.HudPaint = true
 	end)
 
+	cvars.AddChangeCallback( "ph2_hud_offset_x", function() self:RestorePosition() end, "Photon2.HUD" )
+	cvars.AddChangeCallback( "ph2_hud_offset_y", function() self:RestorePosition() end, "Photon2.HUD" )
+	cvars.AddChangeCallback( "ph2_hud_anchor", function() self:RestorePosition() end, "Photon2.HUD" )
 end
 
 function PANEL:ShowContextMenu()
@@ -149,7 +156,8 @@ function PANEL:ShowContextMenu()
 	end
 	local contextMenu = DermaMenu( false )
 	local customize = contextMenu:AddOption( "Customize HUD...", function() 
-		
+		local menu = Photon2.UI.GetOrCreatePhotonMenu()
+		menu:SetTab( "HUD" )
 	end )
 	customize:SetIcon( "photon/ui/photon_2_icon_16.png" )
 	contextMenu:AddCVar( "Draggable", "ph2_hud_draggable", "1", "0" )

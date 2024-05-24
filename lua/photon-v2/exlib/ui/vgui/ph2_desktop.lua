@@ -6,6 +6,12 @@ local PANEL = {}
 
 PANEL.AllowAutoRefresh = true
 
+function PANEL:SetTab( tab )
+	if ( IsValid( self.Tabs ) ) then
+		self.Tabs:SwitchToName( tab )
+	end
+end
+
 function PANEL:Setup()
 	self:SetupMenuBar()
 	if ( IsValid( self.ContentContainer ) ) then self.ContentContainer:Clear() end
@@ -120,8 +126,9 @@ function PANEL:SetupHudOptions()
 	form:CreateNumberSliderProperty( "ph2_hud_offset_y", "Y Offset", 0, 0, ScrH(), 0 )
 	form:AddButton( "Reset to Default", function()
 		print("Resetting to default...")
-		RunConsoleCommand( "ph2_hud_offset_x", "0" )
-		RunConsoleCommand( "ph2_hud_offset_y", "0" )
+		RunConsoleCommand( "ph2_hud_offset_x", "360" )
+		RunConsoleCommand( "ph2_hud_offset_y", "385" )
+		RunConsoleCommand( "ph2_hud_anchor", "bottom_right" )
 	end)
 end
 
