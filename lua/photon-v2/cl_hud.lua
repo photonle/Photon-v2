@@ -10,17 +10,51 @@ Photon2.HUD = Photon2.HUD or {
 		airhorn =  Material("photon/ui/hud_icon_horn.png"),
 		manual =  Material("photon/ui/hud_icon_manual.png"),
 		siren =  Material("photon/ui/hud_icon_siren.png"),
-	}
+	},
+	StartTime = 0
 }
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
-local warn = Photon2.Debug.Warn
+
+local info, warn, warnOnce = Photon2.Debug.Declare( "HUD" )
 
 local hudMaterial = Material("photon/ui/hud")
 
 local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512, 
 0, MATERIAL_RT_DEPTH_NONE, 32768 + 2048 + 4 + 8 + 512, 0, IMAGE_FORMAT_RGBA8888 )
+
+-- 
+-- local userSettings = {}
+
+local optionConVars = {
+	Enabled = { "ph2_hud_enabled", "Bool" },
+	Anchor = { "ph2_hud_anchor", "String" },
+	OffsetX = { "ph2_hud_offset_x", "Int" },
+	OffsetY = { "ph2_hud_offset_y", "Int" }
+}
+
+for key, data in pairs( optionConVars ) do
+	local cvar = GetConVar( data[1] )
+	if ( not cvar ) then
+		error( "Failed to find convar " .. data[1] )
+		continue
+	end
+	local value = cvar["Get" .. data[2]]( cvar )
+	if ( isfunction( data[3] ) ) then
+		value = data[3]( value )
+	end
+	-- userSettings[key] = value
+
+	cvars.RemoveChangeCallback( data[1], "Photon2.HUD" )
+	cvars.AddChangeCallback( data[1], function( convar, oldValue, newValue )
+		if ( isfunction( data[3] ) ) then
+			newValue = data[3]( newValue )
+		end
+		printf( "HUD setting changed: %s %s %s", convar, oldValue, newValue )
+		-- userSettings[key] = newValue
+	end, "Photon2.HUD")
+end
 
 -- local hudRTId = 
 local illumRearOff = Material("photon/ui/hud_icon_illum_rear_off.png")
@@ -43,10 +77,16 @@ local icons = Photon2.HUD.ToneIcons
 local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
 local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
 
-local white = Color( 255, 255, 255 )
+local highlightColor = Color( 255, 255, 255 )
 
 local dimColor = Color( 255, 255, 255, 96 )
 local inactiveColor = Color( 0, 0, 0, 128 )
+
+local panelActiveColor = Color( 64, 64, 64, 200 )
+local panelActiveAlternateColor = Color( 16, 16, 16, 200 )
+
+local panelInactiveColor = ColorAlpha( panelActiveColor, 100 )
+local panelInactiveAlternateColor = ColorAlpha( panelActiveAlternateColor, 100 )
 
 local HUD = Photon2.HUD
 
@@ -68,8 +108,25 @@ local stageIndicatorsSmall = {
 
 local stateColors = {
 	["OFF"] = inactiveColor,
-	["ON"] = white
+	["ON"] = highlightColor
 }
+
+function HUD.Activate()
+	if ( IsValid( HUD.Panel ) ) then
+		HUD.Panel:Remove()
+	end
+	local photon2Hud = vgui.Create( "Photon2HUD" ) --[[@as Photon2HUD]]
+	photon2Hud:RestorePosition()
+	HUD.Panel = photon2Hud
+	hook.Run( "Photon2.HUD:Active" )
+end
+
+function HUD.Deactivate()
+	if ( IsValid( HUD.Panel ) ) then
+		HUD.Panel:Remove()
+	end
+	hook.Run( "Photon2.HUD:Inactive" )
+end
 
 function HUD.LightsIndicator( x, y, width, height, gap, elements )
 	for i, element in pairs( elements ) do
@@ -78,13 +135,13 @@ function HUD.LightsIndicator( x, y, width, height, gap, elements )
 end
 
 function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, priStyle, secLabel, secCount, secSelected, secStyle, indicatorComponent )
-	local priLabelColor = white
-	local secLabelColor = white
+	local priLabelColor = highlightColor
+	local secLabelColor = highlightColor
 	local secIndicatorColor = dimColor
-	local bgColor = Color( 64, 64, 64, 200 )
+	local bgColor = panelActiveColor
 
 	if ( ( priStyle + secStyle ) < 1 ) then
-		bgColor = Color( 64, 64, 64, 100 )
+		bgColor = panelInactiveColor
 	end
 
 	if ( priStyle == 0 ) then
@@ -103,10 +160,10 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 	
 
 	local stageDimensions = stageIndicators[priCount]
-	local drawColor = white
+	local drawColor = highlightColor
 	for i=1, priCount do
 		if ( i <= priSelected ) then
-			drawColor = white
+			drawColor = highlightColor
 		else
 			drawColor = inactiveColor
 		end
@@ -125,7 +182,7 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 	for i=1, secCount do
 		if ( i == secSelected ) then
 			surface.SetMaterial( ellipseActive )
-			surface.SetDrawColor( white )
+			surface.SetDrawColor( highlightColor )
 		end
 
 		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 46, 8, 8 )
@@ -138,11 +195,11 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 end
 
 function HUD.LightStageIndicatorSingle( x, y, width, label, count, selected, style )
-	local labelColor = white
-	local bgColor = Color( 64, 64, 64, 200 )
+	local labelColor = highlightColor
+	local bgColor = panelActiveColor
 
 	if ( style < 1 ) then
-		bgColor = Color( 64, 64, 64, 100 )
+		bgColor = panelInactiveColor
 		labelColor = dimColor
 	end
 
@@ -151,11 +208,11 @@ function HUD.LightStageIndicatorSingle( x, y, width, label, count, selected, sty
 
 	local stageDimensions = stageIndicatorsSmall[count]
 
-	local drawColor = white
+	local drawColor = highlightColor
 
 	for i=1, count do
 		if ( i <= selected ) then
-			drawColor = white
+			drawColor = highlightColor
 		else
 			drawColor = inactiveColor
 		end
@@ -172,8 +229,9 @@ end
 ---@param columns integer
 ---@param columnWidth integer
 ---@param functions table<table<string, boolean>>
-function HUD.FunctionsIndicator( x, y, width, height, columns, columnWidth, functions )
+function HUD.FunctionsIndicator( x, y, width, height, columns, functions )
 	
+	local columnWidth = ( width / columns ) - 4
 	local isActive = false
 
 	for i=1, #functions do
@@ -184,23 +242,23 @@ function HUD.FunctionsIndicator( x, y, width, height, columns, columnWidth, func
 	end
 
 	if ( isActive ) then
-		draw.RoundedBox( cornerRadius, x, y, width, height, Color( 64, 64, 64, 200 ) )
+		draw.RoundedBox( cornerRadius, x, y, width, height, panelActiveColor )
 	else
 
-		draw.RoundedBox( cornerRadius, x, y, width, height, Color( 64, 64, 64, 100 ) )
+		draw.RoundedBox( cornerRadius, x, y, width, height, panelInactiveColor )
 	end
 	
 	local row = 1
 	local column = 1
 
-	surface.SetDrawColor( 255, 255, 255, 255 )
-	local textColor = white	
+	surface.SetDrawColor( highlightColor )
+	local textColor = highlightColor	
 	for i=1, #functions do
 		
 		if ( functions[i][2] == 1 ) then
 			surface.SetMaterial( ellipseActive )
-			surface.SetDrawColor( white )
-			textColor = white
+			surface.SetDrawColor( highlightColor )
+			textColor = highlightColor
 		else
 			surface.SetMaterial( ellipseInactive )
 			surface.SetDrawColor( inactiveColor )
@@ -234,11 +292,11 @@ end
 
 -- Draws vehicle name with current input profile below it.
 function HUD.VehicleInfo( x, y, w, h, vehicleName, inputConfigName )
-	local backgroundColor = Color( 64, 64, 64, 200 )
+	local backgroundColor = panelActiveColor
 	draw.RoundedBox( cornerRadius, x, y, w, h, backgroundColor )
 
-	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 7, white )
-	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, Color(255,255,255,100) )
+	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 7, highlightColor )
+	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, dimColor )
 end
 
 ---@param x integer
@@ -251,10 +309,10 @@ end
 ---@param leftOn boolean
 function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, backOn, leftOn )
 	local isInactive = (not frontOn) and (not floodOn) and (not rightOn) and (not backOn) and (not leftOn)
-	local backgroundColor = Color( 64, 64, 64, 200 )
+	local backgroundColor = panelActiveColor
 	
 	if ( isInactive ) then
-		backgroundColor = Color( 64, 64, 64, 100 )
+		backgroundColor = panelInactiveColor
 	end
 
 	draw.RoundedBox( cornerRadius, x, y, 52, 48, backgroundColor )
@@ -263,58 +321,58 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	
 	if ( frontOn or floodOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 		surface.SetMaterial( illumFrontOn )
 	else
-		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetDrawColor( inactiveColor )
 		surface.SetMaterial( illumFrontOff )
 	end
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
 	if ( floodOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 	else
-		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetDrawColor( inactiveColor )
 	end
 	surface.SetMaterial( illumFlood )
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
 	if ( rightOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 		surface.SetMaterial( illumRightOn )
 	else
-		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetDrawColor( inactiveColor )
 		surface.SetMaterial( illumRightOff )
 	end
 	surface.DrawTexturedRect( x + 27, y - 3, 25, 52 )
 
 	if ( backOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 		surface.SetMaterial( illumRearOn )
 	else
-		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetDrawColor( inactiveColor )
 		surface.SetMaterial( illumRearOff )
 	end
 	surface.DrawTexturedRect( x - 4, y + 28, 56, 21 )
 
 	if ( leftOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 		surface.SetMaterial( illumLeftOn )
 	else
-		surface.SetDrawColor( 0, 0, 0, 128 )
+		surface.SetDrawColor( inactiveColor )
 		surface.SetMaterial( illumLeftOff )
 	end
 	surface.DrawTexturedRect( x-5, y - 3, 30, 52 )
 
 	surface.SetMaterial( icon )
 	if ( drawAsActive ) then
-		surface.SetDrawColor( 255, 255, 255, 255 )
+		surface.SetDrawColor( highlightColor )
 	else
-		surface.SetDrawColor( 255, 255, 255, 64 )
+		surface.SetDrawColor( dimColor )
 	end
 	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
 end
@@ -344,8 +402,8 @@ function HUD.KeyBindHint( x, y, keys )
 		key = keys[i]
 		surface.SetFont( "Photon2.UI:MediumSmall" )
 		local w = surface.GetTextSize( key[1] )
-		draw.RoundedBox( 4, x + 14 - w - keyPadding, y, w + (keyPadding * 2), 20, Color( 64, 64, 64, 200 ) )
-		surface.SetDrawColor( 255, 255, 255 )
+		draw.RoundedBox( 4, x + 14 - w - keyPadding, y, w + (keyPadding * 2), 20, panelActiveColor )
+		surface.SetDrawColor( highlightColor )
 		surface.SetTextPos( x + 14 - w, y + 4)
 		surface.DrawText( key[1] )
 		surface.SetTextPos( x + 28, y + 4 )
@@ -354,23 +412,6 @@ function HUD.KeyBindHint( x, y, keys )
 	end
 	
 end
-
-
--- Displays basic input 
-function HUD.BasicInputHint()
-	HUD.KeyBindHint( 190, 220, {
-		{ "F", "EMERGENCY LIGHTS" },
-		{ "ALT", "LIGHT MODE" },
-		{ "R", "SIREN" },
-		{ "1-4", "SIREN TONE" },
-	})
-end
-
-local commands = {
-	"toggle_warning_lights",
-	"cycle_warning_lights",
-	"activate_lights_siren"
-}
 
 ---@param x integer
 ---@param y integer
@@ -383,10 +424,10 @@ local commands = {
 function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode )
 	local activeIcon = ellipseActive
 	local inactiveIcon = ellipseInactive
-	local labelColor = white
-	local iconColor = white
+	local labelColor = highlightColor
+	local iconColor = highlightColor
 	local indicatorColor = dimColor
-	local backgroundColor =  Color( 16, 16, 16, 200 )
+	local backgroundColor =  panelActiveAlternateColor
 	local rowMax = 5
 	local rows = math.ceil( count / rowMax )
 	local selectedIndicator = ( count + 1 ) - selected
@@ -394,12 +435,12 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 	if ( mode == 2 ) then
 		activeIcon = ellipseInactive
 		inactiveIcon = ellipseActive
-		indicatorColor = white
+		indicatorColor = highlightColor
 	elseif ( mode == 0 ) then
-		labelColor = Color( 255, 255, 255, 128 )
-		iconColor = Color( 0, 0, 0, 128 )
-		indicatorColor = Color( 0, 0, 0, 128 )
-		backgroundColor =  Color( 16, 16, 16, 100 )
+		labelColor = dimColor
+		iconColor = inactiveColor
+		indicatorColor = inactiveColor
+		backgroundColor =  panelInactiveAlternateColor
 	end
 
 	draw.RoundedBox( cornerRadius, x, y, width, 32, backgroundColor )
@@ -456,7 +497,7 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 		if ( i == selectedIndicator ) then
 			surface.SetMaterial( activeIcon )
-			surface.SetDrawColor( white )
+			surface.SetDrawColor( highlightColor )
 		end
 
 		surface.DrawTexturedRect( x + width - 16 - ( ( ( ( i - 1 ) % rowMax ) ) * 12 ), y + yOffset, 8, 8 )
@@ -493,34 +534,56 @@ local function addHintKeyMultiple( tbl, cmd1, cmd2, label )
 	end
 end
 
--- How long the key information stays visible
-local hintDuration = 7
-
-local drawHeight = 0
-local hudStartTime = 0
+HUD.StartTime = 0
 local indicatorComponent = nil
+
+-- How long the key/hint info stays visible
+local hintDuration = 7
+-- Width of main HUD panels
+local mainWidth = 150
+-- Distance from edge of canvas
+local offset = 4
+-- Spacing between the internal panels
+local margin = 2
+-- Key bind information width
+local keyHintWidth = 150
+-- Key bind information margin
+local keyHintMargin = 32
+
+-- Photon2.HUD.FromRight = false
 
 local hintInfoVisible = false
 
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
+
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
 
 	if ( not target ) then 
-		hudStartTime = 0
+		HUD.StartTime = 0
 		indicatorComponent = nil
+		if ( HUD.WasActive ) then
+			HUD.WasActive = false
+			HUD.Deactivate()
+		end
 		return
+	elseif ( not HUD.WasActive ) then
+		HUD.WasActive = true
+		HUD.Activate()
 	end
 
-	if ( not Photon2.ClientInput.Active ) then return end
+	-- when does this happen?
+	if ( not Photon2.ClientInput.Active ) then warnOnce( "Client input profile is invalid." ) end
+
+	HUD.WasActive = true
 
 	local keyHints = {}
 
 	hudMaterial:SetTexture( "$basetexture", hudRT )
 	if ( CurTime() >= (lastUpdate + 0.05) ) then
 
-		if hudStartTime == 0 then 
-			hudStartTime = CurTime()
+		if HUD.StartTime == 0 then 
+			HUD.StartTime = CurTime()
 			hintInfoVisible = true
 		end
 
@@ -540,11 +603,15 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			render.OverrideAlphaWriteEnable( true, true)
 			render.Clear( 0, 0, 0, 0, false, false )
 
-			local margin = 2
+			local mainX = offset
 			local nextY = 4
 			local nextH = 38
 
-			HUD.VehicleInfo( ScrW() - 150 - 4, nextY, 150, nextH, 
+			if ( HUD.FromRight ) then
+				mainX = ScrW() - mainWidth - offset
+			end
+
+			HUD.VehicleInfo( mainX, nextY, mainWidth, nextH, 
 				string.upper(truncateString(Photon2.ClientInput.TargetController:GetProfile().Title, 26 ) or "ERROR"),
 				string.upper(Photon2.ClientInput.Active.Title or "ERROR")
 			)
@@ -586,7 +653,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					secMode = (schema[secChannel] or {})[secMode] or {}
 
 					nextH = 64
-					HUD.LightStageIndicator( ScrW() - 150 - 4, nextY, 150, 
+					HUD.LightStageIndicator( mainX, nextY, mainWidth, 
 						schema[priChannel][priMode].Label or priMode, 
 						#schema[priChannel], 
 						schema[priChannel][priMode].Index or 0,
@@ -601,7 +668,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 				else
 					nextH = 40
-					HUD.LightStageIndicatorSingle( ScrW() - 150 - 4, nextY, 150,
+					HUD.LightStageIndicatorSingle( mainX, nextY, mainWidth,
 						schema[priChannel][priMode].Label, 
 						-- 3, 
 						#schema[priChannel], 
@@ -649,7 +716,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					end
 
 					nextH = 32
-					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+					HUD.DiscreteIndicator( mainX, nextY, mainWidth, 
 						icon, 
 						label, 
 						#siren1.OrderedTones, 
@@ -658,7 +725,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					)
 				else
 					nextH = 32
-					HUD.DiscreteIndicator( ScrW() - 150 - 4, nextY, 150, 
+					HUD.DiscreteIndicator( mainX, nextY, mainWidth, 
 						icons["speaker"], 
 						"ERROR", 
 						0, 
@@ -666,7 +733,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 						0 
 					)
 				end
-				-- HUD.DiscreteIndicator( ScrW() - 150 - 4, 322, 150, 
+				-- HUD.DiscreteIndicator( ScrW() - mainWidth - 4, 322, mainWidth, 
 				-- 	icons[sirenDisplay.Icon], 
 				-- 	sirenDisplay.Label, 
 				-- 	#smartSirenIndicator.DisplayArray, 
@@ -712,10 +779,11 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 			-- PrintTable(schema[i1])
 
-			HUD.FunctionsIndicator( ScrW() - 150 - 4, nextY, 96, 48, 2, 44, indicators )
+			-- Draw Bottom Row
+			HUD.FunctionsIndicator( mainX, nextY, mainWidth - 52 - margin, 48, 2, indicators )
 
-
-			HUD.SceneLightingIndicator( ScrW() - 150 - 4 + 98, nextY, vehicleIcon, 
+			-- The scene light indicator is currently fixed at 52x48
+			HUD.SceneLightingIndicator( mainX + ( mainWidth - 52 - margin ) + margin, nextY, vehicleIcon, 
 				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
 				target.CurrentModes["Emergency.SceneForward"] == "FLOOD", 
 				target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
@@ -725,12 +793,22 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 			nextY = ( nextY + nextH + margin )
 
-			if ( hudStartTime + hintDuration >= CurTime() ) then
-				draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:Small", ScrW() - 4, nextY + 2, white, TEXT_ALIGN_RIGHT )
+			if ( HUD.StartTime + hintDuration >= CurTime() ) then
+				local versionX = offset
+				local alignX = TEXT_ALIGN_LEFT
+				local bindInfoX = mainWidth + keyHintMargin
+				
+				if ( HUD.FromRight ) then
+					bindInfoX = ScrW() - mainWidth - keyHintWidth
+					alignX = TEXT_ALIGN_RIGHT
+					versionX = ScrW() - offset
+				end
+
+				draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:Small", versionX, nextY + margin, highlightColor, alignX )
 
 				nextY = ( nextY + 32 + margin )
 				
-				HUD.KeyBindHint( ScrW() - 300, 4, keyHints )
+				HUD.KeyBindHint( bindInfoX, 4, keyHints )
 			else
 				-- prevents HUD from moving
 				nextY = ( nextY + 32 + margin )
@@ -742,20 +820,11 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 		render.PopRenderTarget()
 		lastUpdate = CurTime()
 	end
-	surface.SetDrawColor(255,255,255,255)
-	surface.SetMaterial(hudMaterial)
-	surface.DrawTexturedRect(ScrW() - 528, ScrH() - drawHeight - 32, 496, 496)
-	surface.SetAlphaMultiplier( 1 )
-end)
 
-hook.Add( "HUDPaint", "Photon2OverlayTest", function() 
-	-- if ( IsValid( PHOTON2_PREVIEW_COMPONENT ) ) then
-	-- 	for i, element in pairs( PHOTON2_PREVIEW_COMPONENT.Elements ) do
-	-- 		if ( element.DrawDebug ) then
-	-- 			element:DrawDebug()
-	-- 		end
-	-- 	end
-	-- end
+	-- surface.SetDrawColor( 255, 255, 255, 255 )
+	-- surface.SetMaterial( hudMaterial )
+	-- surface.DrawTexturedRect( ScrW() - 528 - userSettings.OffsetX, ScrH() - userSettings.OffsetY - 32, 496, 496 )
+	-- surface.SetAlphaMultiplier( 1 )
 end)
 
 local showPerformanceInfo = GetConVar( "ph2_debug_perf_overlay" )
@@ -765,24 +834,24 @@ function Photon2.HUD.DrawPerformanceInfo()
 	local x = 16
 	local y = 240
 	local frameTime = FrameTime()
-	draw.DrawText( "Photon 2      " .. tostring( math.Round( FrameTime() * 1000 ) ) .."ms", "BudgetLabel", x, y, white )
+	draw.DrawText( "Photon 2      " .. tostring( math.Round( FrameTime() * 1000 ) ) .."ms", "BudgetLabel", x, y, highlightColor )
 	y = y + 22
-	draw.DrawText( "Mesh (" .. tostring( #Photon2.RenderLightMesh.Active ) ..")", "BudgetLabel", x, y, white )
+	draw.DrawText( "Mesh (" .. tostring( #Photon2.RenderLightMesh.Active ) ..")", "BudgetLabel", x, y, highlightColor )
 	x = x + 96
-	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, white )
+	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, highlightColor )
 	x = x + 96
-	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, white )
-	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, white )
+	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, highlightColor )
+	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, highlightColor )
 	x = 16
 	y = y + 18
-	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLightMesh.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLightMesh.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
 	y = y + 12
-	draw.DrawText( "D: " .. tostring( math.Round( ( Photon2.RenderBloom.DrawTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	draw.DrawText( "D: " .. tostring( math.Round( ( Photon2.RenderBloom.DrawTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
 	x = 16 + 96
 	y = y - 12
-	draw.DrawText( "P: " .. tostring( math.Round( ( Photon2.RenderLight2D.PreRenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	draw.DrawText( "P: " .. tostring( math.Round( ( Photon2.RenderLight2D.PreRenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
 	y = y + 12
-	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLight2D.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, white )
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLight2D.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
 end
 
 hook.Add( "HUDPaint", "Photon2,HUD:PerformanceInfo", Photon2.HUD.DrawPerformanceInfo )

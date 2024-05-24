@@ -24,7 +24,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.29 (BETA)"
+Photon2.Version = "2.0.30 (BETA)"
 
 --[[
 	Compatability
@@ -83,7 +83,9 @@ end
 
 if SERVER then
 
+	-- Util must now come first because exlib uses it
 	AddCSLuaFile("photon-v2/sh_util.lua")
+	AddCSLuaFile("photon-v2/cl_convars.lua")
 
 	-- send meta files to client (required here for file reloading to work)
 	fol = "photon-v2/meta/"
@@ -116,7 +118,6 @@ if SERVER then
 		end
 	end
 
-	-- load 
 
 	include("photon-v2/sv_init.lua")
     include("photon-v2/sv_net.lua")
@@ -124,6 +125,9 @@ if SERVER then
 end
 
 if CLIENT then
+	-- TODO: need a better solution for the fucking Derma panels
+	-- that rely on core Photon code
+	include("photon-v2/cl_convars.lua")
 	include("photon-v2/sh_util.lua")
 	autoInclude("photon-v2/exlib/")
 	include("photon-v2/cl_init.lua")
