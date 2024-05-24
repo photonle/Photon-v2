@@ -40,11 +40,13 @@ function PANEL:Setup()
 
 	self:SetupMainPage()
 	self:SetupRenderOptions()
+	self:SetupHudOptions()
 
 	local propertySheet = vgui.Create( "DPropertySheet", container )
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	self.Tabs = propertySheet
+	propertySheet:AddSheet( "HUD", self.HudPage )
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
 	propertySheet:AddSheet( "Rendering", self.RenderPage )
 
@@ -86,6 +88,41 @@ function PANEL:SetupRenderOptions()
 	img:SetImage( "photon/ui/misc/render_options.png")
 	img:SetWidth( 203 )
 	img:SetHeight( 202 )
+end
+
+function PANEL:SetupHudOptions()
+	local panel = vgui.Create( "DPanel", self )
+	self.HudPage = panel
+	panel:Dock( FILL )
+	panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockPadding( 2, 4, 2, 4 )
+	
+	-- local container = vgui.Create( "DScrollPanel", panel )
+	-- container:Dock( FILL )
+
+	---@type Photon2UIFormPanel
+	local form = vgui.Create( "Photon2UIFormPanel", panel )
+	form.LabelWidth = 120
+	form:Dock( FILL )
+	form:RegisterCVarProperty( "ph2_hud_enabled", "Bool" )
+	form:RegisterCVarProperty( "ph2_hud_offset_x", "Int" )
+	form:RegisterCVarProperty( "ph2_hud_offset_y", "Int" )
+	form:RegisterCVarProperty( "ph2_hud_anchor", "String" )
+	form:CreateCheckBoxProperty( "ph2_hud_enabled", "Enable", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
+	form:AddDivider()
+	form:CreateComboBoxProperty( "ph2_hud_anchor", "Anchor", "Bottom Left", { 
+		{ "Bottom Left", "bottom_left" },
+		{ "Bottom Right", "bottom_right" },
+		{ "Top Left", "top_left" },
+		{ "Top Right", "top_right" }
+	} )
+	form:CreateNumberSliderProperty( "ph2_hud_offset_x", "X Offset", 0, 0, ScrW(), 0 )
+	form:CreateNumberSliderProperty( "ph2_hud_offset_y", "Y Offset", 0, 0, ScrH(), 0 )
+	form:AddButton( "Reset to Default", function()
+		print("Resetting to default...")
+		RunConsoleCommand( "ph2_hud_offset_x", "0" )
+		RunConsoleCommand( "ph2_hud_offset_y", "0" )
+	end)
 end
 
 function PANEL:SetupMainPage()
