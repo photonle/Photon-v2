@@ -11,7 +11,7 @@ PANEL.TitleSuffix = " - Photon 2"
 function PANEL:Init()
 	self.BaseClass.Init( self )
 	local this = self
-	self:SetSize( 340, 560 )
+	self:SetSize( 340, 570 )
 	self:Center()
 	self:Setup()
 end

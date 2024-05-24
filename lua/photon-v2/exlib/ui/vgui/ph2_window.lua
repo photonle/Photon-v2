@@ -1,6 +1,9 @@
 local class = "Photon2UIWindow"
 local base = "DFrame"
 
+-- forget about this. it sucks
+local enableBackgroundBlur = false
+
 ---@class Photon2UIWindow : Panel
 ---@field MenuBar EXDMenuBar 
 local PANEL = {}
@@ -117,6 +120,11 @@ function PANEL:Init()
 	self:SetScreenLock( true )
 	self:Center()
 	self:SetSizable(true)
+	self:SetBackgroundBlur( enableBackgroundBlur )
+
+	if ( not Photon2.UI.CursorReleased ) then
+		Photon2.UI.ToggleCursorRelease()
+	end
 	hook.Add( "OnTextEntryGetFocus", self, function( panel ) 
 		self:StartKeyFocus( panel )
 	end )
@@ -177,7 +185,60 @@ function PANEL:Init()
 	-- Pretty but negates translucency 
 	self:SetPaintShadow( false )
 
+	if ( IsValid( self.CursorInfoPanel ) ) then 
+		self.CursorInfoPanel:Remove() 
+	end
+
+	local cursorInfoPanel = vgui.Create( "DPanel", self )
+	cursorInfoPanel:Dock( BOTTOM )
+	cursorInfoPanel:SetHeight( 24 )
+	cursorInfoPanel:DockMargin( 0, 0, 0, 0 )
+	cursorInfoPanel:DockPadding( 0, 0, 0, 0 )
+	cursorInfoPanel:SetPaintBackground( false )
+	local cursorInfoText = vgui.Create( "DLabel", cursorInfoPanel )
+	cursorInfoText:Dock( FILL )
+	cursorInfoText:SetContentAlignment( 5 )
+	cursorInfoText:SetText( "Press F3 to release your cursor." )
+	cursorInfoPanel:SetVisible( false )
+	self.CursorInfoPanel = cursorInfoPanel
+
 	hook.Run( "Photon2.WindowCreated", self )
+
+
+	-- -- 
+	hook.Add( "OnContextMenuOpen", self, function()
+		self:AlphaTo( 64, 0.5, 0 )
+	end )
+
+	hook.Add( "OnContextMenuClose", self, function()
+		self:AlphaTo( 255, 0.5, 0 )
+	end )
+
+	hook.Add( "Think", self , function ()
+		if ( vgui.CursorVisible() and ( not self.HandledHiddenCursor ) ) then
+			self.CursorInfoPanel:SetVisible( false )
+			self.CursorInfoPanel:SetHeight( 0 )
+			self:GetParent():InvalidateChildren( true )
+			self.HandledVisibleCursor = false
+			self.HandledHiddenCursor = true
+		elseif ( ( not vgui.CursorVisible() ) and not self.HandledVisibleCursor ) then
+			self.CursorInfoPanel:SetVisible( true )
+			self.CursorInfoPanel:SetHeight( 24 )
+			self:GetParent():InvalidateChildren( true )
+			self.HandledVisibleCursor = true
+			self.HandledHiddenCursor = false
+		end
+	end)
+
+	-- -- this didn't do a goddamn thing
+
+	-- hook.Add ("OnContextMenuClose", self, function()
+	-- -- 	if ( IsValid( actualParent ) ) then
+	-- -- 		-- print("parent is now the original")
+	-- -- 		-- self:SetParent( actualParent )
+	-- -- 	end
+	-- end )
+
 end
 
 function PANEL:DoClose()
@@ -221,10 +282,18 @@ function PANEL:OnMouseReleased()
 
 end
 
+-- function PANEL:Think()
+-- 	print("panel think")
+-- end
+
 function PANEL:OnKeyCodePressed( keyCode )
 	if ( keyCode == KEY_F3 ) then
 		Photon2.UI.ToggleCursorRelease()
 	end
+end
+
+function PANEL:OnThink()
+	
 end
 
 derma.DefineControl( class, "Photon 2 Window", PANEL, base )

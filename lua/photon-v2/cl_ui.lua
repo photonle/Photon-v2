@@ -6,15 +6,23 @@ Photon2.UI = Photon2.UI or {
 
 local UI = Photon2.UI
 
+function UI.OpenDesktop()
+	local window = UI.GetOrCreatePhotonMenu()
+	window:MakePopup()
+	window:Center()
+end
+
 -- This is the menu that appears when the "desktop" icon is clicked
 function Photon2.UI.GetOrCreatePhotonMenu()
-	if ( IsValid( Photon2.UI.PhotonMenu ) ) then
+	local window = Photon2.UI.PhotonMenu
+	if ( IsValid( window ) ) then
 		return Photon2.UI.PhotonMenu
+	else
+		window = vgui.Create( "Photon2UIDesktop" )
+		window:Center()
+		Photon2.UI.PhotonMenu = window
+		return window
 	end
-	local window = vgui.Create( "Photon2UIDesktop" )
-	window:Center()
-	Photon2.UI.PhotonMenu = window
-	return window
 end
 
 function Photon2.UI.SetEnableWindowInput( enable )
@@ -522,8 +530,9 @@ properties.Add("photon2_equipment", {
 list.Set("DesktopWindows", "Photon2", {
 	title = "Photon 2",
 	icon = "photon/ui/photon_2_icon_64.png",
-	onewindow = true,
 	init = function( icon, window )
+		UI.OpenDesktop()
+		-- print("fuck off")
 		-- Needs a hacky workaround because the window is a defined Derma panel
 		-- and not just a mutated DFrame.
 		
@@ -536,11 +545,13 @@ list.Set("DesktopWindows", "Photon2", {
 		-- window = parent:Add( "Photon2UIDesktop" )
 		-- window.ContextParent = parent
 		-- icon.Photon2Window = window
-		local menu = Photon2.UI.GetOrCreatePhotonMenu()
+		-- local menu = Photon2.UI.GetOrCreatePhotonMenu()
+		-- menu:SetVisible( true )
+		-- menu:MakePopup()`
 	end
 })
 
-if PHOTON2_STUDIO_ENABLED then
+-- if PHOTON2_STUDIO_ENABLED then
 	-- list.Set("DesktopWindows", "PhotonStudio", {
 	-- 	title = "Photon Studio",
 	-- 	icon = "photon/ui/photon_studio_icon_64.png",
@@ -548,7 +559,8 @@ if PHOTON2_STUDIO_ENABLED then
 	-- 		Photon2.Studio:Setup( window )
 	-- 	end
 	-- })
-end
+-- end
+
 --[[
 		Photon Studio Window
 --]]
@@ -711,13 +723,9 @@ hook.Add( "PlayerBindPress", "Photon2.UI:F3CursorRelease", function( ply, bind, 
 	end
 end)
 
-hook.Remove( "Think", "Photon2UIClickTest" )
-
-
 local isDown = false
-local debouncePeriod = 0.3
+local clickWindow = 0.3
 local lastClick = 0
-
 -- Toggles the cursor release when the mouse is double-clicked
 -- over an empty area of the screen
 hook.Add( "Think", "Photon2.UI:MouseCheck", function()
@@ -725,7 +733,7 @@ hook.Add( "Think", "Photon2.UI:MouseCheck", function()
 	if ( input.IsMouseDown( MOUSE_LEFT ) and not ( isDown ) ) then
 		if ( vgui.IsHoveringWorld() ) then
 			isDown = true
-			if ( RealTime() < lastClick + debouncePeriod ) then
+			if ( RealTime() < lastClick + clickWindow ) then
 				Photon2.UI.ToggleCursorRelease()
 			end
 			lastClick = RealTime()
