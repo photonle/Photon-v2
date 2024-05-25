@@ -25,13 +25,45 @@ local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512,
 0, MATERIAL_RT_DEPTH_NONE, 32768 + 2048 + 4 + 8 + 512, 0, IMAGE_FORMAT_RGBA8888 )
 
 -- 
--- local userSettings = {}
+local userSettings = {}
+
+local function stringToColor( str )
+	local r, g, b, a = string.match( str, "(%d+),(%d+),(%d+),(%d+)" )
+	return Color( 
+		tonumber( r ) or 255,
+		tonumber( g ) or 255,
+		tonumber( b ) or 255,
+		tonumber( a ) or 255
+	)
+end
+
+-- local userSettings.HighlightColor = Color( 255, 255, 255 )
+
+-- 255 255 255 96
+-- local userSettings.AccentAltColor = Color( 255, 255, 255, 96 )
+-- 0 0 0 128
+-- local userSettings.AccentInactiveColor = Color( 0, 0, 0, 128 )
+
+-- 64 64 64 200
+-- local userSettings.PanelActiveColor = Color( 64, 64, 64, 200 )
+-- local userSettings.PanelAltActiveColor = Color( 16, 16, 16, 200 )
+
+-- 64 64 64
+-- local panelInactiveColor = ColorAlpha( userSettings.PanelActiveColor, 100 )
+-- local userSettings.PanelAltInactiveColor = ColorAlpha( panelActiveAlternateColor, 100 )
 
 local optionConVars = {
 	Enabled = { "ph2_hud_enabled", "Bool" },
 	Anchor = { "ph2_hud_anchor", "String" },
 	OffsetX = { "ph2_hud_offset_x", "Int" },
-	OffsetY = { "ph2_hud_offset_y", "Int" }
+	OffsetY = { "ph2_hud_offset_y", "Int" },
+	PanelActiveColor = { "ph2_hud_color_panel_active", "String", stringToColor },
+	BackgroundColor = { "ph2_hud_color_panel_inactive", "String", stringToColor },
+	PanelAltActiveColor = { "ph2_hud_color_panel_alt_active", "String", stringToColor },
+	PanelAltInactiveColor = { "ph2_hud_color_panel_alt_inactive", "String", stringToColor },
+	HighlightColor = { "ph2_hud_color_accent", "String", stringToColor },
+	AccentInactiveColor = { "ph2_hud_color_accent_inactive", "String", stringToColor },
+	AccentAltColor = { "ph2_hud_color_accent_alt", "String", stringToColor },
 }
 
 for key, data in pairs( optionConVars ) do
@@ -44,7 +76,7 @@ for key, data in pairs( optionConVars ) do
 	if ( isfunction( data[3] ) ) then
 		value = data[3]( value )
 	end
-	-- userSettings[key] = value
+	userSettings[key] = value
 
 	cvars.RemoveChangeCallback( data[1], "Photon2.HUD" )
 	cvars.AddChangeCallback( data[1], function( convar, oldValue, newValue )
@@ -52,7 +84,8 @@ for key, data in pairs( optionConVars ) do
 			newValue = data[3]( newValue )
 		end
 		printf( "HUD setting changed: %s %s %s", convar, oldValue, newValue )
-		-- userSettings[key] = newValue
+		-- userSettings[key] = cvar["Get" .. data[2]]( cvar )
+		userSettings[key] = newValue
 	end, "Photon2.HUD")
 end
 
@@ -77,17 +110,6 @@ local icons = Photon2.HUD.ToneIcons
 local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
 local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
 
-local highlightColor = Color( 255, 255, 255 )
-
-local dimColor = Color( 255, 255, 255, 96 )
-local inactiveColor = Color( 0, 0, 0, 128 )
-
-local panelActiveColor = Color( 64, 64, 64, 200 )
-local panelActiveAlternateColor = Color( 16, 16, 16, 200 )
-
-local panelInactiveColor = ColorAlpha( panelActiveColor, 100 )
-local panelInactiveAlternateColor = ColorAlpha( panelActiveAlternateColor, 100 )
-
 local HUD = Photon2.HUD
 
 local stageIndicators = {
@@ -107,8 +129,8 @@ local stageIndicatorsSmall = {
 }
 
 local stateColors = {
-	["OFF"] = inactiveColor,
-	["ON"] = highlightColor
+	["OFF"] = function() return userSettings.AccentInactiveColor end,
+	["ON"] = function() return userSettings.HighlightColor end
 }
 
 function HUD.Activate()
@@ -130,26 +152,26 @@ end
 
 function HUD.LightsIndicator( x, y, width, height, gap, elements )
 	for i, element in pairs( elements ) do
-		draw.RoundedBox( 0, x + ( ( i - 1 ) * ( width + gap ) ), y, width, height, stateColors[element.CurrentStateId] )
+		draw.RoundedBox( 0, x + ( ( i - 1 ) * ( width + gap ) ), y, width, height, stateColors[element.CurrentStateId]() )
 	end
 end
 
 function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, priStyle, secLabel, secCount, secSelected, secStyle, indicatorComponent )
-	local priLabelColor = highlightColor
-	local secLabelColor = highlightColor
-	local secIndicatorColor = dimColor
-	local bgColor = panelActiveColor
+	local priLabelColor = userSettings.HighlightColor
+	local secLabelColor = userSettings.HighlightColor
+	local secIndicatorColor = userSettings.AccentAltColor
+	local bgColor = userSettings.PanelActiveColor
 
 	if ( ( priStyle + secStyle ) < 1 ) then
-		bgColor = panelInactiveColor
+		bgColor = userSettings.BackgroundColor
 	end
 
 	if ( priStyle == 0 ) then
-		priLabelColor = dimColor
+		priLabelColor = userSettings.AccentAltColor
 	end
 
 	if ( secStyle == 0 ) then
-		secLabelColor = dimColor
+		secLabelColor = userSettings.AccentAltColor
 		secIndicatorColor = Color( 0, 0, 0, 128 )
 	end
 
@@ -160,12 +182,12 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 	
 
 	local stageDimensions = stageIndicators[priCount]
-	local drawColor = highlightColor
+	local drawColor = userSettings.HighlightColor
 	for i=1, priCount do
 		if ( i <= priSelected ) then
-			drawColor = highlightColor
+			drawColor = userSettings.HighlightColor
 		else
-			drawColor = inactiveColor
+			drawColor = userSettings.AccentInactiveColor
 		end
 		draw.RoundedBox( 2, x + 8, y + ( 8 ) + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
 	end
@@ -182,7 +204,7 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 	for i=1, secCount do
 		if ( i == secSelected ) then
 			surface.SetMaterial( ellipseActive )
-			surface.SetDrawColor( highlightColor )
+			surface.SetDrawColor( userSettings.HighlightColor )
 		end
 
 		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 46, 8, 8 )
@@ -195,12 +217,12 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 end
 
 function HUD.LightStageIndicatorSingle( x, y, width, label, count, selected, style )
-	local labelColor = highlightColor
-	local bgColor = panelActiveColor
+	local labelColor = userSettings.HighlightColor
+	local bgColor = userSettings.PanelActiveColor
 
 	if ( style < 1 ) then
-		bgColor = panelInactiveColor
-		labelColor = dimColor
+		bgColor = userSettings.BackgroundColor
+		labelColor = userSettings.AccentAltColor
 	end
 
 	draw.RoundedBox( cornerRadius, x, y, width, 40, bgColor )
@@ -208,13 +230,13 @@ function HUD.LightStageIndicatorSingle( x, y, width, label, count, selected, sty
 
 	local stageDimensions = stageIndicatorsSmall[count]
 
-	local drawColor = highlightColor
+	local drawColor = userSettings.HighlightColor
 
 	for i=1, count do
 		if ( i <= selected ) then
-			drawColor = highlightColor
+			drawColor = userSettings.HighlightColor
 		else
-			drawColor = inactiveColor
+			drawColor = userSettings.AccentInactiveColor
 		end
 		draw.RoundedBox( 2, x + 8, y + ( 8  + stageDimensions[3] ) + ( ( i - 1 ) * ( stageDimensions[1] + stageDimensions[2] ) ), 26, stageDimensions[1], drawColor )
 	end
@@ -242,27 +264,27 @@ function HUD.FunctionsIndicator( x, y, width, height, columns, functions )
 	end
 
 	if ( isActive ) then
-		draw.RoundedBox( cornerRadius, x, y, width, height, panelActiveColor )
+		draw.RoundedBox( cornerRadius, x, y, width, height, userSettings.PanelActiveColor )
 	else
 
-		draw.RoundedBox( cornerRadius, x, y, width, height, panelInactiveColor )
+		draw.RoundedBox( cornerRadius, x, y, width, height, userSettings.BackgroundColor )
 	end
 	
 	local row = 1
 	local column = 1
 
-	surface.SetDrawColor( highlightColor )
-	local textColor = highlightColor	
+	surface.SetDrawColor( userSettings.HighlightColor )
+	local textColor = userSettings.HighlightColor	
 	for i=1, #functions do
 		
 		if ( functions[i][2] == 1 ) then
 			surface.SetMaterial( ellipseActive )
-			surface.SetDrawColor( highlightColor )
-			textColor = highlightColor
+			surface.SetDrawColor( userSettings.HighlightColor )
+			textColor = userSettings.HighlightColor
 		else
 			surface.SetMaterial( ellipseInactive )
-			surface.SetDrawColor( inactiveColor )
-			textColor = dimColor
+			surface.SetDrawColor( userSettings.AccentInactiveColor )
+			textColor = userSettings.AccentAltColor
 		end
 
 		surface.DrawTexturedRect(
@@ -292,11 +314,11 @@ end
 
 -- Draws vehicle name with current input profile below it.
 function HUD.VehicleInfo( x, y, w, h, vehicleName, inputConfigName )
-	local backgroundColor = panelActiveColor
+	local backgroundColor = userSettings.PanelActiveColor
 	draw.RoundedBox( cornerRadius, x, y, w, h, backgroundColor )
 
-	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 7, highlightColor )
-	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, dimColor )
+	draw.DrawText( vehicleName, "Photon2.UI:Small", x + 8, y + 7, userSettings.HighlightColor )
+	draw.DrawText( inputConfigName, "Photon2.UI:Small", x + 8, y + 20, userSettings.AccentAltColor )
 end
 
 ---@param x integer
@@ -309,10 +331,10 @@ end
 ---@param leftOn boolean
 function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, backOn, leftOn )
 	local isInactive = (not frontOn) and (not floodOn) and (not rightOn) and (not backOn) and (not leftOn)
-	local backgroundColor = panelActiveColor
+	local backgroundColor = userSettings.PanelActiveColor
 	
 	if ( isInactive ) then
-		backgroundColor = panelInactiveColor
+		backgroundColor = userSettings.BackgroundColor
 	end
 
 	draw.RoundedBox( cornerRadius, x, y, 52, 48, backgroundColor )
@@ -321,58 +343,58 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	
 	if ( frontOn or floodOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 		surface.SetMaterial( illumFrontOn )
 	else
-		surface.SetDrawColor( inactiveColor )
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
 		surface.SetMaterial( illumFrontOff )
 	end
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
 	if ( floodOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 	else
-		surface.SetDrawColor( inactiveColor )
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
 	end
 	surface.SetMaterial( illumFlood )
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
 	if ( rightOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 		surface.SetMaterial( illumRightOn )
 	else
-		surface.SetDrawColor( inactiveColor )
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
 		surface.SetMaterial( illumRightOff )
 	end
 	surface.DrawTexturedRect( x + 27, y - 3, 25, 52 )
 
 	if ( backOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 		surface.SetMaterial( illumRearOn )
 	else
-		surface.SetDrawColor( inactiveColor )
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
 		surface.SetMaterial( illumRearOff )
 	end
 	surface.DrawTexturedRect( x - 4, y + 28, 56, 21 )
 
 	if ( leftOn ) then
 		drawAsActive = true
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 		surface.SetMaterial( illumLeftOn )
 	else
-		surface.SetDrawColor( inactiveColor )
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
 		surface.SetMaterial( illumLeftOff )
 	end
 	surface.DrawTexturedRect( x-5, y - 3, 30, 52 )
 
 	surface.SetMaterial( icon )
 	if ( drawAsActive ) then
-		surface.SetDrawColor( highlightColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 	else
-		surface.SetDrawColor( dimColor )
+		surface.SetDrawColor( userSettings.AccentAltColor )
 	end
 	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
 end
@@ -402,8 +424,8 @@ function HUD.KeyBindHint( x, y, keys )
 		key = keys[i]
 		surface.SetFont( "Photon2.UI:MediumSmall" )
 		local w = surface.GetTextSize( key[1] )
-		draw.RoundedBox( 4, x + 14 - w - keyPadding, y, w + (keyPadding * 2), 20, panelActiveColor )
-		surface.SetDrawColor( highlightColor )
+		draw.RoundedBox( 4, x + 14 - w - keyPadding, y, w + (keyPadding * 2), 20, userSettings.PanelActiveColor )
+		surface.SetDrawColor( userSettings.HighlightColor )
 		surface.SetTextPos( x + 14 - w, y + 4)
 		surface.DrawText( key[1] )
 		surface.SetTextPos( x + 28, y + 4 )
@@ -424,10 +446,10 @@ end
 function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode )
 	local activeIcon = ellipseActive
 	local inactiveIcon = ellipseInactive
-	local labelColor = highlightColor
-	local iconColor = highlightColor
-	local indicatorColor = dimColor
-	local backgroundColor =  panelActiveAlternateColor
+	local labelColor = userSettings.HighlightColor
+	local iconColor = userSettings.HighlightColor
+	local indicatorColor = userSettings.AccentAltColor
+	local backgroundColor =  userSettings.PanelAltActiveColor
 	local rowMax = 5
 	local rows = math.ceil( count / rowMax )
 	local selectedIndicator = ( count + 1 ) - selected
@@ -435,12 +457,12 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 	if ( mode == 2 ) then
 		activeIcon = ellipseInactive
 		inactiveIcon = ellipseActive
-		indicatorColor = highlightColor
+		indicatorColor = userSettings.HighlightColor
 	elseif ( mode == 0 ) then
-		labelColor = dimColor
-		iconColor = inactiveColor
-		indicatorColor = inactiveColor
-		backgroundColor =  panelInactiveAlternateColor
+		labelColor = userSettings.AccentAltColor
+		iconColor = userSettings.AccentInactiveColor
+		indicatorColor = userSettings.AccentInactiveColor
+		backgroundColor =  userSettings.PanelAltInactiveColor
 	end
 
 	draw.RoundedBox( cornerRadius, x, y, width, 32, backgroundColor )
@@ -497,7 +519,7 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 		if ( i == selectedIndicator ) then
 			surface.SetMaterial( activeIcon )
-			surface.SetDrawColor( highlightColor )
+			surface.SetDrawColor( userSettings.HighlightColor )
 		end
 
 		surface.DrawTexturedRect( x + width - 16 - ( ( ( ( i - 1 ) % rowMax ) ) * 12 ), y + yOffset, 8, 8 )
@@ -554,12 +576,17 @@ local keyHintMargin = 32
 
 local hintInfoVisible = false
 
+function HUD.EnableChanged()
+
+end
+
 hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
 
-	if ( not target ) then 
+	if ( not target or ( not userSettings.Enabled ) ) then 
+		
 		HUD.StartTime = 0
 		indicatorComponent = nil
 		if ( HUD.WasActive ) then
@@ -567,7 +594,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			HUD.Deactivate()
 		end
 		return
-	elseif ( not HUD.WasActive ) then
+	elseif ( not HUD.WasActive and ( userSettings.Enabled ) ) then
 		HUD.WasActive = true
 		HUD.Activate()
 	end
@@ -804,7 +831,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					versionX = ScrW() - offset
 				end
 
-				draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:Small", versionX, nextY + margin, highlightColor, alignX )
+				draw.DrawText( "PHOTON v" .. tostring( Photon2.Version ), "Photon2.UI:Small", versionX, nextY + margin, userSettings.HighlightColor, alignX )
 
 				nextY = ( nextY + 32 + margin )
 				
@@ -834,24 +861,24 @@ function Photon2.HUD.DrawPerformanceInfo()
 	local x = 16
 	local y = 240
 	local frameTime = FrameTime()
-	draw.DrawText( "Photon 2      " .. tostring( math.Round( FrameTime() * 1000 ) ) .."ms", "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "Photon 2      " .. tostring( math.Round( FrameTime() * 1000 ) ) .."ms", "BudgetLabel", x, y, userSettings.HighlightColor )
 	y = y + 22
-	draw.DrawText( "Mesh (" .. tostring( #Photon2.RenderLightMesh.Active ) ..")", "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "Mesh (" .. tostring( #Photon2.RenderLightMesh.Active ) ..")", "BudgetLabel", x, y, userSettings.HighlightColor )
 	x = x + 96
-	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "2D (" .. tostring( #Photon2.RenderLight2D.Active ) ..")", "BudgetLabel", x, y, userSettings.HighlightColor )
 	x = x + 96
-	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, highlightColor )
-	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "CUR: " .. tostring( math.Round( CurTime() ) ), "BudgetLabel", x, y - 22, userSettings.HighlightColor )
+	draw.DrawText( "PTX (" .. tostring( #Photon2.RenderLightProjected.Active ) .. ")", "BudgetLabel", x, y, userSettings.HighlightColor )
 	x = 16
 	y = y + 18
-	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLightMesh.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLightMesh.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, userSettings.HighlightColor )
 	y = y + 12
-	draw.DrawText( "D: " .. tostring( math.Round( ( Photon2.RenderBloom.DrawTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "D: " .. tostring( math.Round( ( Photon2.RenderBloom.DrawTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, userSettings.HighlightColor )
 	x = 16 + 96
 	y = y - 12
-	draw.DrawText( "P: " .. tostring( math.Round( ( Photon2.RenderLight2D.PreRenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "P: " .. tostring( math.Round( ( Photon2.RenderLight2D.PreRenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, userSettings.HighlightColor )
 	y = y + 12
-	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLight2D.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, highlightColor )
+	draw.DrawText( "R: " .. tostring( math.Round( ( Photon2.RenderLight2D.RenderTime / frameTime ) * 100, 2 ) .."%" ), "BudgetLabel", x, y, userSettings.HighlightColor )
 end
 
 hook.Add( "HUDPaint", "Photon2,HUD:PerformanceInfo", Photon2.HUD.DrawPerformanceInfo )

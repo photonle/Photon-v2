@@ -282,6 +282,29 @@ function PANEL:OnMouseReleased()
 
 end
 
+-- Moves the window to its saved position and ensures it's within screen bounds.
+function PANEL:RestoreSavedPosition()
+	if ( not self:GetCookieName() or self:GetCookieName() == "" ) then 
+		error( "Window's cookie name needs to be set using :SetCookieName() first.")
+		return
+	end
+	local x = self:GetCookieNumber( "window.x", ScrW() / 2 - self:GetWide() / 2 )
+	local y = self:GetCookieNumber( "window.y", ScrH() / 2 - self:GetTall() / 2 )
+	x = math.Clamp( x, 0, ScrW() - self:GetWide() )
+	y = math.Clamp( y, 0, ScrH() - self:GetTall() )
+	self:SetPos( x, y )
+end
+
+-- Saves the window's position.
+function PANEL:SavePosition()
+	if ( not self:GetCookieName() or self:GetCookieName() == "" ) then 
+		error( "Window's cookie name needs to be set using :SetCookieName() first.")
+		return
+	end
+	self:SetCookie( "window.x", self.x )
+	self:SetCookie( "window.y", self.y )
+end
+
 -- function PANEL:Think()
 -- 	print("panel think")
 -- end

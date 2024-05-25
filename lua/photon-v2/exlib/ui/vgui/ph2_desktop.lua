@@ -2,6 +2,7 @@ local class = "Photon2UIDesktop"
 local base = "Photon2UIWindow"
 
 ---@class Photon2UIDesktop : Photon2UIWindow
+---@field ActiveTabName string
 local PANEL = {}
 
 PANEL.AllowAutoRefresh = true
@@ -17,9 +18,10 @@ function PANEL:Setup()
 	if ( IsValid( self.ContentContainer ) ) then self.ContentContainer:Clear() end
 	
 	local container = self.ContentContainer
-	
+	local this = self
+
 	self:SetTitle("Menu - Photon 2")
-	self:SetSize( 380, 400 )
+	self:SetSize( 400, 400 )
 	self:Center()
 
 	local logoContainer = vgui.Create( "DPanel", container )
@@ -52,9 +54,24 @@ function PANEL:Setup()
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	self.Tabs = propertySheet
-	propertySheet:AddSheet( "HUD", self.HudPage )
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
+	propertySheet:AddSheet( "HUD", self.HudPage )
 	propertySheet:AddSheet( "Rendering", self.RenderPage )
+
+	function propertySheet:OnActiveTabChanged( old, new )
+		-- This stupid shit is required to get the current tab name
+		local name
+		for i=1, #self.Items do
+			local item = self.Items[i]
+			if ( item.Tab == new ) then
+				name = item.Name
+				break
+			end
+		end
+		this.ActiveTabName = name
+	end
+
+	self:SetTab( self.ActiveTabName )
 
 end
 
@@ -65,7 +82,7 @@ function PANEL:Init()
 	container:Dock( FILL )
 	container:SetPaintBackground( false )
 	self.ContentContainer = container
-
+	self.ActiveTabName = "Photon 2"
 	self:Setup()
 end
 
@@ -110,11 +127,40 @@ function PANEL:SetupHudOptions()
 	local form = vgui.Create( "Photon2UIFormPanel", panel )
 	form.LabelWidth = 120
 	form:Dock( FILL )
+	
 	form:RegisterCVarProperty( "ph2_hud_enabled", "Bool" )
 	form:RegisterCVarProperty( "ph2_hud_offset_x", "Int" )
 	form:RegisterCVarProperty( "ph2_hud_offset_y", "Int" )
 	form:RegisterCVarProperty( "ph2_hud_anchor", "String" )
-	form:CreateCheckBoxProperty( "ph2_hud_enabled", "Enable", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
+	form:RegisterCVarProperty( "ph2_hud_color_panel_active", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_panel_inactive", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_panel_alt_active", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_panel_alt_inactive", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_accent", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_accent_inactive", "String" )
+	form:RegisterCVarProperty( "ph2_hud_color_accent_alt", "String" )
+	form:RegisterCVarProperty( "ph2_hud_draggable", "Bool" )
+	
+	form:CreateCheckBoxProperty( "ph2_hud_enabled", "Visible", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
+	form:CreateCheckBoxProperty( "ph2_hud_draggable", "Draggable", Photon2.HudDraggable, { Descriptor = "Enable HUD dragging" } )
+
+	form:AddDivider()
+	form:CreateColorProperty( "ph2_hud_color_panel_active", "Panel", "String" )
+	form:CreateColorProperty( "ph2_hud_color_panel_inactive", "Panel (Inactive)", "String" )
+	form:CreateColorProperty( "ph2_hud_color_panel_alt_active", "Panel Alt", "String" )
+	form:CreateColorProperty( "ph2_hud_color_panel_alt_inactive", "Panel Alt (Inactive)", "String" )
+	form:CreateColorProperty( "ph2_hud_color_accent", "Accent", "String" )
+	form:CreateColorProperty( "ph2_hud_color_accent_inactive", "Accent (Inactive)", "String" )
+	form:CreateColorProperty( "ph2_hud_color_accent_alt", "Accent (Alt)", "String" )
+	form:AddButton( "Reset to Default", function()
+		RunConsoleCommand( "ph2_hud_color_panel_active", "64,64,64,200" )
+		RunConsoleCommand( "ph2_hud_color_panel_inactive", "64,64,64,100" )
+		RunConsoleCommand( "ph2_hud_color_panel_alt_active", "16,16,16,200" )
+		RunConsoleCommand( "ph2_hud_color_panel_alt_inactive", "16,16,16,100" )
+		RunConsoleCommand( "ph2_hud_color_accent", "255,255,255,255" )
+		RunConsoleCommand( "ph2_hud_color_accent_inactive", "0,0,0,128" )
+		RunConsoleCommand( "ph2_hud_color_accent_alt", "255,255,255,96" )
+	end)
 	form:AddDivider()
 	form:CreateComboBoxProperty( "ph2_hud_anchor", "Anchor", "Bottom Left", { 
 		{ "Bottom Left", "bottom_left" },
@@ -126,6 +172,7 @@ function PANEL:SetupHudOptions()
 	form:CreateNumberSliderProperty( "ph2_hud_offset_y", "Y Offset", 0, 0, ScrH(), 0 )
 	form:AddButton( "Reset to Default", function()
 		print("Resetting to default...")
+		RunConsoleCommand( "ph2_hud_enabled", "1" )
 		RunConsoleCommand( "ph2_hud_offset_x", "360" )
 		RunConsoleCommand( "ph2_hud_offset_y", "385" )
 		RunConsoleCommand( "ph2_hud_anchor", "bottom_right" )

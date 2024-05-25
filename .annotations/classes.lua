@@ -6634,7 +6634,7 @@ function Panel:SetName(name) end
 
 -- Sets whenever all the default background of the panel should be drawn or not.
 ---@param paintBackground boolean Whenever to draw the background or not.
-function Panel:SetPaintBackgroundEnabled(paintBackground) end
+function Panel:SetPaintBackground(paintBackground) end
 
 -- Sets whenever all the default border of the panel should be drawn or not.
 ---@param paintBorder boolean Whenever to draw the border or not.

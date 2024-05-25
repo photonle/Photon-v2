@@ -8,6 +8,7 @@ local convarAnchor = GetConVar( "ph2_hud_anchor" )
 local convarOffsetX = GetConVar( "ph2_hud_offset_x" )
 local convarOffsetY = GetConVar( "ph2_hud_offset_y" )
 local convarDraggable = GetConVar( "ph2_hud_draggable" )
+local convarEnabled = GetConVar( "ph2_hud_enabled" )
 
 ---@class Photon2HUD : Panel
 local PANEL = {}

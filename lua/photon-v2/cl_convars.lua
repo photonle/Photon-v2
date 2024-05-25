@@ -8,6 +8,14 @@ CreateClientConVar( "ph2_hud_anchor", "bottom_right", true, false, "Which corner
 CreateClientConVar( "ph2_hud_offset_x", "1", true, false, "Inward horizontal offset of where the HUD should draw." )
 CreateClientConVar( "ph2_hud_offset_y", "1", true, false, "Inward vertical offset of where the HUD should draw." )
 CreateClientConVar( "ph2_hud_draggable", "0", true, false, "If the HUD panel can be dragged around with the cursor." )
+CreateClientConVar( "ph2_hud_color_panel_inactive", "64,64,64,100", true, false, "HUD panel background color." )
+CreateClientConVar( "ph2_hud_color_panel_active", "64,64,64,200", true, false, "HUD panel background color." )
+CreateClientConVar( "ph2_hud_color_panel_alt_active", "16,16,16,200", true, false, "HUD panel background color." )
+CreateClientConVar( "ph2_hud_color_panel_alt_inactive", "16,16,16,100", true, false, "HUD panel background color." )
+CreateClientConVar( "ph2_hud_color_accent", "255,255,255,255", true, false, "HUD panel background color." )
+CreateClientConVar( "ph2_hud_color_accent_inactive", "0,0,0,128", true, false, "HUD accent color. Inactive." )
+CreateClientConVar( "ph2_hud_color_accent_alt", "255,255,255,96", true, false, "HUD alternate accent." )
+
 
 CreateClientConVar( "ph2_enable_projectedtextures_mp", "0", true, true, "If projected texture lights should be rendered in multiplayer. Disabling will increase performance." )
 CreateClientConVar( "ph2_enable_subtractive_sprites", "1", true, false, "If subtractive sprite effects should be enabled (2D lighting)." )

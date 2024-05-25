@@ -337,3 +337,30 @@ function Photon2.Util.DynamicTimer( startTime, speed, floor, ceil )
     local increment = ((fluctuation + 1) / 2) * range + floor
     return increment
 end
+
+
+local colorOrder = { "r", "g", "b", "a" }
+-- Verifies that a string matches the format of (255,255,255,255?)
+function Photon2.Util.GetValidColorString( inputString )
+    inputString = inputString:gsub("%s+", "")
+
+    local isValid = inputString:match("^%d+,%d+,%d+$") or inputString:match("^%d+,%d+,%d+,%d+$")
+	
+	local numbers = inputString:gmatch("%d+")
+    
+	local i=1
+	if isValid then
+		local result = Color()
+        for num in numbers do
+            local n = tonumber( num )
+            if n < 0 or n > 255 then
+                return false
+            end
+			result[colorOrder[i]] = n
+			i = i + 1
+        end
+        return result
+    else
+        return false
+    end
+end

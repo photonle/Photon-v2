@@ -326,6 +326,107 @@ function PANEL:InternalOnPropertyChanged( name, value )
 	self:OnPropertyChanged( name, value )
 end
 
+local matGrid = Material( "gui/alpha_grid.png", "nocull" )
+
+function PANEL:CreateColorProperty( propertyName, labelText, currentValue )
+	local panel = self:CreateBaseProperty( propertyName, labelText )
+	local this = self
+
+	local currentValueColor = Color( 255, 255, 255, 255 )
+	local currentValueString = "255,255,255,255"
+
+	function panel:GetValue()
+		return currentValueString
+	end
+
+	local colorButton = vgui.Create( "DColorButton", panel.Content )
+	colorButton:Dock( FILL )
+	function colorButton:Paint( w, h )
+		if ( self:GetColor().a < 255 ) then -- Grid for Alpha
+
+			surface.SetDrawColor( 255, 255, 255, 255 )
+			surface.SetMaterial( matGrid )
+	
+			local size = math.max( 128, math.max( w, h ) )
+			local x, y = w / 2 - size / 2, h / 2 - size / 2
+			surface.DrawTexturedRect( x, y , size, size )
+	
+		end
+	
+		surface.SetDrawColor( self:GetColor() )
+		self:DrawFilledRect()
+	
+		surface.SetDrawColor( 0, 0, 0, 255 )
+		surface.DrawRect( 0, 0, w, 1 )
+		surface.DrawRect( 0, 0, 1, h )
+		surface.DrawRect( 0, h - 1, w, 1 )
+		surface.DrawRect( w - 1, 0, 1, h )
+	
+		return false
+	end
+
+	colorButton:DockMargin( 0, 2, 0, 2 )
+
+	local textBox = vgui.Create( "DTextEntry", panel.Content )
+	textBox:Dock( RIGHT )
+	textBox:DockMargin( 8, 0, 0, 0 )
+	textBox:SetWidth( 108 )
+	textBox:SetUpdateOnType( true )
+
+	local function onValueChange( color, noUpdateTextBox )
+		currentValueColor = color
+		currentValueString = string.format( "%s,%s,%s,%s", color.r, color.g, color.b, color.a )
+		if ( not noUpdateTextBox ) then
+			print("updating text box")
+			textBox:SetText( currentValueString )
+		end
+		colorButton:SetColor( color )
+		this:InternalOnPropertyChanged( propertyName, textBox:GetText() )
+	end
+
+	local picker
+	local function openPicker()
+		if ( IsValid( picker ) ) then return end
+		picker = Photon2.UI.ColorMixer( currentValueColor )
+		function picker:OnSelect( color )
+			onValueChange( color )
+		end
+		function picker:OnPreview( color )
+			onValueChange( color )
+		end
+	end
+
+	function textBox:OnValueChange( value )
+		local parsedColor = Photon2.Util.GetValidColorString( value )
+		local noUpdate = self:HasHierarchicalFocus()
+		if ( parsedColor ) then
+			onValueChange( parsedColor, noUpdate )
+		end
+	end
+
+	function textBox:OnLoseFocus()
+		textBox:SetText( currentValueString )
+	end
+
+	function panel:SetValue( value )
+		if ( isstring( value ) ) then
+			local r, g, b, a = string.match( value, "(%d+),(%d+),(%d+),(%d+)" )
+			if ( r and g and b and a ) then
+				currentValueColor = Color( r, g, b, a )
+				currentValueString = value
+			end
+		end
+		colorButton:SetColor( currentValueColor )
+		if ( not textBox:HasHierarchicalFocus() ) then
+			textBox:SetText( currentValueString )
+		end
+	end
+
+	function colorButton:DoClick()
+		openPicker()
+	end
+end
+
 --- For overriding
 function PANEL:OnPropertyChanged( name, value )
 	print( string.format( "Property [%s] changed to [%s]", name, value ) )

@@ -122,6 +122,141 @@ function Photon2.UI.FindInputIcon( keyName, style, fallback )
 	return icon
 end
 
+local matGrid = Material( "gui/alpha_grid.png", "nocull" )
+
+function Photon2.UI.ColorMixer( currentColor )
+	local window = vgui.Create( "Photon2UIWindow" ) --[[@as Photon2UIWindow]]
+	window:SetCookieName( "Photon2.UI:ColorMixer" )
+	window:RestoreSavedPosition()
+	function window:OnSelect( color ) end
+	function window:OnCancel( color ) end
+	function window:OnPreview( color ) end
+
+	function window:DoSelect( color )
+		self:OnSelect( color )
+		self:SavePosition()
+		self:Close()
+	end
+
+	function window:DoCancel()
+		self:OnSelect( currentColor )
+	end
+	
+	function window:DoClose()
+		self:OnSelect( currentColor )
+	end
+
+	-- window:Setup()
+	window:SetSize( 330, 320 )
+	
+	window:MakePopup()
+	window:SetTitle( "Color Picker" )
+	
+	local mixer = vgui.Create( "DColorMixer", window )
+	mixer:Dock( FILL )
+	mixer:SetColor( currentColor or Color( 255, 255, 255 ) )
+	function mixer:ValueChanged( color )
+		window:OnPreview( color )
+	end
+
+	window.ColorMixer = mixer
+	local buttonsPanel = vgui.Create( "DPanel", window )
+	buttonsPanel:Dock( BOTTOM )
+	buttonsPanel:SetHeight( 36 )
+	buttonsPanel:SetPaintBackground( false )
+	buttonsPanel:DockPadding( 0, 8, 0, 2 )
+
+	local cancelButton = vgui.Create( "EXDButton", buttonsPanel )
+	cancelButton:Dock( RIGHT )
+	cancelButton:SetText( "Cancel" )
+	cancelButton:DockMargin( 4, 0, 0, 0 )
+	cancelButton:SetWide( 80 )
+	function cancelButton:DoClick()
+		window:DoCancel()
+	end
+	
+	local okButton = vgui.Create( "EXDButton", buttonsPanel )
+	okButton:Dock( RIGHT )
+	okButton:SetText( "Select" )
+	okButton:SetWide( 80 )
+	function okButton:DoClick()
+		window:DoSelect( window.ColorMixer:GetColor() )
+	end
+
+	local newLabel = vgui.Create( "DLabel", buttonsPanel )
+	newLabel:Dock( LEFT )
+	newLabel:SetText( "New" )
+	newLabel:SetWide( 25 )
+
+	local colorButton = vgui.Create( "DColorButton", buttonsPanel )
+	colorButton:Dock( LEFT )
+	colorButton:SetWide( 28 )
+
+	local currentColorButton = vgui.Create( "DColorButton", buttonsPanel )
+	currentColorButton:Dock( LEFT )
+	currentColorButton:SetWide( 28 )
+
+	local oldLabel = vgui.Create( "DLabel", buttonsPanel )
+	oldLabel:Dock( LEFT )
+	oldLabel:SetText( "Current" )
+	oldLabel:SetWide( 40 )
+	oldLabel:DockMargin( 4, 0, 0, 0 )
+
+	function colorButton:Paint( w, h )
+		if ( self:GetColor().a < 255 ) then -- Grid for Alpha
+
+			surface.SetDrawColor( 255, 255, 255, 255 )
+			surface.SetMaterial( matGrid )
+	
+			local size = math.max( 128, math.max( w, h ) )
+			local x, y = w / 2 - size / 2, h / 2 - size / 2
+			surface.DrawTexturedRect( x, y , size, size )
+	
+		end
+	
+		surface.SetDrawColor( self:GetColor() )
+		self:DrawFilledRect()
+	
+		surface.SetDrawColor( 0, 0, 0, 255 )
+		surface.DrawRect( 0, 0, w, 1 )
+		surface.DrawRect( 0, 0, 1, h )
+		surface.DrawRect( 0, h - 1, w, 1 )	
+		return false
+	end
+
+	function currentColorButton:Paint( w, h )
+		if ( self:GetColor().a < 255 ) then -- Grid for Alpha
+
+			surface.SetDrawColor( 255, 255, 255, 255 )
+			surface.SetMaterial( matGrid )
+	
+			local size = math.max( 128, math.max( w, h ) )
+			local x, y = w / 2 - size / 2, h / 2 - size / 2
+			surface.DrawTexturedRect( x, y , size, size )
+	
+		end
+	
+		surface.SetDrawColor( self:GetColor() )
+		self:DrawFilledRect()
+	
+		surface.SetDrawColor( 0, 0, 0, 255 )
+		surface.DrawRect( 0, 0, w, 1 )
+		surface.DrawRect( 0, h - 1, w, 1 )
+		surface.DrawRect( w - 1, 0, 1, h )
+		return false
+	end
+
+	function mixer:ValueChanged( col )
+		colorButton:SetColor( col)
+		window:OnPreview( col )
+	end
+
+	colorButton:SetColor( mixer:GetColor() )
+	currentColorButton:SetColor( currentColor or Color( 255, 255, 255 ) )
+
+	return window
+end
+
 Photon2.UI.DialogBox = {}
 
 function Photon2.UI.DialogBox.Message( message, title )
