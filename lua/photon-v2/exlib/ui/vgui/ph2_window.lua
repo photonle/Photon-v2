@@ -31,6 +31,7 @@ function PANEL:UpdateTitle()
 	self:SetTitle( self.TitlePrefix .. self.TitleMain .. self.TitleSuffix )
 end
 
+-- Note: this is NOT related to window position saving. This is for the window state.
 function PANEL:RecordState()
 	self.RestorePlacement = {
 		State = "NORMAL",
@@ -214,6 +215,7 @@ function PANEL:Init()
 		self:AlphaTo( 255, 0.5, 0 )
 	end )
 
+	-- Manages the "Press F3 to release cursor."
 	hook.Add( "Think", self , function ()
 		if ( vgui.CursorVisible() and ( not self.HandledHiddenCursor ) ) then
 			self.CursorInfoPanel:SetVisible( false )
@@ -259,6 +261,18 @@ end
 function PANEL:OnMousePressed()
 
 	local screenX, screenY = self:LocalToScreen( 0, 0 )
+	local isOverTitlebar = gui.MouseY() < ( screenY + 24 )
+
+	if ( isOverTitlebar ) then
+		if ( self.LastClickTime and SysTime() - self.LastClickTime < 0.2 ) then
+			if ( self.WindowState == "MAX" ) then
+				self:Restore()
+			else
+				self:Maximize()
+			end
+		end
+		self.LastClickTime = SysTime()
+	end
 
 	if ( self.m_bSizable && gui.MouseX() > ( screenX + self:GetWide() - 20 ) && gui.MouseY() > ( screenY + self:GetTall() - 20 ) ) then
 		self.Sizing = { gui.MouseX() - self:GetWide(), gui.MouseY() - self:GetTall() }
@@ -266,20 +280,19 @@ function PANEL:OnMousePressed()
 		return
 	end
 
-	if ( self:GetDraggable() && gui.MouseY() < ( screenY + 24 ) ) then
+	if ( isOverTitlebar and self:GetDraggable() ) then
 		self.Dragging = { gui.MouseX() - self.x, gui.MouseY() - self.y }
 		self:MouseCapture( true )
 		return
 	end
 
+
 end
 
 function PANEL:OnMouseReleased()
-
 	self.Dragging = nil
 	self.Sizing = nil
 	self:MouseCapture( false )
-
 end
 
 -- Moves the window to its saved position and ensures it's within screen bounds.

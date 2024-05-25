@@ -139,11 +139,11 @@ function Photon2.UI.ColorMixer( currentColor )
 	end
 
 	function window:DoCancel()
-		self:OnSelect( currentColor )
+		self:DoSelect( currentColor )
 	end
 	
 	function window:DoClose()
-		self:OnSelect( currentColor )
+		self:DoSelect( currentColor )
 	end
 
 	-- window:Setup()

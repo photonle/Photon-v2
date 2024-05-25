@@ -82,10 +82,12 @@ for key, data in pairs( optionConVars ) do
 	cvars.AddChangeCallback( data[1], function( convar, oldValue, newValue )
 		if ( isfunction( data[3] ) ) then
 			newValue = data[3]( newValue )
+			userSettings[key] = newValue
+		else
+			userSettings[key] = cvar["Get" .. data[2]]( cvar )
 		end
 		printf( "HUD setting changed: %s %s %s", convar, oldValue, newValue )
 		-- userSettings[key] = cvar["Get" .. data[2]]( cvar )
-		userSettings[key] = newValue
 	end, "Photon2.HUD")
 end
 

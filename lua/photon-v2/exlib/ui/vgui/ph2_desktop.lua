@@ -21,7 +21,7 @@ function PANEL:Setup()
 	local this = self
 
 	self:SetTitle("Menu - Photon 2")
-	self:SetSize( 400, 400 )
+	self:SetSize( 400, 500 )
 	self:Center()
 
 	local logoContainer = vgui.Create( "DPanel", container )
@@ -56,7 +56,7 @@ function PANEL:Setup()
 	self.Tabs = propertySheet
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
 	propertySheet:AddSheet( "HUD", self.HudPage )
-	propertySheet:AddSheet( "Rendering", self.RenderPage )
+	propertySheet:AddSheet( "Graphics", self.RenderPage )
 
 	function propertySheet:OnActiveTabChanged( old, new )
 		-- This stupid shit is required to get the current tab name
@@ -99,18 +99,7 @@ function PANEL:SetupRenderOptions()
 	local panel = vgui.Create( "DScrollPanel", self )
 	self.RenderPage = panel
 	panel:Dock( FILL )
-	local label = vgui.Create( "DLabel", panel )
-	label:Dock( TOP )
-	panel:DockMargin( 8, 0, 8, 4 )
-	label:SetWrap( true )
-	label:SetAutoStretchVertical( true )
-	label:SetText( "Rendering options can be accessed from the top menu bar (press and hold C) under the Photon 2 menu, then the Render Options selection. More rendering options are being added and they will eventually be accessible from this menu.")
-	
-	local img = vgui.Create( "DImage", panel )
-	img:SetPos( 8, 60 )
-	img:SetImage( "photon/ui/misc/render_options.png")
-	img:SetWidth( 203 )
-	img:SetHeight( 202 )
+
 end
 
 function PANEL:SetupHudOptions()
@@ -118,7 +107,7 @@ function PANEL:SetupHudOptions()
 	self.HudPage = panel
 	panel:Dock( FILL )
 	panel:DockMargin( 4, -4, 4, 4 )
-	panel:DockPadding( 2, 4, 2, 4 )
+	panel:DockPadding( 3, 3, 3, 3 )
 	
 	-- local container = vgui.Create( "DScrollPanel", panel )
 	-- container:Dock( FILL )
@@ -127,31 +116,17 @@ function PANEL:SetupHudOptions()
 	local form = vgui.Create( "Photon2UIFormPanel", panel )
 	form.LabelWidth = 120
 	form:Dock( FILL )
-	
-	form:RegisterCVarProperty( "ph2_hud_enabled", "Bool" )
-	form:RegisterCVarProperty( "ph2_hud_offset_x", "Int" )
-	form:RegisterCVarProperty( "ph2_hud_offset_y", "Int" )
-	form:RegisterCVarProperty( "ph2_hud_anchor", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_panel_active", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_panel_inactive", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_panel_alt_active", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_panel_alt_inactive", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_accent", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_accent_inactive", "String" )
-	form:RegisterCVarProperty( "ph2_hud_color_accent_alt", "String" )
-	form:RegisterCVarProperty( "ph2_hud_draggable", "Bool" )
-	
-	form:CreateCheckBoxProperty( "ph2_hud_enabled", "Visible", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
-	form:CreateCheckBoxProperty( "ph2_hud_draggable", "Draggable", Photon2.HudDraggable, { Descriptor = "Enable HUD dragging" } )
 
+	form:CreateCheckBoxProperty( { "ph2_hud_enabled", "Bool" }, "Visible", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
+	form:CreateCheckBoxProperty( { "ph2_hud_draggable", "Bool" }, "Draggable", Photon2.HudDraggable, { Descriptor = "Enable HUD dragging" } )
 	form:AddDivider()
-	form:CreateColorProperty( "ph2_hud_color_panel_active", "Panel", "String" )
-	form:CreateColorProperty( "ph2_hud_color_panel_inactive", "Panel (Inactive)", "String" )
-	form:CreateColorProperty( "ph2_hud_color_panel_alt_active", "Panel Alt", "String" )
-	form:CreateColorProperty( "ph2_hud_color_panel_alt_inactive", "Panel Alt (Inactive)", "String" )
-	form:CreateColorProperty( "ph2_hud_color_accent", "Accent", "String" )
-	form:CreateColorProperty( "ph2_hud_color_accent_inactive", "Accent (Inactive)", "String" )
-	form:CreateColorProperty( "ph2_hud_color_accent_alt", "Accent (Alt)", "String" )
+	form:CreateColorProperty( { "ph2_hud_color_panel_active", "String" }, "Panel" )
+	form:CreateColorProperty( { "ph2_hud_color_panel_inactive", "String" }, "Panel (Inactive)" )
+	form:CreateColorProperty( { "ph2_hud_color_panel_alt_active", "String" }, "Panel Alt" )
+	form:CreateColorProperty( { "ph2_hud_color_panel_alt_inactive", "String" }, "Panel Alt (Inactive)" )
+	form:CreateColorProperty( { "ph2_hud_color_accent", "String" }, "Accent" )
+	form:CreateColorProperty( { "ph2_hud_color_accent_inactive", "String" }, "Accent (Inactive)" )
+	form:CreateColorProperty( { "ph2_hud_color_accent_alt", "String" }, "Accent (Alt)" )
 	form:AddButton( "Reset to Default", function()
 		RunConsoleCommand( "ph2_hud_color_panel_active", "64,64,64,200" )
 		RunConsoleCommand( "ph2_hud_color_panel_inactive", "64,64,64,100" )
@@ -162,14 +137,14 @@ function PANEL:SetupHudOptions()
 		RunConsoleCommand( "ph2_hud_color_accent_alt", "255,255,255,96" )
 	end)
 	form:AddDivider()
-	form:CreateComboBoxProperty( "ph2_hud_anchor", "Anchor", "Bottom Left", { 
+	form:CreateComboBoxProperty( { "ph2_hud_anchor", "String" }, "Anchor", "Bottom Left", { 
 		{ "Bottom Left", "bottom_left" },
 		{ "Bottom Right", "bottom_right" },
 		{ "Top Left", "top_left" },
 		{ "Top Right", "top_right" }
 	} )
-	form:CreateNumberSliderProperty( "ph2_hud_offset_x", "X Offset", 0, 0, ScrW(), 0 )
-	form:CreateNumberSliderProperty( "ph2_hud_offset_y", "Y Offset", 0, 0, ScrH(), 0 )
+	form:CreateNumberSliderProperty( { "ph2_hud_offset_x", "Int" }, "X Offset", 0, 0, ScrW(), 0 )
+	form:CreateNumberSliderProperty( { "ph2_hud_offset_y", "Int" }, "Y Offset", 0, 0, ScrH(), 0 )
 	form:AddButton( "Reset to Default", function()
 		print("Resetting to default...")
 		RunConsoleCommand( "ph2_hud_enabled", "1" )

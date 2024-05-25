@@ -33,10 +33,15 @@ function PANEL:AddDivider()
 end
 
 -- Internal function called by each new form property added.
-function PANEL:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateBaseProperty( property, labelText )
 
-	if ( IsValid( self.Items[propertyName] ) ) then
-		self.Items[propertyName]:Remove()
+	if ( istable( property ) ) then
+		self:RegisterCVarProperty( property[1], property[2] )
+		property = property[1]
+	end
+
+	if ( IsValid( self.Items[property] ) ) then
+		self.Items[property]:Remove()
 	end
 
 	local panel = vgui.Create( "DPanel", self )
@@ -44,7 +49,7 @@ function PANEL:CreateBaseProperty( propertyName, labelText )
 	panel:Dock( TOP )
 	panel:SetPaintBackground( false )
 	panel:DockPadding( 4, 4, 4, 4 )
-	self.Items[propertyName] = panel
+	self.Items[property] = panel
 
 	local label = vgui.Create( "DLabel", panel )
 	label:SetWidth( self.LabelWidth )
@@ -58,16 +63,16 @@ function PANEL:CreateBaseProperty( propertyName, labelText )
 	local content = vgui.Create( "DPanel", panel )
 	content:Dock( FILL )
 	content:SetPaintBackground( false )
-
+	content:DockMargin( 0, 0, 4, 0 )
 	panel.Content = content
 
-	return panel
+	return panel, property
 end
 
 -- Simple text-box property.
-function PANEL:CreateTextEntryProperty( propertyName, labelText, currentValue, params )
+function PANEL:CreateTextEntryProperty( property, labelText, currentValue, params )
 	local this = self
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local textEntry = vgui.Create( "DTextEntry", panel.Content )
 	textEntry:SetUpdateOnType( true )
 	textEntry:Dock( FILL )
@@ -96,8 +101,8 @@ function PANEL:SetPropertyValue( property, value )
 	self.Items[property]:SetValue( value )
 end
 
-function PANEL:CreateLibraryEntryProperty( propertyName, labelText, currentValue, params )
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateLibraryEntryProperty( property, labelText, currentValue, params )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
 	local textEntry = vgui.Create( "DTextEntry", panel.Content )
 	textEntry:Dock( FILL )
@@ -139,8 +144,8 @@ end
 ---@param labelText string
 ---@param currentValue boolean
 ---@param params? { Descriptor?: string }
-function PANEL:CreateCheckBoxProperty( propertyName, labelText, currentValue, params )
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateCheckBoxProperty( property, labelText, currentValue, params )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local descriptor = ""
 	if ( params ) then
 		if ( params.Descriptor ) then
@@ -155,7 +160,6 @@ function PANEL:CreateCheckBoxProperty( propertyName, labelText, currentValue, pa
 	checkbox:SetChecked( currentValue or false )
 
 	function panel:SetValue( value )
-		print( "Setting value to " .. tostring( value ) )
 		if ( isstring( value ) ) then value = ( value == "1" ) end
 		if ( value == self:GetValue() ) then return end
 		checkbox:SetChecked( value )
@@ -170,8 +174,8 @@ function PANEL:CreateCheckBoxProperty( propertyName, labelText, currentValue, pa
 	end
 end
 
-function PANEL:CreateComboBoxProperty( propertyName, labelText, currentValue, options )
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateComboBoxProperty( property, labelText, currentValue, options )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
 	local comboBox = vgui.Create( "DComboBox", panel.Content )
 	comboBox:Dock( FILL )
@@ -214,8 +218,8 @@ function PANEL:CreateComboBoxProperty( propertyName, labelText, currentValue, op
 	end
 end
 
-function PANEL:CreateNumberSliderProperty( propertyName, labelText, currentValue, min, max, decimals )
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateNumberSliderProperty( property, labelText, currentValue, min, max, decimals )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
 	local slider = vgui.Create( "DNumberWang", panel.Content )
 	slider:Dock( FILL )
@@ -241,6 +245,7 @@ function PANEL:AddButton( text, callback, icon )
 	panel:Dock( TOP )
 	panel:SetHeight( self.ItemHeight )
 	panel:SetPaintBackground( false )
+	panel:DockMargin( 0, 0, 4, 0 )
 	panel:DockPadding( 4, 4, 4, 4 )
 
 	local button = vgui.Create( "EXDButton", panel )
@@ -255,7 +260,7 @@ function PANEL:AddButton( text, callback, icon )
 
 end
 
----comment
+--- UNUSED
 ---@param name string Internal property name.
 ---@param onChange fun(value: any) Function to call when the property changes.
 ---@param convertInput? fun(value: any): any Function to convert the external value to the one internally displayed.
@@ -269,7 +274,6 @@ function PANEL:RegisterProperty( name, onChange, convertInput, convertOutput )
 end
 
 
----comment
 ---@param name any
 ---@param type? "String" | "Int" | "Float" | "Bool"
 ---@param onChange? any
@@ -297,7 +301,6 @@ function PANEL:RegisterCVarProperty( name, type, onChange, convertInput, convert
 			end)
 			return
 		end
-		print( "CVar changed: " .. tostring( convar ) .. " " .. tostring( oldValue ) .. " " .. tostring( newValue ) )
 		if ( self.Items[name] ) then
 			self.Items[name]:SetValue( self.Properties[name].Input( newValue ) )
 		end
@@ -328,8 +331,8 @@ end
 
 local matGrid = Material( "gui/alpha_grid.png", "nocull" )
 
-function PANEL:CreateColorProperty( propertyName, labelText, currentValue )
-	local panel = self:CreateBaseProperty( propertyName, labelText )
+function PANEL:CreateColorProperty( property, labelText, currentValue )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
 
 	local currentValueColor = Color( 255, 255, 255, 255 )
@@ -377,7 +380,6 @@ function PANEL:CreateColorProperty( propertyName, labelText, currentValue )
 		currentValueColor = color
 		currentValueString = string.format( "%s,%s,%s,%s", color.r, color.g, color.b, color.a )
 		if ( not noUpdateTextBox ) then
-			print("updating text box")
 			textBox:SetText( currentValueString )
 		end
 		colorButton:SetColor( color )
