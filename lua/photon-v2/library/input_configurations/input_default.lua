@@ -75,22 +75,10 @@ Photon2.RegisterInputConfiguration( default )
 Photon2.RegisterInputConfiguration({
 	Name = "m3_override",
 	Inherit = "default",
-	Title = "Mode 3 Lighting",
+	Title = "Always Use MODE3",
 	Author = "Photon",
 	Binds = {
 		[KEY_F] = {
-			{ Command = "toggle_warning_lights_m3" }
-		},
-	}
-})
-
-Photon2.RegisterInputConfiguration({
-	Name = "joystick_test",
-	Inherit = "default",
-	Title = "Joy Stick Test",
-	Author = "Photon",
-	Binds = {
-		[127] = {
 			{ Command = "toggle_warning_lights_m3" }
 		},
 	}
@@ -169,6 +157,21 @@ Photon2.RegisterInputConfiguration({
 			{ Command = "toggle_siren_4" },
 			{ Command = "toggle_siren2_4", Modifiers = { KEY_RALT } },
 		}
+	}
+})
+
+Photon2.RegisterInputConfiguration({
+	Name = "photon_classic",
+	Inherit = "default",
+	Title = "Classic (Photon LE)",
+	Author = "Photon",
+	Binds = {
+		[KEY_T] = {
+			{ Command = "manual_siren" }
+		},
+		[MOUSE_RIGHT] = {
+			{ Command = "cycle_siren" }
+		},
 	}
 })
 

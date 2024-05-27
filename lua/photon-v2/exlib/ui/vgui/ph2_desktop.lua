@@ -46,10 +46,12 @@ function PANEL:Setup()
 		logo:Center()
 	end
 
+	local showServerSettings = CAMI.GetPrivilege( "Photon2.ServerSettings" )
+
 	self:SetupMainPage()
 	self:SetupHudOptions()
 	self:SetupRenderOptions()
-	self:SetupServerPage()
+	if ( showServerSettings ) then self:SetupServerPage() end
 	self:SetupOtherPage()
 
 	local propertySheet = vgui.Create( "DPropertySheet", container )
@@ -59,7 +61,7 @@ function PANEL:Setup()
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
 	propertySheet:AddSheet( "Effects", self.RenderPage )
 	propertySheet:AddSheet( "HUD", self.HudPage )
-	propertySheet:AddSheet( "Game", self.ServerPage )
+	if ( showServerSettings ) then propertySheet:AddSheet( "Game", self.ServerPage ) end
 	propertySheet:AddSheet( "Other", self.OtherPage )
 
 	function propertySheet:OnActiveTabChanged( old, new )
@@ -111,21 +113,24 @@ function PANEL:SetupRenderOptions()
 	form.LabelWidth = 120
 	form:AddParagraph( "Adjust the settings on this page to customize light appearance and performance options." )
 	form:CreateCheckBoxProperty( { "ph2_enable_projectedtextures_mp", "Bool" }, "Projected Textures", true, { Descriptor = "Enable in multiplayer (expensive)" } )
-	form:CreateCheckBoxProperty( { "ph2_enable_subtractive_sprites", "Bool" }, "Subtractive 2D", true, { Descriptor = "Enable subtractive lighting effect" } )
 	form:AddDivider()
-	form:CreateComboBoxProperty( "ph2_bloom_preset", "Bloom Preset", "Select...", { 
+	form:AddParagraph( "You can select a Graphics Preset to improve performance or enhance appearance." )
+	form:CreateComboBoxProperty( "ph2_bloom_preset", "Graphics Preset", "Select...", { 
 		{ "High Performance", "HighPerformance" },
 		{ "Default", "Default" },
 		{ "Vivid", "Vivid" }
 	} )
-	form:AddParagraph( "Photon 2 uses custom bloom shading for light \"glow\" effects. You can change the Preset to improve performance or enhance appearance.\n\nIf desired, the specific variables can be configured below." )
+	form:AddParagraph( "If desired, the specific variables can be configured below." )
 	form:AddDivider()
-	form:AddParagraph( "Intensity affects the amount of additive color saturation. Higher values are more expensive to render and may introduce minor artifacting." )
+	form:CreateCheckBoxProperty( { "ph2_enable_subtractive_sprites", "Bool" }, "Subtractive 2D", true, { Descriptor = "Draw subtractive sprites" } )
+	form:CreateCheckBoxProperty( { "ph2_enable_additive_sprites", "Bool" }, "Additive 2D", true, { Descriptor = "Draw additive sprites" } )
+	form:AddDivider()
+	form:AddParagraph( "Bloom intensity affects the amount of additive color saturation. Higher values are more expensive to render and may introduce minor artifacting." )
 	form:CreateNumericSlider( { "ph2_bloom_add_src_passes", "Int" }, "Source Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
 	form:CreateNumericSlider( { "ph2_bloom_add_inner_passes", "Int" }, "Inner Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
 	form:CreateNumericSlider( { "ph2_bloom_add_outer_passes", "Int" }, "Outer Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
 	form:AddDivider()
-	form:AddParagraph( "Blur settings affect the spread of light blooming. Higher pass values create a smoother effect but lose apparent intensity.\n\nHigher pass numbers can affect performance. Width and height values do not." )
+	form:AddParagraph( "Bloom blur settings affect the spread of light blooming. Higher pass values create a smoother effect but lose apparent intensity.\n\nHigher pass numbers can affect performance. Width and height values do not." )
 	form:CreateNumericSlider( { "ph2_bloom_outer_blur_passes", "Int" }, "Outer Blur Passes", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
 	form:CreateNumericSlider( { "ph2_bloom_outer_blur_x", "Int" }, "Outer Blur Width", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
 	form:CreateNumericSlider( { "ph2_bloom_outer_blur_y", "Int" }, "Outer Blur Height", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the bloom effect" } )

@@ -2,7 +2,7 @@
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "toggle_warning_lights",
-	Title = "Lights On/Off",
+	Title = "Warning Lights",
 	Alt = "Emergency Lights",
 	Category = "Emergency",
 	Description = "When warning lights are off, turns them on to MODE2. When warning lights are on (any mode), turns them off.",
@@ -24,7 +24,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "cycle_warning_lights",
-	Title = "Light Mode",
+	Title = "Warning Mode",
 	Category = "Emergency",
 	Description = "Turns on warning lights if off and cycles through MODE1, MODE2, and MODE3.",
 	OnPress = {
@@ -35,6 +35,24 @@ Photon2.RegisterCommand({
 		-- Plays controller sound.
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "CYCLE", Channel = "Emergency.Warning", Query = "NEXT" }
+		-- { Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
+	},
+})
+
+Photon2.RegisterCommand({
+	Author = "Photon",
+	Name = "cycle_siren",
+	Title = "Siren Tone",
+	Category = "Siren",
+	Description = "",
+	OnPress = {
+		-- Plays controller sound.
+		{ Action = "SOUND", Sound = "Controller" },
+	},
+	OnRelease = {
+		-- Plays controller sound.
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "CYCLE", Channel = "Emergency.Siren", Query = "NEXT" }
 		-- { Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
 	},
 })
@@ -92,7 +110,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "vehicle_lights_cycle",
-	Title = "Cycle Lights",
+	Title = "Headlights/Parking (Cycle)",
 	Category = "Basic",
 	Description = "Cycles through parking lights, headlights, and then off.",
 	OnPress = {
@@ -105,7 +123,7 @@ Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "vehicle_lights_auto",
 	Category = "Basic",
-	Title = "Automatic Lights",
+	Title = "Headlights/Automatic",
 	Description = "Sets automatic lighting. Enables daytime running lights and automatic headlights.",
 	OnPress = { 
 		{ Action = "SOUND", Sound = "Click" },
@@ -116,7 +134,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "left_signal",
-	Title = "Turn Left",
+	Title = "Signal Left",
 	Category = "Basic",
 	Description = "Toggles left vehicle signal.",
 	OnPress = {
@@ -131,7 +149,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "right_signal",
-	Title = "Turn Right",
+	Title = "Signal Right",
 	Category = "Basic",
 	Description = "Toggles right vehicle signal.",
 	OnPress = {
@@ -146,7 +164,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "hazards",
-	Title = "Hazards",
+	Title = "Signal Hazards",
 	Category = "Basic",
 	Description = "Toggles hazard lights.",
 	OnPress = {
@@ -161,7 +179,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "signal_off",
-	Title = "Signal/Hazards Off",
+	Title = "Signal Off",
 	Category = "Basic",
 	Description = "Turns off hazard and turn signal lights.",
 	OnPress = {
@@ -206,7 +224,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "directional_center_out",
-	Title = "Center-Out",
+	Title = "Arrow Center-Out",
 	Category = "Directional",
 	Description = "Toggles center-out emergency directional.",
 	OnPress = {
@@ -221,7 +239,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "directional_off",
-	Title = "Off",
+	Title = "Arrow Off",
 	Category = "Directional",
 	Description = "Turns off directional arrow.",
 	OnPress = {
@@ -284,7 +302,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "scene_off",
-	Title = "Turn Off All",
+	Title = "Illuminate Off",
 	Category = "Scene Lighting",
 	Description = "Turns off all scene lighting.",
 	OnPress = {
@@ -335,7 +353,7 @@ end
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "activate_lights_siren",
-	Title = "Siren On/Off",
+	Title = "Siren",
 	Alt = "Siren",
 	Category = "Emergency",
 	Description = "Activates warning lights (MODE3) and toggles the siren (T1).",
@@ -352,7 +370,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "toggle_cruise",
-	Title = "Cruise On/Off",
+	Title = "Cruise Lights",
 	Category = "Emergency",
 	Description = "Toggles cruise/marker lights ON or OFF.",
 	OnPress = {
@@ -367,7 +385,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "toggle_warning_lights_m3",
-	Title = "Lights (MODE3) On/Off", 
+	Title = "Warning: MODE3", 
 	Category = "Emergency",
 	Description = "When warning lights are off, turns them on to MODE3. When warning lights are on (any mode), turns them off.",
 	OnPress = {
@@ -383,7 +401,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "auxiliary_dual_toggle",
-	Title = "1-2 Toggle",
+	Title = "Short/Long Press",
 	Category = "Auxiliary",
 	Description = "Quick press toggles MODE1, long press toggles MODE2.",
 	OnPress = {

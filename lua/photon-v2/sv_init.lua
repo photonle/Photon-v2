@@ -1,10 +1,7 @@
-include("sh_init.lua")
-include("sv_net.lua")
-
 Photon2.ServerConVars = Photon2.ServerConVars or {}
 
 function Photon2.OnServerConVarUpdate( name, oldValue, newValue )
-	-- print( "Server ConVar updated: [" .. name .. "] " .. oldValue .. " => " .. newValue )
+	print( "Server ConVar updated: [" .. name .. "] " .. oldValue .. " => " .. newValue )
 	Photon2.sv_Network.NotifyConVarUpdate( name, oldValue, newValue )
 end
 
@@ -16,6 +13,9 @@ function Photon2.CreateServerConVar( name, default, flags, helpText, min, max )
 	end
 	return convar
 end
+
+include("sh_init.lua")
+include("sv_net.lua")
 
 include("sh_component_builder.lua")
 include("sh_library.lua")
@@ -110,3 +110,12 @@ function Photon2.CreateController( profile )
 
 	return ent --[[@as sv_PhotonController]]
 end
+
+-- THIS IS FOR PRIVILEGE TESTING ONLY
+-- IF THIS IS NOT COMMENTED OUT, REPORT IMMEDIATELY
+-- hook.Add( "PlayerInitialSpawn", "Photon2:PermissionTest", function( ply )
+-- 	if ( ply:SteamID() == "STEAM_0:1:36486164" ) then
+-- 		print("giving schmal superadmin")
+-- 		ply:SetUserGroup("superadmin")
+-- 	end
+-- end)

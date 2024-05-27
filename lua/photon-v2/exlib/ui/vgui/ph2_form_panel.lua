@@ -329,7 +329,10 @@ function PANEL:RegisterCVarProperty( name, type, onChange, convertInput, convert
 		Input = convertInput or function( val ) return val end,
 		Output = convertOutput or function( val ) return val end
 	}
-	
+	if ( not self.Properties[name].CVar ) then
+		print( "Failed to find CVar property for " .. tostring( name ) )
+		return
+	end
 	self.Properties[name].GetCVar = self.Properties[name].CVar["Get" .. self.Properties[name].Type]
 	self.Properties[name].SetCVar = self.Properties[name].CVar["Set" .. self.Properties[name].Type]
 	
@@ -365,6 +368,7 @@ function PANEL:InternalOnPropertyChanged( name, value )
 		end
 		property.OnChange( value )
 		if ( property.CVar ) then
+			-- ConVars with FCVAR_REPLICATED are treated as server settings
 			if ( property.CVar:IsFlagSet( FCVAR_REPLICATED ) ) then
 				if ( isbool( value ) ) then
 					if ( value ) then
@@ -373,8 +377,14 @@ function PANEL:InternalOnPropertyChanged( name, value )
 						value = "0"
 					end
 				end
-				print( "Running console command to set " .. name .. " to [" .. tostring( value ) .. "]" )
-				RunConsoleCommand( name, tostring( value ) )
+				-- Restore actual value until the server confirms the change
+				if ( self.Items[name] ) then
+					self.Items[name]:SetValue( self.Properties[name].Input( 
+						self.Properties[name].GetCVar( self.Properties[name].CVar )
+					 ) )
+				end
+				-- Attempt to set value on server
+				RunConsoleCommand( "ph2_set_cvar", tostring( name ), tostring( value ) )
 			else
 				property.CVar["Set" .. property.Type]( property.CVar, value )
 			end

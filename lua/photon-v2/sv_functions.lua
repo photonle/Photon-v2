@@ -2,7 +2,7 @@ local saveSteeringOnExit = true
 
 local CurTime = CurTime
 
-local globalEngineIdleEnabled = Photon2.CreateServerConVar( "ph2_engine_idle_enabled", 1, FCVAR_ARCHIVE + FCVAR_REPLICATED, "Enables or disables Photon 2's engine idling functionality.", 0, 1 )
+local globalEngineIdleEnabled = GetConVar( "ph2_engine_idle_enabled" )
 
 local holdDuration = 0.2
 
@@ -114,3 +114,24 @@ function Photon2.ModelAttachBridgeScan()
 	lastModelAttachScanTime = CurTime()
 end
 hook.Add( "Think", "Photon2:ModelAttachBridgeScan", Photon2.ModelAttachBridgeScan )
+
+
+function Photon2.OnPlayerSetServerConVar( ply, cmd, args )
+	-- Internal permission check
+	print( "Player [" .. ply:Nick() .. "] is attempting to set cvar: [" .. args[1] .. "] to [" .. args[2] .. "]" )
+	local result = hook.Run( "Photon2.Permissions:SetServerConVar", ply, args[1] )
+	if ( result ~= nil ) and ( not result ) then 
+		print( "\tBlocked by Photon2.Permissions:SetServerConVar.")
+		return
+	end
+
+	if ( not CAMI.PlayerHasAccess( ply, "Photon2.ServerSettings" ) ) then 
+		print( "\tBlocked by CAMI.ServerSettings")
+		return
+	end
+
+	print( "\tAllowed.")
+	local actualValue = GetConVar( args[1] ):GetString()
+	RunConsoleCommand( args[1], args[2] )
+end
+concommand.Add( "ph2_set_cvar", Photon2.OnPlayerSetServerConVar )

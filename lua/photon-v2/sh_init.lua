@@ -1,8 +1,13 @@
 PHOTON2_UNSET = "<UNSET>"
 PHOTON2_STUDIO_ENABLED = false
 
+-- CAMI Integration (for Admin Mods) (https://github.com/glua/CAMI)
+CAMI.RegisterPrivilege({
+	Name = "Photon2.ServerSettings",
+	MinAccess = "superadmin"
+})
+
 include("sh_util.lua")
-include("sh_tonemapping.lua")
 include("sh_functions.lua")
 include("sh_component_builder.lua")
 include("sh_sequence_builder.lua")
