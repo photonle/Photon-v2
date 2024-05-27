@@ -218,7 +218,7 @@ function PANEL:CreateComboBoxProperty( property, labelText, currentValue, option
 	end
 end
 
-function PANEL:CreateNumberSliderProperty( property, labelText, currentValue, min, max, decimals )
+function PANEL:CreateNumericProperty( property, labelText, currentValue, min, max, decimals )
 	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
 	local slider = vgui.Create( "DNumberWang", panel.Content )
@@ -236,8 +236,38 @@ function PANEL:CreateNumberSliderProperty( property, labelText, currentValue, mi
 	end
 
 	function slider:OnValueChanged( value )
-		this:InternalOnPropertyChanged( propertyName, value )
+		this:InternalOnPropertyChanged( propertyName, math.Round( value, decimals ) )
 	end
+end
+
+function PANEL:CreateNumericSlider( property, labelText, currentValue, min, max, decimals )
+	local panel, propertyName = self:CreateBaseProperty( property, labelText )
+	local this = self
+	local slider = vgui.Create( "DNumSlider", panel.Content )
+	
+	slider:Dock( FILL )
+	slider:SetMinMax( min, max )
+	slider:SetDecimals( decimals or 0 )
+	slider:SetValue( currentValue or 0 )
+
+	function panel:SetValue( value )
+		slider:SetValue( value )
+	end
+
+	function panel:GetValue()
+		return tonumber( slider.TextArea:GetText() )
+	end
+
+	function slider:OnValueChanged( value )
+		-- This pulls the text entry value because the actual
+		-- internal value is otherwise different (which is stupid)
+		value = tonumber( slider.TextArea:GetText() )
+		if ( value ~= currentValue ) then
+			currentValue = value
+			this:InternalOnPropertyChanged( propertyName, value )
+		end
+	end
+
 end
 
 function PANEL:AddButton( text, callback, icon )
@@ -258,6 +288,15 @@ function PANEL:AddButton( text, callback, icon )
 		button:SetIcon( icon )
 	end
 
+end
+
+function PANEL:AddParagraph( text )
+	local panel = vgui.Create( "DLabel", self )
+	panel:DockMargin( 8, 16, 8, 16 )
+	panel:Dock( TOP )
+	panel:SetAutoStretchVertical( true )
+	panel:SetWrap( true )
+	panel:SetText( text )
 end
 
 --- UNUSED
@@ -290,8 +329,10 @@ function PANEL:RegisterCVarProperty( name, type, onChange, convertInput, convert
 		Input = convertInput or function( val ) return val end,
 		Output = convertOutput or function( val ) return val end
 	}
+	
 	self.Properties[name].GetCVar = self.Properties[name].CVar["Get" .. self.Properties[name].Type]
 	self.Properties[name].SetCVar = self.Properties[name].CVar["Set" .. self.Properties[name].Type]
+	
 	cvars.AddChangeCallback( name, function( convar, oldValue, newValue )
 		if ( not IsValid( self ) ) then
 			-- this has to be delayed or else it removes the entry from the callback table
@@ -305,6 +346,7 @@ function PANEL:RegisterCVarProperty( name, type, onChange, convertInput, convert
 			self.Items[name]:SetValue( self.Properties[name].Input( newValue ) )
 		end
 	end, tostring( thisCallbackIndex ) )
+	
 	timer.Simple( 0, function()
 		if ( not IsValid( self ) ) then return end
 		if ( self.Items[name] ) then
@@ -323,7 +365,19 @@ function PANEL:InternalOnPropertyChanged( name, value )
 		end
 		property.OnChange( value )
 		if ( property.CVar ) then
-			property.CVar["Set" .. property.Type]( property.CVar, value )
+			if ( property.CVar:IsFlagSet( FCVAR_REPLICATED ) ) then
+				if ( isbool( value ) ) then
+					if ( value ) then
+						value = "1"
+					else
+						value = "0"
+					end
+				end
+				print( "Running console command to set " .. name .. " to [" .. tostring( value ) .. "]" )
+				RunConsoleCommand( name, tostring( value ) )
+			else
+				property.CVar["Set" .. property.Type]( property.CVar, value )
+			end
 		end
 	end
 	self:OnPropertyChanged( name, value )
@@ -380,6 +434,7 @@ function PANEL:CreateColorProperty( property, labelText, currentValue )
 		currentValueColor = color
 		currentValueString = string.format( "%s,%s,%s,%s", color.r, color.g, color.b, color.a )
 		if ( not noUpdateTextBox ) then
+			if ( not IsValid( textBox ) ) then return end
 			textBox:SetText( currentValueString )
 		end
 		colorButton:SetColor( color )

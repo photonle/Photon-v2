@@ -47,16 +47,20 @@ function PANEL:Setup()
 	end
 
 	self:SetupMainPage()
-	self:SetupRenderOptions()
 	self:SetupHudOptions()
+	self:SetupRenderOptions()
+	self:SetupServerPage()
+	self:SetupOtherPage()
 
 	local propertySheet = vgui.Create( "DPropertySheet", container )
 	propertySheet:Dock( FILL )
 	propertySheet:DockMargin( 0, 8, 0, 0 )
 	self.Tabs = propertySheet
 	propertySheet:AddSheet( "Photon 2", self.MainPage )
+	propertySheet:AddSheet( "Effects", self.RenderPage )
 	propertySheet:AddSheet( "HUD", self.HudPage )
-	propertySheet:AddSheet( "Graphics", self.RenderPage )
+	propertySheet:AddSheet( "Game", self.ServerPage )
+	propertySheet:AddSheet( "Other", self.OtherPage )
 
 	function propertySheet:OnActiveTabChanged( old, new )
 		-- This stupid shit is required to get the current tab name
@@ -96,10 +100,38 @@ function PANEL:SetupMenuBar()
 end
 
 function PANEL:SetupRenderOptions()
-	local panel = vgui.Create( "DScrollPanel", self )
-	self.RenderPage = panel
+	local panel = vgui.Create( "DPanel", self )
 	panel:Dock( FILL )
-
+	panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockPadding( 3, 3, 3, 3 )
+	self.RenderPage = panel
+	
+	local form = vgui.Create( "Photon2UIFormPanel", panel )--[[@as Photon2UIFormPanel]]
+	form:Dock( FILL )
+	form.LabelWidth = 120
+	form:AddParagraph( "Adjust the settings on this page to customize light appearance and performance options." )
+	form:CreateCheckBoxProperty( { "ph2_enable_projectedtextures_mp", "Bool" }, "Projected Textures", true, { Descriptor = "Enable in multiplayer (expensive)" } )
+	form:CreateCheckBoxProperty( { "ph2_enable_subtractive_sprites", "Bool" }, "Subtractive 2D", true, { Descriptor = "Enable subtractive lighting effect" } )
+	form:AddDivider()
+	form:CreateComboBoxProperty( "ph2_bloom_preset", "Bloom Preset", "Select...", { 
+		{ "High Performance", "HighPerformance" },
+		{ "Default", "Default" },
+		{ "Vivid", "Vivid" }
+	} )
+	form:AddParagraph( "Photon 2 uses custom bloom shading for light \"glow\" effects. You can change the Preset to improve performance or enhance appearance.\n\nIf desired, the specific variables can be configured below." )
+	form:AddDivider()
+	form:AddParagraph( "Intensity affects the amount of additive color saturation. Higher values are more expensive to render and may introduce minor artifacting." )
+	form:CreateNumericSlider( { "ph2_bloom_add_src_passes", "Int" }, "Source Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_add_inner_passes", "Int" }, "Inner Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_add_outer_passes", "Int" }, "Outer Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:AddDivider()
+	form:AddParagraph( "Blur settings affect the spread of light blooming. Higher pass values create a smoother effect but lose apparent intensity.\n\nHigher pass numbers can affect performance. Width and height values do not." )
+	form:CreateNumericSlider( { "ph2_bloom_outer_blur_passes", "Int" }, "Outer Blur Passes", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_outer_blur_x", "Int" }, "Outer Blur Width", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_outer_blur_y", "Int" }, "Outer Blur Height", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the bloom effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_inner_blur_passes", "Int" }, "Inner Blur Passes", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_inner_blur_x", "Int" }, "Inner Blur Width", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
+	form:CreateNumericSlider( { "ph2_bloom_inner_blur_y", "Int" }, "Inner Blur Height", 0, 0, 16, 0, { Descriptor = "Adjust the intensity of the effect" } )
 end
 
 function PANEL:SetupHudOptions()
@@ -112,11 +144,11 @@ function PANEL:SetupHudOptions()
 	-- local container = vgui.Create( "DScrollPanel", panel )
 	-- container:Dock( FILL )
 
-	---@type Photon2UIFormPanel
-	local form = vgui.Create( "Photon2UIFormPanel", panel )
+	
+	local form = vgui.Create( "Photon2UIFormPanel", panel )--[[@as Photon2UIFormPanel]]
 	form.LabelWidth = 120
 	form:Dock( FILL )
-
+	form:AddParagraph( "Adjust the settings on this page change the appearance and other options of the in-vehicle status HUD." )
 	form:CreateCheckBoxProperty( { "ph2_hud_enabled", "Bool" }, "Visible", Photon2.HudEnabled, { Descriptor = "Show in-vehicle HUD"} )
 	form:CreateCheckBoxProperty( { "ph2_hud_draggable", "Bool" }, "Draggable", Photon2.HudDraggable, { Descriptor = "Enable HUD dragging" } )
 	form:AddDivider()
@@ -143,8 +175,9 @@ function PANEL:SetupHudOptions()
 		{ "Top Left", "top_left" },
 		{ "Top Right", "top_right" }
 	} )
-	form:CreateNumberSliderProperty( { "ph2_hud_offset_x", "Int" }, "X Offset", 0, 0, ScrW(), 0 )
-	form:CreateNumberSliderProperty( { "ph2_hud_offset_y", "Int" }, "Y Offset", 0, 0, ScrH(), 0 )
+	form:CreateNumericProperty( { "ph2_hud_offset_x", "Int" }, "X Offset", 0, 0, ScrW(), 0 )
+	form:CreateNumericProperty( { "ph2_hud_offset_y", "Int" }, "Y Offset", 0, 0, ScrH(), 0 )
+	form:AddParagraph("Note: These settings are automatically changed when the HUD is dragged using the cursor.")
 	form:AddButton( "Reset to Default", function()
 		print("Resetting to default...")
 		RunConsoleCommand( "ph2_hud_enabled", "1" )
@@ -154,20 +187,54 @@ function PANEL:SetupHudOptions()
 	end)
 end
 
+local contextMenuImage = Material( "photon/ui/misc/context_menu.png" )
+
 function PANEL:SetupMainPage()
 	local panel = vgui.Create( "DPanel", self )
-	panel:DockPadding( 8, 8, 8, 8 )
+	-- panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockPadding( 3, 3, 3, 3 )
+	panel:Dock( FILL )
 	self.MainPage = panel
-	local mainText = vgui.Create( "DLabel", panel )
-	mainText:Dock( FILL )
+
+	local content = vgui.Create( "DScrollPanel", panel )
+	content:Dock( FILL )
+	-- content:DockPadding( 8, 8, 8, 8 )
+
+	local mainText = vgui.Create( "DLabel", content )
+	mainText:DockMargin( 8, 8, 8, 8)
+	mainText:Dock( TOP )
 	mainText:SetWrap( true )
-	mainText:SetText("You are running Photon 2. This addon is a platform for emergency vehicles and related functionality.\n\nPhoton 2 is currently in a public beta phase.")
+	mainText:SetAutoStretchVertical( true )
+	mainText:SetText([[
+You are running Photon 2. This addon is a platform for emergency vehicles and related functionality.
+
+Navigate through the tabs above to adjust and customize feature settings. Unless otherwise noted, settings apply to the client only.]])
 	mainText:SetContentAlignment( 7 )
+	local contextImagePanel = vgui.Create( "DPanel", content )
+	contextImagePanel:Dock( TOP )
+	contextImagePanel:SetHeight( 66 )
+	contextImagePanel:DockMargin( 8, 8, 8, 8)
+	contextImagePanel:SetPaintBackground( false )
+
+	local contextImage = vgui.Create( "DImage", contextImagePanel )
+	contextImage:SetSize( 202, 66 )
+	contextImage:SetImage( "photon/ui/misc/context_menu.png" )
+	contextImage:SetKeepAspect( true )
+	
+	local contextLabel = vgui.Create( "DLabel", content )
+	contextLabel:Dock( TOP )
+	contextLabel:DockMargin( 8, 8, 8, 8)
+	contextLabel:SetWrap( true )
+	contextLabel:SetAutoStretchVertical( true )
+	contextLabel:SetText([[
+	Developer utilities and additional settings can be found in the Photon 2 context menu at the top of the window.]])
+
 	function panel:AddButton( label, icon, onClick )
-		local button = vgui.Create( "EXDButton", panel )
-		button:Dock( BOTTOM )
-		button:SetHeight( 40 )
-		button:DockMargin( 0, 8, 0, 0 )
+		local button = vgui.Create( "EXDButton", content )
+		button:Dock( TOP )
+		button:SetHeight( 28 )
+		button:DockMargin( 8, 4, 8, 4 )
 		button:SetText( label )
 		if ( icon ) then button:SetIcon( icon ) end
 		function button:DoClick()
@@ -189,6 +256,38 @@ function PANEL:SetupMainPage()
 			-- end
 		end 
 	)
+	local padding = vgui.Create( "DPanel", content )
+	padding:Dock( TOP )
+	padding:SetHeight( 4 )
+	padding:SetPaintBackground( false )
+end
+
+function PANEL:SetupOtherPage()
+	local panel = vgui.Create( "DPanel", self )
+	panel:Dock( FILL )
+	panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockPadding( 3, 3, 3, 3 )
+	self.OtherPage = panel
+	local form = vgui.Create( "Photon2UIFormPanel", panel )--[[@as Photon2UIFormPanel]]
+	form.LabelWidth = 120
+	form:Dock( FILL )
+	form:AddParagraph( "The performance overlay shows the number of active lights being rendered and the approximate percentage of frame time consumed by Photon 2.")
+	form:CreateCheckBoxProperty( { "ph2_debug_perf_overlay", "Bool" }, "Performance Info", true, { Descriptor = "Display Photon 2 performance data" } )
+end
+
+function PANEL:SetupServerPage()
+	local panel = vgui.Create( "DPanel", self )
+	panel:Dock( FILL )
+	panel:DockMargin( 4, -4, 4, 4 )
+	panel:DockPadding( 3, 3, 3, 3 )
+	self.ServerPage = panel
+	local form = vgui.Create( "Photon2UIFormPanel", panel )--[[@as Photon2UIFormPanel]]
+	form.LabelWidth = 120
+	form:Dock( FILL )
+	form:AddParagraph( "The features and settings on this page are server-side." )
+	form:AddDivider()
+	form:AddParagraph( "Vehicle idling allows an emergency vehicle to idle its engine when the driver quickly exits. The engine is turned off by briefly holding 'E' (or +use)." )
+	form:CreateCheckBoxProperty( { "ph2_engine_idle_enabled", "Bool" }, "Vehicle Idling", true, { Descriptor = "Enable vehicle engine idling" } )
 end
 
 function PANEL:PostAutoRefresh()

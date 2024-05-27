@@ -270,6 +270,9 @@ function PANEL:GenerateVehicleCode( name, title, category, components, siren, li
 -- 1. Click the "Copy to Clipboard" button and then paste the code into a new text file
 -- 2. If you do not have a project folder for your work, create a new folder in garrysmod/addons/ (e.g. garrysmod/addons/%s_photon2_content)
 -- 3. Save this file as garrysmod/addons/<your_addon_folder>/lua/photon-v2/library/vehicles/%s.lua
+-- ===================================================================================================
+-- IMPORTANT: To work properly, your filename must NOT contain any capital letters or spaces.
+-- ===================================================================================================
 -- 4. Restart Garry's Mod
 -- 5. Spawn your vehicle from the %s category on the Vehicles tab
 -- 6. Edit this code to adjust your component placement and other settings

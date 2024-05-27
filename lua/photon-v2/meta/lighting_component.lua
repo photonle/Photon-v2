@@ -69,20 +69,6 @@ function Component.New( name, data )
 	local ancestors = { [name] = true }
 
 	data = Photon2.Library.Components:GetInherited( data )
-	-- if ( data.Base ) then
-	-- 	-- More special handling for Input sequence assignments (there must be a better way to do this)
-	-- 	local dataInputs
-	-- 	if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-	-- 	Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
-	-- 	Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
-	-- 	Photon2.Library.ComponentsGraph[data.Base][name] = true
-
-	-- 	Photon2.ComponentBuilder.InheritInputs( dataInputs, data.Inputs )
-
-	-- 	-- if ( Photon2.Library.Components[data.Base] ) then
-	-- 	-- 	Photon2.Library.Components[data.Base].Children[name] = true
-	-- 	-- end
-	-- end
 
 	data.Flags = data.Flags or {}
 
@@ -142,26 +128,6 @@ function Component.New( name, data )
 			component[key] = value
 		end
 	end
-
-
-	-- if ( not component.InputPriorities ) then
-	-- 	error( "Component.InputPriorities was not set.")
-	-- end
-
-	-- --[[
-	-- 		Build Ancestors Dictionary
-	-- --]]
-
-	-- local lastParent = data.Base
-
-	-- while ( lastParent ) do
-	-- 	ancestors[lastParent] = true
-	-- 	if ( Photon2.Library.Components[lastParent] ) then
-	-- 		Photon2.Library.Components[lastParent].Descendants[name] = true
-	-- 		lastParent = Photon2.Library.Components[lastParent].Base
-	-- 	end
-	-- end
-
 
 	--[[
 			Process element state inheritance from state slots.
@@ -336,17 +302,6 @@ function Component.New( name, data )
 		-- class to process.
 		component.Elements[id] = lightClass.New( light, template ) --[[@as PhotonElement]]
 	end
-
-
-	--[[
-			Compile Segments
-	--]]
-
-	-- for segmentName, segmentData in pairs( data.Segments or {} ) do
-	-- 	component.Segments[segmentName] = PhotonElementingSegment.New( segmentName, segmentData, data.ElementGroups, component.InputPriorities )
-	-- end
-
-
 
 	--[[
 			Setup Virtual InputActions
@@ -541,10 +496,6 @@ function Component.New( name, data )
 			Finalize and set meta-table
 	--]]
 	setmetatable( component, { __index = class } )
-
-	-- print("Component.Inputs ====================================")
-	-- 	PrintTable( component.Inputs )
-	-- print("=======================================================")
 
 	return component
 end

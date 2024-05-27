@@ -134,3 +134,9 @@ function Photon2.cl_Network.OnSubMaterialChange( len )
 	end
 end
 net.Receive( "Photon2:OnSubMaterialChange", Photon2.cl_Network.OnSubMaterialChange )
+
+function Photon2.cl_Network.OnConVarUpdate( len )
+	-- RunConsoleCommand( conVar, value )
+	cvars.OnConVarChanged( net.ReadString(), net.ReadString(), net.ReadString() )
+end
+net.Receive( "Photon2:ConVarUpdate", Photon2.cl_Network.OnConVarUpdate )

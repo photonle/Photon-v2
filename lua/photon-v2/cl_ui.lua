@@ -464,6 +464,8 @@ function Photon2.UI.PopulateMenuBar()
 			end )
 		end
 
+		-- menu:AddCVar( "Engine Idling", "ph2_engine_idle_enabled", "1", "0")
+
 		menu:AddSpacer()
 
 		local renderOptionsMenuOption = menu:AddOption( "Render Options" )
@@ -473,6 +475,7 @@ function Photon2.UI.PopulateMenuBar()
 		renderOptionsMenu:AddCVar( "Enable Projected Textures in MP", "ph2_enable_projectedtextures_mp", "1", "0" )
 		renderOptionsMenu:AddCVar( "Enable Subtractive Rendering", "ph2_enable_subtractive_sprites", "1", "0" )
 		renderOptionsMenu:AddCVar( "Enable 2D Lighting", "ph2_draw_light2d", "1", "0" )		
+
 
 		local bloomOptionsMenuOption = renderOptionsMenu:AddOption( "Bloom Options" )
 		local bloomOptionsMenu = bloomOptionsMenuOption:AddSubMenu()

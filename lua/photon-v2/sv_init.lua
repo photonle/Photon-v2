@@ -1,6 +1,21 @@
 include("sh_init.lua")
 include("sv_net.lua")
 
+Photon2.ServerConVars = Photon2.ServerConVars or {}
+
+function Photon2.OnServerConVarUpdate( name, oldValue, newValue )
+	-- print( "Server ConVar updated: [" .. name .. "] " .. oldValue .. " => " .. newValue )
+	Photon2.sv_Network.NotifyConVarUpdate( name, oldValue, newValue )
+end
+
+function Photon2.CreateServerConVar( name, default, flags, helpText, min, max )
+	local convar = CreateConVar( name, default, flags, helpText, min, max )
+	Photon2.ServerConVars[name] = convar
+	if ( convar:IsFlagSet( FCVAR_REPLICATED ) ) then
+		cvars.AddChangeCallback( name, Photon2.OnServerConVarUpdate, "Photon2.CVar" )
+	end
+	return convar
+end
 
 include("sh_component_builder.lua")
 include("sh_library.lua")
