@@ -216,7 +216,7 @@ local defaultBloomOptions = {
 		Draw2DSubtractive 		= 1,
 		Draw2DAdditive 			= 1
 	},
-	Max = {
+	Cinematic = {
 		AdditiveSourcePasses 	= 4,
 		AdditiveOuterPasses 	= 16,
 		AdditiveInnerPasses 	= 16,
@@ -226,13 +226,17 @@ local defaultBloomOptions = {
 		OuterBlurY 				= 5,
 
 		InnerBlurPasses 		= 8,
-		InnerBlurX 				= 0.5,
-		InnerBlurY 				= 0.5,
+		InnerBlurX 				= 4,
+		InnerBlurY 				= 0.1,
 
 		Draw2DSubtractive 		= 1,
 		Draw2DAdditive 			= 1
 	},
 }
+
+function Photon2.Render.GetBloomPresets()
+	return defaultBloomOptions
+end
 
 function Photon2.Render.ApplyBloomSettings( options )
 	if ( isstring( options ) ) then options = defaultBloomOptions[options] end

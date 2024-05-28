@@ -51,7 +51,7 @@ Vehicle.Schema = {
 		{ Mode = "MODE2", Label = "WHI" },
 	},
 	["Emergency.Siren"] = {
-		{ Label = "SIREN" }
+		{ Label = "SIREN" },
 	},
 	["Vehicle.Lights"] = {
 		{ Label = "OFF" },

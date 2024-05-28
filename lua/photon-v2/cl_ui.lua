@@ -423,15 +423,17 @@ function Photon2.UI.PopulateMenuBar()
 	timer.Simple(0.01, function ()
 		local menu = Photon2.UI.MenuBar
 		
-
-		local inputConfigOption = menu:AddOption( "Open Control Options...", function()
-			local form = vgui.Create ( "Photon2UIInputConfiguration" )
-		end)
-
+		
 		local openDesktopWindow = menu:AddOption( "Open Photon 2 Menu...", function()
 			local form = Photon2.UI.GetOrCreatePhotonMenu()
 			form:MakePopup()
 			form:SetKeyBoardInputEnabled( false )
+		end)
+
+		menu:AddSpacer()
+
+		local inputConfigOption = menu:AddOption( "Open Control Options...", function()
+			local form = vgui.Create ( "Photon2UIInputConfiguration" )
 		end)
 
 		local openWelcome = menu:AddOption( "Open Welcome Menu...", function()
@@ -473,28 +475,32 @@ function Photon2.UI.PopulateMenuBar()
 		renderOptionsMenu:SetDeleteSelf( false )
 
 		renderOptionsMenu:AddCVar( "Enable Projected Textures in MP", "ph2_enable_projectedtextures_mp", "1", "0" )
-		renderOptionsMenu:AddCVar( "Enable Subtractive Rendering", "ph2_enable_subtractive_sprites", "1", "0" )
-		renderOptionsMenu:AddCVar( "Enable 2D Lighting", "ph2_draw_light2d", "1", "0" )		
-
-
-		local bloomOptionsMenuOption = renderOptionsMenu:AddOption( "Bloom Options" )
-		local bloomOptionsMenu = bloomOptionsMenuOption:AddSubMenu()
-		bloomOptionsMenu:SetDeleteSelf( false )
-		bloomOptionsMenu:AddOption( "High Performance", function()
-			Photon2.Render.ApplyBloomSettings( "HighPerformance" )
+		renderOptionsMenu:AddCVar( "Enable Subtractive 2D Rendering", "ph2_enable_subtractive_sprites", "1", "0" )
+		-- renderOptionsMenu:AddCVar( "Enable 2D Lighting", "ph2_draw_light2d", "1", "0" )		
+		renderOptionsMenu:AddSpacer()
+		renderOptionsMenu:AddOption( "Effects Options...", function()
+			Photon2.UI.GetOrCreatePhotonMenu():SetTab( "Effects" )
 		end)
 
-		bloomOptionsMenu:AddOption( "Balanced (Default)", function()
-			Photon2.Render.ApplyBloomSettings( "Default" )
-		end)
 
-		bloomOptionsMenu:AddOption( "Vivid", function()
-			Photon2.Render.ApplyBloomSettings( "Vivid" )
-		end)
+		-- local bloomOptionsMenuOption = renderOptionsMenu:AddOption( "Bloom Options" )
+		-- local bloomOptionsMenu = bloomOptionsMenuOption:AddSubMenu()
+		-- bloomOptionsMenu:SetDeleteSelf( false )
+		-- bloomOptionsMenu:AddOption( "High Performance", function()
+		-- 	Photon2.Render.ApplyBloomSettings( "HighPerformance" )
+		-- end)
 
-		bloomOptionsMenu:AddOption( "Max", function()
-			Photon2.Render.ApplyBloomSettings( "Max" )
-		end)
+		-- bloomOptionsMenu:AddOption( "Balanced (Default)", function()
+		-- 	Photon2.Render.ApplyBloomSettings( "Default" )
+		-- end)
+
+		-- bloomOptionsMenu:AddOption( "Vivid", function()
+		-- 	Photon2.Render.ApplyBloomSettings( "Vivid" )
+		-- end)
+
+		-- bloomOptionsMenu:AddOption( "Max", function()
+		-- 	Photon2.Render.ApplyBloomSettings( "Max" )
+		-- end)
 
 		-- local inputConfigSetDefaultOption = inputConfigMenu:AddOption( "Set Global" )
 		-- local inputConfigSetDefaultMenu = inputConfigSetDefaultOption:AddSubMenu()

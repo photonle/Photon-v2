@@ -2,6 +2,8 @@ local class = "Photon2UIFormPanel"
 local base = "DScrollPanel"
 local description = "Generic form because DForm is an unmaintained shit show."
 
+local info, warn, warn_once = Photon2.Debug.Declare( "UI" )
+
 local callbackIndex = 1
 
 ---@class Photon2UIFormPanel : Panel
@@ -15,6 +17,7 @@ PANEL.ItemHeight = 32
 
 function PANEL:Init()
 	self.Items = {}
+	self.Callbacks = {}
 	self.Properties = {}
 	self:SetPaintBackground( false )
 end
@@ -177,21 +180,31 @@ end
 function PANEL:CreateComboBoxProperty( property, labelText, currentValue, options )
 	local panel, propertyName = self:CreateBaseProperty( property, labelText )
 	local this = self
+	options = options or {}
 	local comboBox = vgui.Create( "DComboBox", panel.Content )
+	comboBox:SetSortItems( false )
 	comboBox:Dock( FILL )
 	comboBox:SetValue( currentValue or "" )
 
 	local mapIn, mapOut
 
-	for k, v in pairs( options or {} ) do
-		if ( isstring( v ) ) then
-			comboBox:AddChoice( v )
-		elseif ( istable( v ) ) then
+	function panel:AddOption( value, data )
+		if ( not data ) then
+			comboBox:AddChoice( value  )
+		else
 			mapIn = mapIn or {}
 			mapOut = mapOut or {}
-			mapOut[v[1]] = v[2]
-			mapIn[v[2]] = v[1]
-			comboBox:AddChoice( v[1], v[2] )
+			mapOut[value] = data
+			mapIn[data] = value
+			comboBox:AddChoice( value, data )
+		end
+	end
+
+	for k, v in pairs( options ) do
+		if ( isstring( v ) ) then
+			panel:AddOption( v )
+		elseif ( istable( v ) ) then
+			panel:AddOption( v[1], v[2] )
 		end
 	end
 
@@ -209,6 +222,8 @@ function PANEL:CreateComboBoxProperty( property, labelText, currentValue, option
 		end
 		return result
 	end
+
+
 
 	function comboBox:OnSelect( index, value, data )
 		if ( mapOut ) then
@@ -361,6 +376,24 @@ function PANEL:RegisterCVarProperty( name, type, onChange, convertInput, convert
 end
 
 function PANEL:InternalOnPropertyChanged( name, value )
+	local callbacks = self.Callbacks[name]
+	local remove
+	if ( callbacks ) then
+		for k, v in pairs( callbacks ) do
+			if ( ispanel( k ) and not IsValid( k ) ) then
+				remove = remove or {}
+				remove[k] = true
+			else
+				v( value )
+			end
+		end
+	end
+	if ( istable( remove ) ) then
+		for k, v in pairs( remove ) do
+			callbacks[k] = nil
+		end
+	end
+	
 	local property = self.Properties[name]
 	if ( property ) then
 		if ( property.Input ) then
@@ -494,9 +527,14 @@ function PANEL:CreateColorProperty( property, labelText, currentValue )
 	end
 end
 
+function PANEL:AddCallback( name, identifier, callback )
+	self.Callbacks[name] = self.Callbacks[name] or {}
+	self.Callbacks[name][identifier] = callback
+end
+
 --- For overriding
 function PANEL:OnPropertyChanged( name, value )
-	print( string.format( "Property [%s] changed to [%s]", name, value ) )
+	info( string.format( "Property [%s] changed to [%s]", name, value ) )
 end
 
 derma.DefineControl( class, description, PANEL, base )

@@ -1,7 +1,9 @@
 Photon2.ServerConVars = Photon2.ServerConVars or {}
 
+local info, warn, warn_once = Photon2.Debug.Declare( "SERVER" )
+
 function Photon2.OnServerConVarUpdate( name, oldValue, newValue )
-	print( "Server ConVar updated: [" .. name .. "] " .. oldValue .. " => " .. newValue )
+	info( "ConVar changed: [" .. name .. "] " .. oldValue .. " => " .. newValue )
 	Photon2.sv_Network.NotifyConVarUpdate( name, oldValue, newValue )
 end
 
@@ -110,12 +112,3 @@ function Photon2.CreateController( profile )
 
 	return ent --[[@as sv_PhotonController]]
 end
-
--- THIS IS FOR PRIVILEGE TESTING ONLY
--- IF THIS IS NOT COMMENTED OUT, REPORT IMMEDIATELY
--- hook.Add( "PlayerInitialSpawn", "Photon2:PermissionTest", function( ply )
--- 	if ( ply:SteamID() == "STEAM_0:1:36486164" ) then
--- 		print("giving schmal superadmin")
--- 		ply:SetUserGroup("superadmin")
--- 	end
--- end)

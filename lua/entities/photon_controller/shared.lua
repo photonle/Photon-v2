@@ -115,8 +115,20 @@ function ENT:GenerateInputSchema( template, currentChannelModes )
 		end
 	end
 
-	-- local duration = SysTime() - start
-	-- print("Schema calculated in: " .. tostring( duration ) .. " seconds")
+	if ( schema["Emergency.Siren"] and self:GetSirenSelection( 1 ) ) then
+		local sirenSchema = schema["Emergency.Siren"]
+		local currentSiren = Photon2.GetSiren( self:GetSirenSelection( 1 ) )
+		if ( currentSiren ) then
+			for i, tone in ipairs( currentSiren.OrderedTones ) do
+				sirenSchema[i] = {
+					Mode = tone, 
+					Label = currentSiren.Tones[tone].Label,
+					Index = i
+				}
+				sirenSchema[tone] = sirenSchema[i]
+			end
+		end
+	end
 
 	return schema
 end
@@ -317,7 +329,8 @@ ENT.UserCommands = {
 	["SET"] 			= "UserCommandSet",
 	["TOGGLE"] 			= "UserCommandToggle",
 	["CYCLE"] 			= "UserCommandCycle",
-	["SOUND"]			= "UserCommandSound"
+	["SOUND"]			= "UserCommandSound",
+	["CYCLE_SIREN"]		= "UserCommandCycleSiren"
 }
 
 
@@ -465,7 +478,14 @@ function ENT:UserCommandCycle( action )
 	self:SetChannelMode( action.Channel, action.Value[nextIndex] )
 end
 
-
+function ENT:UserCommandCycleSiren( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	local currentIndex = action.ValueMap[currentMode]
+	if ( currentIndex == nil ) then currentIndex = 0 end
+	local nextIndex = currentIndex + 1
+	if ( nextIndex > #action.Value ) then nextIndex = 1 end
+	self:SetChannelMode( action.Channel, action.Value[nextIndex] )
+end
 
 ---@param actions table Actions to process and execute.
 ---@param press? number Simulated button press state.

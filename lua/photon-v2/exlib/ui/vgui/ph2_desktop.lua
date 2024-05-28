@@ -118,8 +118,13 @@ function PANEL:SetupRenderOptions()
 	form:CreateComboBoxProperty( "ph2_bloom_preset", "Graphics Preset", "Select...", { 
 		{ "High Performance", "HighPerformance" },
 		{ "Default", "Default" },
-		{ "Vivid", "Vivid" }
-	} )
+		{ "Vivid", "Vivid" },
+		{ "Cinematic", "Cinematic" },
+	})
+	form:AddCallback( "ph2_bloom_preset", form, function( value )
+		Photon2.Render.ApplyBloomSettings( value )
+	end)
+
 	form:AddParagraph( "If desired, the specific variables can be configured below." )
 	form:AddDivider()
 	form:CreateCheckBoxProperty( { "ph2_enable_subtractive_sprites", "Bool" }, "Subtractive 2D", true, { Descriptor = "Draw subtractive sprites" } )
@@ -291,7 +296,7 @@ function PANEL:SetupServerPage()
 	form:Dock( FILL )
 	form:AddParagraph( "The features and settings on this page are server-side." )
 	form:AddDivider()
-	form:AddParagraph( "Vehicle idling allows an emergency vehicle to idle its engine when the driver quickly exits. The engine is turned off by briefly holding 'E' (or +use)." )
+	form:AddParagraph( "Vehicle idling allows an emergency vehicle to idle its engine when the driver quickly exits. The engine is turned off by briefly holding 'E' (or +use) while exiting." )
 	form:CreateCheckBoxProperty( { "ph2_engine_idle_enabled", "Bool" }, "Vehicle Idling", true, { Descriptor = "Enable vehicle engine idling" } )
 end
 
