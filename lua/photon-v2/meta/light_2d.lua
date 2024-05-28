@@ -386,9 +386,6 @@ function Light:DoPreRender( force )
 		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.TranslatedLocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
 
-
-	
-
 	-- self.NormUp = self.Angles:Up()
 	-- self.NormForward = self.Angles:Forward()
 	self.RightNormal = self.Angles:Right()

@@ -208,6 +208,8 @@ end
 
 -- Internal
 function Light:DoPreRender()
+	if ( #self.SortedInputActions < 1 ) and ( self.CurrentStateId == "OFF" ) then self.Deactivate = true end
+
 	if ( self.Deactivate or ( not IsValid( self.Parent ) ) ) then self:DeactivateNow() end
 	if ( not self.IsActivated ) then return nil end
 
@@ -232,7 +234,7 @@ function Light:DoPreRender()
 		local state = self.States[self.CurrentStateId]
 		if ( self.Intensity > self.TargetIntensity ) then
 			self.Intensity = self.Intensity - (RealFrameTime() * self.IntensityLossFactor)
-			if ( (self.Intensity < self.TargetIntensity) or (self.Intensity == self.TargetIntensity) ) then
+			if ( ( self.Intensity < self.TargetIntensity ) ) then
 				self.Intensity = self.TargetIntensity
 				
 				-- Fade out support
@@ -240,12 +242,9 @@ function Light:DoPreRender()
 					self.Deactivate = true
 				end
 			else
-				-- print( "self.Intensity = " .. tostring( self.Intensity ) .. " / self.TargetIntensity = " .. tostring( self.TargetIntensity ) )
 			end
 		else
 			self.Intensity = self.Intensity + (RealFrameTime() * self.IntensityGainFactor)
-			-- print("Gain: " .. self.IntensityGainFactor)
-			-- self.Intensity = self.Intensity + (RealFrameTime() * 20)
 			if (self.Intensity > self.TargetIntensity) then
 				self.Intensity = self.TargetIntensity
 			end
@@ -262,12 +261,6 @@ function Light:DoPreRender()
 			
 			local min = ( peak - ( fov / 2 ) ) % 360
 			local max = ( peak + ( fov / 2 ) ) % 360
-
-			if ( ( max % 360 ) < 180 ) then
-
-			elseif ( ( max % 360 ) > 180 ) then
-
-			end
 
 			local ang = (self:GetProxy("R")) % 360
 			-- local shift = 

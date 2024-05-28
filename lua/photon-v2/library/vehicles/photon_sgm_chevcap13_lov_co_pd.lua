@@ -120,7 +120,7 @@ VEHICLE.Equipment = {
 									TailLightFlasher = "FLASH_ALT",
 									ReverseFlasher = "FLASH_ALT",
 									-- They do actually mix a halogen and LED flasher and it does look odd
-									TailLightLEDFlasher = "ALT",
+									TailLightLEDFlasher = { "ALT", Order = 100 },
 									HighBeams = "WIGWAG_RAPID",
 								}
 							}
