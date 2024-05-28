@@ -86,7 +86,7 @@ Photon2.RegisterInputConfiguration({
 
 Photon2.RegisterInputConfiguration({
 	Name = "default_alt",
-	Title = "Default (Alternate)",
+	Title = "Alternate",
 	Author = "Photon",
 	Binds = {
 		-- A blank table entry prevents the key from being inherited
@@ -163,11 +163,19 @@ Photon2.RegisterInputConfiguration({
 Photon2.RegisterInputConfiguration({
 	Name = "photon_classic",
 	Inherit = "default",
-	Title = "Classic (Photon LE)",
+	Title = "Photon LE (Classic)",
 	Author = "Photon",
 	Binds = {
+		-- This is to clear MOUSE_LEFT instead of inheriting
+		[MOUSE_LEFT] = {},
 		[KEY_T] = {
 			{ Command = "manual_siren" }
+		},
+		[KEY_G] = {
+			{ Command = "airhorn" }
+		},
+		[KEY_B] = {
+			{ Command = "cycle_hold_directional" }
 		},
 		[MOUSE_RIGHT] = {
 			{ Command = "cycle_siren" }

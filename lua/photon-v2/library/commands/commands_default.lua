@@ -385,7 +385,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "toggle_warning_lights_m3",
-	Title = "Warning: MODE3", 
+	Title = "Warning Lights (MODE3)", 
 	Category = "Emergency",
 	Description = "When warning lights are off, turns them on to MODE3. When warning lights are on (any mode), turns them off.",
 	OnPress = {
@@ -425,5 +425,24 @@ Photon2.RegisterCommand({
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "CYCLE", Channel = "Emergency.Cut", Value = { "FRONT", "REAR", "OFF" } }
+	}
+})
+
+Photon2.RegisterCommand({
+	Author = "Photon",
+	Name = "cycle_hold_directional",
+	Title = "Arrow (Cycle/Hold)",
+	Category = "Emergency",
+	Description = "Press toggles lights on/off. Hold cycles through modes. Mimics Photon LE's behavior.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller" },
+	},
+	OnHold = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "CYCLE", Channel = "Emergency.Directional", Query = "NEXT" }
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Directional", Query = "FIRST" }
 	}
 })
