@@ -1096,6 +1096,7 @@ function ENT:SetupProfile( name, isReload, attempt )
 		return
 	end
 	
+	
 	-- print( string.format( "Setting up %s (%s)...", profile.Title, profile.Name ) )
 	
 	self.Equipment = profile.Equipment
@@ -1125,7 +1126,8 @@ function ENT:SetupProfile( name, isReload, attempt )
 	if ( CLIENT ) then
 		self:SyncChannels()
 	end
-
+	
+	if ( SERVER ) then self:SyncSelections() end
 end
 
 function ENT:SetSchema( schema )
@@ -1246,6 +1248,7 @@ function ENT:GetActiveComponents()
 	local result = {}
 
 	for categoryIndex, selectionIndex in pairs( self.CurrentSelections ) do
+		if ( not self.CurrentProfile.EquipmentSelections[categoryIndex] ) then continue end
 		local map = self.CurrentProfile.EquipmentSelections[categoryIndex].Map
 		if ( map and map[selectionIndex] ) then
 			for _, componentIndex in pairs( map[selectionIndex].Components ) do
@@ -1266,7 +1269,7 @@ function ENT:OnSelectionChanged( categoryIndex, optionIndex )
 	-- PrintTable( self.CurrentProfile.EquipmentSelections )
 	self.ActiveComponentMap = nil
 	if ( not self.CurrentProfile.EquipmentSelections[categoryIndex] ) then
-		print("Category index " .. tostring( categoryIndex ) .. " is invalid. Vehicle respawn may be necessary.")
+		-- print("Category index " .. tostring( categoryIndex ) .. " is invalid. Vehicle respawn may be necessary.")
 		return
 	end
 	-- this forces the input schema to rebuild
