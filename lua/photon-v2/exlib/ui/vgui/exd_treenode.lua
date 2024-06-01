@@ -674,4 +674,11 @@ function PANEL:SetupCopy( copy )
 
 end
 
+function PANEL:GetChildNodes()
+
+	if ( !IsValid( self.ChildNodes ) ) then return {} end
+	return self.ChildNodes:GetChildren()
+
+end
+
 derma.DefineControl( class, "", PANEL, base )

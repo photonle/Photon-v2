@@ -49,7 +49,8 @@ end
 ---@param isComponentReload? boolean If this was triggered by a component reload.
 function PANEL:SetEntry( entryName, isComponentReload )
 	-- Ignore loading reload because it's handled internally.
-	if ( isComponentReload ) then return end
+
+	-- if ( isComponentReload ) then return end
 	
 	self:Clear()
 
@@ -259,6 +260,8 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		
 				self.vCamPos = self.OrbitPoint - self.aLookAngle:Forward() * self.OrbitDistance
 		
+				this.PreviewCameraPosition = self.vCamPos
+				this.PreviewCameraAngle = self.aLookAngle
 				return
 			end
 			-- Look around
@@ -295,7 +298,9 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			if ( input.IsShiftDown() ) then speed = 4.0 end
 		
 			self.vCamPos = self.vCamPos + Movement * speed
-		
+			
+			this.PreviewCameraPosition = self.vCamPos
+			this.PreviewCameraAngle = self.aLookAngle
 		end
 
 		modelPanel:SetComponent( entryName )
@@ -348,6 +353,11 @@ function PANEL:SetEntry( entryName, isComponentReload )
 	self.Tree = tree
 	-- tree:SetLineHeight( 22 )
 	tree:Dock( FILL )
+
+	function tree:OnNodeSelected( node )
+		this.CurrentPath = self:GetPath( node )
+	end
+
 
 	local componentInfoPanel = vgui.Create( "DPanel", overviewTab )
 	componentInfoPanel:Dock( TOP )
@@ -444,6 +454,17 @@ function PANEL:SetEntry( entryName, isComponentReload )
 
 	tree:SetComponent( entry )
 
+	if ( isComponentReload ) then
+		if ( self.CurrentPath ) then
+			self.Tree:NavigateToPath( self.CurrentPath )
+		end
+		if IsValid( self.ModelPanel ) then
+			if ( self.PreviewCameraPosition ) then
+				self.ModelPanel:SetCamPos( self.PreviewCameraPosition )
+				self.ModelPanel:SetLookAng( self.PreviewCameraAngle )
+			end
+		end
+	end
 end
 
 function PANEL:Setup()
@@ -451,6 +472,9 @@ function PANEL:Setup()
 	if ( self.CurrentEntryName ) then
 		self:Clear()
 		self:SetEntry( self.CurrentEntryName )
+		if ( self.CurrentPath ) then
+			self.Tree:NavigateToPath( self.CurrentPath )
+		end
 	end
 end
 
@@ -724,6 +748,7 @@ function TREE:UpdateInputs( inputs )
 			signature = signature .. "(" .. tostring( modeName ) .. ")"
 			local modeNode = channelNode:AddNode( modeName, "chevron-right-circle-outline" )
 			function modeNode:OnNodeSelected()
+				this:OnNodeSelected( self )
 				this:OnModeSelected( channelName, modeName )
 			end
 
@@ -731,12 +756,14 @@ function TREE:UpdateInputs( inputs )
 				for segmentName, sequenceName in pairs( sequences ) do
 					local sequenceNode = modeNode:AddNode( string.format("%s/%s", segmentName, sequenceName), "filmstrip" )
 					function sequenceNode:OnNodeSelected()
+						this:OnNodeSelected( self )
 						this:OnSequenceSelected( segmentName, sequenceName)
 					end
 				end
 			elseif( isstring( sequences ) ) then
 				local patternNode = modeNode:AddNode( sequences, "play-box" )
 				function patternNode:OnNodeSelected()
+					this:OnNodeSelected( self )
 					this:OnPatternSelected( sequences )
 				end
 			end
@@ -751,6 +778,7 @@ function TREE:UpdateElementGroups( elementGroups )
 	for groupName, elements in SortedPairs( elementGroups ) do
 		local groupNode = groupsNode:AddNode( groupName, "folder" )
 		function groupNode:OnNodeSelected()
+			this:OnNodeSelected( self )
 			this:OnElementGroupSelected( groupName )
 		end
 		for i, element in ipairs( elements ) do
@@ -768,10 +796,12 @@ function TREE:UpdatePatterns( patterns )
 		for i, sequence in ipairs( sequences or {} ) do
 			local sequenceNode = patternNode:AddNode( string.format("%s/%s", sequence[1], sequence[2] ), "filmstrip" )
 			function sequenceNode:OnNodeSelected()
+				this:OnNodeSelected( self )
 				this:OnSequenceSelected( sequence[1], sequence[2] )
 			end
 		end
 		function patternNode:OnNodeSelected()
+			this:OnNodeSelected( self )
 			this:OnPatternSelected( patternName )
 		end
 	end
@@ -786,6 +816,7 @@ function TREE:UpdateSegments( segments )
 		for sequenceName, sequence in SortedPairs( segment.Sequences or {} ) do
 			local sequenceNode = segmentNode:AddNode( sequenceName, "filmstrip")
 			function sequenceNode:OnNodeSelected()
+				this:OnNodeSelected( self )
 				this:OnSequenceSelected( segmentName, sequenceName )
 			end
 		end
@@ -804,6 +835,44 @@ end
 
 function TREE:Init()
 	self:SetLineHeight( 22 )
+end
+
+function TREE:GetPath( node )
+	local path = {}
+	local current = node
+	while ( IsValid( current ) ) do
+		if ( current:IsRootNode() ) then break end
+		path[#path+1] = current:GetText()
+		current = current:GetParentNode()
+	end
+	return path
+end
+
+function TREE:OnNodeSelected( node )
+	self.CurrentPath = self:GetPath( node )
+end
+
+local function findChildNodeByName( node, name )
+	for i, child in ipairs( node:GetChildNodes() ) do
+		if ( child:GetText() == name ) then
+			return child
+		end
+	end
+end
+
+function TREE:NavigateToPath( path )
+	local current = self:Root()
+	for i = #path, 1, -1 do
+		local next = findChildNodeByName( current, path[i] )
+		if ( not IsValid( next ) ) then break end
+		current = next
+	end
+	current:ExpandTo( true )
+	current:DoClick()
+	current:OnNodeSelected()
+	self:SetSelectedItem( current )
+	self:ScrollToChild( current )
+	return current
 end
 
 ---@class Photon2UIComponentPreviewer : Panel
