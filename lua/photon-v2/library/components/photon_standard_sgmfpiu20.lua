@@ -192,7 +192,7 @@ COMPONENT.Elements = {
 local sequence = Photon2.SequenceBuilder.New
 
 -- Special component attributes
-COMPONENT.Flags = {
+COMPONENT.Features = {
 	AutomaticHeadlights = true
 }
 COMPONENT.Segments = {

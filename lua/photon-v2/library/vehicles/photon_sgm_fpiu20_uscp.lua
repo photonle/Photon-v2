@@ -140,7 +140,7 @@ VEHICLE.Equipment = {
 						Position = Vector( -11, 114.8, 48.7 ),
 						Angles = Angle( -10, 90+8, 0 ),
 						Scale = 0.9,
-						Flags = {
+						Features = {
 							FrontNoM1 = true
 						},
 						RenderGroup = RENDERGROUP_OPAQUE,
@@ -171,7 +171,7 @@ VEHICLE.Equipment = {
 						SubMaterials = {
 							[0] = "sentry/20fpiu_new/black"
 						},
-						Flags = {
+						Features = {
 							FrontNoM1 = true
 						}
 					},
@@ -196,7 +196,7 @@ VEHICLE.Equipment = {
 					{
 						Component = "photon_standard_sgmfpiu20",
 						States = { "R", "B" },
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						},
 						Inputs = {
@@ -238,7 +238,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( -10, 165, 2 ),
 						Scale = 0.9,
 						RenderGroup = RENDERGROUP_OPAQUE,
-						Flags = {
+						Features = {
 							FrontNoM1 = true
 						}
 					},
@@ -250,7 +250,7 @@ VEHICLE.Equipment = {
 						Scale = 0.9,
 						Phase = 180,
 						RenderGroup = RENDERGROUP_OPAQUE,
-						Flags = {
+						Features = {
 							FrontNoM1 = true
 						},
 						Inputs = {

@@ -138,7 +138,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, -90, 0 ),
 						Position = Vector( 0, -125, 49 ),
 						Scale = 0.96,
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
@@ -162,7 +162,7 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
@@ -181,7 +181,7 @@ VEHICLE.Equipment = {
 						Position = Vector( -11, 116.2, 48 ),
 						Angles = Angle( 0, 7, 12 ),
 						Scale = 1,
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
@@ -192,7 +192,7 @@ VEHICLE.Equipment = {
 						States = { "B", "R" },
 						Phase = "B",
 						Scale = 1,
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
@@ -214,7 +214,7 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
@@ -227,7 +227,7 @@ VEHICLE.Equipment = {
 						Inputs = {
 							["Emergency.Marker"] = { ON = {} }
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					}
@@ -249,7 +249,7 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
@@ -262,7 +262,7 @@ VEHICLE.Equipment = {
 						Bones = {
 							["mount"] = { Vector(0, 1, 1), Angle(0, 0, 0), 1 },
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 						}
 					},
@@ -317,7 +317,7 @@ VEHICLE.Equipment = {
 								Position = Vector( 0, -15, 87.55 ),
 								Angles = Angle( 0, 0, -1 ),
 								Scale = 1.029,
-								Flags = {
+								Features = {
 									ParkMode = { "Emergency.Warning", "MODE2" },
 								}
 							}

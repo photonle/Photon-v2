@@ -124,7 +124,7 @@ PhotonMaterial = PhotonMaterial
 ---@field BodyGroups table
 ---@field Inputs table
 ---@field Color Color Component's model color override.
----@field Flags PhotonLibraryComponentFlags
+---@field Features PhotonLibraryComponentFeatures
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
 ---@field Name? string Component name (may be overwritten by filename).
@@ -142,7 +142,7 @@ PhotonMaterial = PhotonMaterial
 ---@field SubMaterials table<integer, string>
 ---@field Patterns table<string, table[]> Collections of segments and sequences that can be referenced in COMPONENT.Inputs. (See: https://github.com/photonle/Photon-v2/wiki/Components#patterns) 
 
----@class PhotonLibraryComponentFlags
+---@class PhotonLibraryComponentFeatures
 ---@field AutomaticHeadlights? boolean Injects component code to setup automatic headlight on/off behavior.
 
 ---@class PhotonLibraryComponentTemplates

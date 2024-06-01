@@ -12,7 +12,7 @@ COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
 -- Special component attributes
-COMPONENT.Flags = {
+COMPONENT.Features = {
 	AutomaticHeadlights = true
 }
 

@@ -11,10 +11,10 @@ COMPONENT.Title = "2013 Ford Police Interceptor Sedan"
 COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
--- -- Special component attributes
--- COMPONENT.Flags = {
--- 	AutomaticHeadlights = true
--- }
+-- Special component attributes
+COMPONENT.Features = {
+	AutomaticHeadlights = true
+}
 
 COMPONENT.States = {
 	[1] = "W",
@@ -122,8 +122,8 @@ COMPONENT.Segments = {
 			[2] = "7 8 9 10 17 18 [~R*0.6] 19 20"
 		},
 		Sequences = {
-			["PARKING"] = { 1 },
-			["HEADLIGHTS"] = { 2 }
+			["HEADLIGHTS"] = { 1 },
+			["PARKING"] = { 2 }
 		}
 	},
 	Brake = {
@@ -173,8 +173,7 @@ COMPONENT.Inputs = {
 		},
 		["HEADLIGHTS"] = {
 			Lights = "HEADLIGHTS"
-		}
-	
+		},
 	},
 	["Vehicle.Brake"] = {
 		["BRAKE"] = {

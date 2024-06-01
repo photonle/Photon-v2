@@ -10,7 +10,7 @@ COMPONENT.Credits = {
 COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
-COMPONENT.Flags = {
+COMPONENT.Features = {
 	AutomaticHeadlights = true
 }
 

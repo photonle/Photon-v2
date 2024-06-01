@@ -185,7 +185,7 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			StateMap = entry.StateMap,
 			Phase = entry.Phase,
 			Generated = true,
-			Flags = entry.Flags,
+			Features = entry.Features or entry.Flags,
 			Segments = entry.Segments,
 			Inputs = entry.InputActions or entry.Inputs,
 			InputPriorities = entry.InputPriorities,

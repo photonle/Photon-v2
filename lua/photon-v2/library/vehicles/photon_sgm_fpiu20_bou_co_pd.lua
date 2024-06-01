@@ -142,7 +142,7 @@ VEHICLE.Equipment = {
 						Scale = 0.4,
 						Phase = "A",
 						States = { "R", "B" },
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -201,7 +201,7 @@ VEHICLE.Equipment = {
 						Component = "photon_sos_mpf4",
 						Position = Vector( -15, 128, 34 ),
 						Angles = Angle( 0, 90, 0),
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -248,7 +248,7 @@ VEHICLE.Equipment = {
 						Position = Vector( -20.5, 124.5, 36 ),
 						Angles = Angle( 0, 180, 0),
 						Phase = "A",
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -351,7 +351,7 @@ VEHICLE.Equipment = {
 						States = {
 							[1] = "R", [2] = "B", [3] = "W"
 						},
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -545,7 +545,7 @@ VEHICLE.Equipment = {
 						Position = Vector( -10, -128.7, 56.4 ),
 						Angles = Angle( 0, -96, 0),
 						Phase = "A",
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -613,7 +613,7 @@ VEHICLE.Equipment = {
 						Component = "photon_fedsig_xstream_duo",
 						Position = Vector( -37.6, -95, 63.4 ),
 						Angles = Angle( 0, 180+7, 180),
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},
@@ -661,7 +661,7 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_standard_sgmfpiu20",
-						Flags = {
+						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
 							NightParkMode = { "Emergency.Marker", "ON" }
 						},

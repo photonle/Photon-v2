@@ -70,7 +70,8 @@ function Component.New( name, data )
 
 	data = Photon2.Library.Components:GetInherited( data )
 
-	data.Flags = data.Flags or {}
+	-- pulls from data.Flags for compatibility
+	data.Features = data.Features or data.Flags or {}
 
 	if ( dumpLibraryData ) then
 		print("_______________________________________")
@@ -79,20 +80,20 @@ function Component.New( name, data )
 	end
 
 	-- TODO: there needs to be an actual flag system setup
-	if ( data.Flags.AutomaticHeadlights ) then
+	if ( data.Features.AutomaticHeadlights ) then
 		Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( data )
 	end
 
-	if ( data.Flags.ParkMode ) then
-		Photon2.ComponentBuilder.SetupParkMode( data, data.Flags.ParkMode )
+	if ( data.Features.ParkMode ) then
+		Photon2.ComponentBuilder.SetupParkMode( data, data.Features.ParkMode )
 	end
 
-	if ( data.Flags.NightParkMode ) then
-		Photon2.ComponentBuilder.SetupNightParkMode( data, data.Flags.NightParkMode )
+	if ( data.Features.NightParkMode ) then
+		Photon2.ComponentBuilder.SetupNightParkMode( data, data.Features.NightParkMode )
 	end
 
-	if ( data.Flags.FrontNoM1 ) then
-		Photon2.ComponentBuilder.SetupFrontNoM1( data, data.Flags.FrontNoM1 )
+	if ( data.Features.FrontNoM1 ) then
+		Photon2.ComponentBuilder.SetupFrontNoM1( data, data.Features.FrontNoM1 )
 	end
 
 	---@type PhotonLightingComponent

@@ -20,7 +20,7 @@ COMPONENT.Title = "2016 Ford Police Interceptor Utility"
 COMPONENT.Category = "Vehicle"
 
 -- Special component attributes
-COMPONENT.Flags = {
+COMPONENT.Features = {
 	AutomaticHeadlights = true
 }
 
