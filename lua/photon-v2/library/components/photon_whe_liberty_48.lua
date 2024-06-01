@@ -170,6 +170,7 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 },
+			["SINGLE_FLASH"] = sequence():Alternate( 2, 3, 8 ),
 			["DOUBLE_FLASH"] = sequence():DoubleFlash( 2, 3 ),
 			["TRIPLE_FLASH"] = sequence():TripleFlash( 2, 3 ),
 		}
@@ -298,7 +299,7 @@ COMPONENT.Patterns = {
 	["ALT_W"] = {
 		{ "All", "TRIPLE_FLASH" },
 		{ "Takedown", "TRIPLE_FLASH" },
-		{ "Alley", "TRIPLE_FLASH:180"}
+		{ "Alley", "TRIPLE_FLASH:180" }
 	},
 	["ALT"] = {
 		{ "All", "TRIPLE_FLASH" },
