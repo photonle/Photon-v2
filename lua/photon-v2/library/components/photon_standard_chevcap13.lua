@@ -66,7 +66,8 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[~SW] 1 2 3 4 12 13 [~A] 5 6 [~A/1] 7 [~A/2] 8 [~RD] 9 10 [R] 11 [W] 14 15 [HIDE] 16 17"
+COMPONENT.StateMap = "[~SW] 1 2 3 4 12 13 [~A] 5 6 [~A/1] 7 [~A/2] 8 [~RD] 9 10 [R] 11 [W*0.5] 14 15 [HIDE] 16 17"
+
 
 COMPONENT.Elements = {
 	[1] = { "Headlights", Vector( -30.2, 90.2, 32.2 ), Angle( 0, 0, 0 ) },

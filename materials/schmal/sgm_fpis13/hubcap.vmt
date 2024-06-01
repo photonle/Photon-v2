@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/sgm_fpis13/hubcap"
+	"$bumpmap" "schmal/sgm_fpis13/hubcap_nm"
+	"$phong" 	"1"
+	"$phongexponent"  "10"
+	"$phongboost" 	"20"
+	"$phongfresnelranges"	"[.20 2 9]"
+	//"$envmap" 	"env_cubemap"
+	//"$envmaptint" 	"[1 1 1]"
+	"$colorfix" "{255 255 255}"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $colorfix
+			resultVar	$color
+		}
+	}
+}
+

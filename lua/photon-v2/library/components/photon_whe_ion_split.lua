@@ -61,16 +61,19 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
-			Light = "ON"
+			Light = "DOUBLE_FLASH_MED"
 		},
 		["MODE2"] = {
+			Light = "DOUBLE_FLASH_MED"
 		},
 		["MODE3"] = {
+			Light = "DOUBLE_FLASH_MED"
 		}
 	}
 }
 
 COMPONENT.Patterns = {
+	["ON"] = { { "Light", "ON" } },
 	["DOUBLE_FLASH_MED"] = { { "Light", "DOUBLE_FLASH_MED" } },
 	["QUINT_FLASH"] = { { "Light", "QUINT_FLASH" } },
 }

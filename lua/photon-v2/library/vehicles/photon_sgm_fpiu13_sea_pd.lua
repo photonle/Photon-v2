@@ -81,14 +81,14 @@ local newLivery = PhotonMaterial.New({
 		["$envmapfresnel"] = 1,
 
 		["$phong"] = 1,
-		["$phongboost"] = 15,
-		["$phongexponent"] = 3,
-		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+		["$phongboost"] = 3,
+		["$phongexponent"] = 10,
+		-- ["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
 
 		["$rimlight"] = 1,
-		["$rimlightexponent"] = 2,
-		["$rimlightboost"] = 1,
-		["$rimmask"] = 1,
+		-- ["$rimlightexponent"] = 2,
+		-- ["$rimlightboost"] = 1,
+		-- ["$rimmask"] = 1,
 
 		-- ["$phongexponenttexture"] = "photon/common/flat_exp",
 		-- ["$basemapluminancephongmask"] = 1,
@@ -128,6 +128,7 @@ VEHICLE.Equipment = {
 	{
 		Category = "Liveries",
 		Options = {
+
 			-- {
 			-- This one is a half-assed work in progress still
 			-- 	Option = "Prototype",
@@ -223,6 +224,7 @@ VEHICLE.Equipment = {
 					},
 				}
 			},
+
 		}
 	},
 	{

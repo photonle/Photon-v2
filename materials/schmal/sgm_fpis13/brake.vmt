@@ -1,0 +1,23 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/sgm_fpis13/brake"
+	"$bumpmap"    "schmal/sgm_fpis13/brake_nm"
+	"$envmap" env_cubemap
+	"$phong" "1" 
+	"$phongboost" "0.25" 
+	"$phongexponent" "3"
+	"$phongfresnelranges" "[4 1 4]"
+	"$envmapFresnel" "1"
+	"$envmaptint" "[.25 .25 .25]"
+	"$normalmapalphaenvmapmask" "1"
+	"$carpenisenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a penis
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+ }

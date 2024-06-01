@@ -55,7 +55,7 @@ COMPONENT.Templates = {
 	}
 }
 
-COMPONENT.StateMap = "[~SW] 1 2 3 4 5 6 15 16 [~A*0.5] 7 8 9 10 [~R] 11 12 19 20 21 [~R*0.7] 17 18 [~A] 13 14"
+COMPONENT.StateMap = "[~SW] 1 2 3 4 5 6 15 16 [~A*0.5] 7 8 9 10 [~R] 11 12 19 20 21 [~R*0.7] 17 18 [~A] 13 14 [R] 22 23"
 
 COMPONENT.Elements = {
 	-- Normal headlights
@@ -99,6 +99,10 @@ COMPONENT.Elements = {
 	[19] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl" },
 	[20] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr" },
 	[21] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_e" },
+
+	-- Tail Flasher 
+	[22] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl" },
+	[23] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr" },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -151,14 +155,18 @@ COMPONENT.Segments = {
 			HAZARD = sequence():Alternate( 3, 0, 10 )
 		}
 	},
+	TailFlasher = {
+		Frames = {
+			[1] = "22",
+			[2] = "23",
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 10 ),
+		}
+	},
 }
 
 COMPONENT.Inputs = {
-	["Emergency.Warning"] = {
-		["MODE1"] = {
-			All = "ON"
-		}
-	},
 	["Vehicle.Lights"] = {
 		["PARKING"] = {
 			Lights = "PARKING"

@@ -31,13 +31,17 @@ COMPONENT.Templates = {
 	}
 }
 
+COMPONENT.States = {
+	[1] = "R"
+}
+
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0.55, 0, -0.05 ), Angle( 0, -90, 0 ) }
 }
 
 COMPONENT.ElementStates = {}
 
-COMPONENT.StateMap = "[R] 1"
+COMPONENT.StateMap = "[1] 1"
 
 local sequence = Photon2.SequenceBuilder.New
 

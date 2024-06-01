@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/sgm_fpis13/tirea0"
+	"$bumpmap" "schmal/sgm_fpis13/tirea0_bump"
+	"$nocull" "1"
+	"$phong" "1"
+	"$phongexponent" "10"
+	"$phongboost" "0.05"	
+	"$phongfresnelranges"	"[.3 1 8]"
+
+	"$carpenisenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals 
+		{
+			srcVar1 $carpenisenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
