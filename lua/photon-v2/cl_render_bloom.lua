@@ -7,12 +7,29 @@ local copyMaterial = Material( "pp/copy" )
 local additiveMaterial = Material( "pp/add" )
 local subtractiveMaterial = Material( "pp/sub" )
 
+local colorMaterial = Material( "photon/pp/color_inner" )
+local colorOuter = Material( "photon/pp/color_outer" )
+
 local textureFlags = 16 + 32768 + 32 + 4 + 8
+
+local pp_colormod = GetConVar( "pp_colormod" )
+local pp_colormod_addr = GetConVar( "pp_colormod_addr" )
+local pp_colormod_addg = GetConVar( "pp_colormod_addg" )
+local pp_colormod_addb = GetConVar( "pp_colormod_addb" )
+local pp_colormod_brightness = GetConVar( "pp_colormod_brightness" )
+local pp_colormod_contrast = GetConVar( "pp_colormod_contrast" )
+local pp_colormod_color = GetConVar( "pp_colormod_color" )
+local pp_colormod_mulr = GetConVar( "pp_colormod_mulr" )
+local pp_colormod_mulg = GetConVar( "pp_colormod_mulg" )
+local pp_colormod_mulb = GetConVar( "pp_colormod_mulb" )
+local pp_colormod_inv = GetConVar( "pp_colormod_inv" )
 
 local rtBloomOuter = GetRenderTargetEx( "Photon2_RT1", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_SEPARATE, textureFlags, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
 local rtMeshSource = GetRenderTargetEx( "Photon2_RT2", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, textureFlags, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
 local rtBloomInner = GetRenderTargetEx( "Photon2_RT3", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, textureFlags, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
 local storeRenderTarget = GetRenderTargetEx( "Photon2_RT4", ScrW(), ScrH(), RT_SIZE_NO_CHANGE, MATERIAL_RT_DEPTH_NONE, textureFlags, CREATERENDERTARGETFLAGS_HDR, IMAGE_FORMAT_BGRA8888 )
+
+colorMaterial:SetTexture( "$fbtexture", rtBloomInner )
 
 local additiveDrawMeshSourcePasses = GetConVar( "ph2_bloom_add_src_passes" )
 local additiveDrawBloomOuterPasses = GetConVar( "ph2_bloom_add_outer_passes" )
@@ -26,10 +43,29 @@ local bloomInnerBlurPasses 	= GetConVar( "ph2_bloom_inner_blur_passes" )
 local bloomInnerBlurX		= GetConVar( "ph2_bloom_inner_blur_x" )
 local bloomInnerBlurY		= GetConVar( "ph2_bloom_inner_blur_y" )
 
+-- unused
+-- local function updateColorMaterialParams()
+-- 	colorMaterial:SetFloat( "$pp_colour_addr", pp_colormod_addr:GetFloat() * 0.02 )
+-- 	colorMaterial:SetFloat( "$pp_colour_addg", pp_colormod_addg:GetFloat() * 0.02 )
+-- 	colorMaterial:SetFloat( "$pp_colour_addb", pp_colormod_addb:GetFloat() * 0.02 )
+-- 	colorMaterial:SetFloat( "$pp_colour_brightness", pp_colormod_brightness:GetFloat() )
+-- 	colorMaterial:SetFloat( "$pp_colour_contrast", pp_colormod_contrast:GetFloat() )
+-- 	colorMaterial:SetFloat( "$pp_colour_colour", pp_colormod_color:GetFloat() )
+-- 	colorMaterial:SetFloat( "$pp_colour_mulr", pp_colormod_mulr:GetFloat() * 0.1 )
+-- 	colorMaterial:SetFloat( "$pp_colour_mulg", pp_colormod_mulg:GetFloat() * 0.1 )
+-- 	colorMaterial:SetFloat( "$pp_colour_mulb", pp_colormod_mulb:GetFloat() * 0.1 )
+-- 	colorMaterial:SetFloat( "$pp_colour_inv", pp_colormod_inv:GetFloat() )
+-- end
+
+-- Enable/disable experimental color modulation shader.
+local drawColorModInner = false
+local drawColorModOuter = false
+
 ---@param additive boolean Additive bloom pass.
 function Photon2.RenderBloom.Render( additive )
-	-- render.SuppressEngineLighting( true )
-	-- render.TurnOnToneMapping()
+
+	-- updateColorMaterialParams()
+
 	local scene = render.GetRenderTarget()
 	render.CopyRenderTargetToTexture( storeRenderTarget )
 
@@ -41,7 +77,6 @@ function Photon2.RenderBloom.Render( additive )
 
 	cam.Start3D()
 
-		-- render.SuppressEngineLighting( true )
 
 		render.SetStencilEnable( true )
 		render.SetStencilWriteMask( 1 )
@@ -67,15 +102,35 @@ function Photon2.RenderBloom.Render( additive )
 		-- render.SuppressEngineLighting( false )
 	cam.End3D()
 		
-		
-	render.CopyRenderTargetToTexture( rtBloomOuter )
+	-- render.SetRenderTarget( rtBloomOuter )
+
+	-- Copy scene to both bloom render targets
 	render.CopyRenderTargetToTexture( rtBloomInner )
-	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX:GetFloat(), bloomOuterBlurY:GetFloat(), bloomOuterBlurPasses:GetInt() )
 	render.CopyRenderTargetToTexture( rtBloomOuter )
-	
+
+	-- blur the inner bloom render target
 	render.BlurRenderTarget( rtBloomInner, bloomInnerBlurX:GetFloat(), bloomInnerBlurY:GetFloat(), bloomInnerBlurPasses:GetInt() )
 	
+	-- perform experimental color shading
+	if ( drawColorModInner ) then
+		render.SetRenderTarget( rtBloomInner )
+		colorMaterial:SetTexture( "$fbtexture", rtBloomInner )
+		render.SetMaterial( colorMaterial )
+		render.DrawScreenQuad()
+	end
+	-- render.CopyRenderTargetToTexture( rtBloomInner )
 	
+	
+	-- blur outer bloom render target
+	render.BlurRenderTarget( rtBloomOuter, bloomOuterBlurX:GetFloat(), bloomOuterBlurY:GetFloat(), bloomOuterBlurPasses:GetInt() )
+	-- perform experimental color shading
+	if ( drawColorModOuter ) then
+		colorOuter:SetTexture( "$fbtexture", rtBloomInner )
+		render.SetMaterial( colorOuter )
+		render.DrawScreenQuad()
+		render.CopyRenderTargetToTexture( rtBloomOuter )
+	end
+
 	render.SetRenderTarget( scene )
 	copyMaterial:SetTexture( "$basetexture", storeRenderTarget )
 	copyMaterial:SetString( "$color", "1 1 1" )
@@ -84,6 +139,7 @@ function Photon2.RenderBloom.Render( additive )
 	render.DrawScreenQuad()
 	-- render.SuppressEngineLighting( false )
 
+	-- this code was used for subtractive rendering
 	-- render.SetStencilEnable( true )
 	-- render.SetStencilEnable( !additive )
 		-- render.SetStencilCompareFunction( STENCIL_NOTEQUAL )
@@ -110,19 +166,24 @@ function Photon2.RenderBloom.Render( additive )
 
 end
 
+
+local addMat = additiveMaterial
+
 function Photon2.RenderBloom.DrawAdditive()
-	additiveMaterial:SetTexture( "$basetexture", rtBloomOuter )
-	render.SetMaterial( additiveMaterial )
+	-- multiple passes of each texture can increase intensity but it's
+	-- also moderately GPU intensive
+
+	addMat:SetTexture( "$basetexture", rtBloomOuter )
+	render.SetMaterial( addMat )
 	for i=1, additiveDrawBloomOuterPasses:GetInt() do
 		render.DrawScreenQuad()
 	end
-	
-	additiveMaterial:SetTexture( "$basetexture", rtBloomInner )
+	addMat:SetTexture("$basetexture", rtBloomInner )
 	for i=1, additiveDrawBloomInnerPasses:GetInt() do
 		render.DrawScreenQuad()
 	end
 
-	additiveMaterial:SetTexture( "$basetexture", rtMeshSource )
+	addMat:SetTexture( "$basetexture", rtMeshSource )
 	for i=1, additiveDrawMeshSourcePasses:GetInt() do
 		render.DrawScreenQuad()
 	end
