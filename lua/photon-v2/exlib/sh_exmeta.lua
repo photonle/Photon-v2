@@ -1,5 +1,22 @@
 exmeta = exmeta or {}
 
+-- 2024.06.04 workaround provided by @raphaelit7
+if VERSION < 240321 then
+    local metas = {}
+
+    local oldFindMetaTable = FindMetaTable
+    FindMetaTable = function( name )
+        local f = oldFindMetaTable( name )
+        if ( f ) then return f end
+
+        return metas[ name ]
+    end
+
+    function RegisterMetaTable( key, value )
+        metas[ key ] = value
+    end
+end
+
 ---Identical to exmeta.SetMetaTable but accepts a string for the base table's name.
 ---@param tbl any
 ---@param base string|table
@@ -53,19 +70,18 @@ function exmeta.RegisterMetaTable(name, tbl, base, global)
 	if isstring(base) then base = exmeta.FindMetaTable(base) end
 	if base then
 		tbl.Base = base
-		debug.getregistry()[name] = exmeta.SetMetaTable(tbl, base)
+		RegisterMetaTable( name, exmeta.SetMetaTable(tbl, base) )
 	else
-		debug.getregistry()[name] = tbl
+		RegisterMetaTable( name, tbl, base )
 	end
 	if (global) then
-		_G[name] = debug.getregistry()[name]
+		_G[name] = FindMetaTable( name )
 	end
-	-- debug.getregistry()[name] = setmetatable(tbl, {__index = base})
 	return FindMetaTable(name)
 end
 
 function exmeta.FindMetaTable(name)
-	if debug.getregistry()[name] == nil then debug.getregistry()[name] = {} end
+	if ( FindMetaTable( name ) == nil ) then RegisterMetaTable( name, {} ) end
 	return FindMetaTable(name)
 end
 
@@ -98,14 +114,14 @@ function exmeta.LoadTable(name, base, tbl, erase)
 	if (meta == nil) or (erase) then
 		meta = exmeta.RegisterMetaTable(name, {}, base)
 	end
-	table.Merge(debug.getregistry()[name], copy)
+	table.Merge( FindMetaTable( name ), copy)
 	if isstring(base) or istable(base) then
 		-- print("INHERITING FROM: '" .. tostring(base) .. "'")
 		meta = exmeta.Inherit(meta, base --[[@as string | table]])
 	else
 		local metaTable = getmetatable( tbl )
 		if metaTable then 
-			setmetatable( debug.getregistry()[name], metaTable )
+			setmetatable(  FindMetaTable( name ), metaTable )
 		end
 	end
 	-- if ( rawget( meta, "__call" ) ) then
