@@ -24,7 +24,7 @@ Photon2.RegisterCommand({
 Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "cycle_warning_lights",
-	Title = "Warning Mode",
+	Title = "Warning Mode (Cycle)",
 	Category = "Emergency",
 	Description = "Turns on warning lights if off and cycles through MODE1, MODE2, and MODE3.",
 	OnPress = {
@@ -432,7 +432,7 @@ Photon2.RegisterCommand({
 	Author = "Photon",
 	Name = "cycle_hold_directional",
 	Title = "Arrow (Cycle/Hold)",
-	Category = "Emergency",
+	Category = "Directional",
 	Description = "Press toggles lights on/off. Hold cycles through modes. Mimics Photon LE's behavior.",
 	OnPress = {
 		{ Action = "SOUND", Sound = "Controller" },

@@ -573,8 +573,6 @@ function Component:Pulse( frameChange )
 end
 
 function Component:ApplyModeUpdate()
-
-
 	-- Virtual outputs
 	local virtualOutputs = {}
 	for outputChannel, outputModes in pairs( self.VirtualOutputs or {} ) do
@@ -621,7 +619,7 @@ function Component:ApplyModeUpdate()
 
 	-- self:UpdateSegmentLightControl()
 	if ( self.PhotonController ) then
-		self:FrameTick( true )
+		self:FrameTick( true, true )
 	else
 		self:IndependentFrameTick( true )
 	end
@@ -756,20 +754,25 @@ function Component:IndependentFrameTick( all, change )
 	end
 end
 
-function Component:FrameTick( all )
-	-- for segmentName, segment in pairs( self.Segments ) do 
-	-- 	segment:IncrementFrame( self.PhotonController.Frame )
-	-- end
-	if ( all ) then
+---@param all? boolean If true, all sequences will be ticked. If false, only dependent sequences will be ticked. (I don't remember what this means)
+---@param noIncrement? boolean If true, the current frame is reapplied and not incremented.
+function Component:FrameTick( all, noIncrement )
+
+	if ( noIncrement ) then
 		for sequence, _ in pairs( self.ActiveSequences ) do
-			sequence:IncrementFrame( self.PhotonController.Frame )
+			sequence:ApplyCurrentFrame( self.PhotonController.Frame )
 		end
 	else
-		for sequence, _ in pairs( self.ActiveDependentSequences ) do
-			sequence:IncrementFrame( self.PhotonController.Frame )
+		if ( all ) then
+			for sequence, _ in pairs( self.ActiveSequences ) do
+				sequence:IncrementFrame( self.PhotonController.Frame )
+			end
+		else
+			for sequence, _ in pairs( self.ActiveDependentSequences ) do
+				sequence:IncrementFrame( self.PhotonController.Frame )
+			end
 		end
 	end
-	
 
 	for i=1, #self.Elements do
 		self.Elements[i]:UpdateState()

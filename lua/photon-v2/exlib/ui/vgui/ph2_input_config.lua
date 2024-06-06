@@ -128,10 +128,10 @@ function PANEL:LoadInputConfiguration( inputConfig, asNew )
 			byCommand[command] = byCommand[command] or {}
 			if ( data.Modifiers ) then
 				for _, keyCode in pairs( data.Modifiers ) do
-					keyString = keyString .. Photon2.Util.GetKeyName( keyCode ) .. " + "
+					keyString = keyString .. Photon2.ClientInput.GetKeyPrintName( keyCode ) .. " + "
 				end
 			end
-			keyString = keyString .. Photon2.Util.GetKeyName( key )
+			keyString = keyString ..  Photon2.ClientInput.GetKeyPrintName( key )
 			byCommand[command][#byCommand[command]+1] = {
 				String = keyString,
 				Primary = key,

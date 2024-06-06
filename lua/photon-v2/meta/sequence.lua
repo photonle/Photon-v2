@@ -158,8 +158,44 @@ function Sequence:OnPulse()
 	return false
 end
 
+function Sequence:ApplyCurrentFrame( frame )
+
+	-- allow empty sequences to silently fail
+	if ( #self < 1 ) then return end
+
+	if ( ( not self.Synchronize ) and ( not force ) ) then
+		frame = self.CurrentFrame
+	end
+
+	if ( self.IsRepeating and self.RestartFrame == 1 ) then
+		self.CurrentFrame = (frame - 1 % #self) + 1
+	elseif ( not self.IsRepeating ) then
+		if ( not self.PreviousFrame ) then self.CurrentFrame = 1 end
+		if ( self.CurrentFrame >= #self ) then
+			self.CurrentFrame = #self
+		else
+			self.CurrentFrame = self.CurrentFrame
+		end
+	else
+		self.CurrentFrame = (frame - 1 % #self) + 1
+	end
+
+	local phasedCurrentFrame = ( ( self.CurrentFrame + self.PhaseOffset - 1 ) % #self ) + 1
+
+	self.ActiveFrame = self[phasedCurrentFrame]
+	if not (self.PreviousFrame == self.ActiveFrame) then
+		if ( not self.ActiveFrame ) then
+			error( "Invalid frame [" .. tostring( self.CurrentFrame ) .. "]" )
+		end
+		for light, stateId in pairs( self.ActiveFrame ) do
+			light:SetInput( self.Name, stateId )
+		end
+	end
+	self.PreviousFrame = self.ActiveFrame
+end
+
 ---comment
----@param frame number Parent frame count. Will be ignored if sequence isn't synchronized.
+---@param frame? number Parent frame count. Will be ignored if sequence isn't synchronized.
 ---@param force? boolean If true, forces squence to use frame parameter and not discard it. (Used for previewing.)
 function Sequence:IncrementFrame( frame, force )
 	-- print("Frame parameter: " .. tostring( frame ))
