@@ -196,7 +196,8 @@ function Equipment.BuildComponents( equipmentTable, key, vehicleId )
 			States = entry.States,
 			Templates = entry.Templates,
 			RenderGroup = entry.RenderGroup,
-			VirtualOutputs = entry.VirtualOutputs
+			VirtualOutputs = entry.VirtualOutputs,
+			Options = entry.Options
 		}
 
 		component.Name = componentId

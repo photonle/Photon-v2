@@ -116,7 +116,9 @@ function Component.New( name, data )
 		ElementGroups = data.ElementGroups,
 		SubMaterials = data.SubMaterials,
 		InputPriorities = setmetatable( data.InputPriorities or {}, { __index = Component.InputPriorities } ),
-		States = data.States
+		States = data.States,
+		Options = data.Options,
+		DefinedOptions = data.DefineOptions or {},
 	}
 
 	-- Assume components without a model defined are virtual
@@ -497,6 +499,20 @@ function Component.New( name, data )
 			Finalize and set meta-table
 	--]]
 	setmetatable( component, { __index = class } )
+
+	--[[
+			Setup options	
+	--]]
+	if ( istable( component.Options ) ) then
+		for key, value in pairs( data.Options ) do
+			if ( component.DefinedOptions[key] ) then
+				if ( not istable( value ) ) then value = { value } end
+				component.DefinedOptions[key].Action( component, unpack( value ) )
+			else
+				warn( "Option [%s] is not defined in the component's .DefineOptions table.", key )
+			end
+		end
+	end
 
 	return component
 end

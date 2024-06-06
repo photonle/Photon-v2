@@ -331,7 +331,7 @@ VEHICLE.Equipment = {
 						Name = "@valor",
 						Component = "photon_fedsig_valor_51",
 						Position = Vector(0, -11, 87.5),
-						Angles = Angle(2, 90, 0),
+						Angles = Angle(0, 90, 0),
 						Scale = 1.04,
 						-- PoseParameters = {
 						-- 	extend_feet = 0.55
@@ -339,10 +339,6 @@ VEHICLE.Equipment = {
 						Bones = {
 							["valor_51_feet_left"] = { Vector(-0.34, 0, 1.1), Angle(0, 0, 0), 1 },
 							["valor_51_feet_right"] = { Vector(0.34, 0, 1.1), Angle(0, 0, 0), 1 },
-						},
-						Options = {
-							FeetHeight = 0.55,
-							HookMount = { -3, -1 }
 						},
 						BodyGroups = {
 							forward_hotfeet = 1,
