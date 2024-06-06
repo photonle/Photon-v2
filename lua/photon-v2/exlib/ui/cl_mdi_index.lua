@@ -5555,6 +5555,7 @@ EXUI_MDI_MAP_JSON =
 	"playlist-plus": "",
 	"network-outline": "",
 	"plus-minus-box": "",
-	"poker-chip": ""
+	"poker-chip": "",
+	"settings": ""
 }
 ]]

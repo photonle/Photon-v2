@@ -824,6 +824,18 @@ function TREE:UpdateSegments( segments )
 	self.SegmentsNode = segmentsNode
 end
 
+function TREE:UpdateDefinedOptions( options )
+	local this = self
+	local optionsNode = self.OptionsNode or self:AddNode( "Options", "xml", true )
+	for optionName, option in SortedPairs( options ) do
+		local optionNode = optionsNode:AddNode( optionName, "wrench" )
+		function optionNode:OnNodeSelected()
+			this:OnNodeSelected( self )
+		end
+	end
+	self.OptionsNode = optionsNode
+end
+
 function TREE:SetComponent( component )
 	self:Clear()
 	if ( component.States ) then self:UpdateStateSlots( component.States ) end
@@ -831,6 +843,8 @@ function TREE:SetComponent( component )
 	if ( component.Patterns ) then self:UpdatePatterns( component.Patterns ) end
 	if ( component.Segments ) then self:UpdateSegments( component.Segments ) end
 	if ( component.ElementGroups ) then self:UpdateElementGroups( component.ElementGroups ) end
+	-- use .DefineOptions (not DEFINED) because the component is not compiled at this stage
+	if ( component.DefineOptions ) then self:UpdateDefinedOptions( component.DefineOptions ) end
 end
 
 function TREE:Init()

@@ -23,7 +23,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.32 (BETA)"
+Photon2.Version = "2.0.33 (BETA)"
 
 --[[
 	Compatability

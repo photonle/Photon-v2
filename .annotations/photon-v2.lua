@@ -125,6 +125,12 @@ PhotonMaterial = PhotonMaterial
 ---@field Inputs table
 ---@field Color Color Component's model color override.
 ---@field Features PhotonLibraryComponentFeatures
+---@field Options table<string, any> Custom component options.
+
+---@class PhotonLibraryComponentOptionDefinition
+---@field Arguments table<number, table<string, string>> Arguments of the function in the format of <name, type>.
+---@field Description string Description of the option.
+---@field Action fun( component: PhotonLibraryComponent, ...: any ) Action to be performed when the option is set. The first argument is always the component itself.
 
 ---@class PhotonLibraryComponent : PhotonEquipmentLibraryComponentProperties
 ---@field Name? string Component name (may be overwritten by filename).
@@ -141,6 +147,7 @@ PhotonMaterial = PhotonMaterial
 ---@field VirtualOutputs table
 ---@field SubMaterials table<integer, string>
 ---@field Patterns table<string, table[]> Collections of segments and sequences that can be referenced in COMPONENT.Inputs. (See: https://github.com/photonle/Photon-v2/wiki/Components#patterns) 
+---@field DefineOptions table<string, PhotonLibraryComponentOptionDefinition>
 
 ---@class PhotonLibraryComponentFeatures
 ---@field AutomaticHeadlights? boolean Injects component code to setup automatic headlight on/off behavior.
