@@ -1,20 +1,15 @@
-exmeta = exmeta or {}
+exmeta = exmeta or {
+	MetaTables = {}
+}
 
--- 2024.06.04 workaround provided by @raphaelit7
-if VERSION < 240321 then
-    local metas = {}
+-- the new/native Garry's Mod function doesn't work correctly but this does...
+local function RegisterMetaTable( name, tbl )
+	exmeta.MetaTables[name] = tbl
+	return tbl
+end
 
-    local oldFindMetaTable = FindMetaTable
-    FindMetaTable = function( name )
-        local f = oldFindMetaTable( name )
-        if ( f ) then return f end
-
-        return metas[ name ]
-    end
-
-    function RegisterMetaTable( key, value )
-        metas[ key ] = value
-    end
+local function FindMetaTable( name )
+	return exmeta.MetaTables[name]
 end
 
 ---Identical to exmeta.SetMetaTable but accepts a string for the base table's name.
@@ -72,7 +67,7 @@ function exmeta.RegisterMetaTable(name, tbl, base, global)
 		tbl.Base = base
 		RegisterMetaTable( name, exmeta.SetMetaTable(tbl, base) )
 	else
-		RegisterMetaTable( name, tbl, base )
+		RegisterMetaTable( name, tbl )
 	end
 	if (global) then
 		_G[name] = FindMetaTable( name )
