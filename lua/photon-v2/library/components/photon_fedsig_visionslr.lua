@@ -62,7 +62,7 @@ COMPONENT.Templates = {
 			Brightness = 0.22,
 			FarZ = 500,
 			NearZ = 1,
-			Texture = "photon/flashlight/led_linear.png"
+			Material = "photon/flashlight/led_linear.png"
 		}
 	}
 }
