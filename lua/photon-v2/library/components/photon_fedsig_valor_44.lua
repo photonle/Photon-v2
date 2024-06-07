@@ -34,6 +34,22 @@ COMPONENT.DefineOptions = {
 			self.Bones["valor_44_feet_left"] = { Vector( height/-4.2857, 0, height ) * scale, Angle( 0, 0, 0 ), 1 }
 			self.Bones["valor_44_feet_right"] = { Vector( height/4.2857, 0, height ) * scale, Angle( 0, 0, 0 ), 1 }
 		end
+	},
+	ForwardHotFeet = {
+		Arguments = { [1] = { "enabled", "boolean" } },
+		Description = "Enable or disable the forward hotfeet.",
+		Action = function( self, enabled )
+			self.BodyGroups = self.BodyGroups or {}
+			self.BodyGroups["forward_hotfeet"] = enabled and 0 or 1
+		end
+	},
+	AlleyHotFeet = {
+		Arguments = { [1] = { "enabled", "boolean" } },
+		Description = "Enable or disable the alley hotfeet.",
+		Action = function( self, enabled )
+			self.BodyGroups = self.BodyGroups or {}
+			self.BodyGroups["alley_hotfeet"] = enabled and 0 or 1
+		end
 	}
 }
 

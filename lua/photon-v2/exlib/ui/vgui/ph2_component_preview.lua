@@ -828,9 +828,16 @@ function TREE:UpdateDefinedOptions( options )
 	local this = self
 	local optionsNode = self.OptionsNode or self:AddNode( "Options", "xml", true )
 	for optionName, option in SortedPairs( options ) do
+		if ( not istable( option ) ) then option = { option } end
 		local optionNode = optionsNode:AddNode( optionName, "wrench" )
 		function optionNode:OnNodeSelected()
 			this:OnNodeSelected( self )
+		end
+		for argIndex, argData in ipairs( option.Arguments or {} ) do
+			local argNode = optionNode:AddNode( string.format( "%s (%s)", argData[1], argData[2] ), string.format("numeric-%i-circle", argIndex ) )
+			function argNode:OnNodeSelected()
+				this:OnNodeSelected( self )
+			end
 		end
 	end
 	self.OptionsNode = optionsNode
