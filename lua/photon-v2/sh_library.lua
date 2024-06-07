@@ -224,7 +224,8 @@ local sirens = {
 			{
 				Label = "Model",
 				Property = "Model",
-				Search = true
+				Search = true,
+				DefaultSortBy = true 
 			},
 			{
 				Label = "Author",
@@ -323,7 +324,8 @@ local components = {
 			{
 				Label = "Title",
 				Property = "Title",
-				Search = true
+				Search = true,
+				DefaultSortBy = true
 			},
 			{
 				Label = "Source",

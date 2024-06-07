@@ -131,13 +131,18 @@ function PANEL:SetupMain()
 
 	local files = vgui.Create( "EXDListView", browserPanel )
 	files:Dock( FILL )
-	files:SetDataHeight( 20 )
+	files:SetDataHeight( 22 )
 
 	for i, schema in ipairs( self.ColumnSchema ) do
 		if ( schema.Visible ~= nil and ( schema.Visible == false ) ) then continue end
 		local column = files:AddColumn( schema.Label )
 		if ( schema.MaxWidth ) then column:SetMaxWidth( schema.MaxWidth ) end
 		if ( schema.MinWidth ) then column:SetMinWidth( schema.MinWidth ) end
+		if ( schema.DefaultSortBy ) then
+			if ( not this.CurrentSortColumn ) then
+				this.CurrentSortColumn = i
+			end
+		end
 	end
 
 	files:SetMultiSelect( false )
@@ -148,6 +153,13 @@ function PANEL:SetupMain()
 
 	function files:DoDoubleClick( lineId, line )
 		this:OnItemDoubleClick( line.EntryName )
+	end
+
+	files.ActualSortByColumn = files.SortByColumn
+
+	function files:SortByColumn( columnId )
+		this.CurrentSortColumn = columnId
+		self:ActualSortByColumn( columnId )
 	end
 
 	this.EntriesPanel = files
@@ -232,6 +244,9 @@ function PANEL:PopulateEntries( isUpdate )
 		end
 	end
 
+	if ( self.CurrentSortColumn ) then
+		files:SortByColumn( self.CurrentSortColumn )
+	end
 end
 
 -- Checks if an "open" operation on an entry should succeed.

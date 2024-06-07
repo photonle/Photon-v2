@@ -498,19 +498,18 @@ function Component.New( name, data )
 			Setup options	
 	--]]
 	if ( istable( component.Options ) ) then
-		for key, value in pairs( component.Options ) do
-			-- There needs to be special handling of the metatable for this
-			-- stage to prevent parent tables from being returned and manipulated.
-			setmetatable( component, 
-				{
-					__index = function( tbl, key )
-						if ( istable( class[key] ) ) then
-							tbl[key] = table.Copy( class[key] )
-						end
-						return rawget( tbl, key )
+		-- There needs to be special handling of the metatable for this
+		-- stage to prevent parent tables from being returned and manipulated.
+		setmetatable( component, 
+			{
+				__index = function( tbl, key )
+					if ( istable( class[key] ) ) then
+						tbl[key] = table.Copy( class[key] )
 					end
-				}
-			)
+					return rawget( tbl, key )
+				end
+			}
+		)
 		for key, value in pairs( data.Options ) do
 			if ( component.DefinedOptions[key] ) then
 				if ( not istable( value ) ) then value = { value } end
