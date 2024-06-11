@@ -343,6 +343,50 @@ function Component.New( name, data )
 
 	-- local usedSegments = {}
 
+	local class = PhotonLightingComponent.ClassMap[component.Class]
+	if ( not class ) then error("Unsupported component class [" .. tostring( component.Class ) .. "]") end
+	
+	if isstring( class ) then class = _G[class] end
+
+	--[[
+			Setup options	
+	--]]
+	if ( istable( component.Options ) ) then
+		local newInputData = {
+			Inputs = component.Inputs,
+			Patterns = component.Patterns,
+			Segments = component.Segments,
+		}
+		component.Inputs = data.Inputs
+		component.Patterns = data.Patterns
+		component.Segments = data.Segments
+		-- There needs to be special handling of the metatable for this
+		-- stage to prevent parent tables from being returned and manipulated.
+		setmetatable( component, 
+			{
+				__index = function( tbl, key )
+					if ( istable( class[key] ) ) then
+						tbl[key] = table.Copy( class[key] )
+					end
+					return rawget( tbl, key )
+				end
+			}
+		)
+		for key, value in pairs( data.Options ) do
+			if ( component.DefinedOptions[key] ) then
+				if ( not istable( value ) ) then value = { value } end
+				component.DefinedOptions[key].Action( component, unpack( value ) )
+			else
+				warn( "Option [%s] is not defined in the component's .DefineOptions table.", key )
+			end
+		end
+		component.Inputs = newInputData.Inputs
+		component.Patterns = newInputData.Patterns
+		component.Segments = newInputData.Segments
+	end
+
+
+
 	--[[
 			Compile Inputs
 	--]]
@@ -489,36 +533,7 @@ function Component.New( name, data )
 		end
 	end
 
-	local class = PhotonLightingComponent.ClassMap[component.Class]
-	if ( not class ) then error("Unsupported component class [" .. tostring( component.Class ) .. "]") end
-	
-	if isstring( class ) then class = _G[class] end
 
-	--[[
-			Setup options	
-	--]]
-	if ( istable( component.Options ) ) then
-		-- There needs to be special handling of the metatable for this
-		-- stage to prevent parent tables from being returned and manipulated.
-		setmetatable( component, 
-			{
-				__index = function( tbl, key )
-					if ( istable( class[key] ) ) then
-						tbl[key] = table.Copy( class[key] )
-					end
-					return rawget( tbl, key )
-				end
-			}
-		)
-		for key, value in pairs( data.Options ) do
-			if ( component.DefinedOptions[key] ) then
-				if ( not istable( value ) ) then value = { value } end
-				component.DefinedOptions[key].Action( component, unpack( value ) )
-			else
-				warn( "Option [%s] is not defined in the component's .DefineOptions table.", key )
-			end
-		end
-	end
 
 	setmetatable( component, { __index = class } )
 	return component
