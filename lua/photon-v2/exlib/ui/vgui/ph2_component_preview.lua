@@ -227,7 +227,6 @@ function PANEL:SetEntry( entryName, isComponentReload )
 
 			hook.Add( "Think", ent, function() 
 				local index = ent:ManualThink()
-				if ( not ent.IsPaused ) then
 					this.PlayerControls:SetFrameIndex( index )
 				end
 				-- ent:SetupBones()
