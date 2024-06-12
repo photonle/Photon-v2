@@ -1,0 +1,13 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "schmal/toughbook_cf30/dock"
+	"$bumpmap" "schmal/toughbook_cf30/dock_nm"
+//	"$translucent" "0"
+	"$alphatest" "1"
+	"$phong"		"1"
+	"$phongexponent"	"8"
+	"$phongboost"	"10"
+	"$rimlight"	"1"
+	"$rimlightexponent"	"1"
+	"$rimlightboost"	"1"
+ }
