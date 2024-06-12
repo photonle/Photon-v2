@@ -474,6 +474,8 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			if ( self.PreviewCameraPosition ) then
 				self.ModelPanel:SetCamPos( self.PreviewCameraPosition )
 				self.ModelPanel:SetLookAng( self.PreviewCameraAngle )
+			end
+			if ( self.PreviewCameraFOV ) then
 				self.ModelPanel:SetFOV( self.PreviewCameraFOV )
 			end
 		end
