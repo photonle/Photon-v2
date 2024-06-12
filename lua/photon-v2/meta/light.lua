@@ -61,6 +61,16 @@ function Light:Initialize( id, component )
 	return setmetatable( light, { __index = self } )
 end
 
+-- Checks if a sequence input should be accepted or filtered out. Used for level-of-detail optimization.
+---@param sequenceId string
+function Light:ValidateSequenceFilter( sequenceId )
+	-- TODO
+	-- Maintain global table of filtered element types
+	-- Specific channels and modes to filter are kept there
+	-- Approved/denied sequences are cached
+	-- If an element type is filtered then it will perform a validation check when an input is added
+end
+
 function Light:CheckBodyGroupRequirements()
 	if ( self.HasBodyGroupRequirements == nil ) then
 		if ( istable( self.RequiredBodyGroups ) ) then

@@ -208,6 +208,7 @@ VEHICLE.Equipment = {
 						Position = Vector( -32, 27, 53 ),
 						Angles = Angle( 0, 0, 0 ),
 						Scale = 1,
+						-- This modifies the down position so it doesn't unrealistically clip into the vehicle
 						Templates = {
 							["Bone"] = {
 								Shaft = {

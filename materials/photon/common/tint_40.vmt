@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "photon/common/tint_40"
+	"$model" "1"
+	"$nocull" "0"
+}
