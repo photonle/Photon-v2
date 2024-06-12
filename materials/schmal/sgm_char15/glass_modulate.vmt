@@ -1,0 +1,6 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/sgm_char15/tint_modulate"
+	"$model" "1"
+	"$nocull" "0"
+}
