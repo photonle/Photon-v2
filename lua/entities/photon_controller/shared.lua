@@ -512,14 +512,20 @@ function ENT:GetComponentParent()
 end
 
 
+local lastNotification = 0
 function ENT:HardReload()
-	if CLIENT then
-		-- ErrorNoHaltWithStack("Hard reload was triggered...")
-	end
+	-- ErrorNoHaltWithStack()
 	print( "Controller performing HARD reload..." )
 	self.DoHardReload = false
 	self.PerformedSoftReload = false
 	self:SetupProfile()
+	-- Temporarily disabled to due a bug that causes hard reloads when it shouldn't
+	-- if CLIENT then
+	-- 	if ( lastNotification + 1 < CurTime() ) then
+	-- 		notification.AddLegacy( "[PHOTON 2] Performed hard reload on \"" .. self.CurrentProfile.Name .. "\"", 0, 2 )
+	-- 		lastNotification = CurTime()
+	-- 	end
+	-- end
 end
 
 
