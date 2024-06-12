@@ -19,6 +19,18 @@ COMPONENT.Preview = {
 	Zoom = 3
 }
 
+COMPONENT.DefineOptions = {
+	Marker = {
+		Arguments = { [1] = { "enabled", "boolean" } },
+		Description = "Enable or disable the marker light.",
+		Action = function( self, enabled )
+			if ( not enabled ) then
+				self.Inputs["Emergency.Marker"]["ON"] = {}
+			end
+		end
+	}
+}
+
 COMPONENT.States = {
 	[1] = "R",
 	[2] = "B",
@@ -73,9 +85,31 @@ COMPONENT.Segments = {
 			["2"] = { 2 },
 			["3"] = { 3 },
 			["DUO_ALT_MED"] = sequence():Alternate( 1, 2, 8 ),
-			["TRI_FLASH_SOLO"] = sequence():Add( 1, 1, 0, 1, 1, 0, 1, 1 ):AppendPhaseGap()
+			["TRI_FLASH_SOLO"] = sequence():Add( 1, 1, 0, 1, 1, 0, 1, 1 ):AppendPhaseGap(),
+			["DUO_FLASH"] = sequence():FlashHold( { 1, 0, 2, 0 }, 3, 1 )
+		}
+	},
+	-- Using a different segment for overriding keeps the flash pattern synchronized
+	-- when the override is removed.
+	Override = {
+		Frames = {
+			[1] = "[1] 1",
+			[2] = "[2] 1",
+			[3] = "[3] 1",
+			[4] = "[W] 1",
+			[5] = "[R] 1"
+		},
+		Sequences = {
+			["W"] = { 4 },
+			["R"] = { 5 },
 		}
 	}
+}
+
+COMPONENT.Patterns = {
+	["R"] = { { "Override", "R" } },
+	["W"] = { { "Override", "W" } },
+	["DUO_FLASH"] = { { "Light", "DUO_FLASH" } }
 }
 
 COMPONENT.Inputs = {
