@@ -23,7 +23,60 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.33 (BETA)"
+Photon2.Version = "2.0.34 (BETA)"
+
+if CLIENT then
+	CreateClientConVar( "ph2_enable_auto_download", "1", true, true, "Automatically download and mount required core addons." )
+end
+
+--[[
+	Client Starter Package Addons
+
+	(This is locked down until a more comprehensive requirement manager is implemented.)
+--]]
+local requiredAddons = {
+	"2821476376", -- MX7000
+	"2795457300", -- SM Liberty and Liberty II
+	"2046835872", -- SGM props
+	"1851425708", -- Anemolis antennas
+	"489864412", -- TDM props
+	"2932505261", -- Anemolis legacy pack
+	"1701821427", -- Mighty props and components
+	"2962795021", -- Paolo props and components,
+	"218869210", -- SGM Shared Textures
+	"739684120", -- SM Shared Textures
+}
+
+local vehicleAddons = {
+	["fake"] = "2798400972",
+	["13fpiu_sgm"] = "2798400972",
+	["15charger_fm2_sgm"] = "2962795021",
+	["13caprice_sgm"] = "2596828039",
+	["96cvpi_sgm"] = "2861441761",
+	["21durango_sgm"] = "3018829161",
+	["13fpis_sgm"] = "2075396899",
+	["20fpiu_new_sgm"] = "2915669862",
+	["sm16fpiu"] = "2629021071"
+}
+
+if CLIENT then
+	if ( GetConVar( "ph2_enable_auto_download" ):GetBool() ) then
+		for _, addonId in pairs( requiredAddons ) do
+			if ( not steamworks.IsSubscribed( addonId ) ) then
+				steamworks.DownloadUGC( addonId, function( path, content )
+					-- print("MOUNTING: " .. tostring(path))
+					game.MountGMA( path )
+				end )
+			end
+		end
+	end
+end
+
+-- Checks if the given vehicle name is registered and, if so, returns
+-- the respective Workshop ID.
+function Photon2.SearchForVehicleContent( vehicleName )
+	return vehicleAddons[vehicleName]
+end
 
 --[[
 	Compatability
