@@ -125,6 +125,11 @@ function PANEL:SetEntry( entryName, isComponentReload )
 		modelPanel:SetLookAng( Angle( 20, 0, 0 ) )
 		modelPanel:SetFOV( 60 )
 		modelPanel:SetAnimated( false )
+		local nativeMouseWheel = modelPanel.OnMouseWheeled
+		function modelPanel:OnMouseWheeled( delta )
+			nativeMouseWheel( self, delta )
+			this.PreviewCameraFOV = self.fFOV
+		end
 
 		modelTab.Title:SetEntry( entry.Model, (entry.Credits or {}).Model or "Unknown", "model name", true )
 
@@ -469,6 +474,7 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			if ( self.PreviewCameraPosition ) then
 				self.ModelPanel:SetCamPos( self.PreviewCameraPosition )
 				self.ModelPanel:SetLookAng( self.PreviewCameraAngle )
+				self.ModelPanel:SetFOV( self.PreviewCameraFOV )
 			end
 		end
 	end
