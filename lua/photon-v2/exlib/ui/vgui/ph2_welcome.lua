@@ -13,17 +13,15 @@ Welcome to Photon 2.
 You are seeing this window because Photon 2 has just been installed.
 
 Photon 2 is a new emergency vehicle platform for Garry's Mod and complete rewrite of the Photon Lighting Engine. It provides vehicle lighting, emergency lighting, sirens and more. Compared to Photon Lighting Engine, Photon 2 is designed to be more stable, more compatible, and feature-rich. 
-
-This addon is currently in beta and undergoing active development with many more planned features on the way. Your feedback is welcome.
-
-Multiplayer is supported and has been modestly tested.
 ]]
 
 local starterText = 
 [[
-Looking to get started? 
+Welcome to Photon 2. 
 
-Download the official Starter Pack collection from Workshop to try out the Photon 2 demonstrator vehicles:
+You are seeing this window because Photon 2 has just been installed. Photon 2 is a new emergency vehicle platform for Garry's Mod and complete rewrite of the Photon Lighting Engine. It provides vehicle lighting, emergency lighting, sirens and more.
+
+Get started by downloading the official Starter Pack collection from Workshop to try out the Photon 2 demonstrator vehicles:
 ]]
 
 local starterText2 = 
@@ -100,7 +98,8 @@ function PANEL:SetupTabStarter( panel )
 	workshopButton:SetText( "Download Starter Pack Collection..." )
 	workshopButton:SetIcon( "download" )
 	function workshopButton:DoClick()
-		gui.OpenURL( "https://steamcommunity.com/sharedfiles/filedetails/?id=3100377468" )
+		steamworks.ViewFile( 3100377468 )
+		-- gui.OpenURL( "https://steamcommunity.com/sharedfiles/filedetails/?id=3100377468" )
 	end
 	local mid = addContentLabel( panel, starterText2 )
 	local demoImage = vgui.Create( "DImage", panel )
@@ -257,8 +256,7 @@ function PANEL:Setup()
 	end
 	self.Tabs = tabs
 
-	self:SetupTabWelcome( self:AddTab( "Welcome" ) )
-	self:SetupTabStarter( self:AddTab( "Starter Pack" ) )
+	self:SetupTabStarter( self:AddTab( "Welcome" ) )
 	if ( Photon2.IsVCModInstalled() )  then self:SetupTabVCMod( self:AddTab( "VCMod" ) ) end
 	self:SetupTabControls( self:AddTab( "Controls" ) )
 	self:SetupTabHelp( self:AddTab( "Help & Support" ) )

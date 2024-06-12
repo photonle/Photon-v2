@@ -129,6 +129,7 @@ function PANEL:SetupRenderOptions()
 	form:AddDivider()
 	form:CreateCheckBoxProperty( { "ph2_enable_subtractive_sprites", "Bool" }, "Subtractive 2D", true, { Descriptor = "Draw subtractive sprites" } )
 	form:CreateCheckBoxProperty( { "ph2_enable_additive_sprites", "Bool" }, "Additive 2D", true, { Descriptor = "Draw additive sprites" } )
+	form:AddParagraph( "Subtractive rendering increases light color saturation, while additive rendering enhances bloom intensity. You can disable these options for slightly better performance. (Applies to 2D lights only.)" )
 	form:AddDivider()
 	form:AddParagraph( "Bloom intensity affects the amount of additive color saturation. Higher values are more expensive to render and may introduce minor artifacting." )
 	form:CreateNumericSlider( { "ph2_bloom_add_src_passes", "Int" }, "Source Intensity", 0, 0, 32, 0, { Descriptor = "Adjust the intensity of the effect" } )
@@ -281,8 +282,12 @@ function PANEL:SetupOtherPage()
 	local form = vgui.Create( "Photon2UIFormPanel", panel )--[[@as Photon2UIFormPanel]]
 	form.LabelWidth = 120
 	form:Dock( FILL )
-	form:AddParagraph( "The performance overlay shows the number of active lights being rendered and the approximate percentage of frame time consumed by Photon 2.")
 	form:CreateCheckBoxProperty( { "ph2_debug_perf_overlay", "Bool" }, "Performance Info", true, { Descriptor = "Display Photon 2 performance data" } )
+	form:AddParagraph( "The performance overlay shows the number of active lights being rendered and the approximate percentage of frame time consumed by Photon 2.")
+	form:AddDivider()
+	form:CreateCheckBoxProperty( { "ph2_enable_auto_download", "Bool" }, "Automatic Download", true, { Descriptor = "Install missing content automatically" } )
+	form:AddParagraph( "Photon 2's automatic download feature will attempt to install missing Photon 2 content from Workshop on the client automatically. This is a new feature that only works with some Starter Package addons." )
+	form:AddDivider()
 end
 
 function PANEL:SetupServerPage()
