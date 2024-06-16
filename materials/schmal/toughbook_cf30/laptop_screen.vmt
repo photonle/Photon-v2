@@ -1,4 +1,5 @@
 "UnlitGeneric"
 {
 	"$basetexture" "schmal/toughbook_cf30/laptop_screen"
+	"$decal"	"1"
  }

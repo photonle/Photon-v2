@@ -43,19 +43,19 @@ VEHICLE.SubMaterials = {
 VEHICLE.Siren = { "fedsig_pathfinder_ssp" }
 
 VEHICLE.Equipment = {
-	-- {
-	-- 	Category = "HUD",
-	-- 	Options = {
-	-- 		{
-	-- 			Option = "HUD",
-	-- 			Components = {
-	-- 				{
-	-- 					Component = "photon_hud_default"
-	-- 				}
-	-- 			}
-	-- 		}
-	-- 	}		
-	-- },
+	{
+		Category = "HUD",
+		Options = {
+			{
+				Option = "HUD",
+				Components = {
+					{
+						Component = "photon_hud_default"
+					}
+				}
+			}
+		}		
+	},
 	{
 		Category = "Standard",
 		Options = {
@@ -145,10 +145,6 @@ VEHICLE.Equipment = {
 						Position = Vector( 0, -18, 74.8 ),
 						Angles = Angle( 0, 90, 0 ),
 						Scale = 1,
-						-- Bones = {
-						-- 	["44_strap_left"] = { Vector( 0.7, 0, 0 ), Angle( 10, 0, 0 ), 1 },
-						-- 	["44_strap_right"] = { Vector( -0.7, 0, 0 ), Angle( -10, 0, 0 ), 1 },
-						-- },
 						Options = {
 							HotFeet = false,
 							Straps = { 0, 9, 1.2 }
