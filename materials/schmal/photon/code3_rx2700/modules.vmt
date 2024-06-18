@@ -1,0 +1,17 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/code3_rx2700/rx2700"
+	"$bumpmap"	"schmal/photon/code3_rx2700/rx2700_nm"
+	"$envmap"	"env_cubemap"
+	"$envmaptint"	"[1 1 1]"
+	"$phong"		"1"
+	"$phongexponent"	"20"
+	"$phongfix"	"[1 1 1]"
+	"$nocull"		"1"
+	//"$color2"		"{512 512 512}"
+	"$normalmapalphaenvmapmask" "1"
+	"$phongexponenttexture"  "photon/common/flat_exp"
+	"$basemapluminancephongmask"  "1"
+	"$phongalbedotint"  "1"	
+	"$decal"	"0"
+}
