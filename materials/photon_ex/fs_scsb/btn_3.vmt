@@ -3,7 +3,7 @@
 	"$basetexture" "photon_ex/fs_scsb/button_def"
 	//"$basetexture" "photon_ex/fs_scsb/button_on"
 	//$selfillum 1
-	"$bumpmap" "schmal/shared/flat"
+	"$bumpmap" "photon/common/flat"
 	"$phong" 1
 	"$phongtint" "[.25 .25 .25]"
 	"$phongexponent" 1

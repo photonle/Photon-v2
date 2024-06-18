@@ -2,7 +2,7 @@
 {
 	"$basetexture" "photon_ex/fs_scsb/led_green"
 	"$selfillum" 1
-	"$bumpmap" "schmal/shared/flat"
+	"$bumpmap" "photon/common/flat"
 	"$translucent" 1
    	$surfaceprop "glass"
     $envmap "env_cubemap"

@@ -1,7 +1,7 @@
 "VertexLitGeneric"
 {
 	"$basetexture"		"schmal/whelen_cencom/led_off"
-	"$bumpmap"		"schmal/shared/flat"
+	"$bumpmap"		"photon/common/flat"
     	$phong "0"
    	 $phongexponent "8"
    	 $phongboost "10"

@@ -1,7 +1,7 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "schmal/shared/white"
-	"$bumpmap" "schmal/shared/flat"
+	"$basetexture" "photon/common/white"
+	"$bumpmap" "photon/common/flat"
    	$surfaceprop "metal"
     	$envmap "env_cubemap"
    	 $envmaptint "[0.5 0.5 0.5]"

@@ -1,7 +1,7 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "schmal/shared/white"
-	"$bumpmap" "schmal/shared/flat"
+	"$basetexture" "photon/common/white"
+	"$bumpmap" "photon/common/flat"
    	 $phong "1"
     	$phongexponent 1
    	 $phongboost "0"

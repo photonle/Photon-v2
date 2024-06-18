@@ -1,6 +1,6 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "schmal/shared/white"
+	"$basetexture" "photon/common/white"
 	"$bumpmap" "schmal/photon/fedsig_visionslr/chrome_reflector_nm"
    	 $phong "1"
     	$phongexponent 1

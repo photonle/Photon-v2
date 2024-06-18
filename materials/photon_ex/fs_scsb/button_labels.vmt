@@ -6,7 +6,7 @@
 	"$selfIllumFresnel" 1
 	"$selfIllumFresnelMinMaxExp" "[0.0 1.75 1.0]"
 	"$envmapfresnel" 1
-	"$bumpmap" "schmal/shared/flat"
+	"$bumpmap" "photon/common/flat"
 	"$phong" 1
 	"$phongtint" "[.25 .25 .3]"
 	"$phongexponent" 1

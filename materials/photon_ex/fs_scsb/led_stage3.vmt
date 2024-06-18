@@ -3,7 +3,7 @@
 	"$basetexture" "photon_ex/fs_scsb/led_off"
 	"$selfIllumFresnel" 1
 	"$selfIllumFresnelMinMaxExp" "[0.0 1.0 1.0]"
-	"$bumpmap" "schmal/shared/flat"
+	"$bumpmap" "photon/common/flat"
 	//"$translucent" 1
    	$surfaceprop "glass"
     $envmap "env_cubemap"

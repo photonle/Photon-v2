@@ -1,7 +1,7 @@
 "VertexlitGeneric"
 {
 	"$basetexture" "photon_ex/fs_scsb/button_def"
-	"$bumpmap" "schmal/shared/flat"
+	"$bumpmap" "photon/common/flat"
 	"$phong" 1
 	"$phongtint" "[.25 .25 .25]"
 	"$phongexponent" 1

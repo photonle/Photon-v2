@@ -1,7 +1,7 @@
 "VertexLitGeneric"
 {
 	"$basetexture"		"photon/common/gl_white"
-	"$bumpmap"		"schmal/shared/flat"
+	"$bumpmap"		"photon/common/flat"
 	"$translucent" 0
 	"$halflambert" 1
 	"$phong" "1" 
