@@ -2,6 +2,6 @@
 {
 	"$basetexture" "schmal/photon/fedsig_visionslr/lens_color_blue"
 	"$model" "1"
-	"$nocull" "1"
+	"$nocull" "0"
 }
 

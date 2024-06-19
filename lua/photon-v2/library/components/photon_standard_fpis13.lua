@@ -21,6 +21,12 @@ COMPONENT.States = {
 	[2] = "W"
 }
 
+-- TODO: this doesn't work
+-- COMPONENT.SubMaterials = {
+-- 	[8] = "schmal/sgm_fpis13/forward_signal",
+-- 	[9] = "schmal/sgm_fpis13/forward_signal",
+-- }
+
 COMPONENT.Templates = {
 	["Mesh"] = {
 		["Model"] = {
