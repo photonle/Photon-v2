@@ -2,7 +2,7 @@
 {
 	"$basetexture" "photon/license/screw"
 	"$bumpmap" "photon/license/screw_nm"
-	 "$surfaceprop" "metal"
+	"$surfaceprop" "metal"
 	"$nocull" "1"
 	"$nodecal" "1"
 	"$normalmapalphaenvmapmask" 1
@@ -13,7 +13,7 @@
    	"$envmapsaturation" "1"
     	"$envmapfresnel" "100"
 
-    	"$phong" "0"
+    	"$phong" "1"
     	"$phongexponent" "1"
     	"$phongboost" "1"
     	"$phongfresnelranges" "[.05 .05 .05]"
