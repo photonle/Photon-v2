@@ -9,7 +9,7 @@ VEHICLE.Author		= "Schmal"
 VEHICLE.Siren = { "code3_z3" }
 
 local livery = PhotonMaterial.New({
-	Name = "schmal_chevcap13_va_vsp",
+	Name = "schmal_fpis13_usss",
 	Shader = "VertexLitGeneric",
 	Parameters = {
 		["$basetexture"] = "schmal/liveries/sgm_fpis13/usss_police.png",
@@ -70,6 +70,7 @@ VEHICLE.Equipment = {
 							-- To configure domes individually:
 							-- Domes = { "red", "clear", "blue" }
 						},
+						StateMap = "[R] 4 14 13 [B] 3 11 12 15 16"
 						-- SubMaterials = {
 						-- 	-- [6] = "schmal/photon/code3_rx2700/black_plastic",
 						-- 	[7] = "schmal/photon/code3_rx2700/black_plastic",
@@ -94,10 +95,12 @@ VEHICLE.Equipment = {
 							["Emergency.Warning"] = {
 								["MODE1"] = {},
 								["MODE2"] = {
-									TailFlasher = "ALT"
+									TailFlasher = "ALT",
+									RearSignalFlasher = "ALT",
 								},
 								["MODE3"] = {
-									TailFlasher = "ALT"
+									TailFlasher = "ALT",
+									RearSignalFlasher = "ALT",
 								}
 							},
 						}
@@ -150,6 +153,104 @@ VEHICLE.Equipment = {
 					},
 				}
 			}
+		}
+	},
+	{
+		Category = "Interaction Sound",
+		Options = {
+			{
+				Option = "Code 3 Z3",
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "code3_z3s" }
+				}
+			},
+		}
+	},
+	{
+		Category = "License Plate",
+		Options = {
+			{
+				Option = "Visible",
+				Props = {
+					{
+						Name = "@rear_plate",
+						Model = "models/license/na_license_plate.mdl",
+						Position = Vector( 0, -122.2, 19 ),
+						Angles = Angle( 0, 0, 90 ),
+						Scale = 1.25,
+						SubMaterials = {
+							-- [1] = "",
+							[1] = "photon/license/plates/ph2_us_gov"
+							-- [1] = "!ph2_mpdc_demo"
+						},
+						BodyGroups = {
+							["screws_top"] = 1,
+							["screws_bottom"] = 1,
+							["face"] = "face_circular"
+						}
+					},
+					{
+						Inherit = "@rear_plate",
+						Angles = Angle( 0, 180, 89 ),
+						Position = Vector( 0, 125, 18 ),
+						BodyGroups = {
+							["screws_top"] = 1,
+							["screws_bottom"] = 1,
+							["face"] = "face_circular",
+							["mount"] = "mount"
+						}
+					},
+				},
+			}
+		}
+	},
+	{
+		Category = "Spotlight",
+		Options = {
+			{
+				Option = "PAR46",
+				Components = {
+					{
+						Component = "photon_whe_par46_left",
+						Position = Vector( -37, 44, 51 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1,
+						Templates = {
+							["Bone"] = {
+								Shaft = {
+									States = {
+										["DOWN"] = { Target = 300 },
+									}
+								},
+							}
+						}
+					},
+				}
+			},
+		}
+	},
+		{
+		Category = "Antenna",
+		Options = {
+			{
+				Option = "Option",
+				Props = {
+					-- models/sentry/antenna.mdl
+
+					{
+						Model = "models/sentry/antenna.mdl",
+						Position = Vector( -35, -100, 51.3 ),
+						Angles = Angle( 0, 0, 0 ),
+						Scale = 1.1
+					},
+					{
+						Model = "models/anemolis/props/antennas/anemolis_antenna3.mdl",
+						Position = Vector( 0, -51, 68.3 ),
+						Angles = Angle( 0, 0, 14 ),
+						Scale = 1
+					},
+				}
+			},
 		}
 	},
 }
