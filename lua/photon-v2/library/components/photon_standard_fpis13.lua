@@ -21,6 +21,12 @@ COMPONENT.States = {
 	[2] = "W"
 }
 
+-- TODO: this doesn't work
+-- COMPONENT.SubMaterials = {
+-- 	[8] = "schmal/sgm_fpis13/forward_signal",
+-- 	[9] = "schmal/sgm_fpis13/forward_signal",
+-- }
+
 COMPONENT.Templates = {
 	["Mesh"] = {
 		["Model"] = {
@@ -103,6 +109,10 @@ COMPONENT.Elements = {
 	-- Tail Flasher 
 	[22] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rl" },
 	[23] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rr" },
+
+	-- Signal Flasher
+	[24] = { "Model", Vector( 0, -0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DeactivationState = "OFF" },
+	[25] = { "Model", Vector( 0, -0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DeactivationState = "OFF" },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -162,6 +172,15 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 10 ),
+		}
+	},
+	RearSignalFlasher = {
+		Frames = {
+			[1] = "[W] 24",
+			[2] = "[W] 25",
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 6 ),
 		}
 	},
 }

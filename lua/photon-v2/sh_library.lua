@@ -273,7 +273,11 @@ local components = {
 		if ( data.Base ) then
 			local dataInputs
 			if ( istable( data.Inputs ) ) then dataInputs = table.Copy( data.Inputs ) end
-			Photon2.Util.Inherit( data, table.Copy( Photon2.BuildParentLibraryComponent( name, data.Base ) ))
+			local parent = Photon2.BuildParentLibraryComponent( name, data.Base )
+			Photon2.Util.Inherit( data, table.Copy( parent ))
+			if ( isstring( parent.StateMap ) and isstring( data.StateMap ) ) then
+				data.StateMap = parent.StateMap .. " " .. data.StateMap
+			end
 			Photon2.Library.ComponentsGraph[data.Base] = Photon2.Library.ComponentsGraph[data.Base] or {}
 			Photon2.Library.ComponentsGraph[data.Base][data.Name] = true
 	
