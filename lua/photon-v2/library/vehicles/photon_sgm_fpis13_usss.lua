@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "U.S. Secret Service Police - 2013 Ford Police Interceptor Sedan"
+VEHICLE.Title 		= "U.S. Secret Service Police - Ford Police Interceptor Sedan (2013)"
 VEHICLE.Vehicle		= "13fpis_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"
@@ -50,7 +50,7 @@ VEHICLE.Equipment = {
 					}
 				}
 			}
-		}		
+		}
 	},
 	{
 		Category = "Lightbar",
@@ -96,11 +96,12 @@ VEHICLE.Equipment = {
 								["MODE1"] = {},
 								["MODE2"] = {
 									TailFlasher = "ALT",
-									RearSignalFlasher = "ALT",
+									RearSignalFlasher = "TRI_FLASH_HOLD",
 								},
 								["MODE3"] = {
 									TailFlasher = "ALT",
-									RearSignalFlasher = "ALT",
+									RearSignalFlasher = "TRI_FLASH_HOLD",
+									ForwardSignalFlasher = "ALT"
 								}
 							},
 						}
@@ -144,10 +145,9 @@ VEHICLE.Equipment = {
 				Option = "Siren Prototype",
 				Components = {
 					{
-						Model = "models/sentry/props/whelensa315p_mounta.mdl",
 						Component = "siren_prototype",
-						Position = Vector(-10, 96, 31),
-						Angles = Angle(1.5, 0, 0),
+						Position = Vector(0, 112, 24.5),
+						Angles = Angle( 0, -90, 0 ),
 						Scale = 1,
 						Siren = 1
 					},
@@ -251,6 +251,140 @@ VEHICLE.Equipment = {
 					},
 				}
 			},
+		}
+	},
+	{
+		Category = "Side",
+		Options = {
+			{
+				Option = "Code 3 XT",
+				Components = {
+					{
+						Name = "@side_xt",
+						Component = "photon_code3_xt4",
+						Position = Vector( -45.8, 56, 34.72 ),
+						Angles = Angle( -10, 182, 2.5 ),
+						Scale = 1,
+						Inputs = { ["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } } },
+						States = { "B", "R" }
+					},
+					{
+						Inherit = "@side_xt",
+						Position = Vector( 45.8, 56, 34.72 ),
+						Angles = Angle( -10, -2, -2.5 ),
+					}
+				}
+			},
+		}
+	},
+	{
+		Category = "Upper Deck",
+		Options = {
+			{
+				Option = "Whelen Spitfires",
+				Components = {
+					{
+						Name = "@forward_spitfire",
+						Component = "photon_whe_ion_spitfire",
+						Position = Vector( 10, 24.5, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						RenderGroup = RENDERGROUP_OPAQUE,
+						Inputs = {
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "VARIABLE_SINGLE" },
+								["MODE2"] = { Light = "VARIABLE_SINGLE" },
+								["MODE3"] = { Light = "VARIABLE_SINGLE" },
+							},
+							["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } }
+						},
+						Scale = 1,
+						States = { "B" },
+						Options = {
+							Angle = -51,
+							Mount = 1
+						}
+					},
+					{
+						Inherit = "@forward_spitfire",
+						Position = Vector( 24, 24.5, 63 ),
+						Angles = Angle( 0, 0, 0 ),
+						Phase = 180,
+						States = { "R" }
+					}
+				}
+			},
+		}
+	},
+	{
+		Category = "Rear",
+		Options = {
+			{
+				Option = "Whelen Spitfires",
+				Components = {
+					{
+						Name = "@rear_spitfire",
+						Component = "photon_whe_ion_spitfire",
+						Position = Vector( -14.5, -60.5, 62.5 ),
+						Angles = Angle( 0, 180 - 10, 0 ),
+						RenderGroup = RENDERGROUP_OPAQUE,
+						Inputs = {
+							["Emergency.Warning"] = {},
+							["Emergency.Cut"] = { ["REAR"] = { Light = "OFF" } }
+						},
+						Scale = 1,
+						Options = {
+							Angle = -50,
+							Mount = 1
+						}
+					},
+					{
+						Inherit = "@rear_spitfire",
+						Position = Vector( 14.5, -60.5, 62.5 ),
+						Angles = Angle( 0, 180 + 10, 0 ),
+						Phase = 180,
+						States = { "B" }
+					}
+				}
+			},
+		}
+	},
+	{
+		Category = "Grille",
+		Options = {
+			{
+				Option = "XT6",
+				Components = {
+					{
+						Name = "@grille_xt6",
+						Component = "photon_code3_xt6",
+						Position = Vector( -10, 118.85, 28.9 ),
+						Angles = Angle( -10, 90 + 7, 0 ),
+						Scale = 1,
+						Inputs = { ["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } } }
+					},
+					{
+						Inherit = "@grille_xt6",
+						Position = Vector( 10, 118.85, 28.9 ),
+						Angles = Angle( -10, 90 - 7, 0 ),
+					}
+				}
+			},
+		}
+	},
+	{
+		Category = "Dome Light",
+		Options = {
+			{
+				Option = "SoundOff Signal obSERVE",
+				Components = {
+					{
+						Component = "photon_sos_observe",
+						Position = Vector( 0, 3, 68),
+						Angles = Angle( 2, 90, 180 ),
+						Scale = 1.1
+					}
+				}
+			}
 		}
 	},
 }
