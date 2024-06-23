@@ -113,6 +113,9 @@ COMPONENT.Elements = {
 	-- Signal Flasher
 	[24] = { "Model", Vector( 0, -0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rl", DeactivationState = "OFF" },
 	[25] = { "Model", Vector( 0, -0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_rr", DeactivationState = "OFF" },
+
+	[26] = { "Model", Vector( 0, 0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fl", DeactivationState = "OFF", DrawMaterial = "photon/common/glow_gradient_d" },
+	[27] = { "Model", Vector( 0, 0.1, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/sig_fr", DeactivationState = "OFF", DrawMaterial = "photon/common/glow_gradient_d" },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -169,20 +172,39 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "22",
 			[2] = "23",
+			[3] = "[OFF] 22 23"
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 10 ),
+			["CUT"] = { 3 }
 		}
 	},
 	RearSignalFlasher = {
 		Frames = {
 			[1] = "[W] 24",
 			[2] = "[W] 25",
+			[3] = "[OFF] 24 25"
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 6 ),
+			["TRI_FLASH_HOLD"] = sequence():FlashHold( 1, 3, 4 ):FlashHold( 2, 3, 4 ),
+			["CUT"] = { 3 }
 		}
 	},
+	ForwardSignalFlasher = {
+		Frames = {
+			[0] = "[OFF] 26 27 [~OFF] 7 8",
+			[1] = "[W] 26 [~OFF] 7 8",
+			[2] = "[W] 27 [~OFF] 7 8",
+			[3] = "[OFF] 26 27 [PASS] 7 8"
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 6 ),
+			["TRI_FLASH_HOLD"] = sequence():FlashHold( 1, 3, 4 ):FlashHold( 2, 3, 4 ),
+			["CUT"] = { 3 }
+		}
+	
+	}
 }
 
 COMPONENT.Inputs = {
@@ -209,6 +231,15 @@ COMPONENT.Inputs = {
 		["RIGHT"] = { Signal = "RIGHT" },
 		["HAZARD"] = { Signal = "HAZARD" }
 	},
+	["Emergency.Cut"] = {
+		["FRONT"] = {
+			ForwardSignalFlasher = "CUT",
+		},
+		["REAR"] = {
+			TailFlasher = "CUT",
+			RearSignalFlasher = "CUT",
+		}
+	}
 }
 
 -- This is not working and it's pissing me the fuck off

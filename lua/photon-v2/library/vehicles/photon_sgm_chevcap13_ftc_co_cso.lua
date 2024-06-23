@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Fort Collins Community Service Officer - 2013 Chevrolet Caprice PPV"
+VEHICLE.Title 		= "Fort Collins Community Service Officer - Chevrolet Caprice PPV (2013)"
 VEHICLE.Vehicle		= "13caprice_sgm"
 -- NOTE: "Photon 2" is a protected category!
 VEHICLE.Category 	= "Photon 2"

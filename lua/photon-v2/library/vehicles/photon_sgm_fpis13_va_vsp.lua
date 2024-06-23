@@ -3,7 +3,7 @@ local VEHICLE = Photon2.LibraryVehicle()
 
 -- the saviors of Capitol Police
 -- https://www.youtube.com/watch?v=iaUAwSbEROQ 
-VEHICLE.Title 		= "Virginia State Police - 2013 Ford Police Interceptor Sedan"
+VEHICLE.Title 		= "Virginia State Police - Ford Police Interceptor Sedan (2013)"
 VEHICLE.Vehicle		= "13fpis_sgm"
 VEHICLE.Category 	= "Photon 2"
 VEHICLE.Author		= "Schmal"

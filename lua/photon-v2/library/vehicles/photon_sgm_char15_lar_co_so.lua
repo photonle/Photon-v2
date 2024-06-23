@@ -1,7 +1,7 @@
 if (Photon2.ReloadVehicleFile()) then return end
 local VEHICLE = Photon2.LibraryVehicle()
 
-VEHICLE.Title 		= "Larimer County Sheriff's Office - 2015 Dodge Charger PPV"
+VEHICLE.Title 		= "Larimer County Sheriff's Office - Dodge Charger PPV (2015)"
 -- VEHICLE.Vehicle		= "fake"
 VEHICLE.Vehicle		= "15charger_fm2_sgm"
 VEHICLE.Category 	= "Photon 2"
