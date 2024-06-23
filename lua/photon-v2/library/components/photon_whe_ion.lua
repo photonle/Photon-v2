@@ -26,6 +26,8 @@ COMPONENT.Templates = {
 			Height = size/4,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_ion_detail.png").MaterialName,
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/whe_ion_shape.png").MaterialName,
+			Scale = 1.2,
+			Ratio = 1.2
 		}
 	}
 }
@@ -42,15 +44,21 @@ COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
 }
 
+COMPONENT.ElementGroups = {
+	Light = { 1 }
+}
 
 COMPONENT.Segments = {
 	Light = {
 		Frames = {
-			[1] = "1",
-			[2] = "[2] 1",
+			[1] = "Light",
+			[2] = "[2] Light",
+			[3] = "[3] Light",
+			[4] = "[OFF] Light"
 		},
 		Sequences = {
 			ON = { 1 },
+			["OFF"] = { 4 },
 			["STEADY_FLASH"] = sequence():SteadyFlash( 1 ),
 			["QUAD_FLASH"] = sequence():QuadFlash( 1, 0 ),
 			["QUAD_FLASH:A"] = sequence():QuadFlash( 1, 0 ),
@@ -68,7 +76,7 @@ COMPONENT.Segments = {
 			["TRI_FLASH_HOLD"] = sequence():FlashHold( { 1 }, 3, 4 ):AppendPhaseGap(),
 			["TRI_FLASH_HOLD:A"] = sequence():FlashHold( { 1, 0 }, 3, 4 ),
 			["TRI_FLASH_HOLD:B"] = sequence():FlashHold( { 0, 1 }, 3, 4 ),
-			["VARIABLE_SINGLE"] = sequence():Add( 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ):SetVariableTiming( 1/12, 1/40, 0.66 )
+			["VARIABLE_SINGLE"] = sequence():Add( 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ):SetVariableTiming( 1/12, 1/40, 0.66 ),
 		}
 	}
 }
@@ -122,11 +130,6 @@ COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }
 }
 
-
-
-
-
-
 Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()
@@ -137,6 +140,46 @@ COMPONENT.Model = "models/anemolis/props/anemolis_lsurfaceion.mdl"
 
 COMPONENT.Elements = {
 	[1] = { "Light", Vector( 0, 1.8, 0 ), Angle( 0, 0, 0 ) }
+}
+
+Photon2.RegisterComponent( COMPONENT )
+
+
+COMPONENT = Photon2.LibraryComponent()
+COMPONENT.Title = "Whelen Ion (Spitfire)"
+COMPONENT.Name = "photon_whe_ion_spitfire"
+COMPONENT.Base = "photon_whe_ion"
+COMPONENT.Model = "models/schmal/whelen_spitfire.mdl"
+COMPONENT.Author = {
+	["Model"] = "Karn14, Schmal",
+	["Code"] = "Schmal"
+}
+
+COMPONENT.DefineOptions = {
+	["Mount"] = {
+		Arguments = { { "type", "number" } },
+		Description = "Adjusts the mount type.",
+		Action = function( self, type )
+			self.BodyGroups = self.BodyGroups or {}
+			self.BodyGroups["mount"] = type
+		end
+	},
+	["Angle"] = {
+		Arguments = { { "angle", "number" } },
+		Description = "Adjusts the base mount's rotation.",
+		Action = function( self, angle )
+			self.Bones = self.Bones or {}
+			self.Bones["suction_mount"] = self.Bones["suction_mount"] or { Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), 1 }
+			self.Bones["suction_mount"][2] = Angle( angle, 0, 0 )
+			self.Bones["extended_mount"] = self.Bones["extended_mount"] or { Vector( 0, 0, 0 ), Angle( 0, 0, 0 ), 1 }
+			self.Bones["extended_mount"][2] = Angle( angle, 0, 0 )
+		end
+	}
+
+}
+
+COMPONENT.Elements = {
+	[1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
 }
 
 Photon2.RegisterComponent( COMPONENT )

@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/code3_xt/code3_xt"
+	"$bumpmap"	"schmal/photon/code3_xt/code3_xt_nm"
+	"$phong"		"1"
+	"$phongexponent"	"1"
+	"$phongboost"	"0.1"
+	"$rimlight"	"0"
+	"$rimlightexponent"	"0"
+	"$rimlightboost"	"1"
+	"$phongfresnelranges"	"[0.05 1 1]"
+	"$color2"		"{255 255 255}"
+	"$nocull"		"1"
+	
+}
