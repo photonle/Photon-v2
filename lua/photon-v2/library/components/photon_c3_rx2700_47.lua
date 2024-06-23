@@ -26,7 +26,6 @@ COMPONENT.Templates = {
 		["Half"] = {
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_half_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_half_detail.png").MaterialName,
-			-- Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_lib_detail.png").MaterialName,
 			Width = w/2,
 			Height = h,
 			Scale = 1.6,
@@ -35,7 +34,6 @@ COMPONENT.Templates = {
 		["Linear"] = {
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_linear_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_linear_detail.png").MaterialName,
-			-- Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_lib_detail.png").MaterialName,
 			Width = w,
 			Height = h,
 			Scale = 1.8,
@@ -44,7 +42,6 @@ COMPONENT.Templates = {
 		["Takedown"] = {
 			Shape = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_takedown_shape.png").MaterialName,
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/rx2700_takedown_shape.png").MaterialName,
-			-- Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_lib_detail.png").MaterialName,
 			Width = 2,
 			Height = 2,
 			Scale = 2,
@@ -174,7 +171,8 @@ COMPONENT.Segments = {
 			[2] = "8",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 5 )
+			["ALT"] = sequence():Alternate( 1, 2, 5 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 3 ),
 		}
 	},
 	FrontOuter = {
@@ -183,7 +181,8 @@ COMPONENT.Segments = {
 			[2] = "6",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 4 )
+			["ALT"] = sequence():Alternate( 1, 2, 2 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 0 ),
 		}
 	},
 	FrontMid = {
@@ -192,7 +191,8 @@ COMPONENT.Segments = {
 			[2] = "4",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 3 )
+			["ALT"] = sequence():Alternate( 1, 2, 3 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 1 ),
 		}
 	},
 	FrontInner = {
@@ -201,7 +201,8 @@ COMPONENT.Segments = {
 			[2] = "2"
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 2 )
+			["ALT"] = sequence():Alternate( 1, 2, 4 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 2 ),
 		}
 	},
 	RearCorner = {
@@ -210,7 +211,8 @@ COMPONENT.Segments = {
 			[2] = "10",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 8 )
+			["ALT"] = sequence():Alternate( 1, 2, 4 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 2 ),
 		}
 	},
 	RearOuter = {
@@ -219,7 +221,9 @@ COMPONENT.Segments = {
 			[2] = "12",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 5 )
+			["ALT"] = sequence():Alternate( 1, 2, 5 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 3 ),
+
 		}
 	},
 	RearMid = {
@@ -228,7 +232,8 @@ COMPONENT.Segments = {
 			[2] = "14",
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 4 )
+			["ALT"] = sequence():Alternate( 1, 2, 3 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 1, 2 }, 2, 1 ),
 		}
 	},
 	RearInner = {
@@ -239,7 +244,8 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 3 ),
-			["FLASH"] = sequence():Alternate( 3, 0, 3 )
+			["FLASH"] = sequence():Alternate( 3, 0, 4 ),
+			["DOUBLE_FLASH_HOLD"] = sequence():FlashHold( { 3, 0 }, 2, 2 ),
 		}
 	},
 	Marker = {
@@ -291,6 +297,46 @@ COMPONENT.Segments = {
 			["ALT"] = sequence():Alternate( 2, 3, 7 )
 		}
 	},
+	ArrowStik = {
+		Frames = {
+			[1] = "12",
+			[2] = "14 12",
+			[3] = "16 14 12",
+			[4] = "15 16 14 12",
+			[5] = "13 15 16 14 12",
+			[6] = "11 13 15 16 14 12",
+			[7] = "11",
+			[8] = "11 13",
+			[9] = "11 13 15",
+			[10] = "11 13 15 16",
+			[11] = "11 13 15 16 14",
+			[12] = "11 13 15 16 14 12",
+			[13] = "15 16",
+			[14] = "13 15 16 14",
+			[15] = "11 13 15 16 14 12",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 6 ):Hold( 2 ):StretchAll( 3 ):Off( 4 ),
+			["RIGHT"] = sequence():Sequential( 7, 12 ):Hold( 2 ):StretchAll( 3 ):Off( 4 ),
+			["CENOUT"] = sequence():Sequential( 13, 15 ):Hold( 2 ):StretchAll( 4 ):Off( 4 ),
+		}
+	},
+	FrontCut = {
+		Frames = {
+			[1] = "1 2 3 4 5 6 7 8 17 18 19 20 21 22 23",
+		},
+		Sequences = {
+			["CUT"] = { 0 }
+		}
+	},
+	RearCut = {
+		Frames = {
+			[1] = "9 10 11 12 13 14 15 16",
+		},
+		Sequences = {
+			["CUT"] = { 0 }
+		}
+	}
 }
 
 COMPONENT.Patterns = {
@@ -302,7 +348,7 @@ COMPONENT.Patterns = {
 		{ "RearCorner", "ALT" },
 		{ "RearOuter", "ALT" },
 		{ "RearMid", "ALT" },
-		{ "RearInner", "FLASH" },
+		{ "RearInner", "ALT" },
 	},
 	["DefaultR"] = {
 		{ "RearCorner", "ALT" },
@@ -311,14 +357,14 @@ COMPONENT.Patterns = {
 		{ "RearInner", "FLASH" },
 	},
 	["DefaultW"] = {
-		{ "FrontCorner", "ALT" },
-		{ "FrontOuter", "ALT" },
-		{ "FrontMid", "ALT" },
-		{ "FrontInner", "ALT" },
-		{ "RearCorner", "ALT" },
-		{ "RearOuter", "ALT" },
-		{ "RearMid", "ALT" },
-		{ "RearInner", "FLASH" },
+		{ "FrontCorner", "DOUBLE_FLASH_HOLD" },
+		{ "FrontOuter", "DOUBLE_FLASH_HOLD" },
+		{ "FrontMid", "DOUBLE_FLASH_HOLD" },
+		{ "FrontInner", "DOUBLE_FLASH_HOLD" },
+		{ "RearCorner", "DOUBLE_FLASH_HOLD" },
+		{ "RearOuter", "DOUBLE_FLASH_HOLD" },
+		{ "RearMid", "DOUBLE_FLASH_HOLD" },
+		{ "RearInner", "DOUBLE_FLASH_HOLD" },
 		{ "Takedown", "ALT" },
 		{ "Alley", "ALT" },
 	}
@@ -342,5 +388,14 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.Marker"] = {
 		["ON"] = { Marker = "ON" }
+	},
+	["Emergency.Directional"] = {
+		["LEFT"] = { ArrowStik = "LEFT" },
+		["RIGHT"] = { ArrowStik = "RIGHT" },
+		["CENOUT"] = { ArrowStik = "CENOUT" },
+	},
+	["Emergency.Cut"] = {
+		["FRONT"] = { FrontCut = "CUT" },
+		["REAR"] = { RearCut = "CUT" },
 	}
 }
