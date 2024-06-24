@@ -265,7 +265,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -45.8, 56, 34.72 ),
 						Angles = Angle( -10, 182, 2.5 ),
 						Scale = 1,
-						Inputs = { ["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } } },
+						Inputs = { 
+							["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } },
+							["Emergency.Warning"] = { ["MODE1"] = {} }
+						},
 						States = { "B", "R" }
 					},
 					{
@@ -291,7 +294,7 @@ VEHICLE.Equipment = {
 						RenderGroup = RENDERGROUP_OPAQUE,
 						Inputs = {
 							["Emergency.Warning"] = {
-								["MODE1"] = { Light = "VARIABLE_SINGLE" },
+								["MODE1"] = { },
 								["MODE2"] = { Light = "VARIABLE_SINGLE" },
 								["MODE3"] = { Light = "VARIABLE_SINGLE" },
 							},
@@ -328,7 +331,10 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 180 - 10, 0 ),
 						RenderGroup = RENDERGROUP_OPAQUE,
 						Inputs = {
-							["Emergency.Warning"] = {},
+							["Emergency.Warning"] = {
+								["MODE1"] = { Light = "DOUBLE_FLASH_HOLD" },
+								["MODE2"] = { Light = "DOUBLE_FLASH_HOLD" },
+							},
 							["Emergency.Cut"] = { ["REAR"] = { Light = "OFF" } }
 						},
 						Scale = 1,
@@ -360,7 +366,10 @@ VEHICLE.Equipment = {
 						Position = Vector( -10, 118.85, 28.9 ),
 						Angles = Angle( -10, 90 + 7, 0 ),
 						Scale = 1,
-						Inputs = { ["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } } }
+						Inputs = { 
+							["Emergency.Cut"] = { ["FRONT"] = { Light = "OFF" } },
+							["Emergency.Warning"] = { ["MODE1"] = {} }
+						}
 					},
 					{
 						Inherit = "@grille_xt6",
