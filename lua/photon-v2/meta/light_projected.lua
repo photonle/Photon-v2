@@ -49,6 +49,9 @@ Light.States = {
 	},
 	["A"] = {
 		Color = PhotonColor( 255, 180, 0 ):Blend( amber ):GetBlendColor()
+	},
+	["G"] = {
+		Color = PhotonColor( 0, 255, 0 ):Blend( green ):GetBlendColor()
 	}
 }
 

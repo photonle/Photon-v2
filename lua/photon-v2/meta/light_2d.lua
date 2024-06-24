@@ -129,10 +129,10 @@ Light.States = {
 	},
 	["G"] = {
 		SourceDetailColor = PhotonColor(255,255,0):Blend(green):GetBlendColor(), 
-		SourceFillColor = PhotonColor(64,200,0):Blend(green):GetBlendColor(),
-		GlowColor = PhotonColor( 100, 255, 0 ):Blend(green):GetBlendColor(), --*
-		InnerGlowColor = PhotonColor( 128, 255, 0 ):Blend(green):GetBlendColor(),
-		ShapeGlowColor = PhotonColor( 0, 128, 0 ):Blend(green):GetBlendColor(),
+		SourceFillColor = PhotonColor(0,200,64):Negative( true ):Blend(green):GetBlendColor(),
+		GlowColor = PhotonColor( 32, 255, 64 ):Negative( true ):Blend(green):Scale( 0.4 ):GetBlendColor(), --*
+		InnerGlowColor = PhotonColor( 32, 255, 32 ):Blend(green):Scale( 0.7 ):GetBlendColor(),
+		ShapeGlowColor = PhotonColor( 16, 255, 16 ):Blend(green):Scale( 0.5 ):GetBlendColor(),
 	},
 	-- ORIGINAL GREEN-SHIFTED COLORS
 	-- ["R"] = {
