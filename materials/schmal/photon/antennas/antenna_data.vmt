@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"schmal/photon/antennas/antenna_data"
+	"$bumpmap"	"photon/common/flat"
+	//"$detail"		"schmal/photon/antennas/antenna_data_ao"
+	"$detailscale"	1
+	"$detailblendmode"	"0"
+	"$phong"		"1"
+	"$phongexponent"	"10"
+	"$phongboost"	"0.1"
+	"$phongfresnelranges"	"[0.5 10 1]"
+	"$color2"		"{255 255 255}"	
+}

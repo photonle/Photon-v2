@@ -1,0 +1,10 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"photon/common/white"
+	"$bumpmap"	"schmal/photon/antennas/antenna_kle0_nm"
+	"$phong"		"1"
+	"$phongexponent"	"5"
+	"$phongboost"	"1"
+	"$phongfresnelranges"	"[0.5 1 10]"
+	"$color2"		"{180 180 180}"	
+}
