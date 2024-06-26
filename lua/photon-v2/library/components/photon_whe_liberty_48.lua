@@ -38,7 +38,7 @@ COMPONENT.Templates = {
 			Detail = PhotonMaterial.GenerateLightQuad("photon/lights/whe_lib_corner_detail.png").MaterialName,
 			Width = w * 1.1,
 			Height = h * 1.1,
-			Ratio = 1.6,
+			Ratio = 1.8,
 			Scale = 2
 		},
 		["Takedown"] = {

@@ -73,7 +73,7 @@ COMPONENT.DefineOptions = {
 		Description = "Sets the width of the feet placement.",
 		Action = function( self, width )
 			-- TODO: verify this if this is necessary and/or works
-			-- local scale = self.Scale or 1
+			local scale = self.Scale or 1
 			-- width = width * scale
 			self.Bones = self.Bones or {}
 			self.Bones["right_foot"] = { Vector( width, 0, 0 ), Angle( 0, 0, 0 ), scale }

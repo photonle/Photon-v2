@@ -58,7 +58,6 @@ COMPONENT.Templates = {
 		Primary = {
 			Width 		= 6.2,
 			Height		= 3.3,
-			-- Detail 		= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
 			Detail 		= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_detail.png").MaterialName,
 			Shape 		= PhotonMaterial.GenerateLightQuad("photon/lights/fs_valor_shape.png").MaterialName,
 			Scale 		= 1.2,

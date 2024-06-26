@@ -66,17 +66,11 @@ VEHICLE.Equipment = {
 						Options = {
 							Feet = -1,
 							Mount = "classic",
-							Domes = "black",
 							-- To configure domes individually:
 							-- Domes = { "red", "clear", "blue" }
+							Domes = "black",
 						},
 						StateMap = "[R] 4 14 13 [B] 3 11 12 15 16"
-						-- SubMaterials = {
-						-- 	-- [6] = "schmal/photon/code3_rx2700/black_plastic",
-						-- 	[7] = "schmal/photon/code3_rx2700/black_plastic",
-						-- 	[8] = "schmal/photon/code3_rx2700/black_plastic",
-						-- 	[9] = "schmal/photon/code3_rx2700/black_plastic",
-						-- }
 					}
 				}
 			},
