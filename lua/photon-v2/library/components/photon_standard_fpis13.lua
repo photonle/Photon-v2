@@ -7,7 +7,7 @@ COMPONENT.Credits = {
 	Code = "Schmal"
 }
 
-COMPONENT.Title = "2013 Ford Police Interceptor Sedan"
+COMPONENT.Title = "Ford Police Interceptor Sedan (2013)"
 COMPONENT.Category = "Vehicle"
 COMPONENT.IsVirtual = true
 
@@ -68,7 +68,7 @@ COMPONENT.Elements = {
 	[1] = { "Model", Vector( 0, 0.2, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fl" },
 	[2] = { "Model", Vector( 0, 0.2, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/hib_fr" },
 
-	-- Whatever the fuck the side white lighting is on the headlight assemblyu
+	-- Whatever the fuck the side white lighting is on the headlight assembly
 	[3] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/hdl_fl" },
 	[4] = { "Model", Vector( 0, 0, -5 ), Angle( 0, 0, 0 ), "photon/vehicle/hdl_fr" },
 
@@ -242,7 +242,6 @@ COMPONENT.Inputs = {
 	}
 }
 
--- This is not working and it's pissing me the fuck off
 hook.Add( "HUDPaint", "Photon2:FPIS13MaterialOverride", function()
 	Material( "sentry/13fpis/red_glass" ):SetInt( "$nowritez", 1 )
 	timer.Simple( 5, function()

@@ -32,7 +32,7 @@ function LightColor:SetIntensity( intensity )
 
 	if ( blendIntensity ) then
 		self.r, self.g, self.b = 
-			PhotonBlendColor.ComputeIntensityExClamped( 
+			PhotonBlendColor.ComputeIntensityEx( 
 				self.BlendR,
 				self.BlendG,
 				self.BlendB,
