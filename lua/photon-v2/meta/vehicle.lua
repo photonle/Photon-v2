@@ -156,6 +156,53 @@ local preMergeEquipment = {
 	["UIComponents"] = "Components"
 }
 
+local function isWithinDateRange( date )
+	local year, month, day = string.match(date, "(%d+)-(%d+)-(%d+)")
+	local provided = os.time( { year = year, month = month, day = day } )
+
+	local current = os.time()
+
+	local before = provided - 7 * 24 * 60 * 60
+	local after = provided + 14 * 24 * 60 * 60
+
+	return current >= before and current <= after
+end
+
+-- (this is a TEMPORARY implementation)
+local newVehicles = {
+	-- date given is the approximate release date
+	["photon_sm_f150r18_lgmt_co_pd"] = "2024-06-29"
+}
+
+function Vehicle.CreateSpawnIcon( iconName )
+	local pngName = "entities/" .. iconName .. ".png"
+	if ( Material( pngName ):IsError() ) then 
+		-- ContentIcon parses this material name later
+		-- and handles when the .png isn't valid (magic).
+		return pngName
+	end
+	local icon = PhotonMaterial.New({
+		Name = "vehicle_icon/" .. iconName,
+		Shader = "UnlitGeneric",
+		Parameters = {
+			["$basetexture"] = pngName,
+			["$nocull"] = 1,
+			-- If the opacity is 0.1 then this is working
+			-- ["$alpha"] = 0.1
+		},
+		OnGenerated = function( self )
+			if ( newVehicles[iconName] and isWithinDateRange( newVehicles[iconName] ) ) then
+				function self:Render()
+					render.SetMaterial( Material( "photon/ui/vehicle_icon_new.png", "smooth" ) )
+					render.DrawScreenQuad()
+				end
+				self:MakeDynamic()
+			end
+		end
+	})
+	return icon.MaterialName
+end
+
 ---@param data PhotonLibraryVehicle
 ---@return PhotonVehicle
 -- Compiles a new vehicle profile entry using raw input data.
@@ -431,7 +478,7 @@ function Vehicle.New( data )
 		vehicleTable.Base				 = data.Vehicle
 		vehicleTable.Category			 = data.Category or target.Category
 		vehicleTable.Name				 = title
-		vehicleTable.IconOverride		 = "entities/" .. data.Name .. ".png"
+		vehicleTable.IconOverride		 = Vehicle.CreateSpawnIcon( data.Name )
 		vehicleTable.IsPhoton2Generated  = true
 
 		-- Category whitelist check

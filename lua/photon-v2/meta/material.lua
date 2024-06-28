@@ -24,7 +24,10 @@ local textureParams = {
 ---@class PhotonMaterial : PhotonMaterialProperties
 ---@field MaterialName string
 ---@field IsGenerated boolean
+---@field IsDynamic boolean If material texture is a render target (and drawn via code).
 ---@field Version number This is not supported server-side.
+---@field Textures table<string, IMaterial> Original PNG materials used as textures.
+---@field Render fun(self: PhotonMaterial) Called when the material's texture is drawn.
 local material = exmeta.New()
 
 material.Shader = "UnlitGeneric"
@@ -54,7 +57,9 @@ function material.New( data, asNew )
 		Parameters = data.Parameters,
 		Mipmaps = data.Mipmaps,
 		Smooth = data.Smooth,
+		Textures = {},
 		IsGenerated = false,
+		OnGenerated = data.OnGenerated
 	}
 
 	setmetatable( result, { __index = material } )
@@ -138,12 +143,14 @@ function material:GenerateCreationParameters( parameters )
 			-- Texture parameters
 			if ( isstring( value ) ) then
 				if ( string.EndsWith( value, ".png" ) ) then
-					result[key] = material.GetPngTexture( value, self:GeneratePngParameters() ):GetName()
+					self.Textures[key] = Material( value, self:GeneratePngParameters() )
+					result[key] = self.Textures[key]:GetTexture( "$basetexture" ):GetName()
 				else
 					result[key] = value
 				end
 			elseif ( istable( value ) and isstring ( value[1] ) and string.EndsWith( value[1], ".png" ) ) then
-				result[key] = material.GetPngTexture( value[1], self:GeneratePngParameters( value[2] ) ):GetName()
+				self.Textures[key] = Material( value[1], self:GeneratePngParameters( value[2] ) )
+				result[key] = self.Textures[key]:GetTexture( "$basetexture" ):GetName()
 			end
 		elseif ( istable( value ) ) then
 			result[key] = self:GenerateCreationParameters( value )
@@ -162,6 +169,7 @@ function material:Generate( increment )
 	self.IsGenerated = true
 	Photon2.Materials.Queue[self.Name] = nil
 	Photon2.Materials.Index[self.Name] = self
+	self:OnGenerated()
 end
 
 -- Generates the name to be used with `CreateMaterial(...)` and updates the resulting .MaterialName.
@@ -181,10 +189,12 @@ function material:UpdateParameters( recompute )
 		if ( textureParams[key] ) then
 			if ( isstring( value ) ) then
 				if ( string.EndsWith( value, ".png" ) ) then
-					mat:SetTexture( key, material.GetPngTexture( value, self:GeneratePngParameters() ) )
+					self.Textures[key] = Material( value, self:GeneratePngParameters() )
+					mat:SetTexture( key, self.Textures[key]:GetTexture( "$basetexture" ) )
 				end
 			elseif ( istable( value ) and isstring ( value[1] ) and string.EndsWith( value[1], ".png" ) ) then
-				mat:SetTexture( key, material.GetPngTexture( value[1], self:GeneratePngParameters( value[2] ) ) )
+				self.Textures[key] = Material( value[1], self:GeneratePngParameters( value[2]) )
+				mat:SetTexture( key, self.Textures[key]:GetTexture( "$basetexture" ) )
 			end
 		elseif ( isnumber( value ) and (value % 1) == 0 ) then mat:SetFloat( key, value )
 		elseif ( isnumber( value ) ) then mat:SetFloat( key, value )
@@ -226,4 +236,42 @@ function material:Update( data, asNew )
 	end
 	
 	return self
+end
+
+function material:GetOrGenerateRenderTarget()
+	if ( not self.RenderTarget ) then
+		if ( self.Textures["$basetexture"] ) then
+			local tex = self.Textures["$basetexture"]:GetTexture( "$basetexture" )
+			self.RenderTarget = GetRenderTargetEx( self.Name, tex:Width(), tex:Height(), RT_SIZE_OFFSCREEN, MATERIAL_RT_DEPTH_SHARED, 16, 0, IMAGE_FORMAT_RGBA8888 )
+		end
+	end
+	return self.RenderTarget
+end
+
+function material:MakeDynamic()
+	self.IsDynamic = true
+	self:GetMaterial():SetTexture( "$basetexture", self:GetOrGenerateRenderTarget() )
+	self:DoRender()
+end
+
+function material:DoRender()
+	cam.Start2D()
+	-- (Doing the hook like this may be necessary if there are material loading problems)
+	-- hook.Add("PostDrawHUD", "Photon2.Render:" .. self.Name, function()
+		-- hook.Remove( "PostDrawHUD", "Photon2.Render:" .. self.Name )
+		render.PushRenderTarget( self:GetOrGenerateRenderTarget() )
+			render.ClearDepth()
+			render.SetMaterial( self.Textures["$basetexture"] )
+			render.DrawScreenQuad()
+			self:Render()
+		render.PopRenderTarget()
+	cam.End2D()
+	-- end)
+end
+
+-- For override.
+function material:Render() end
+
+function material:OnGenerated()
+
 end
