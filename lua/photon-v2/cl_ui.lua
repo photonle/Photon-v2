@@ -1,10 +1,18 @@
 Photon2.UI = Photon2.UI or {
 	CursorReleased = false,
 	HUD = {},
-	Windows = {}
+	Windows = {},
+	UniqueIndex = 0
 }
 
+list.Set( "ContentCategoryIcons", "Photon 2", "photon/ui/photon_2_icon_16_centered.png" )
+
 local UI = Photon2.UI
+
+function UI.GetUniqueIndex()
+	UI.UniqueIndex = UI.UniqueIndex + 1
+	return UI.UniqueIndex
+end
 
 function UI.OpenDesktop()
 	local window = UI.GetOrCreatePhotonMenu()
