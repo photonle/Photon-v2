@@ -136,6 +136,8 @@ function Photon2.ComponentBuilder.SetupParkMode( component, params )
 		sequences = component.Inputs["Emergency.ParkedWarning"]["MODE3"]
 	end
 
+	if ( istable( sequences ) ) then sequences = table.Copy( sequences ) end
+
 	local mixin = {
 		VirtualOutputs = {
 			["Emergency.ParkedWarning"] = {
@@ -153,7 +155,7 @@ function Photon2.ComponentBuilder.SetupParkMode( component, params )
 		},
 		Inputs = {
 			["Emergency.ParkedWarning"] = {
-				["MODE3"] = table.Copy( sequences )
+				["MODE3"] = sequences
 			}
 		}
 	}

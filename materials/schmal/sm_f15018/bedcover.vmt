@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"photon/common/matte"
+	"$bumpmap"	"schmal/sm_f15018/bedcover_nm"
+	"$detail"		"photon/common/matte"
+	"$detailblendmode" "1"
+	"$detailscale"	8
+	"$scale"		"1"
+	"$phong"		"1"
+	"$phongexponent"	"2"
+	"$phongboost"	"0.01"
+	"$phongfresnelranges"	"[3 5 5]"
+	"$color2"		"{24 24 24}"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[.01 0.01 0.01]"
+}
