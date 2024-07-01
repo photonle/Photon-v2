@@ -212,25 +212,25 @@ function PANEL:SetEntry( entryName, isComponentReload )
 				PHOTON2_PREVIEW_COMPONENT:Remove()
 			end
 
-			if ( CurTime() < 15000 ) then
-				local component = Photon2.GetComponent( componentId )
-				local ent = component:CreateForUI()
-				ent.UseStrictFrameTiming = false
-				ent:SetScale( ent.Preview.Zoom )
-				if ( this.PlayerControls ) then
-					ent.ManualFrameDuration = this.PlayerControls.CurrentFrameDuration
-				end
-				self.Entity = ent
-				
-				PHOTON2_PREVIEW_COMPONENT = ent
+			local component = Photon2.GetComponent( componentId )
+			local ent = component:CreateForUI()
+			ent.UseStrictFrameTiming = false
+			ent:SetScale( ent.Preview.Zoom )
+			if ( this.PlayerControls ) then
+				ent.ManualFrameDuration = this.PlayerControls.CurrentFrameDuration
+			end
+			self.Entity = ent
 			
-				ent:SetChannelMode( "Emergency.Warning", "MODE3" )
-				if ( not static ) then
-					local newZ = ent.Preview.Position.Z + 20
-					self:SetLookAng( Angle( newZ, 0, 0 ) )
-					self:SetCamPos( Vector( -60, 0, newZ ) )
-				end
-
+			PHOTON2_PREVIEW_COMPONENT = ent
+			
+			ent:SetChannelMode( "Emergency.Warning", "MODE3" )
+			if ( not static ) then
+				local newZ = ent.Preview.Position.Z + 20
+				self:SetLookAng( Angle( newZ, 0, 0 ) )
+				self:SetCamPos( Vector( -60, 0, newZ ) )
+			end
+			
+			if ( CurTime() < 32000 ) then
 				hook.Add( "Think", ent, function() 
 					local index = ent:ManualThink()
 					if ( not ent.IsPaused ) then
@@ -239,7 +239,9 @@ function PANEL:SetEntry( entryName, isComponentReload )
 					-- ent:SetupBones()
 					-- ent:SetPropertiesFromEquipment( component )
 				end)
-			
+			else
+				warn( "Component preview disabled to prevent game crash. Please reload the map or restart the game.")
+			end
 			
 			hook.Add( "Photon2:ComponentReloaded", this, function( hookName, id )
 				if ( id == entryName or component.Ancestors[id] ) then
@@ -250,11 +252,9 @@ function PANEL:SetEntry( entryName, isComponentReload )
 			this.ActiveComponent = ent
 			
 			modelTab.Tree:SetModel( this.ActiveComponent )
-		else
-			warn( "Component preview disabled to prevent game crash. Please reload the map or restart the game.")
+
 		end
 			
-		end
 
 		function modelPanel:FirstPersonControls()
 

@@ -83,7 +83,7 @@ local newLivery = PhotonMaterial.New({
 		["$phong"] = 1,
 		["$phongboost"] = 3,
 		["$phongexponent"] = 10,
-		-- ["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
+		["$phongfresnelranges"] = Vector( 0.22, 0.2, 2 ),
 
 		["$rimlight"] = 1,
 		-- ["$rimlightexponent"] = 2,

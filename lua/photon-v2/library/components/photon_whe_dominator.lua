@@ -34,6 +34,13 @@ COMPONENT.Templates = {
 			Scale = 1.25,
 			ForwardBloomOffset = 0.1,
 			ForwardVisibilityOffset = -0.3
+		},
+	},
+	["Projected"] = {
+		Illumination = {
+			Material = "photon/flashlight/led_linear.png",
+			Brightness = 1.5,
+			FOV = 90
 		}
 	}
 }
@@ -108,20 +115,68 @@ COMPONENT.StateMap = "[1/3] 1 3 5 [2/4] 2 4 6"
 COMPONENT.Elements = {
 	[5] = { "Light", Vector( -10.5, 0.2, 0 ), Angle( 0, 180, 0 ) },
 	[6] = { "Light", Vector( 10.5, 0.2, 0 ), Angle( 0, 180, 0 ) },
+
+	[7] = { "Illumination", Vector( 0, 0.2, 0 ), Angle( 0, 180, 0 ) },
 }
 
 COMPONENT.Segments = {
 	All = {
 		Frames = {
+			[0] = "[OFF] 1 2 3 4 5 6 7",
 			[1] = "1 2 3 4 5 6",
 			[2] = "1 3 5",
 			[3] = "2 4 6"
 		},
 		Sequences = {
-			ALL = { 1 }
+			ALL = { 1 },
+			OFF = { 0 },
 		}
 	},
+	Scan = {
+		Frames = {
+			[1] = "5 1 4",
+			[2] = "3 2 6",
+			[3] = "1 3 5",
+			[4] = "2 4 6",
+			[5] = "5 6",
+			[6] = "1 2 3 4",
+			[7] = "1 2 3 4 5 6",
+			[8] = "[W] 5 1 4",
+			[9] = "[W] 3 2 6",
+			[10] = "[W] 1 3 5",
+			[11] = "[W] 2 4 6",
+			[12] = "[W] 5 6",
+			[13] = "[W] 1 2 3 4",
+			[14] = "[W] 1 2 3 4 5 6"
+		},
+		Sequences = {
+			["SCAN"] = sequence()
+					:FlashHold( { 1, 2 }, 3, 1 ):Do( 3 )
+					:FlashHold( { 3, 4 }, 3, 1 ):Do( 3 )
+					:FlashHold( { 5, 6 }, 3, 1 ):Do( 3 )
+					:FlashHold( { 7, 0 }, 3, 1 ):Do( 3 ),
+			["SCAN_W"] = sequence()
+					:FlashHold( { 1, 2 }, 3, 1 ):FlashHold( { 8, 9 }, 3, 1 ):FlashHold( { 1, 2 }, 3, 1 )
+					:FlashHold( { 3, 4 }, 3, 1 ):FlashHold( { 10, 11 }, 3, 1  ):FlashHold( { 3, 4 }, 3, 1 )
+					:FlashHold( { 5, 6 }, 3, 1 ):FlashHold( { 12, 13 }, 3, 1  ):FlashHold( { 5, 6 }, 3, 1 )
+					:FlashHold( { 7, 0 }, 3, 1 ):FlashHold( { 14, 0 }, 3, 1  ):FlashHold( { 7, 0 }, 3, 1 )
+		}
+	},
+	Illum = {
+		Frames = {
+			[1] = "[W] 1 2 3 4 5 6 7"
+		},
+		Sequences = {
+			["ILLUM"] = { 1 }
+		}
+	}
 }
+
+COMPONENT.Patterns = {
+	["SCAN"] = { { "Scan", "SCAN" } },
+	["SCAN_W"] = { { "Scan", "SCAN_W" } },
+}
+
 Photon2.RegisterComponent( COMPONENT )
 
 COMPONENT = Photon2.LibraryComponent()

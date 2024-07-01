@@ -208,9 +208,7 @@ VEHICLE.Equipment = {
 						Angles = Angle( 0, 0, 81 ),
 						Scale = 1.2,
 						SubMaterials = {
-							-- [1] = "",
 							[1] = "photon/license/plates/ph2_co_gvt"
-							-- [1] = "!ph2_mpdc_demo"
 						},
 						BodyGroups = {
 							["screws_top"] = 1,
