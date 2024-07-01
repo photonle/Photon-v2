@@ -21,7 +21,6 @@ COMPONENT.Templates = {
 		["Model"] = {
 			Model = "models/schmal/f15018_emis.mdl",
 			DeactivationState = "~OFF",
-			ManipulateAlpha = false,
 			DrawMaterial = "photon/common/glow_gradient_a",
 			IntensityGainFactor = 8,
 			IntensityLossFactor = 8,
@@ -29,7 +28,7 @@ COMPONENT.Templates = {
 				["~BR"] = {
 					BloomColor = PhotonColor( 512, 0, 0 ):Blend( { r = 512, g = 0, b = 0 } ):GetBlendColor(),
 					DrawColor = PhotonColor( 512, 255, 0 ):Blend( { r = 512, g = 0, b = 0 } ):GetBlendColor(),
-					IntensityTransitions = true
+					IntensityTransitions = true,
 				}
 			}
 		}
@@ -114,15 +113,17 @@ COMPONENT.Segments = {
 		Frames = {
 			[1] = "3",
 			[2] = "4",
+			[3] = "[PASS] 3 4"
 		},
 		Sequences = {
-			["ALT"] = sequence():Alternate( 1, 2, 7 )
+			["ALT"] = sequence():Alternate( 1, 2, 7 ),
+			["CUT"] = { 3 },
 		}
 	},
 	["Lights"] = {
 		Frames = {
 			[1] = "1 2 5 6 7 8 9 10 17 18 21",
-			[2] = "5 6 7 8 9 10 17 18 21 13 14",
+			[2] = "5 6 7 8 9 10 17 18 21",
 		},
 		Sequences = {
 			["HEADLIGHTS"] = { 1 },
@@ -143,6 +144,23 @@ COMPONENT.Segments = {
 		},
 		Sequences = {
 			["ON"] = { 1 }
+		}
+	},
+	["ReverseFlasher"] = {
+		Frames = {
+			[1] = "[B] 11",
+			[2] = "[R] 12",
+			[3] = "[R] 11",
+			[4] = "[B] 12",
+			[5] = "[R] 11 [B] 12",
+			[6] = "[PASS] 11 12"
+		},
+		Sequences = {
+			["ALT"] = sequence():Alternate( 1, 2, 8 ),
+			["2FH_2C"] = sequence():FlashHold( { 1, 2, 3, 4 }, 2, 4 ),
+			["2FH_2C_FAST"] = sequence():FlashHold( { 1, 2, 3, 4 }, 2, 2 ),
+			["MARKER"] = { 5 },
+			["CUT"] = { 6 }
 		}
 	},
 	["Signal"] = {
@@ -191,9 +209,27 @@ COMPONENT.Segments = {
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
 		["MODE1"] = {
+			["ReverseFlasher"] = "2FH_2C"
+		},
+		["MODE2"] = {
+			["ReverseFlasher"] = "2FH_2C"
 		},
 		["MODE3"] = {
-			["WIGWAG"] = "ALT"
+			["WIGWAG"] = "ALT",
+			["ReverseFlasher"] = "2FH_2C_FAST"
+		}
+	},
+	["Emergency.Marker"] = {
+		["ON"] = {
+			["ReverseFlasher"] = "MARKER"
+		}
+	},
+	["Emergency.Cut"] = {
+		["FRONT"] = {
+			["WIGWAG"] = "CUT"
+		},
+		["REAR"] = {
+			["ReverseFlasher"] = "CUT"
 		}
 	},
 	["Vehicle.Lights"] = {

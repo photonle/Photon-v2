@@ -23,7 +23,7 @@
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.35"
+Photon2.Version = "2.0.36"
 
 if CLIENT then
 	CreateClientConVar( "ph2_enable_auto_download", "1", true, true, "Automatically download and mount required core addons." )
@@ -48,7 +48,6 @@ local requiredAddons = {
 }
 
 local vehicleAddons = {
-	["fake"] = "2798400972",
 	["13fpiu_sgm"] = "2798400972",
 	["15charger_fm2_sgm"] = "2962795021",
 	["13caprice_sgm"] = "2596828039",
