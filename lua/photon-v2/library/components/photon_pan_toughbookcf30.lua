@@ -92,12 +92,12 @@ COMPONENT.SubMaterials = {
 COMPONENT.StateMap = ""
 
 COMPONENT.Elements = {
-	[1] = { "Dynamic", Vector( 0, 6, 5 ), Angle( -90, -90, 0 ), BoneParent = "screen" },
+	[1] = { "Dynamic", Vector( 0, 6, 5 ), Angle( -90, -90, 0 ), BoneParent = 2 },
 	[2] = { "Lid" },
 	[3] = { "Model", Vector( 0, 4.5, -1.15 ), Angle( 0, 0, 0 ), "schmal/toughbook_cf30/laptop_screen", 
 		DrawMaterial = "schmal/toughbook_cf30/laptop_screen",
 		BloomMaterial = "schmal/toughbook_cf30/laptop_screen",
-		BoneParent = "screen" 
+		BoneParent = 2
 	},
 	[4] = { "Sub", Indexes = { 4 } }
 }
