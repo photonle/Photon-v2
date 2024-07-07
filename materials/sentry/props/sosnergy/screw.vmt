@@ -1,0 +1,29 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "sentry/props/sosnergy/screw"
+	"$bumpmap" "sentry/props/sosnergy/screw_nm"
+    $surfaceprop "metal"
+	"$alphatest" "1"
+	"$allowalphatocoverage" "1"
+    $envmap "env_cubemap"
+    $envmaptint "[1.0 1.0 1.0]"
+    $envmapcontrast "1"
+    $envmapsaturation ".5"
+    $envmapfresnel "1"
+	"$normalmapalphaenvmapmask" "1"
+    $phong "1"
+    $phongexponent "10"
+    $phongboost "20"
+    $phongfresnelranges "[.05 .3 1]"
+	"$carfixenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a fix
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+
+}

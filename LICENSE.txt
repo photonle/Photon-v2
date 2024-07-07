@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 Photon Lighting Group (https://photon.lighting/)
+Copyright (c) 2024 Alex Smith and Photon Lighting Group (https://photon.lighting/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,3 +19,21 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+This license does NOT apply to non-Lua files. This project includes assets
+that are used in accordance with published usage agreements or with explicit
+permission from their creators. Such content remains property of their 
+respective owners and you agree to obey any limitations as to their usage.
+
+Original Photon content (including, but not limited to, graphics, models,
+and sound files) may be reused or included so long as the work is transformative
+and contains both attribution and a link to this project in manner that is
+plainly visible to all potential users or consumers.
+
+You are likewise permitted to port original Photon content to other platforms 
+so long as there is proper attribution in a plainly visible fashion.
+
+Photon content may NOT be publicly redistributed for Garry's Mod or S&box unless
+such work is tranformative.
