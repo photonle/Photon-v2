@@ -230,3 +230,64 @@ Photon2.RegisterSiren(
 		}
 	}
 )
+
+--[[
+		THE SIRENS BELOW ARE PRESENTED BY
+
+		P H O T O N   S I R E N   T O N E   S Y N T H E S I S   2 . 0
+
+		FUCK YEAH
+--]]
+
+
+-- Photon2.RegisterSiren(
+-- 	{
+-- 		-- Based on this video: https://www.youtube.com/watch?v=ZhowKD5yvgc
+-- 		Name = "whelen_ws295mp",
+-- 		Make = "Whelen",
+-- 		Model = "WS-295-MP",
+-- 		Author = "Schmal",
+-- 		Sounds = {
+-- 			["WAIL"] = { Sound = "photon/sirens/whelen_ws295mp/wail.wav", 	Default = "T1" },
+-- 			["YELP"] = { Sound = "photon/sirens/whelen_ws295mp/yelp.wav", 	Default = "T2" },
+-- 			["PIER"] = { Sound = "photon/sirens/whelen_ws295mp/piercer.wav", 	Default = "T3" },
+-- 			["HILO"] = { Sound = "photon/sirens/whelen_ws295mp/hilo.wav", 	Default = "T4" },
+-- 			["AIRHORN"] = { Sound = "photon/sirens/whelen_ws295mp/airhorn.wav", 	Default = "AIR", Label = "AIR" },
+-- 			["MANUAL"] = { Sound = "photon/sirens/whelen_ws295mp/manual.wav", 	Default = "MAN", Label = "MAN" },
+-- 		}
+-- 	}
+-- )
+
+Photon2.RegisterSiren(
+	{
+		Name = "whelen_alpha",
+		Make = "Whelen",
+		Model = "Alpha Series",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/whelen_alpha/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/whelen_alpha/yelp.wav", 	Default = "T2" },
+			["PIERCER"] = { Sound = "photon/sirens/whelen_alpha/piercer.wav", 	Default = "T3", Icon = "bolt", Label = "PIER" },
+			["HILO"] = { Sound = "photon/sirens/whelen_alpha/hilo.wav", 	Default = "T4", Icon = "hilo" },
+			["MANUAL"] = { Sound = "photon/sirens/whelen_alpha/manual.wav", 	Default = "MAN", Label = "MAN" },
+			["AIRHORN"] = { Sound = "photon/sirens/whelen_295hfsa6/airhorn.wav", 	Default = "AIR", Label = "AIR" },
+		}
+	}
+)
+
+Photon2.RegisterSiren(
+	{
+		Name = "whelen_295hfsa6",
+		Make = "Whelen",
+		Model = "295HSFA6",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/whelen_295hfsa6/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/whelen_295hfsa6/yelp.wav", 	Default = "T2" },
+			["PIERCER"] = { Sound = "photon/sirens/whelen_295hfsa6/piercer.wav", 	Default = "T3", Icon = "bolt", Label = "PIER" },
+			["HILO"] = { Sound = "photon/sirens/whelen_295hfsa6/hilo.wav", 	Default = "T4", Icon = "hilo" },
+			["AIRHORN"] = { Sound = "photon/sirens/whelen_295hfsa6/airhorn.wav", 	Default = "AIR", Label = "AIR" },
+			["MANUAL"] = { Sound = "photon/sirens/whelen_295hfsa6/manual.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)
