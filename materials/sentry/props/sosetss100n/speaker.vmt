@@ -1,0 +1,24 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "sentry/props/sosetss100n/speaker"
+	"$bumpmap" "photon/common/flat"
+    "$phong" "1"
+    "$phongexponent" "5"
+    "$phongboost" "1"
+    "$phongfresnelranges" "[.05 .8 1]"
+	"$basemapalphaphongmask" "1"
+	"$rimlight"               "1"
+	"$rimlightexponent"       "17"
+	"$rimlightboost"          "0.2"
+	"$carproxenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // 
+		{
+			srcVar1 $carproxenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
+
