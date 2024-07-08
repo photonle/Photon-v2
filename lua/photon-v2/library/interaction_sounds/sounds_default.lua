@@ -14,6 +14,19 @@ Photon2.RegisterInteractionSound({
 
 Photon2.RegisterInteractionSound({
 	Class = "Controller",
+	Name = "click",
+	Title = "Mechanical",
+	Default = { 
+		Sound = "photon/generic/click1.wav",
+		Duration = 0.025,
+		Volume = 50
+	},
+	Release = false,
+	Momentary = true
+})
+
+Photon2.RegisterInteractionSound({
+	Class = "Controller",
 	Name = "fedsig",
 	Title = "Federal Signal",
 	Default = { 
