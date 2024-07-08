@@ -61,3 +61,40 @@ PhotonMaterial.New({
 		["$basetexture"] = "photon/flashlight/wide.png"
 	}
 })
+
+local propList = {
+	["Antennas"] = {
+		"models/schmal/antenna_absc.mdl",
+		"models/schmal/antenna_lojack.mdl",
+		"models/schmal/antenna_motorola.mdl",
+		"models/schmal/antenna_vhf_1.mdl",
+		"models/schmal/antenna_vhf_2.mdl",
+	},
+	["Antenna Pods"] = {
+		"models/schmal/antenna_pod_data.mdl",
+		"models/schmal/antenna_pod_navigator.mdl",
+		"models/schmal/antenna_pod_quadmode.mdl",
+		"models/schmal/antenna_pod_trimode.mdl"
+	},
+	["License Plate"] = {
+		"models/license/na_license_plate.mdl"
+	}
+}
+
+hook.Add( "PopulateMenuBar", "Photon2:AddPropCategory", function()
+	local contents = {}
+
+	for category, models in pairs( propList ) do
+		table.insert( contents, {
+			type = "header",
+			text = category
+		})
+		for i=1, #models do
+			table.insert( contents, {
+				type = "model",
+				model = models[i]
+			})
+		end
+	end
+	spawnmenu.AddPropCategory( "Photon2.Props", "Photon 2", contents, "photon/ui/photon_2_icon_16_centered.png" )
+end)
