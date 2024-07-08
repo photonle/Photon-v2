@@ -33,7 +33,6 @@ Sound.States = {
 	["OFF"] = {
 		Mute = true,
 		Play = false,
-		DSP = 1
 	},
 	["ON"] = {
 		Mute = false,
@@ -42,7 +41,6 @@ Sound.States = {
 	["HORN"] = {
 		Mute = false,
 		Play = true,
-		DSP = 1
 	},
 	["MUTE"] = {
 		Mute = true,

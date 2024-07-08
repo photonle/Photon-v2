@@ -98,3 +98,23 @@ hook.Add( "PopulateMenuBar", "Photon2:AddPropCategory", function()
 	end
 	spawnmenu.AddPropCategory( "Photon2.Props", "Photon 2", contents, "photon/ui/photon_2_icon_16_centered.png" )
 end)
+
+-- TODO: integrate/automate with sound elements
+local dspChannels = { 118 }
+local dspSounds = {}
+
+function Photon2.MaintainDSPChannels()
+	for i=1, #dspChannels do
+		local channel = dspChannels[i]
+		if ( not dspSounds[channel] ) then
+			dspSounds[channel] = CreateSound( LocalPlayer(), "photon/silent_" .. tostring( dspChannels[i] ) .. ".wav" )
+			dspSounds[channel]:SetDSP( channel )
+		end
+		dspSounds[channel]:Play()
+	end
+end
+
+hook.Add( "InitPostEntity", "Photon2:SirenDSPChannel", function()
+	timer.Create( "Photon2:MaintainDSP", 5, 0, Photon2.MaintainDSPChannels )
+	Photon2.MaintainDSPChannels()
+end)
