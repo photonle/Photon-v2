@@ -1,0 +1,5 @@
+"DecalModulate"
+{
+	"$basetexture" "schmal/photon/sgm_whelen_edge/lens_rba"
+	"$model" "1"
+}
