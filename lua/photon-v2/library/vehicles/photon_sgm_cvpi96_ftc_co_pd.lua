@@ -61,8 +61,11 @@ VEHICLE.Equipment = {
 				Components = {
 					{
 						Component = "photon_hud_default"
-					}
-				}
+					},	
+				},
+				InteractionSounds = {
+					{ Class = "Controller", Profile = "click" }
+				},
 			}
 		}
 	},
