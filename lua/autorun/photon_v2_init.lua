@@ -45,6 +45,7 @@ local requiredAddons = {
 	"2962795021", -- Paolo props and components,
 	"218869210", -- SGM Shared Textures
 	"739684120", -- SM Shared Textures
+	"2786308957", -- SGM Edge
 }
 
 local vehicleAddons = {
@@ -55,7 +56,8 @@ local vehicleAddons = {
 	["21durango_sgm"] = "3018829161",
 	["13fpis_sgm"] = "2075396899",
 	["20fpiu_new_sgm"] = "2915669862",
-	["sm16fpiu"] = "2629021071"
+	["sm16fpiu"] = "2629021071",
+	["91caprice_sgm"] = "2953545073"
 }
 
 if CLIENT then
