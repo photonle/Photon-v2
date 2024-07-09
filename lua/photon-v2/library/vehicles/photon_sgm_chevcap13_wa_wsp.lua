@@ -11,17 +11,7 @@ VEHICLE.WorkshopRequirements = {
 
 }
 
-VEHICLE.Description = [[
-The Washington State Patrol is responsible for enforcing traffic laws and investigating accidents on state highways and unincorporated roads.
-
-The Caprice was very common throughout the mid 2010s. They used a relatively unique lighting configuration that was primarily blue with some red and amber.
-
-Their vehicle designs are very simple with graphics only present on the driver and front-passenger doors.
-]]
-
--- This actually does have a siren
-VEHICLE.Siren = { "whelen_epsilon" }
-
+VEHICLE.Siren = { "whelen_295hfsa6" }
 
 local livery = PhotonMaterial.New({
 	Name = "schmal_chevcap13_wa_wsp",

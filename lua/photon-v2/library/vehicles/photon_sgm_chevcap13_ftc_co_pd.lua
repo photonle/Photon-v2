@@ -13,8 +13,7 @@ VEHICLE.WorkshopRequirements = {
 
 VEHICLE.Description = [[]]
 
--- This actually does have a siren
-VEHICLE.Siren = { "whelen_epsilon" }
+VEHICLE.Siren = { "whelen_295hfsa6" }
 
 
 local oldLivery = PhotonMaterial.New({

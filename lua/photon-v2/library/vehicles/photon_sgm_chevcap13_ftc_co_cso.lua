@@ -20,7 +20,7 @@ Special thanks to Fort Collins Police for giving me very precise answers to some
 ]]
 
 -- This actually does have a siren
-VEHICLE.Siren = { "whelen_epsilon" }
+VEHICLE.Siren = { "whelen_295hfsa6" }
 
 
 local livery = PhotonMaterial.New({
