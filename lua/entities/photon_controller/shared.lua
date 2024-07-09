@@ -402,7 +402,7 @@ function ENT:UserCommandSound( action, press, name )
 
 	if ( CurTime() < lastPlayed + ( subSound.Duration or 0.1 ) ) then return end
 
-	self:EmitSound( subSound.Sound, 100, subSound.Pitch, subSound.Volume/100 )
+	self:EmitSound( subSound.Sound, 100, subSound.Pitch, subSound.Volume/100, 0, 0, 0 )
 	subSound.LastPlayed = CurTime()
 end
 

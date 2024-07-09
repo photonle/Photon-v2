@@ -105,7 +105,6 @@ Light.States = {
 		PeakColor = black,
 		Intensity = 0
 	},
-	-- EXPERIMENTAL VIOLET-SHIFTED COLORS
 	["R"] = {
 		Blend = PhotonColor( 255, 0, 0 ),
 		SourceFillColor = PhotonColor( 255, 0, 0 ):Negative(true):Blend( red ):GetBlendColor(),
@@ -134,23 +133,6 @@ Light.States = {
 		InnerGlowColor = PhotonColor( 32, 255, 32 ):Blend(green):Scale( 0.7 ):GetBlendColor(),
 		ShapeGlowColor = PhotonColor( 16, 255, 16 ):Blend(green):Scale( 0.5 ):GetBlendColor(),
 	},
-	-- ORIGINAL GREEN-SHIFTED COLORS
-	-- ["R"] = {
-	-- 	SourceDetailColor = Color(255,255,0), 
-	-- 	SourceFillColor = Color(255,0,0),
-	-- 	GlowColor = Color(255, 0, 24),
-	-- 	InnerGlowColor = Color(255, 32, 0),
-	-- 	ShapeGlowColor = Color(255, 0, 0)
-	-- },
-	-- ["B"] = {
-	-- 	SourceDetailColor = Color(0,255,255), 
-	-- 	SourceFillColor = Color(0,0,255),
-	-- 	-- SourceFillColor = Color(0,0,255),
-	-- 	GlowColor = Color(40, 0, 255),
-	-- 	InnerGlowColor = Color(0, 32, 512),
-	-- 	ShapeGlowColor = Color(0, 0, 255),
-	-- },
-
 	["A"] = {
 		SourceDetailColor = PhotonColor(255,255,0):Blend(amber):GetBlendColor(), 
 		SourceFillColor = PhotonColor(200,64,0):Blend(amber):GetBlendColor(),
