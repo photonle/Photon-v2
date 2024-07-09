@@ -240,23 +240,23 @@ Photon2.RegisterSiren(
 --]]
 
 
--- Photon2.RegisterSiren(
--- 	{
--- 		-- Based on this video: https://www.youtube.com/watch?v=ZhowKD5yvgc
--- 		Name = "whelen_ws295mp",
--- 		Make = "Whelen",
--- 		Model = "WS-295-MP",
--- 		Author = "Schmal",
--- 		Sounds = {
--- 			["WAIL"] = { Sound = "photon/sirens/whelen_ws295mp/wail.wav", 	Default = "T1" },
--- 			["YELP"] = { Sound = "photon/sirens/whelen_ws295mp/yelp.wav", 	Default = "T2" },
--- 			["PIER"] = { Sound = "photon/sirens/whelen_ws295mp/piercer.wav", 	Default = "T3" },
--- 			["HILO"] = { Sound = "photon/sirens/whelen_ws295mp/hilo.wav", 	Default = "T4" },
--- 			["AIRHORN"] = { Sound = "photon/sirens/whelen_ws295mp/airhorn.wav", 	Default = "AIR", Label = "AIR" },
--- 			["MANUAL"] = { Sound = "photon/sirens/whelen_ws295mp/manual.wav", 	Default = "MAN", Label = "MAN" },
--- 		}
--- 	}
--- )
+Photon2.RegisterSiren(
+	{
+		-- Based on this video: https://www.youtube.com/watch?v=ZhowKD5yvgc
+		Name = "whelen_ws295mp",
+		Make = "Whelen",
+		Model = "WS-295-MP",
+		Author = "Schmal",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/whelen_ws295mp/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/whelen_ws295mp/yelp.wav", 	Default = "T2" },
+			["PIER"] = { Sound = "photon/sirens/whelen_ws295mp/piercer.wav", 	Default = "T3" },
+			["HILO"] = { Sound = "photon/sirens/whelen_ws295mp/hilo.wav", 	Default = "T4" },
+			["AIRHORN"] = { Sound = "photon/sirens/whelen_ws295mp/airhorn.wav", 	Default = "AIR", Label = "AIR" },
+			["MANUAL"] = { Sound = "photon/sirens/whelen_ws295mp/manual.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)
 
 Photon2.RegisterSiren(
 	{
