@@ -291,3 +291,21 @@ Photon2.RegisterSiren(
 		}
 	}
 )
+
+Photon2.RegisterSiren(
+	{
+		Name = "code3_mastercomb",
+		Make = "Code 3",
+		Model = "Mastercom B",
+		Author = "Schmal",
+		-- Time Smoothing: 10%
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/code3_mastercomb/wail.wav", Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/code3_mastercomb/yelp.wav", 	Default = "T2" },
+			["HYPERYELP"] = { Sound = "photon/sirens/code3_mastercomb/hyperyelp.wav", 	Default = "T3", Label = "HYPR", Icon = "bolt" },
+			["HILO"] = { Sound = "photon/sirens/code3_mastercomb/hilo.wav", 	Default = "T4", Icon = "hilo" },
+			["AIRHORN"] = { Sound = "photon/sirens/code3_mastercomb/airhorn.wav", 	Default = "AIR", Label = "AIR" },
+			["MANUAL"] = { Sound = "photon/sirens/code3_mastercomb/manual.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)

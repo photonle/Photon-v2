@@ -50,7 +50,7 @@ VEHICLE.Schema = {
 	}
 }
 
-VEHICLE.Siren = { "motorola_spectra" }
+VEHICLE.Siren = { "code3_mastercomb" }
 
 VEHICLE.Equipment = {
 	{
