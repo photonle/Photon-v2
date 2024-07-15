@@ -13,15 +13,15 @@ SWEP.Secondary.ClipSize		= -1
 SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= true
 SWEP.Secondary.Ammo			= "none"
+SWEP.DrawCrosshair			= true
 
 
-SWEP.PrintName	= "Camera (Schmal)"
+SWEP.PrintName	= "Camera (Photon)"
 
-SWEP.Slot		= 5
-SWEP.SlotPos	= 1
+SWEP.Slot		= 1
+SWEP.SlotPos	= 0
 
 SWEP.DrawAmmo		= false
-SWEP.DrawCrosshair	= false
 SWEP.Spawnable		= true
 
 SWEP.ShootSound = Sound( "NPC_CScanner.TakePhoto" )
@@ -103,10 +103,11 @@ end
 -- Mouse 2 action
 --
 function SWEP:Tick()
-
 	local owner = self:GetOwner()
 
 	if ( CLIENT && owner != LocalPlayer() ) then return end -- If someone is spectating a player holding this weapon, bail
+
+	if ( owner:InVehicle() ) then return end
 
 	local cmd = owner:GetCurrentCommand()
 
@@ -192,14 +193,31 @@ SWEP.WepSelectIcon = surface.GetTextureID( "vgui/gmod_camera" )
 
 -- Don't draw the weapon info on the weapon selection thing
 function SWEP:DrawHUD() end
+
 function SWEP:PrintWeaponInfo( x, y, alpha ) end
 
+function SWEP:DoDrawCrosshair( x, y )
+	if ( not self:FreezeMovement() ) then return true end
+	surface.SetDrawColor( 0, 0, 0, 255 )
+	surface.DrawRect( ( ScrW() / 3 ) - 1, 0, 3, ScrH() )
+	surface.DrawRect( ( ( ScrW() / 3 ) * 2 ) - 1, 0, 3, ScrH() )
+	surface.DrawRect( 0, ( ScrH() / 3 ) - 1, ScrW(), 3 )
+	surface.DrawRect( 0, ( ( ScrH() / 3 ) * 2 ) - 1, ScrW(), 3 )
+	surface.SetDrawColor( 255, 255, 255, 255 )
+	surface.DrawLine( ScrW() / 3, 0, ScrW() / 3, ScrH() )
+	surface.DrawLine( ( ScrW() / 3 ) * 2, 0, ( ScrW() / 3 ) * 2, ScrH() )
+	surface.DrawLine( 0, ScrH() / 3, ScrW(), ScrH() / 3 )
+	surface.DrawLine( 0, ( ScrH() / 3 ) * 2, ScrW(), ( ScrH() / 3 ) * 2 )
+	draw.DrawText( "FOV: " .. math.Round( self:GetZoom(), 2 ) .. "°", "DebugOverlay", ScrW() - 16, 16, Color( 255, 255, 255, 255 ), TEXT_ALIGN_RIGHT )
+	-- return true
+end
+
 function SWEP:HUDShouldDraw( name )
-
+	-- if true then return true end
 	-- So we can change weapons
+	if ( name == "CHudWeapon" ) then return true end
 	if ( name == "CHudWeaponSelection" ) then return true end
-	if ( name == "CHudChat" ) then return true end
-
+	if ( name == "CHudCrosshair" ) then return true end
 	return false
 
 end
@@ -207,6 +225,8 @@ end
 function SWEP:FreezeMovement()
 
 	local owner = self:GetOwner()
+
+	if ( owner:InVehicle() ) then return false end
 
 	-- Don't aim if we're holding the right mouse button
 	if ( owner:KeyDown( IN_ATTACK2 ) || owner:KeyReleased( IN_ATTACK2 ) ) then

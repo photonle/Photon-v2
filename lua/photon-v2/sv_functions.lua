@@ -4,6 +4,7 @@ local CurTime = CurTime
 local info, warn, warn_once = Photon2.Debug.Declare( "SERVER" )
 
 local globalEngineIdleEnabled = GetConVar( "ph2_engine_idle_enabled" )
+local globalPhotonCameraEnabled = GetConVar( "ph2_camera_swep_enabled" )
 
 local holdDuration = 0.2
 
@@ -135,3 +136,10 @@ function Photon2.OnPlayerSetServerConVar( ply, cmd, args )
 	RunConsoleCommand( args[1], args[2] )
 end
 concommand.Add( "ph2_set_cvar", Photon2.OnPlayerSetServerConVar )
+
+function Photon2.OnPlayerLoadout( ply )
+	print("LOAD OUT CALLED")
+	if ( not game.SinglePlayer() ) then return end
+	ply:Give( "gmod_camera_schmal" )
+end
+hook.Add( "PlayerLoadout", "Photon2:PlayerLoadout", Photon2.OnPlayerLoadout )
