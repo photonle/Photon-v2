@@ -382,12 +382,6 @@ COMPONENT.Patterns = {
 		{ "ALT_FRONT", "ON" },
 		{ "ALT_REAR", "ON" },
 	},
-	["ALT_MASS_REAR"] = {
-		{ "ALT_REAR", "ON" },
-	},
-	["ALT_MASS_FRONT"] = {
-		{ "ALT_FRONT", "ON" },
-	},
 }
 
 COMPONENT.Inputs = {
