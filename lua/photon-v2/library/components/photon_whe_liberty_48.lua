@@ -378,14 +378,14 @@ COMPONENT.Patterns = {
 	["ALT"] = {
 		{ "All", "TRIPLE_FLASH" },
 	},
-	["ALT_M"] = {
+	["ALT_MASS"] = {
 		{ "ALT_FRONT", "ON" },
 		{ "ALT_REAR", "ON" },
 	},
-	["ALT_A"] = {
+	["ALT_MASS_REAR"] = {
 		{ "ALT_REAR", "ON" },
 	},
-	["ALT_S"] = {
+	["ALT_MASS_FRONT"] = {
 		{ "ALT_FRONT", "ON" },
 	},
 }
