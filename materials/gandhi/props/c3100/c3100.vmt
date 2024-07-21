@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "gandhi/props/c3100/c3100"
+    "$bumpmap" "gandhi/props/c3100/c3100_nm"
+$phong "1"
+    $phongexponent "7"
+    $phongboost "1"
+    $phongfresnelranges "[.05 .3 1]"
+	"$rimlight"               "1"
+	"$rimlightexponent"       "17"
+	"$rimlightboost"          "1.2"	
+}
