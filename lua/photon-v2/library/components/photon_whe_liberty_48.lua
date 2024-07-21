@@ -382,10 +382,10 @@ COMPONENT.Patterns = {
 		{ "ALT_FRONT", "ON" },
 		{ "ALT_REAR", "ON" },
 	},
-	["ALT_B"] = {
+	["ALT_A"] = {
 		{ "ALT_REAR", "ON" },
 	},
-	["ALT_A"] = {
+	["ALT_S"] = {
 		{ "ALT_FRONT", "ON" },
 	},
 }
