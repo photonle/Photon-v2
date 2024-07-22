@@ -112,12 +112,112 @@ COMPONENT.Segments = {
 			["ON"] = { 1 },
 		}
 	},
+	Front = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "14 12 10 8 6 4 2",
+			[2] = "1 3 5 7 9 11 13",
+			[3] = "6 4 2 7 9 11 13",
+			[4] = "14 12 10 8 3 5 7",
+		},
+		Sequences = {
+			["Flash_Pattern_1"] = {
+				2,2,2,2,2,2,2,2,2,2,
+				1,1,1,1,1,1,1,1,1,1,
+				2,2,2,2,2,2,2,2,2,2,
+				1,1,1,1,1,1,1,1,1,1,
+
+				3,3,0,0,3,3,0,0,3,3,3,3,3,0,0,0,0,4,4,0,0,4,4,0,0,4,4,4,0,0,0,0,
+				3,3,0,0,3,3,0,0,3,3,3,3,3,0,0,0,0,4,4,0,0,4,4,0,0,4,4,4,0,0,0,0,
+			},
+		}
+	},
+	Rear = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "16 18 20 22 24 26",
+			[2] = "25 23 21 19 17 15",
+			[3] = "22 24 26 19 17 15",
+			[4] = "16 18 20 23 21 19",
+		},
+		Sequences = {
+			["Flash_Pattern_1"] = {
+				2,2,2,2,2,2,2,
+				1,1,1,1,1,1,1,
+				2,2,2,2,2,2,2,
+				1,1,1,1,1,1,1,
+				2,2,2,2,2,2,2,
+				1,1,1,1,1,1,1,
+				-- Zig Zag
+				3,3,0,0,3,3,0,0,3,3,3,3,3,0,0,4,4,0,0,4,4,0,0,4,4,0,0,
+				3,3,0,0,3,3,0,0,3,3,3,3,3,0,0,4,4,0,0,4,4,0,0,4,4,0,0,
+			},
+		}
+	},
+	Front_ALT = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "14 12 10 8 6 4 2",
+			[2] = "1 3 5 7 9 11 13",
+		},
+		Sequences = {
+			["Flash_Pattern_2"] = sequence():Alternate(1, 2, 5)
+		}
+	},
+	Rear_ALT = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "16 18 20 22 24 26",
+			[2] = "25 23 21 19 17 15",
+		},
+		Sequences = {
+			["Flash_Pattern_2"] = sequence():Alternate(1, 2, 5)
+		}
+	},
+	HotfootF = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "28",
+			[2] = "27",
+		},
+		Sequences = {
+			["Flash_Pattern"] = sequence():Alternate(1, 2, 13)
+		}
+	},
+	HotfootS = {
+		FrameDuration = 1/30,
+		Frames = {
+			[1] = "30",
+			[2] = "29",
+		},
+		Sequences = {
+			["Flash_Pattern"] = sequence():Alternate(1, 2, 13)
+		}
+	},
+	Traffic = Photon2.SegmentBuilder.SignalMaster(19,21,23,25,26,24,22,20)
 }
 
 COMPONENT.Inputs = {
 	["Emergency.Warning"] = {
-		["MODE1"] = { All = "ON" },
-		["MODE2"] = { All = "ON" },
-		["MODE3"] = { All = "ON" },
-	}
+		["MODE1"] = {
+			Rear_ALT = "Flash_Pattern_2",
+		},
+		["MODE2"] = {
+			Front_ALT = "Flash_Pattern_2",
+			Rear_ALT = "Flash_Pattern_2",
+			HotfootF = "Flash_Pattern",
+			HotfootS = "Flash_Pattern",
+		},
+		["MODE3"] = {
+			Front = "Flash_Pattern_1",
+			Rear = "Flash_Pattern_1",
+			HotfootF = "Flash_Pattern",
+			HotfootS = "Flash_Pattern",
+		},
+	},
+	["Emergency.Directional"] = {
+		["LEFT"] = { Traffic = "LEFT" },
+		["RIGHT"] = { Traffic = "RIGHT" },
+		["CENOUT"] = { Traffic = "CENOUT" },
+	},
 }
