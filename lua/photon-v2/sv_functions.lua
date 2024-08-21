@@ -138,7 +138,6 @@ end
 concommand.Add( "ph2_set_cvar", Photon2.OnPlayerSetServerConVar )
 
 function Photon2.OnPlayerLoadout( ply )
-	print("LOAD OUT CALLED")
 	if ( not game.SinglePlayer() ) then return end
 	ply:Give( "gmod_camera_schmal" )
 end
