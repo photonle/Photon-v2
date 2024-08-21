@@ -474,8 +474,6 @@ function Photon2.UI.PopulateMenuBar()
 			end )
 		end
 
-		-- menu:AddCVar( "Engine Idling", "ph2_engine_idle_enabled", "1", "0")
-
 		menu:AddSpacer()
 
 		local renderOptionsMenuOption = menu:AddOption( "Render Options" )

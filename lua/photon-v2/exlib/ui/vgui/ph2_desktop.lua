@@ -303,6 +303,9 @@ function PANEL:SetupServerPage()
 	form:AddDivider()
 	form:AddParagraph( "Vehicle idling allows an emergency vehicle to idle its engine when the driver quickly exits. The engine is turned off by briefly holding 'E' (or +use) while exiting." )
 	form:CreateCheckBoxProperty( { "ph2_engine_idle_enabled", "Bool" }, "Vehicle Idling", true, { Descriptor = "Enable vehicle engine idling" } )
+	form:AddDivider()
+	form:AddParagraph( "The Photon 2 camera SWEP removes camera roll rotation and displays a rule-of-thirds grid. It does not replace the original camera SWEP." )
+	form:CreateCheckBoxProperty( { "ph2_camera_swep_enabled", "Bool" }, "Photon 2 Camera", true, { Descriptor = "Enable Photon 2 camera" } )
 end
 
 function PANEL:PostAutoRefresh()
