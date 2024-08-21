@@ -1245,6 +1245,8 @@ end
 
 
 function ENT:GetSelectionsString()
+	if ( not self:IsValid() ) then return "" end
+	if ( not self:GetParent():IsValid() ) then return "" end
 	return self:GetParent():GetNW2String( "Photon2:Selections" )
 end
 
@@ -1296,6 +1298,10 @@ end
 
 ---@param selections string
 function ENT:ProcessSelectionsString( selections )
+	if ( not IsValid( self ) ) then 
+		warn( "Attempted to setup selection string on invalid entity." ) 
+		return 
+	end
 	-- print("Processing selections string '" .. tostring(selections) .. "'")
 	if ( not selections ) then return end
 	local newSelections = string.Explode( " ", selections, false )
