@@ -20,10 +20,14 @@
 	Photon v2 Initialization
 --]]
 
+if ( SERVER ) then
+	
+end
+
 ---@type table
 Photon2 = Photon2 or {}
 
-Photon2.Version = "2.0.37"
+Photon2.Version = "2.0.38"
 
 if CLIENT then
 	CreateClientConVar( "ph2_enable_auto_download", "1", true, true, "Automatically download and mount required core addons." )
