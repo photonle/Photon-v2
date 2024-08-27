@@ -308,6 +308,10 @@ end
 ---@param channel string
 ---@return string
 function ENT:GetChannelMode( channel )
+	if ( not IsValid( self:GetParent() ) ) then
+		warn( "Unable to get mode from channel [", tostring( channel ),"]. Controller parent is invalid." )
+		return "OFF"
+	end
     return self:GetParent():GetNW2String( "Photon2:CS:" .. channel, "OFF" )
 end
 
@@ -1234,8 +1238,15 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	
 	local pulseComponents = {}
 	
-	for id, component in pairs(self.Components) do
+	for id, component in pairs( self.Components ) do
 		-- component:ApplyModeUpdate()
+		if ( not IsValid( component ) or not ( component.SetChannelMode ) ) then
+			warn( "Controller encountered an invalid component entity [" .. tostring( component ) .. "] and is reloading. (Is an external addon manipulating the entities?)" )
+			self.CurrentPulseComponents = {}
+			self:SetupProfile()
+			return
+		end
+
 		component:SetChannelMode( channel, newState )
 		if ( component.AcceptControllerPulse ) then pulseComponents[#pulseComponents+1] = component end
 	end
@@ -1483,6 +1494,7 @@ end
 -- Manually polls the controller to get all channel modes as it otherwise
 -- relies on change notifications.
 function ENT:SyncChannels()
+	if ( not IsValid( self ) ) then return end
 	local channels = {}
 	for i=1, #self.ComponentArray do
 		for channel, _ in pairs( self.ComponentArray[i]:GetNetworkedChannels() ) do

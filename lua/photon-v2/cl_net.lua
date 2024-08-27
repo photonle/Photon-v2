@@ -118,7 +118,10 @@ function Photon2.cl_Network.OnUpdateTransmitState( ent, shouldTransmit )
 				end
 			else
 				if ( not controller.IsSuspended ) then
-					controller:OnSuspended()
+					-- This is to fix a reported error but it makes zero sense why it's needed
+					if ( IsValid( controller ) and ( controller.OnSuspended ) ) then
+						controller:OnSuspended()
+					end
 				end
 			end
 		end
