@@ -16,7 +16,12 @@ function ENT:Initialize()
 	self:PhysicsInit( SOLID_VPHYSICS )
 	self:SetMoveType( MOVETYPE_VPHYSICS )
 	self:SetSolid( SOLID_NONE )
-	self:SetModelScale( 1 )
+
+	-- self:SetModelScale( 1, 0.1 )
+	-- local matrix = Matrix()
+	-- matrix:Scale( Vector( 1, 1, 1 ) )
+	-- self:EnableMatrix( "RenderMultiply", matrix )
+	
 	self:Activate()
 
 	local phys = self:GetPhysicsObject()

@@ -1241,10 +1241,11 @@ function ENT:OnChannelModeChanged( channel, newState, oldState )
 	for id, component in pairs( self.Components ) do
 		-- component:ApplyModeUpdate()
 		if ( not IsValid( component ) or not ( component.SetChannelMode ) ) then
-			warn( "Controller encountered an invalid component entity [" .. tostring( component ) .. "] and is reloading. (Is an external addon manipulating the entities?)" )
-			self.CurrentPulseComponents = {}
-			self:SetupProfile()
-			return
+			-- warn( "Controller encountered an invalid component entity [" .. tostring( component ) .. "] and is reloading. (Is an external addon manipulating the entities?)" )
+			-- self.CurrentPulseComponents = {}
+			-- self:SetupProfile()
+			-- return
+			continue
 		end
 
 		component:SetChannelMode( channel, newState )

@@ -586,9 +586,8 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 
 	-- if true then return end
 	local target = Photon2.ClientInput.TargetController
-	if ( not IsValid( target ) ) then return end
 	
-	if ( not target or ( not userSettings.Enabled ) ) then 
+	if ( not target  or not IsValid( target ) or ( not userSettings.Enabled ) ) then 
 		
 		HUD.StartTime = 0
 		indicatorComponent = nil
