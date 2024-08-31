@@ -309,7 +309,7 @@ end
 ---@return string
 function ENT:GetChannelMode( channel )
 	if ( not IsValid( self:GetParent() ) ) then
-		warn( "Unable to get mode from channel [", tostring( channel ),"]. Controller parent is invalid." )
+		warn( "Unable to get mode from channel [" .. tostring( channel ) .. "]. Controller parent is invalid." )
 		return "OFF"
 	end
     return self:GetParent():GetNW2String( "Photon2:CS:" .. channel, "OFF" )
@@ -1031,6 +1031,16 @@ end
 ---@param name? string Name of profile to load.
 ---@param isReload? boolean
 function ENT:SetupProfile( name, isReload, attempt )
+	if ( not IsValid( self ) ) or ( not IsValid( self:GetParent() ) ) then
+		warn( "Attempted to setup controller profile but the controller's parent is invalid." )
+
+		if ( SERVER ) then
+			self:Remove()
+		end
+		
+		return
+	end
+
 	name = name or self:GetProfileName()
 	if ( not name or name == "" ) then 
 		info( string.format( "Attempted to setup a profile with an invalid name [%s].", tostring( name ) ) )
@@ -1040,8 +1050,9 @@ function ENT:SetupProfile( name, isReload, attempt )
 	---@type PhotonVehicle
 	local profile = self:GetProfile( name )
 
-	if ( name == "" or ( not profile ) ) then
-		attempt = attempt or 0
+	attempt = attempt or 0
+
+	if ( ( name == "" ) or ( not profile ) ) then
 		if ( attempt > 50 ) then
 			error("Failed to get vehicle profile [" .. tostring( name ) .."].")
 			return
@@ -1059,7 +1070,6 @@ function ENT:SetupProfile( name, isReload, attempt )
 		warn( "Vehicle profile [%s] uses a vehicle that does not exist [%s]. Aborting setup.", name, profile.Target )
 		return
 	end
-
 
 	info( "Setting up vehicle profile [%s] on entity [%s] (#%d)", name, tostring(self), attempt or 1 )
 
