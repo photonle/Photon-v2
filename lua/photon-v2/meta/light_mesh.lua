@@ -31,6 +31,9 @@ Light.IntensityTransitions = false
 Light.Scale = Vector( 1, 1, 1 )
 Light.BoneParent = -1
 
+Light.DLight = false
+Light.DLightFallOff = 0.06
+
 local white = { r = 235, g = 235, b = 255 }
 local softWhite = { r = 255, g = 235, b = 205 }
 local red = { r = 255, g = 0, b = 0 }

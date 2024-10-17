@@ -19,6 +19,8 @@
 ---@field ManipulateAlpha? boolean If the mesh's alpha channel should be manipulated.
 ---@field EnableDraw? boolean Whether or the mesh should be rendered in the normal pass.
 ---@field EnableBloom? boolean Whether or not the mesh should be drawn during the bloom pass.
+---@field DLight? boolean If the mesh should be illuminated by a Dynamic Light.
+---@field DLightFallOff? number The number used to calculate the falloff of the Dynamic Light.
 
 ---@class PhotonElementMeshEntry : PhotonElementMeshProperties
 ---@field [1] string Element template name.
