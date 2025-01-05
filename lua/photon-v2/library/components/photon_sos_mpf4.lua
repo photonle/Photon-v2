@@ -98,6 +98,9 @@ COMPONENT.Segments = {
 			["DUO_FLASH"] = sequence():FlashHold( { 1, 0, 2, 0 }, 3, 1 ),
 			["2FH_2C"] = sequence():FlashHold( { 1, 2 }, 2, 4 ),
 			["2FH_2C_FAST"] = sequence():FlashHold( { 1, 2 }, 2, 2 ),
+			["ROAD_RUN"] = sequence():Alternate( 1, 0, 6),
+			["SLOW_RUN"] = sequence():Alternate( 1, 0, 8),
+			["SUP_SLOW_RUN"] = sequence():Alternate( 1, 0, 10),
 			["OFF"] = { 0 },
 		}
 	},
@@ -124,6 +127,9 @@ COMPONENT.Patterns = {
 	["DUO_FLASH"] = { { "Light", "DUO_FLASH" } },
 	["2FH_2C"] = { { "Light", "2FH_2C" } },
 	["2FH_2C_FAST"] = { { "Light", "2FH_2C_FAST" } },
+	["ROAD_RUN"] = { { "Light", "ROAD_RUN" } },
+	["SLOW_RUN"] = { { "Light", "SLOW_RUN" } },
+	["SUP_SLOW_RUN"] = { { "Light", "SUP_SLOW_RUN" } },
 	["OFF"] = { { "Light", "OFF" } }
 }
 
