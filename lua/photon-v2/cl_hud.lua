@@ -104,6 +104,12 @@ local illumFlood = Material("photon/ui/hud_icon_illum_flood.png")
 
 local vehicleIcon = Material("photon/ui/hud_veh_icon.png")
 
+local signalLeft = Material("photon/ui/hud_icon_left.png")
+local signalRight = Material("photon/ui/hud_icon_right.png")
+local headLights = Material("photon/ui/hud_icon_hlights.png")
+local headLightsAuto = Material("photon/ui/hud_icon_alights.png")
+local parkingLights = Material("photon/ui/hud_icon_plights.png")
+
 local lastUpdate = 0
 
 local cornerRadius = 4
@@ -401,6 +407,81 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	surface.DrawTexturedRect( x + 20, y + 21, 12, 12 )
 end
 
+---@param x integer
+---@param y integer
+---@param icon IMaterial
+---@param lsignalOn boolean
+---@param rsignalOn boolean
+---@param hsignalOn boolean
+---@param hlightsOn boolean
+---@param alightsOn boolean
+---@param plightsOn boolean
+function HUD.StandardLightingIndicator( x, y, width, icon, sigSelected, sigStyle, signalComponent, lsignalOn, rsignalOn, hsignalOn, hlightsOn, alightsOn, plightsOn )
+	local isInactive = (not lsignalOn) and (not rsignalOn) and (not hsignalOn) and (not hlightsOn) and (not alightsOn) and (not plightsOn)
+	local backgroundColor = userSettings.PanelActiveColor
+	--local backgroundColor = userSettings.BackgroundColor
+	
+	if ( isInactive ) then
+		backgroundColor = userSettings.BackgroundColor
+	end
+
+	draw.RoundedBox( cornerRadius, x, y, width, 32, backgroundColor )
+	
+	local drawAsActive = false
+
+	if ( lsignalOn && (sigSelected == 2) ) then
+		drawAsActive = true
+		
+		--Photon2.Util.PrintTableProperties(signalComponent.Elements)
+		--if ( (sigSelected == 2) && (sigStyle == 1) ) then
+			--surface.SetDrawColor( userSettings.HighlightColor )
+		--	surface.SetDrawColor( userSettings.HighlightColor )
+			--stateColors[element.CurrentStateId]()
+		--end
+		surface.SetDrawColor( userSettings.HighlightColor )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+	end
+	surface.SetMaterial( signalLeft )
+	surface.DrawTexturedRect( x + 4, y + 4, 24, 24 )
+
+	if ( rsignalOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( userSettings.HighlightColor )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+	end
+	surface.SetMaterial( signalRight )
+	surface.DrawTexturedRect( x + 122, y + 4, 24, 24 )
+
+	if ( alightsOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( userSettings.HighlightColor )
+		surface.SetMaterial( headLightsAuto )
+	elseif ( hlightsOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( userSettings.HighlightColor )
+		surface.SetMaterial( headLights )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+		surface.SetMaterial( headLights )
+	end
+	surface.DrawTexturedRect( x + 43, y + 4, 24, 24 )
+	
+	-- For now I've displayed running lights separately as
+	-- opposed to replacing the headlight and auto headlight icons.
+	-- If more room is needed in the future this could free up a spot.
+	if ( plightsOn or alightsOn or hlightsOn ) then
+		drawAsActive = true
+		surface.SetDrawColor( userSettings.HighlightColor )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+	end
+	surface.SetMaterial( parkingLights )
+	surface.DrawTexturedRect( x + 82, y + 4, 24, 24 )
+	
+end
+
 -- Utility function that draws a fixed box. I made it so 
 -- I could capture screenshots/recordings with the same
 -- perspective and dimensions for the Wiki.
@@ -561,6 +642,8 @@ end
 HUD.StartTime = 0
 local indicatorComponent = nil
 
+local signalComponent = nil
+
 -- How long the key/hint info stays visible
 local hintDuration = 7
 -- Width of main HUD panels
@@ -591,6 +674,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 		
 		HUD.StartTime = 0
 		indicatorComponent = nil
+		signalComponent = nil
 		if ( HUD.WasActive ) then
 			HUD.WasActive = false
 			HUD.Deactivate()
@@ -625,6 +709,16 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			end
 		end
 
+		-- This is a really dirty way of getting this info, but realistically there should only be 1 'Vehicle' category component per profile
+		if ( not signalComponent and ( istable( target.ComponentArray )) ) then
+			for k, v in pairs( target.ComponentArray ) do
+				if ( v.Category == "Vehicle" ) then
+					signalComponent = v
+					break
+				end
+			end
+		end
+
 		render.PushRenderTarget( hudRT )
 		-- needs to be scaled down by 16px for some unknown reason
 		render.SetViewPort( 8, 8, 512 - 16, 512 - 16 )
@@ -645,12 +739,49 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				string.upper(Photon2.ClientInput.Active.Title or "ERROR")
 			)
 
+			
+
+			--
+			-- TESTING STUFF HERE
+			--
+			local schema = target:GetInputSchema()
+
+			local sigChannel = "Vehicle.Signal"
+			local ligChannel = "Vehicle.Lights"
+			local sigMode = target.CurrentModes[sigChannel]
+
+			local showStandard = false
+
+			-- Check if turn signals or head/parking lights are present then display HUD component if they are
+			showStandard = ( schema[sigChannel] ~= nil or schema[ligChannel] ~= nil )
+
+			if ( showStandard ) then
+				local sigStyle = 1
+				if ( sigMode == "OFF" ) then sigStyle = 0 end
+				sigMode = (schema[sigChannel] or {})[sigMode] or {}
+
+				nextY = ( nextY + nextH + margin )
+				nextH = 32
+
+				HUD.StandardLightingIndicator( mainX, nextY, mainWidth, vehicleIcon, sigMode.Index or 0, sigStyle, signalComponent,
+				target.CurrentModes["Vehicle.Signal"] == "LEFT", 
+				target.CurrentModes["Vehicle.Signal"] == "RIGHT", 
+				target.CurrentModes["Vehicle.Signal"] == "HAZARD",
+				target.CurrentModes["Vehicle.Lights"] == "HEADLIGHTS", 
+				target.CurrentModes["Vehicle.Lights"] == "AUTO",
+				target.CurrentModes["Vehicle.Lights"] == "PARKING"
+			)
+			end
+			--
+			--
+			--
+
+			
+
 			nextY = ( nextY + nextH + margin )
 
 			local priChannel = "Emergency.Warning"
 			local priMode = target.CurrentModes[priChannel]
-
-			local schema = target:GetInputSchema()
 
 			if ( schema[priChannel] ) then 
 				local priData = schema[priChannel][priMode]

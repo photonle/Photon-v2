@@ -14,7 +14,8 @@ local convarEnabled = GetConVar( "ph2_hud_enabled" )
 local PANEL = {}
 PANEL.AllowAutoRefresh = true
 PANEL.PrimaryWidth = 150
-PANEL.CanvasSize = { Width = 340, Height = 210 }
+--PANEL.CanvasSize = { Width = 340, Height = 210 }
+PANEL.CanvasSize = { Width = 340, Height = 244 }
 
 
 function PANEL:Init()
