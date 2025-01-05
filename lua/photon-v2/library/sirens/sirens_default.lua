@@ -115,6 +115,7 @@ Photon2.RegisterSiren(
 			["AIRHORN2"]  = { Sound = "photon/sirens/sos_nergy400/phaser.wav", Default = "SAIR" },
 			
 			["MANUAL"]  = { Sound = "photon/sirens/sos_nergy400/wail.wav", 	Default = "MAN", Label = "MAN" },
+			["MANUAL2"] = { Sound = "photon/sirens/sos_nergy400/wail_short.wav", 	Default = "SMAN" },
 			
 			["PCALL"] = { Sound = "photon/sirens/sos_nergy400/pcall.wav", 	icon = "pcall" },
 		}
