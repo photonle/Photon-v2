@@ -87,6 +87,8 @@ function Sound:OnStateChange( state )
 	self.DSP = state.DSP
 	self.Level = state.Level
 	self.Playing = state.Play
+	self.PitchTransition = state.PitchTransition
+	self.VolumeTransition = state.VolumeTransition
 	self:Sync()
 end
 
