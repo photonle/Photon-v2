@@ -477,6 +477,7 @@ function Vehicle.New( data )
 	-- Generate table for Vehicles list table
 		local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
 		vehicleTable.Base				 = data.Vehicle
+		vehicleTable.Author				 = data.Author
 		vehicleTable.Category			 = data.Category or target.Category
 		vehicleTable.Name				 = title
 		vehicleTable.IconOverride		 = Vehicle.CreateSpawnIcon( data.Name )
