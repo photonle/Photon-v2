@@ -334,6 +334,27 @@ function Photon2.SequenceBuilder:RoadRunner( frameA, frameB, frameC )
 		:Alternate( frameC, 0, 4 ):Do( 4 )
 end
 
+-- Approximates the SoundOff Signal "Q_Switch" pattern. (alternateSequence is a bool)
+function Photon2.SequenceBuilder:QSwitch( frameA, frameB, alternateSequence )
+	if ( alternateSequence ) then
+		return self
+			:Gap( 8 ):Alternate( frameA, 0, 2 ):Do( 2 )
+			:Gap( 8 ):Alternate( frameA, 0, 2 ):Do( 2 )
+			:Alternate( frameA, 0, 4 ):Do( 3 )
+			:Add( 0 ):Do( 4 ):Add( frameB ):Do( 4 )
+			:Add( 0 ):Do( 4 ):Add( frameB ):Do( 4 ):Gap( 4 )
+			:Alternate( frameB, 0, 4 ):Do( 3 )
+	else
+		return self
+			:Alternate( frameA, 0, 2 ):Do( 2 ):Gap( 8 )
+			:Alternate( frameA, 0, 2 ):Do( 2 ):Gap( 8 )
+			:Alternate( frameA, 0, 4 ):Do( 3 )
+			:Add( frameB ):Do( 4 ):Add( 0 ):Do( 4 )
+			:Add( frameB ):Do( 4 ):Add( 0 ) :Do( 4 ) :Gap( 4 )
+			:Alternate( frameB, 0, 4 ):Do( 3 )
+	end
+end
+
 function Photon2.SequenceBuilder:AppendPhaseGap()
 	local count = 0
 	if ( self._previous ) then count = #self._previous end
