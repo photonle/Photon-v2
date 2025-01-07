@@ -334,7 +334,7 @@ function Photon2.SequenceBuilder:RoadRunner( frameA, frameB, frameC )
 		:Alternate( frameC, 0, 4 ):Do( 4 )
 end
 
--- Approximates the SoundOff Signal "Q_Switch" pattern. (alternateSequence is a bool)
+-- Approximates the SoundOff Signal "Q-Switch" pattern. (alternateSequence is a bool)
 function Photon2.SequenceBuilder:QSwitch( frameA, frameB, alternateSequence )
 	if ( alternateSequence ) then
 		return self

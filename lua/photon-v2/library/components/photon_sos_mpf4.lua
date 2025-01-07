@@ -98,8 +98,11 @@ COMPONENT.Segments = {
 			["DUO_FLASH"] = sequence():FlashHold( { 1, 0, 2, 0 }, 3, 1 ),
 			["2FH_2C"] = sequence():FlashHold( { 1, 2 }, 2, 4 ),
 			["2FH_2C_FAST"] = sequence():FlashHold( { 1, 2 }, 2, 2 ),
+			["QUINT_3C"] = sequence():QuintFlash( 1, 0):QuintFlash( 2, 0):QuintFlash( 3, 0),
 			["SLOW_RUN"] = sequence():Alternate( 1, 0, 8),
 			["SUP_SLOW_RUN"] = sequence():Alternate( 1, 0, 10),
+			["Q_SWITCH"] = sequence():QSwitch( 1, 3),
+			["Q_SWITCH_ALT"] = sequence():QSwitch( 1, 3, true),
 			["OFF"] = { 0 },
 		}
 	},
@@ -126,8 +129,11 @@ COMPONENT.Patterns = {
 	["DUO_FLASH"] = { { "Light", "DUO_FLASH" } },
 	["2FH_2C"] = { { "Light", "2FH_2C" } },
 	["2FH_2C_FAST"] = { { "Light", "2FH_2C_FAST" } },
+	["QUINT_3C"] = { { "Light", "QUINT_3C" } },
 	["SLOW_RUN"] = { { "Light", "SLOW_RUN" } },
 	["SUP_SLOW_RUN"] = { { "Light", "SUP_SLOW_RUN" } },
+	["Q_SWITCH"] = { { "Light", "Q_SWITCH" } },
+	["Q_SWITCH_ALT"] = { { "Light", "Q_SWITCH_ALT" } },
 	["OFF"] = { { "Light", "OFF" } }
 }
 
