@@ -7,7 +7,7 @@ COMPONENT.Credits = {
 	Code = "JohnAfro"
 }
 
-COMPONENT.PrintName = "2014 Ford F550 Ambulance"
+COMPONENT.PrintName = "2014 Ford F-550 Ambulance"
 
 COMPONENT.IsVirtual = true
 
