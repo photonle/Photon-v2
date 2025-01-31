@@ -180,8 +180,8 @@ COMPONENT.ElementStates = {
 }
 local offset = .2
 COMPONENT.Elements = {
-	[1] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fl_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
-	[2] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fr_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
+	[1] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fl_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1, DeactivationState = "~OFF" },
+	[2] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fr_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1, DeactivationState = "~OFF" },
 
 	[3] = { "Mesh_static_fast", Vector( 0, offset, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fl_running", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
 	[4] = { "Mesh_static_fast", Vector( 0, offset, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fr_running", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },	
@@ -191,8 +191,8 @@ COMPONENT.Elements = {
 
 	[7] = { "Mesh_static_fast", Vector( 0, -.15, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/cbrake", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
 
-	[8] = { "Projected", Vector( -37.529, 108.96, 32.281 ), Rotation = Angle( 0, 90, 0 ), },
-	[9] = { "Projected", Vector( 37.529, 108.96, 32.281 ), Rotation = Angle( 0, 90, 0 ), },
+	[8] = { "Projected", Vector( -37.529, 108.96, 32.281 ), Rotation = Angle( 0, 90, 0 ), DeactivationState = "~OFF" },
+	[9] = { "Projected", Vector( 37.529, 108.96, 32.281 ), Rotation = Angle( 0, 90, 0 ), DeactivationState = "~OFF" },
 
 	[10] = { "Mesh_static_fast", Vector( 0, -.05, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/rr_running", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
 	[11] = { "Mesh_static_fast", Vector( 0, -.05, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/rl_running", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
@@ -212,6 +212,8 @@ COMPONENT.Elements = {
 	[20] = { "Dials", Indexes = { 12 } },
 	[21] = { "Dials2", Indexes = { 9 } },
 
+	[22] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fl_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
+	[23] = { "Mesh_static_fast", Vector( 0, .2, 0 ), Angle( 0, 90, 0 ), "johnafro/2017demon_lights/fr_headlight", DrawMaterial = "johnafro/2017demon_lights/lightglow", BoneParent = -1 },
 
 
 
@@ -219,7 +221,7 @@ COMPONENT.Elements = {
 
 }
 
-COMPONENT.StateMap = "[W] 8 9 [W] 1 2 [W] 3 4 5 6 7 10 11 12 13 14 15 16 17 18 19 [ON] 20 21 "
+COMPONENT.StateMap = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 22 23 [ON] 20 21"
 
 COMPONENT.ElementGroups = {
 	["LOW_L"] = {1,8},
@@ -233,7 +235,7 @@ COMPONENT.Segments = {
 	["Headlights"] = {
 		Frames = {
 			[0] = "[~OFF] LOW_L LOW_R",
-			[1] = "LOW_L LOW_R",
+			[1] = "[~WD] LOW_L LOW_R",
 		},
 		Sequences = {
 				HEADLIGHTS = {
@@ -243,7 +245,7 @@ COMPONENT.Segments = {
 	},
 	["Brakes"] = {
 		Frames = {
-			[1] = "[R] 7 16 17  ",
+			[1] = "[R] 7 16 17",
 		},
 		Sequences = {
 				ON = {
@@ -253,7 +255,7 @@ COMPONENT.Segments = {
 	},
 	["Markers"] = {
 		Frames = {
-			[1] = "[W] 5 6 3 4 [~DR] 10 11 12 13 [ON] 20 21 ",
+			[1] = "[W] 5 6 3 4 [~DR] 10 11 12 13 [ON] 20 21",
 		},
 		Sequences = {
 				ON = {
@@ -384,7 +386,7 @@ COMPONENT.Inputs = {
 			Headlights = "HEADLIGHTS",
 			Markers = "ON",
 			---Signal_L_DIM = "DIM",
-			-------------------Signal_R_DIM = "DIM",
+			--Signal_R_DIM = "DIM",
 		},
 		["PARKING"] = {
 			--Headlights = "HEADLIGHTS",
