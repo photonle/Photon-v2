@@ -131,7 +131,7 @@ COMPONENT.Segments = {
 	},
 	Lights = {
 		Frames = {
-			[1] = "1 2 3 4 7 8 9 10 17 18 [~R*0.6] 19 20",
+			[1] = "1 2 7 8 9 10 17 18 [~R*0.6] 19 20",
 			[2] = "7 8 9 10 17 18 [~R*0.6] 19 20"
 		},
 		Sequences = {
@@ -158,27 +158,32 @@ COMPONENT.Segments = {
 	Signal = {
 		Off = "PASS",
 		Frames = {
-			[1] = "[A] 7 13 9",
-			[2] = "[A] 8 14 10",
-			[3] = "[A] 7 8 9 10 13 14"
+			[0] = "[PASS] 7 8 [~OFF] 19 20",
+			[1] = "[~A] 7 [~R] 19 [PASS] 20",
+			[2] = "[~A] 8 [~R] 20 [PASS] 19 ",
+			[3] = "[~A] 7 8 [~R] 19 20",
+			[4] = "[~OFF] 19 [PASS] 20",
+			[5] = "[~OFF] 20 [PASS] 19 ",
 		},
 		Sequences = {
-			LEFT = sequence():Alternate( 1, 0, 10 ),
-			RIGHT = sequence():Alternate( 2, 0, 10 ),
+			LEFT = sequence():Alternate( 1, 4, 10 ),
+			RIGHT = sequence():Alternate( 2, 5, 10 ),
 			HAZARD = sequence():Alternate( 3, 0, 10 )
 		}
 	},
 	TailFlasher = {
+		Off = "PASS",
 		Frames = {
-			[1] = "22",
-			[2] = "23",
-			[3] = "[OFF] 22 23"
+			[1] = "[~R] 19",
+			[2] = "[~R] 20",
+			[3] = "[PASS] 19 20"
 		},
 		Sequences = {
 			["ALT"] = sequence():Alternate( 1, 2, 10 ),
 			["CUT"] = { 3 }
 		}
 	},
+	--these are not turn signals grrrr
 	RearSignalFlasher = {
 		Frames = {
 			[1] = "[W] 24",
