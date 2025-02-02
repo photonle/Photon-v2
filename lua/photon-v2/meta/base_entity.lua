@@ -376,10 +376,10 @@ function ENT:SetScale( scale )
 	local oldScale
 	if ( isnumber( scale ) ) then
 		oldScale = self.Entity:GetModelScale()
-		local matrix = Matrix()
-		matrix:Scale( Vector( scale, scale, scale ) )
-		self.Entity:EnableMatrix( "RenderMultiply", matrix )
+		self.Entity:SetModelScale( scale, 0 )
+		self.Entity:DisableMatrix( "RenderMultiply" )
 	elseif ( isvector( scale ) ) then
+		self.Entity:SetModelScale( 1 )
 		local matrix = Matrix()
 		matrix:Scale( scale )
 		self.Entity:EnableMatrix( "RenderMultiply", matrix )

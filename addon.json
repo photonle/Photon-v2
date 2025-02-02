@@ -1,0 +1,23 @@
+{
+	"title"		:	"Photon 2: Emergency Systems Platform",
+	"type"		:	"vehicle",
+	"tags"		:	[ "roleplay", "realism" ],
+	"ignore"	:
+	[
+		"*.psd",
+		"*.vcproj",
+		"*.svn*",
+		"*.md",
+		"*.sw.vtx",
+		"*.dx80.vtx",
+		"*.smd",
+		"*.bak",
+		"*.tga",
+		"*.tx",
+		".annotations*",
+		".vscode*",
+		".git*",
+		"*.txt"
+		
+	]
+}

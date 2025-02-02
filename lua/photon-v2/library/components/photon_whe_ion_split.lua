@@ -37,8 +37,8 @@ COMPONENT.StateMap = "[1] 1 [2] 2"
 
 COMPONENT.Elements = {
 	-- [1] = { "Light", Vector( 0, 0.5, 0 ), Angle( 0, 0, 0 ) }
-	[1] = { "Light", Vector( -1.45, 0.5, 0 ), Angle( 0, 0, 0 ) },
-	[2] = { "Light", Vector( 1.45, 0.5, 0 ), Angle( 0, 0, 180 ) }
+	[1] = { "Light", Vector( -1.45, 0.6, 0 ), Angle( 0, 0, 0 ) },
+	[2] = { "Light", Vector( 1.45, 0.6, 0 ), Angle( 0, 0, 180 ) }
 }
 
 
