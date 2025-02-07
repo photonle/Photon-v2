@@ -263,7 +263,7 @@ PhotonMaterial = PhotonMaterial
 ---@field Name? string Unique equipment entry name. Only required if you want other entries to inherit from it.
 ---@field Inherit? string Name of an equipment entry to inherit from.
 
----@class PhotonEquipmentComponentEntry : PhotonEquipmentEntityProperties, PhotonEquipmentLibraryComponentProperties
+---@class PhotonEquipmentComponentEntry : PhotonEquipmentEntityProperties, [PhotonEquipmentLibraryComponentProperties]
 
 ---@class PhotonEquipmentPropEntry : PhotonEquipmentEntityProperties
 ---@field Model? string Model path. (e.g. `models/my/props/model.mdl`)
