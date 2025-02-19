@@ -482,6 +482,7 @@ function Vehicle.New( data )
 		vehicleTable.Name				 = title
 		vehicleTable.IconOverride		 = Vehicle.CreateSpawnIcon( data.Name )
 		vehicleTable.IsPhoton2Generated  = true
+		vehicleTable.KeyValues = data.KeyValues or vehicleTable.KeyValues
 
 		-- Category whitelist check
 		if ( categoryWhitelist[vehicleTable.Category] ) then
