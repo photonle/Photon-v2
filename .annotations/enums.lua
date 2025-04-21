@@ -2082,7 +2082,7 @@
 ---| `FCVAR_SERVER_CANNOT_QUERY` # Prevents the server from querying value of this ConVar
 ---| `FCVAR_SERVER_CAN_EXECUTE` # The server is allowed to execute this command on clients.  Reported as "server_can_execute" by `cvarlist`
 ---| `FCVAR_SPONLY` # Executing the command or changing the ConVar is only allowed in singleplayer  Reported as "sp" by `cvarlist`
----| `FCVAR_UNLOGGED` # Don't log the ConVar changes to console/log files/users  Reported as "log" by `cvarlist`
+---| `FCVAR_UNLOGGED` # Don't log --[[  ]]the ConVar changes to console/log files/users  Reported as "log" by `cvarlist`
 ---| `FCVAR_UNREGISTERED` # If this is set, the convar will become anonymous and won't show up in the 'find' results.
 ---| `FCVAR_USERINFO` # For clientside commands, sends the value to the server  Reported as "user" by `cvarlist`
 

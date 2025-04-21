@@ -53,6 +53,9 @@ Vehicle.Schema = {
 	["Emergency.Siren"] = {
 		{ Label = "SIREN" },
 	},
+	["Emergency.Message"] = {
+		{ Label = "MSG" }
+	},
 	["Vehicle.Lights"] = {
 		{ Label = "OFF" },
 		{ Mode = "PARKING", Label = "PRK" },
