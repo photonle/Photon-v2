@@ -75,12 +75,14 @@ function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
 			vehicle:GetPhotonControllerFromAncestor():PlayerExitedLinkedVehicle( ply, vehicle )
 		end
 	end
-
+	
 	Photon2.sv_Network.NotifyPlayerInputController( ply, nil )
-
+	
 	-- TODO: needs to account for custom vehicle bases
 	if ( saveSteeringOnExit ) then
-		local steering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
+		-- of course this just stopped working for no reason. thanks rubat.
+		-- local steering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
+		local steering = vehicle.PhotonLastVehicleSteering or 0
 		local increment = 1
 		if ( steering < 0 ) then increment = increment * -1; steering = steering * -1 end
 		for i=1,math.Round(steering) do
@@ -94,8 +96,8 @@ hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayer
 function Photon2.OnVehicleMove( ply, vehicle, moveData )
 	if ( IsValid( vehicle:GetPhotonController() ) ) then
 		vehicle:GetPhotonController():UpdateVehicleParameters( ply, vehicle, moveData )
+		vehicle.PhotonLastVehicleSteering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
 	end
-	-- print(vehicle:GetSteering())
 end
 hook.Add( "VehicleMove", "Photon2:OnVehicleMove", Photon2.OnVehicleMove )
 
