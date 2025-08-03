@@ -333,6 +333,7 @@ ENT.UserCommands = {
 	["SET"] 			= "UserCommandSet",
 	["TOGGLE"] 			= "UserCommandToggle",
 	["CYCLE"] 			= "UserCommandCycle",
+	["ON_CYCLE"] 		= "UserCommandOnCycle",
 	["SOUND"]			= "UserCommandSound",
 	["CYCLE_SIREN"]		= "UserCommandCycleSiren"
 }
@@ -410,6 +411,22 @@ function ENT:UserCommandSound( action, press, name )
 	subSound.LastPlayed = CurTime()
 end
 
+-- Performs sound action if the current mode (defined as Channel="") is not "OFF".
+function UserCommandOnSound( action, press, name )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode ~= "OFF" ) then
+		return self:UserCommandSound( action, press, name )
+	end
+end
+
+-- Performs sound action only when current mode (defined as Channel="") is "OFF".
+function UserCommandOffSound( action, press, name )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode == "OFF" ) then
+		return self:UserCommandSound( action, press, name )
+	end
+end
+
 function ENT:UserCommandOnToggle( action )
 	local currentMode = self.CurrentModes[action.Channel]
 	if ( currentMode == "OFF" ) then
@@ -482,6 +499,14 @@ function ENT:UserCommandCycle( action )
 	self:SetChannelMode( action.Channel, action.Value[nextIndex] )
 end
 
+-- Cycles through the modes of a channel (identical to UserCommandCycle), but only if the current mode is not "OFF".
+function ENT:UserCommandOnCycle( action )
+	local currentMode = self.CurrentModes[action.Channel]
+	if ( currentMode ~= "OFF" ) then
+		return self:UserCommandCycle( action )
+	end
+end
+
 function ENT:UserCommandCycleSiren( action )
 	local currentMode = self.CurrentModes[action.Channel]
 	local currentIndex = action.ValueMap[currentMode]
@@ -507,6 +532,33 @@ function ENT:InputUserCommand( actions, press, name )
 			continue
 			-- error( "Invalid/undefined controller action '" .. tostring( action ) .."'")
 		end
+		
+		local shouldExecute = true
+
+		if ( istable( action.IfMap ) ) then
+			for channel, modes in pairs( action.IfMap ) do
+				local currentMode = self.CurrentModes[channel] or "OFF"
+				if ( not modes[currentMode] ) then
+					shouldExecute = false
+					break
+				end
+			end
+		end
+
+		if ( not shouldExecute ) then continue end
+		
+		if ( action.IfNotMap ) then
+			for channel, modes in pairs( action.IfNotMap ) do
+				local currentMode = self.CurrentModes[channel] or "OFF"
+				if ( modes[currentMode] ) then
+					shouldExecute = false
+					break
+				end
+			end
+		end
+		
+		if ( not shouldExecute ) then continue end
+
 		func( self, action, press, name )
 	end
 end

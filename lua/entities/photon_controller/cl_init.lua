@@ -247,3 +247,12 @@ function ENT:RenderOverride()
 	if ( not self.DrawController ) then return end
 	self:DrawModel()
 end
+
+-- hook.Add( "PreDrawTranslucentRenderables", "Photon2:UpdateEyePos", function()
+-- 	EyePos()
+-- end)
+
+function ENT:UpdateObserverVelocity(  )
+	self.LastPosition = self.LastPosition or self:GetPos()
+	
+end

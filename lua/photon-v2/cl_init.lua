@@ -118,3 +118,15 @@ hook.Add( "InitPostEntity", "Photon2:SirenDSPChannel", function()
 	timer.Create( "Photon2:MaintainDSP", 5, 0, Photon2.MaintainDSPChannels )
 	Photon2.MaintainDSPChannels()
 end)
+
+local lastObserverUpdate = 0
+local lastObserverPosition = Vector()
+local lastObserverMovement = Vector()
+
+function Photon2.GetObserverMovement()
+	if ( lastObserverUpdate == RealTime() ) then return lastObserverMovement end
+	lastObserverUpdate = RealTime()
+	lastObserverPosition = EyePos()
+	lastObserverMovement = lastObserverPosition - lastObserverMovement
+	return lastObserverMovement
+end

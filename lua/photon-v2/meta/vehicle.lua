@@ -53,6 +53,9 @@ Vehicle.Schema = {
 	["Emergency.Siren"] = {
 		{ Label = "SIREN" },
 	},
+	["Emergency.Message"] = {
+		{ Label = "MSG" }
+	},
 	["Vehicle.Lights"] = {
 		{ Label = "OFF" },
 		{ Mode = "PARKING", Label = "PRK" },
@@ -477,10 +480,12 @@ function Vehicle.New( data )
 	-- Generate table for Vehicles list table
 		local vehicleTable				 = Vehicle.CopyVehicle( data.Vehicle )
 		vehicleTable.Base				 = data.Vehicle
+		vehicleTable.Author				 = data.Author
 		vehicleTable.Category			 = data.Category or target.Category
 		vehicleTable.Name				 = title
 		vehicleTable.IconOverride		 = Vehicle.CreateSpawnIcon( data.Name )
 		vehicleTable.IsPhoton2Generated  = true
+		vehicleTable.KeyValues = data.KeyValues or vehicleTable.KeyValues
 
 		-- Category whitelist check
 		if ( categoryWhitelist[vehicleTable.Category] ) then

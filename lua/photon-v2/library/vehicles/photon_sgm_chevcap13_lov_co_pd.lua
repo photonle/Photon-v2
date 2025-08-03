@@ -13,7 +13,7 @@ VEHICLE.WorkshopRequirements = {
 
 VEHICLE.Description = [[]]
 
-VEHICLE.Siren = { "whelen_epsilon" }
+VEHICLE.Siren = { "whelen_gamma_new" }
 
 local livery = PhotonMaterial.New({
 	Name = "schmal_chevcap13_lov_pd",
@@ -73,7 +73,7 @@ VEHICLE.Equipment = {
 					}
 				}
 			}
-		}		
+		}
 	},
 	{
 		Category = "Windows",

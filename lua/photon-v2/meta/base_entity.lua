@@ -38,6 +38,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Siren2"] 			= 51,
 	["Emergency.Siren"] 			= 50,
 	["Emergency.Warning"] 			= 40,
+	["Emergency.Message"]			= 35,
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
 	["Vehicle.Lights"]	 			= 10,
@@ -376,10 +377,10 @@ function ENT:SetScale( scale )
 	local oldScale
 	if ( isnumber( scale ) ) then
 		oldScale = self.Entity:GetModelScale()
-		local matrix = Matrix()
-		matrix:Scale( Vector( scale, scale, scale ) )
-		self.Entity:EnableMatrix( "RenderMultiply", matrix )
+		self.Entity:SetModelScale( scale, 0 )
+		self.Entity:DisableMatrix( "RenderMultiply" )
 	elseif ( isvector( scale ) ) then
+		self.Entity:SetModelScale( 1 )
 		local matrix = Matrix()
 		matrix:Scale( scale )
 		self.Entity:EnableMatrix( "RenderMultiply", matrix )
