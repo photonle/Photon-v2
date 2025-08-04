@@ -86,6 +86,7 @@ local redHalogen = { r = 255, g = 50, b = 70 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
 local amber = { r = 255, g = 0, b = 0 }
+local miku = { r = 0, g = 221, b = 192 }
 
 Light.States = {
 	["~OFF"] = {
@@ -174,7 +175,14 @@ Light.States = {
 		InnerGlowColor = Color( 0, 0, 0 ),
 		ShapeGlowColor = Color( 0, 0, 0 ),
 		Intensity = 0.5
-	}
+	},
+	["M"] = {
+		SourceDetailColor = PhotonColor(0,255,100):Blend(miku):GetBlendColor(), 
+		SourceFillColor = PhotonColor(0,64,100):Blend(miku):GetBlendColor(),
+		GlowColor = PhotonColor( 0, 100, 100 ):Blend(miku):GetBlendColor(), --*
+		InnerGlowColor = PhotonColor( 0, 128, 100 ):Blend(miku):GetBlendColor(),
+		ShapeGlowColor = PhotonColor( 0, 128, 100 ):Blend(miku):GetBlendColor(),
+	},
 }
 function Light.OnLoad()
 	for k, v in pairs( Light.States ) do
