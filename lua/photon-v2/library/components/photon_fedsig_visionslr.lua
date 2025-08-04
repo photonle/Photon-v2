@@ -277,34 +277,37 @@ COMPONENT.ElementGroups = {
 	["POD4"] = { 19 },
 }
 
+-- Lazy fix because meshes weren't scaled correctly when this was made
+local scale = 0.92
+
 COMPONENT.Elements = {
 	[1] = { "Pod", BoneId = 8, Axis = "y", Speed = 600 },
-	[2] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 8 },
-	[3] = { "PodEmissive", Vector( -3.99, 23.03, 1.29 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[2] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 8 },
+	[3] = { "PodEmissive", Vector( -3.99, 23.2, 1.29 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	[4] = { "Pod", BoneId = 2, Axis = "y", Speed = 1 },
-	[5] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 2 },
-	[6] = { "PodEmissive", Vector( -3.99, -23.03, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[5] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 2 },
+	[6] = { "PodEmissive", Vector( -3.99, -23.2, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	[7] = { "Pod", BoneId = 7, Axis = "y", Speed = 1 },
-	[8] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 7 },
-	[9] = { "PodEmissive", Vector( 3.25, 15.37, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[8] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 7 },
+	[9] = { "PodEmissive", Vector( 3.25, 15.5, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	[10] = { "Pod", BoneId = 3, Axis = "y", Speed = 1 },
-	[11] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 3 },
-	[12] = { "PodEmissive", Vector( 3.25, -15.37, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[11] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 3 },
+	[12] = { "PodEmissive", Vector( 3.25, -15.5, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	[13] = { "Pod", BoneId = 6, Axis = "y", Speed = 1 },
-	[14] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 6 },
-	[15] = { "PodEmissive", Vector( 10.45, 7.7, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
-	
+	[14] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 6 },
+	[15] = { "PodEmissive", Vector( 10.55, 7.8, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+
 	[16] = { "Pod", BoneId = 4, Axis = "y", Speed = 1 },
-	[17] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 4 },
-	[18] = { "PodEmissive", Vector( 10.45, -7.7, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[17] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 4 },
+	[18] = { "PodEmissive", Vector( 10.55, -7.8, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	[19] = { "Pod", BoneId = 5, Axis = "y", Speed = 1 },
-	[20] = { "PodEmissive", Vector( 0.95, 0, 1.87 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 5 },
-	[21] = { "PodEmissive", Vector( 17.68, 0, 1.3 ), Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
+	[20] = { "PodEmissive", Vector( 0.95, 0, 1.87 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/pod_emis", BoneParent = 5 },
+	[21] = { "PodEmissive", Vector( 17.8, 0, 1.3 ) * scale, Angle( 0, 0, 0 ), "schmal/photon/fedsig_visionslr/leds_emis" },
 
 	-- edge = 17
 	[22] = { "SignalMaster", Vector( -11.9, 2.54, 0.05 ), Angle( 0, 90, 0 ) },
@@ -327,7 +330,7 @@ COMPONENT.Elements = {
 
 	[34] = { "PodProjected", Vector( 0.8, 0, 1.8 ), Angle( 0, -90, 0 ), BoneParent = 6 },
 	[35] = { "PodProjected", Vector( 0.8, 0, 1.8 ), Angle( 0, -90, 0 ), BoneParent = 4 },
-	
+
 	[36] = { "PodProjected", Vector( 0.8, 0, 1.8 ), Angle( 0, -90, 0 ), BoneParent = 5 },
 
 	[37] = { "AlleyHotFeet", Vector( -7.3, 27.8, 0 ), Angle( 0, -6, 0 ) },

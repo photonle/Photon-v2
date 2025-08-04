@@ -33,6 +33,7 @@
 ---@field MeshSubIndex? number Model's mesh sub-index (default = `1`).
 ---@field Mesh? IMesh
 ---@field LocalPosition? Vector
+---@field ScaledLocalPosition? Vector
 ---@field LocalAngles? Angle
 ---@field Matrix? VMatrix
 ---@field DrawColor PhotonElementColor

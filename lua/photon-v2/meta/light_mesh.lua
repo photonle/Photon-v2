@@ -142,7 +142,7 @@ function Light:Initialize( id, component )
 	-- Fix for bizarre scaling bug in 64-bit game
 	self.Scale = self.Scale + Vector( 0.0000000001, 0.0000000001, 0.0000000001 )
 	self.FinalScale = self.Scale
-	
+	self.ScaledLocalPosition = self.LocalPosition * self.FinalScale
 	self.Matrix:SetScale( self.FinalScale )
 
 	local scale = parentEntity:GetModelScale()
@@ -165,6 +165,7 @@ function Light:SetLightScale( scale )
 	-- TODO
 	self.FinalScale = self.Scale * scale
 	self.Matrix:SetScale( self.FinalScale )
+	self.ScaledLocalPosition = self.LocalPosition * self.FinalScale
 end
 
 -- Internal
@@ -218,20 +219,19 @@ function Light:DoPreRender()
 
 	self:UpdateProxyState()
 
-	self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, self.Parent:GetPos(), self.Parent:GetAngles() )
+	self.Position, self.Angles = LocalToWorld( self.ScaledLocalPosition, self.LocalAngles, self.Parent:GetPos(), self.Parent:GetAngles() )
 
 	if ( self.BoneParent < 0 ) then
 		
 	else
 		self.Parent:SetupBones()
 		local matrix = self.Parent:GetBoneMatrix( self.BoneParent --[[@as number]] )
-		self.Position, self.Angles = LocalToWorld( self.LocalPosition, self.LocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
+		self.Position, self.Angles = LocalToWorld( self.ScaledLocalPosition, self.LocalAngles, matrix:GetTranslation(), matrix:GetAngles() )
 	end
 
 	self.Matrix:SetTranslation( self.Position )
 	self.Matrix:SetAngles( self.Angles )
 	self.Matrix:SetScale( self.FinalScale )
-
 	
 	if ( self.IntensityTransitions ) then
 		local state = self.States[self.CurrentStateId]

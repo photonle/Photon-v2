@@ -7,6 +7,9 @@ local alternateActive = {}
 
 local this = Photon2.RenderLightMesh
 
+local cam = cam
+local render = render
+
 function Photon2.RenderLightMesh.OnPreRender()
 	local activeLights = this.Active
 	local nextTable = alternateActive
@@ -30,25 +33,25 @@ function Photon2.RenderLightMesh.DrawBloom()
 		-- if ( light.CurrentStateId == "OFF" ) then print("light is off") end
 		if ( not light or ( light.Intensity <= 0 ) or ( light.UIMode ) ) then continue end
 		cam.PushModelMatrix( light.Matrix, true )
-		render.SetMaterial( light.BloomMaterial --[[@as IMaterial]] )
-		-- light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", Vector(1, 0, 0) )
-		light.BloomMaterial:SetFloat( "$alpha", 1 )
-		light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", light.BloomColor:GetVector() )
-		if ( light.Mesh ) then
-			if light.DLight then
-				render.SetLocalModelLights(
-					{
+			render.SetMaterial( light.BloomMaterial --[[@as IMaterial]] )
+			-- light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", Vector(1, 0, 0) )
+			light.BloomMaterial:SetFloat( "$alpha", 1 )
+			light.BloomMaterial--[[@as IMaterial]]:SetVector( "$color", light.BloomColor:GetVector() )
+			if ( light.Mesh ) then
+				if light.DLight then
+					render.SetLocalModelLights(
 						{
-							type = MATERIAL_LIGHT_POINT,
-							color = light.BloomColor:GetVector()*light.Intensity,
-							pos = light.Matrix:GetTranslation(),
-							quadraticFalloff = light.DLightFallOff or 0.06
+							{
+								type = MATERIAL_LIGHT_POINT,
+								color = light.BloomColor:GetVector()*light.Intensity,
+								pos = light.Matrix:GetTranslation(),
+								quadraticFalloff = light.DLightFallOff or 0.06
+							}
 						}
-					}
-				)
+					)
+				end
+				light.Mesh:Draw()
 			end
-			light.Mesh:Draw()
-		end
 		cam.PopModelMatrix()
 	end
 end
@@ -109,6 +112,7 @@ function Photon2.RenderLightMesh.Render( depth, sky )
 end
 hook.Add( "PreDrawTranslucentRenderables", "Photon2.RenderLightMesh", Photon2.RenderLightMesh.Render )
 
+-- This is used when the light is being drawn in a 2D panel/UI context.
 function Photon2.RenderLightMesh.DrawUI()
 	local activeLights = this.Active
 	for i=1, #activeLights do
