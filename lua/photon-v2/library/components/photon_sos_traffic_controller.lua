@@ -20,9 +20,11 @@ COMPONENT.Preview = {
 	Zoom = 1.5
 }
 
+-- ParkMode on by default, NightParkMode off by default
+-- Enable NightParkMode per component in vehicle file
 COMPONENT.Features = {
-    ParkMode = { "Emergency.Warning", "MODE1" },
-    NightParkMode = { "Emergency.ParkedWarning", "MODE1" },
+    ParkMode = true,
+    NightParkMode = false
 }
 
 COMPONENT.States = {
@@ -171,34 +173,31 @@ COMPONENT.VirtualOutputs = {
         {
 			Mode = "LEFT",
 			Conditions = {
-				["Vehicle.Transmission"] = { "PARK" },
                 ["Emergency.Directional"] = { "LEFT" },
-				["Emergency.Warning"] = { "MODE3" },
-                ["Vehicle.Ambient"] = { "DARK" }
+                ["Emergency.NightParkedWarning"] = { "MODE3" }
 			}
 		},
         {
 			Mode = "RIGHT",
 			Conditions = {
-				["Vehicle.Transmission"] = { "PARK" },
                 ["Emergency.Directional"] = { "RIGHT" },
-				["Emergency.Warning"] = { "MODE3" },
-                ["Vehicle.Ambient"] = { "DARK" }
+                ["Emergency.NightParkedWarning"] = { "MODE3" }
 			}
 		},
         {
 			Mode = "CENOUT",
 			Conditions = {
-				["Vehicle.Transmission"] = { "PARK" },
                 ["Emergency.Directional"] = { "CENOUT" },
-				["Emergency.Warning"] = { "MODE3" },
-                ["Vehicle.Ambient"] = { "DARK" }
+				["Emergency.NightParkedWarning"] = { "MODE3" }
 			}
 		}
 	},
 }
 
 COMPONENT.InputPriorities = {
+    -- Had to restate ParkedWarning and NightParkedWarning priorities since it was throwing errors without them
+    ["Emergency.ParkedWarning"] = 45,
+    ["Emergency.NightParkedWarning"] = 46,
 	["Emergency.NightParkedDirectional"] = 81,
 }
 
@@ -215,7 +214,12 @@ COMPONENT.Inputs = {
 		}
 	},
     ["Emergency.ParkedWarning"] = {
-		["MODE1"] = {
+		["MODE3"] = {
+            Light = "ALT_SLOW"
+        }
+	},
+    ["Emergency.NightParkedWarning"] = {
+		["MODE3"] = {
             Light = "ALT_SLOW_DIM"
         }
 	},
