@@ -92,6 +92,14 @@ COMPONENT.Templates = {
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.5
 		}
+	},
+	["Projected"] = {
+		Illumination = {
+			Material = "photon/flashlight/led_linear.png",
+			NearZ = 100,
+			FOV = 50,
+			Brightness = 1.5
+		}
 	}
 }
 
@@ -139,6 +147,16 @@ COMPONENT.Elements = {
 	[25] = { "Main", Vector( 7.7, -6.6, -0.2 ), Angle( 0, 180, 0 ) },
 
 	[26] = { "Main", Vector( 0, -6.6, -0.2 ), Angle( 0, 180, 0 ) },
+
+	[27] = { "Corner3", Vector( 31.8, 0, -0.2 ), Angle( 0, -90, 0 ), Width = 7.7 },
+	[28] = { "Corner3", Vector( -31.8, 0, -0.2 ), Angle( 0, 90, 0 ), Width = 7.7 },
+
+	[29] = { "Illumination", Vector( -7.7, 6.6, -0.2 ), Angle( 5, 0, 0 ) },
+	[30] = { "Illumination", Vector( 7.7, 6.6, -0.2 ), Angle( 5, 0, 0 ) },
+	[31] = { "Illumination", Vector( 0, 6.6, -0.2 ), Angle( 2, 0, 0 ), FOV = 90, Material = "photon/flashlight/wide.png" },
+
+	[32] = { "Illumination", Vector( -31.8, 0, -0.2 ), Angle( 0, 90, 0 ), FOV = 90 },
+	[33] = { "Illumination", Vector( 31.8, 0, -0.2 ), Angle( 5, -90, 0 ), FOV = 90 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -163,6 +181,35 @@ COMPONENT.Segments = {
 			["PHOTO"] = { 3 },
 			["TEASER"] = { }
 		}
+	},
+	ForwardIllumination = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 31",
+			[2] = "[W] 2 3 29 30"
+		},
+		Sequences = {
+			["FLOOD"] = { 1 },
+			["TKDN"] = { 2 }
+		}
+	},
+	LeftAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 8 10 12 28 14 16 18 32"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	},
+	RightAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 9 11 13 27 15 17 19 33"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
 	}
 }
 
@@ -182,5 +229,15 @@ COMPONENT.Inputs = {
 		["CRUISE"] = {
 			All = "STEADY"
 		}
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = { ForwardIllumination = "TKDN" },
+		["FLOOD"] = { ForwardIllumination = "FLOOD" }
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = { LeftAlley = "ON" },
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = { RightAlley = "ON" },
 	}
 }
