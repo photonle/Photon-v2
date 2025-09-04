@@ -210,6 +210,35 @@ COMPONENT.Segments = {
 		Sequences = {
 			["ON"] = { 1 }
 		}
+	},
+	Traffic = {
+		Frames = {
+			[1] = "[A] 21",
+			[2] = "[A] 23 21",
+			[3] = "[A] 25 23 21",
+			[4] = "[A] 26 25 23 21",
+			[5] = "[A] 24 26 25 23 21",
+			[6] = "[A] 22 24 26 25 23 21",
+			[7] = "[A] 20 22 24 26 25 23 21",
+			[8] = "[A] 20 22 24 26 25 23",
+			[9] = "[A] 20 22 24 26 25",
+			[10] = "[A] 20 22 24 26",
+			[11] = "[A] 20 22 24",
+			[12] = "[A] 20 22",
+			[13] = "[A] 20",
+			[14] = "[A] 26",
+			[15] = "[A] 24 26 25",
+			[16] = "[A] 22 24 26 25 23",
+			[17] = "[A] 20 22 24 26 25 23 21",
+			[18] = "[A] 20 22 24 25 23 21",
+			[19] = "[A] 20 22 23 21",
+			[20] = "[A] 20 21",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 13 ):Add( 0 ):SetTiming( .273 ),
+			["RIGHT"] = sequence():Sequential( 13, 1 ):Add( 0 ):SetTiming( .273 ),
+			["CENOUT"] = sequence():Sequential( 14, 20 ):Add( 0 ):SetTiming( .273 ),
+		}
 	}
 }
 
@@ -239,5 +268,10 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.SceneRight"] = {
 		["ON"] = { RightAlley = "ON" },
-	}
+	},
+	["Emergency.Directional"] = {
+        ["LEFT"] = { Traffic = "LEFT" },
+        ["RIGHT"] = { Traffic = "RIGHT" },
+        ["CENOUT"] = { Traffic = "CENOUT" }
+	},
 }

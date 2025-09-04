@@ -153,6 +153,31 @@ COMPONENT.Segments = {
 			["ON"] = { 1 }
 		}
 	},
+	Traffic = {
+		Frames = {
+			[1] = "[A] 20",
+			[2] = "[A] 22 20",
+			[3] = "[A] 24 22 20",
+			[4] = "[A] 23 24 22 20",
+			[5] = "[A] 21 23 24 22 20",
+			[6] = "[A] 19 21 23 24 22 20",
+			[7] = "[A] 19 21 23 24 22",
+			[8] = "[A] 19 21 23 24",
+			[9] = "[A] 19 21 23",
+			[10] = "[A] 19 21",
+			[11] = "[A] 19",
+			[12] = "[A] 23 24",
+			[13] = "[A] 21 23 24 22",
+			[14] = "[A] 19 21 23 24 22 20",
+			[15] = "[A] 19 21 22 20",
+			[16] = "[A] 19 20"
+ 		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 11 ):Add( 0 ):SetTiming( .273 ),
+			["RIGHT"] = sequence():Sequential( 11, 1 ):Add( 0 ):SetTiming( .273 ),
+			["CENOUT"] = sequence():Sequential( 12, 16 ):Add( 0 ):SetTiming( .273 ),
+		}
+	},
 	-- "Wireless Advanced Communications" patterns
 	WAC = {
 		Frames = {
@@ -252,5 +277,10 @@ COMPONENT.Inputs = {
 	},
 	["Emergency.SceneRight"] = {
 		["ON"] = { RightAlley = "ON" },
-	}
+	},
+	["Emergency.Directional"] = {
+        ["LEFT"] = { Traffic = "LEFT" },
+        ["RIGHT"] = { Traffic = "RIGHT" },
+        ["CENOUT"] = { Traffic = "CENOUT" }
+	},
 }
