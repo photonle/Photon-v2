@@ -78,7 +78,7 @@ COMPONENT.Elements = {
 	[19] = { "Model", Vector( 0, -0.4, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bra_rc", DrawMaterial = "photon/common/glow_gradient_a" },
 
 	-- Bed
-	[20] = { "Model", offset, Angle( 0, 0, 0 ), "photon/vehicle/bed_rc" },
+	[20] = { "Model", Vector( 0, -0.1, 0 ), Angle( 0, 0, 0 ), "photon/vehicle/bed_rc" },
 
 	-- License
 	[21] = { "Model", offset, Angle( 0, 0, 0 ), "photon/vehicle/lic", BloomMaterial = "photon/common/glow_gradient_d" },
