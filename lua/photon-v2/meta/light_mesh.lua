@@ -41,6 +41,7 @@ local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
 local amber = { r = 255, g = 128, b = 0 }
 local black = { r = 0, g = 0, b = 0 }
+local miku = { r = 0, g = 221, b = 192 }
 
 Light.States = {
 	["~OFF"] = {
@@ -75,6 +76,10 @@ Light.States = {
 	["SW"] = {
 		BloomColor = PhotonColor( 255, 195, 175 ):Blend( softWhite ):GetBlendColor(),
 		DrawColor = PhotonColor( 255, 245, 205 ):Blend( softWhite ):GetBlendColor(),
+	},
+	["M"] = {
+		BloomColor = PhotonColor( 0, 150, 120 ):Blend( miku ):GetBlendColor(),
+		DrawColor = PhotonColor( 75, 225, 190 ):Blend( miku ):GetBlendColor(),
 	},
 }
 
