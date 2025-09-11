@@ -175,7 +175,8 @@ end
 local newVehicles = {
 	-- date given is the approximate release date
 	["photon_sm_f150r18_lgmt_co_pd"] = "2024-06-29",
-	["photon_sgm_chevcap91_arv_co_pd"] = "2024-07-03"
+	["photon_sgm_chevcap91_arv_co_pd"] = "2024-07-03",
+	["photon_sm_f150r18_az_dps"] = "2025-09-10"
 }
 
 function Vehicle.CreateSpawnIcon( iconName )
