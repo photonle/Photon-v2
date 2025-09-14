@@ -3,6 +3,8 @@ Photon2.RenderBloom = Photon2.RenderBloom or {
 	DrawTime = 0
 }
 
+local drawLights = GetConVar("ph2_draw_light2d")
+
 local copyMaterial = Material( "pp/copy" )
 local additiveMaterial = Material( "pp/add" )
 local subtractiveMaterial = Material( "pp/sub" )
@@ -93,7 +95,10 @@ function Photon2.RenderBloom.Render( additive )
 
 		-- RENDER MESHES
 		Photon2.RenderLightMesh.DrawBloom()
-		Photon2.RenderLight2D.DrawBloom()
+		if ( drawLights:GetBool() ) then
+			Photon2.RenderLight2D.DrawBloom()
+		end
+		-- Photon2.RenderLight2D.DrawBloom()
 
 		render.SetStencilCompareFunction( STENCIL_EQUAL )
 		render.SetStencilPassOperation( STENCIL_KEEP )

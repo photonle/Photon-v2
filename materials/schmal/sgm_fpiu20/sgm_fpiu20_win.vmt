@@ -1,6 +1,6 @@
 "VertexlitGeneric"
 {
-	"$basetexture" "schmal/sgm_fpiu20_win_mpdc"
+	"$basetexture" "schmal/sgm_fpiu20/glass_default"
 	"$bumpmap"    "photon/common/flat"
 	"$envmap" env_cubemap
 	"$normalmapalphaenvmapmask" "0"

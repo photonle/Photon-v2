@@ -47,6 +47,8 @@
 ---@field LocalAngles Angle Element's local angles.
 ---@field Rotation Angle
 ---@field QuadRotation Angle
+---@field ScaleX number
+---@field ScaleY number
 ---@field Intensity number Light's current (actual) intensity.
 ---@field TargetIntensity number Light's target intensity.
 ---@field Position Vector World position of the light. Set and updated automatically.

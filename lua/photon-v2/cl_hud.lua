@@ -1,3 +1,4 @@
+
 Photon2.HUD = Photon2.HUD or {
 	ToneIcons = {
 		wail = Material("photon/ui/hud_icon_wail.png"),
@@ -11,21 +12,54 @@ Photon2.HUD = Photon2.HUD or {
 		manual =  Material("photon/ui/hud_icon_manual.png"),
 		siren =  Material("photon/ui/hud_icon_siren.png"),
 	},
+	IlluminationIcons = {
+		RearOff = Material("photon/ui/hud_icon_illum_rear_off.png"),
+		LeftOff = Material("photon/ui/hud_icon_illum_left_off.png"),
+		RightOff = Material("photon/ui/hud_icon_illum_right_off.png"),
+		FrontOff = Material("photon/ui/hud_icon_illum_front_off.png"),
+		RearOn = Material("photon/ui/hud_icon_illum_rear_on.png"),
+		LeftOn = Material("photon/ui/hud_icon_illum_left_on.png"),
+		RightOn = Material("photon/ui/hud_icon_illum_right_on.png"),
+		FrontOn = Material("photon/ui/hud_icon_illum_front_on.png"),
+		Flood = Material("photon/ui/hud_icon_illum_flood.png"),
+	},
+	VehicleIcon = Material("photon/ui/hud_veh_icon.png"),
+	SignalIcons = {
+		Left = Material("photon/ui/hud_icon_left.png"),
+		Right = Material("photon/ui/hud_icon_right.png"),
+		Headlights = Material("photon/ui/hud_icon_hlights.png"),
+		HeadlightsAuto = Material("photon/ui/hud_icon_alights.png"),
+		ParkingLights = Material("photon/ui/hud_icon_plights.png"),
+	},
+	IndicatorIcons = {
+		Active = Material("photon/ui/hud_ellipse_active.png"),
+		Inactive = Material("photon/ui/hud_ellipse_inactive.png"),
+	},
 	StartTime = 0
 }
+
+local HUD = Photon2.HUD
 
 local print = Photon2.Debug.Print
 local printf = Photon2.Debug.PrintF
 
 local info, warn, warnOnce = Photon2.Debug.Declare( "HUD" )
 
+--[[
+		INITIALIZE HUD RENDER TARGET
+--]]
+
+-- Important to note that Photon 2 draws its HUD to a dedicated render target
+-- so it's refreshed at a slower rate than the client framerate for better efficiency.
 local hudMaterial = Material("photon/ui/hud")
 
 local hudRT = GetRenderTargetEx( "Photon2HUD" .. CurTime(), 512, 512, 
 0, MATERIAL_RT_DEPTH_NONE, 32768 + 4 + 8 + 512, 0, IMAGE_FORMAT_RGBA8888 )
 
--- 
-local userSettings = {}
+
+--[[
+		LOCAL UTILITY FUNCTIONS
+--]]
 
 local function stringToColor( str )
 	local r, g, b, a = string.match( str, "(%d+),(%d+),(%d+),(%d+)" )
@@ -37,20 +71,41 @@ local function stringToColor( str )
 	)
 end
 
--- local userSettings.HighlightColor = Color( 255, 255, 255 )
+local function truncateString( str, maxLength )
+	if #str > maxLength then
+		return string.sub(str, 1, maxLength - 3) .. "..."
+	else
+		return str
+	end
+end
 
--- 255 255 255 96
--- local userSettings.AccentAltColor = Color( 255, 255, 255, 96 )
--- 0 0 0 128
--- local userSettings.AccentInactiveColor = Color( 0, 0, 0, 128 )
+--[[
+		DEBUG/DEVELOPMENT FUNCTIONS
+--]]
 
--- 64 64 64 200
--- local userSettings.PanelActiveColor = Color( 64, 64, 64, 200 )
--- local userSettings.PanelAltActiveColor = Color( 16, 16, 16, 200 )
+-- Utility function that draws a fixed box. I made it so 
+-- I could capture screenshots/recordings with the same
+-- perspective and dimensions for the Wiki.
+function HUD.DrawTargetBox( w, h )
+	local centerX = ScrW() / 2
+	local centerY = ScrH() / 2
 
--- 64 64 64
--- local panelInactiveColor = ColorAlpha( userSettings.PanelActiveColor, 100 )
--- local userSettings.PanelAltInactiveColor = ColorAlpha( panelActiveAlternateColor, 100 )
+	-- surface.SetDrawColor( 255, 255, 255, 255 )
+	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), w, 1, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX - (w/2), centerY + (h/2), w, 1, Color( 255, 255, 255 ) )
+	draw.RoundedBox( 0, centerX + (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
+end
+
+-- hook.Add( "PostDrawHUD", "Photon2.TargetBox", function() 
+	-- HUD.DrawTargetBox( 400, 128 )
+-- end)
+
+--[[
+		SETUP USER SETTINGS
+--]]
+	
+local userSettings = {}
 
 local optionConVars = {
 	Enabled = { "ph2_hud_enabled", "Bool" },
@@ -91,34 +146,43 @@ for key, data in pairs( optionConVars ) do
 	end, "Photon2.HUD")
 end
 
--- local hudRTId = 
-local illumRearOff = Material("photon/ui/hud_icon_illum_rear_off.png")
-local illumLeftOff = Material("photon/ui/hud_icon_illum_left_off.png")
-local illumRightOff = Material("photon/ui/hud_icon_illum_right_off.png")
-local illumFrontOff = Material("photon/ui/hud_icon_illum_front_off.png")
-local illumRearOn = Material("photon/ui/hud_icon_illum_rear_on.png")
-local illumLeftOn = Material("photon/ui/hud_icon_illum_left_on.png")
-local illumRightOn = Material("photon/ui/hud_icon_illum_right_on.png")
-local illumFrontOn = Material("photon/ui/hud_icon_illum_front_on.png")
-local illumFlood = Material("photon/ui/hud_icon_illum_flood.png")
+local stateColors = {
+	["OFF"] = function() return userSettings.AccentInactiveColor end,
+	["ON"] = function() return userSettings.HighlightColor end
+}
 
-local vehicleIcon = Material("photon/ui/hud_veh_icon.png")
+--[[
+		SETUP LOCAL VARIABLES THAT REFERENCE HUD ICONS (for performance) ???
+--]]
 
-local signalLeft = Material("photon/ui/hud_icon_left.png")
-local signalRight = Material("photon/ui/hud_icon_right.png")
-local headLights = Material("photon/ui/hud_icon_hlights.png")
-local headLightsAuto = Material("photon/ui/hud_icon_alights.png")
-local parkingLights = Material("photon/ui/hud_icon_plights.png")
+local iconIllumRearOff = HUD.IlluminationIcons.RearOff
+local iconIllumLeftOff = HUD.IlluminationIcons.LeftOff
+local iconIllumRightOff = HUD.IlluminationIcons.RightOff
+local iconIllumFrontOff = HUD.IlluminationIcons.FrontOff
+local iconIllumRearOn = HUD.IlluminationIcons.RearOn
+local iconIllumLeftOn = HUD.IlluminationIcons.LeftOn
+local iconIllumRightOn = HUD.IlluminationIcons.RightOn
+local iconIllumFrontOn = HUD.IlluminationIcons.FrontOn
+local iconIllumFlood = HUD.IlluminationIcons.Flood
+
+local iconVehicle = HUD.VehicleIcon
+
+local iconSignalLeft = HUD.SignalIcons.Left
+local iconSignalRight = HUD.SignalIcons.Right
+local iconHeadlights = HUD.SignalIcons.Headlights
+local iconHeadlightsAuto = HUD.SignalIcons.HeadlightsAuto
+local iconParkingLights = HUD.SignalIcons.ParkingLights
+
+local toneIcons = HUD.ToneIcons
+local iconIndicatorActive = HUD.IndicatorIcons.Active
+local iconIndicatorInactive = HUD.IndicatorIcons.Inactive
 
 local lastUpdate = 0
 
 local cornerRadius = 4
 
-local icons = Photon2.HUD.ToneIcons
-local ellipseActive = Material("photon/ui/hud_ellipse_active.png")
-local ellipseInactive = Material("photon/ui/hud_ellipse_inactive.png")
 
-local HUD = Photon2.HUD
+
 
 local stageIndicators = {
 	[1] = { 48, 0 },
@@ -134,11 +198,6 @@ local stageIndicatorsSmall = {
 	[3] = { 7, 2, 0 },
 	[4] = { 5, 2, -1 },
 	[5] = { 4, 1, 0 },
-}
-
-local stateColors = {
-	["OFF"] = function() return userSettings.AccentInactiveColor end,
-	["ON"] = function() return userSettings.HighlightColor end
 }
 
 function HUD.Activate()
@@ -204,21 +263,21 @@ function HUD.LightStageIndicator( x, y, width, priLabel, priCount, priSelected, 
 		HUD.LightsIndicator( x + 40, y + 31, 11, 3, 2, indicatorComponent.Elements )
 	end
 
-	surface.SetMaterial( ellipseInactive )
+	surface.SetMaterial( iconIndicatorInactive )
 	surface.SetDrawColor( secIndicatorColor )
 
 	secSelected = ( secCount + 1 ) - secSelected
 
 	for i=1, secCount do
 		if ( i == secSelected ) then
-			surface.SetMaterial( ellipseActive )
+			surface.SetMaterial( iconIndicatorActive )
 			surface.SetDrawColor( userSettings.HighlightColor )
 		end
 
 		surface.DrawTexturedRect( x + width - 16 - ( ( i - 1 ) * 12 ), y + 46, 8, 8 )
 
 		if ( i == secSelected ) then
-			surface.SetMaterial( ellipseInactive)
+			surface.SetMaterial( iconIndicatorInactive)
 			surface.SetDrawColor( secIndicatorColor )
 		end
 	end
@@ -286,11 +345,11 @@ function HUD.FunctionsIndicator( x, y, width, height, columns, functions )
 	for i=1, #functions do
 		
 		if ( functions[i][2] == 1 ) then
-			surface.SetMaterial( ellipseActive )
+			surface.SetMaterial( iconIndicatorActive )
 			surface.SetDrawColor( userSettings.HighlightColor )
 			textColor = userSettings.HighlightColor
 		else
-			surface.SetMaterial( ellipseInactive )
+			surface.SetMaterial( iconIndicatorInactive )
 			surface.SetDrawColor( userSettings.AccentInactiveColor )
 			textColor = userSettings.AccentAltColor
 		end
@@ -352,10 +411,10 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	if ( frontOn or floodOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( illumFrontOn )
+		surface.SetMaterial( iconIllumFrontOn )
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
-		surface.SetMaterial( illumFrontOff )
+		surface.SetMaterial( iconIllumFrontOff )
 	end
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
@@ -365,36 +424,36 @@ function HUD.SceneLightingIndicator( x, y, icon, frontOn, floodOn, rightOn, back
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
 	end
-	surface.SetMaterial( illumFlood )
+	surface.SetMaterial( iconIllumFlood )
 	surface.DrawTexturedRect( x - 4, y - 4, 56, 30 )
 
 	if ( rightOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( illumRightOn )
+		surface.SetMaterial( iconIllumRightOn )
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
-		surface.SetMaterial( illumRightOff )
+		surface.SetMaterial( iconIllumRightOff )
 	end
 	surface.DrawTexturedRect( x + 27, y - 3, 25, 52 )
 
 	if ( backOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( illumRearOn )
+		surface.SetMaterial( iconIllumRearOn )
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
-		surface.SetMaterial( illumRearOff )
+		surface.SetMaterial( iconIllumRearOff )
 	end
 	surface.DrawTexturedRect( x - 4, y + 28, 56, 21 )
 
 	if ( leftOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( illumLeftOn )
+		surface.SetMaterial( iconIllumLeftOn )
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
-		surface.SetMaterial( illumLeftOff )
+		surface.SetMaterial( iconIllumLeftOff )
 	end
 	surface.DrawTexturedRect( x-5, y - 3, 30, 52 )
 
@@ -442,7 +501,7 @@ function HUD.StandardLightingIndicator( x, y, width, icon, sigSelected, sigStyle
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
 	end
-	surface.SetMaterial( signalLeft )
+	surface.SetMaterial( iconSignalLeft )
 	surface.DrawTexturedRect( x + 4, y + 4, 24, 24 )
 
 	if ( rsignalOn ) then
@@ -451,20 +510,20 @@ function HUD.StandardLightingIndicator( x, y, width, icon, sigSelected, sigStyle
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
 	end
-	surface.SetMaterial( signalRight )
+	surface.SetMaterial( iconSignalRight )
 	surface.DrawTexturedRect( x + 122, y + 4, 24, 24 )
 
 	if ( alightsOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( headLightsAuto )
+		surface.SetMaterial( iconHeadlightsAuto )
 	elseif ( hlightsOn ) then
 		drawAsActive = true
 		surface.SetDrawColor( userSettings.HighlightColor )
-		surface.SetMaterial( headLights )
+		surface.SetMaterial( iconHeadlights )
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
-		surface.SetMaterial( headLights )
+		surface.SetMaterial( iconHeadlights )
 	end
 	surface.DrawTexturedRect( x + 43, y + 4, 24, 24 )
 	
@@ -477,28 +536,53 @@ function HUD.StandardLightingIndicator( x, y, width, icon, sigSelected, sigStyle
 	else
 		surface.SetDrawColor( userSettings.AccentInactiveColor )
 	end
-	surface.SetMaterial( parkingLights )
+	surface.SetMaterial( iconParkingLights )
 	surface.DrawTexturedRect( x + 82, y + 4, 24, 24 )
 	
 end
 
--- Utility function that draws a fixed box. I made it so 
--- I could capture screenshots/recordings with the same
--- perspective and dimensions for the Wiki.
-function HUD.DrawTargetBox( w, h )
-	local centerX = ScrW() / 2
-	local centerY = ScrH() / 2
+function HUD.StandardLights( x, y, width, headlightsAuto, headlightsOn, parkingOn )
+	local backgroundColor = userSettings.PanelActiveColor
+	
+	-- if ( isInactive ) then
+	-- 	backgroundColor = userSettings.BackgroundColor
+	-- end
 
-	-- surface.SetDrawColor( 255, 255, 255, 255 )
-	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), w, 1, Color( 255, 255, 255 ) )
-	draw.RoundedBox( 0, centerX - (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
-	draw.RoundedBox( 0, centerX - (w/2), centerY + (h/2), w, 1, Color( 255, 255, 255 ) )
-	draw.RoundedBox( 0, centerX + (w/2), centerY - (h/2), 1, h, Color( 255, 255, 255 ) )
+	draw.RoundedBox( cornerRadius, x, y, width, 32, backgroundColor )
+	
+	
+	surface.SetDrawColor( userSettings.HighlightColor )
+	surface.SetMaterial( iconSignalLeft )
+	surface.DrawTexturedRect( x + 4, y + 4, 24, 24 )
+
+	surface.SetDrawColor( userSettings.HighlightColor )
+	surface.SetMaterial( iconSignalRight )
+	surface.DrawTexturedRect( x + 122, y + 4, 24, 24 )
+
+
+	if ( headlightsAuto ) then
+		surface.SetDrawColor( userSettings.HighlightColor )
+		surface.SetMaterial( iconHeadlightsAuto )
+	elseif ( headlightsOn ) then
+		surface.SetDrawColor( userSettings.HighlightColor )
+		surface.SetMaterial( iconHeadlights )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+		surface.SetMaterial( iconHeadlights )
+	end
+	surface.DrawTexturedRect( x + 43, y + 4, 24, 24 )
+	
+	-- For now I've displayed running lights separately as
+	-- opposed to replacing the headlight and auto headlight icons.
+	-- If more room is needed in the future this could free up a spot.
+	if ( parkingOn ) then
+		surface.SetDrawColor( userSettings.HighlightColor )
+	else
+		surface.SetDrawColor( userSettings.AccentInactiveColor )
+	end
+	surface.SetMaterial( iconParkingLights )
+	surface.DrawTexturedRect( x + 82, y + 4, 24, 24 )
 end
-
--- hook.Add( "PostDrawHUD", "Photon2.TargetBox", function() 
-	-- HUD.DrawTargetBox( 400, 128 )
--- end)
 
 function HUD.KeyBindHint( x, y, keys )
 	local key
@@ -527,8 +611,8 @@ end
 ---@param selected integer
 ---@param mode integer 0=Off, 1=On, 2=Override
 function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode )
-	local activeIcon = ellipseActive
-	local inactiveIcon = ellipseInactive
+	local activeIcon = iconIndicatorActive
+	local inactiveIcon = iconIndicatorInactive
 	local labelColor = userSettings.HighlightColor
 	local iconColor = userSettings.HighlightColor
 	local indicatorColor = userSettings.AccentAltColor
@@ -538,8 +622,8 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 	local selectedIndicator = ( count + 1 ) - selected
 
 	if ( mode == 2 ) then
-		activeIcon = ellipseInactive
-		inactiveIcon = ellipseActive
+		activeIcon = iconIndicatorInactive
+		inactiveIcon = iconIndicatorActive
 		indicatorColor = userSettings.HighlightColor
 	elseif ( mode == 0 ) then
 		labelColor = userSettings.AccentAltColor
@@ -615,13 +699,7 @@ function HUD.DiscreteIndicator( x, y, width, icon, label, count, selected, mode 
 
 end
 
-local function truncateString( str, maxLength )
-	if #str > maxLength then
-		return string.sub(str, 1, maxLength - 3) .. "..."
-	else
-		return str
-	end
-end
+
 
 local function addHintKey( tbl, cmd )
 	local map = Photon2.ClientInput.Active.Map
@@ -693,6 +771,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 	local keyHints = {}
 
 	hudMaterial:SetTexture( "$basetexture", hudRT )
+
 	if ( CurTime() >= (lastUpdate + 0.05) ) then
 
 		if HUD.StartTime == 0 then 
@@ -763,14 +842,21 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				nextY = ( nextY + nextH + margin )
 				nextH = 32
 
-				HUD.StandardLightingIndicator( mainX, nextY, mainWidth, vehicleIcon, sigMode.Index or 0, sigStyle, signalComponent,
-				target.CurrentModes["Vehicle.Signal"] == "LEFT", 
-				target.CurrentModes["Vehicle.Signal"] == "RIGHT", 
-				target.CurrentModes["Vehicle.Signal"] == "HAZARD",
-				target.CurrentModes["Vehicle.Lights"] == "HEADLIGHTS", 
-				target.CurrentModes["Vehicle.Lights"] == "AUTO",
-				target.CurrentModes["Vehicle.Lights"] == "PARKING"
-			)
+
+				-- HUD.StandardLightingIndicator( mainX, nextY, mainWidth, iconVehicle, sigMode.Index or 0, sigStyle, signalComponent,
+				-- 	target.CurrentModes["Vehicle.Signal"] == "LEFT", 
+				-- 	target.CurrentModes["Vehicle.Signal"] == "RIGHT", 
+				-- 	target.CurrentModes["Vehicle.Signal"] == "HAZARD",
+				-- 	target.CurrentModes["Vehicle.Lights"] == "HEADLIGHTS", 
+				-- 	target.CurrentModes["Vehicle.Lights"] == "AUTO",
+				-- 	target.CurrentModes["Vehicle.Lights"] == "PARKING"
+				-- )
+
+				HUD.StandardLights( mainX, nextY, mainWidth, 
+					target.CurrentModes["Vehicle.Lights"] == "AUTO", 
+					target.CurrentModes["Vehicle.Lights"] == "HEADLIGHTS", 
+					target.CurrentModes["Vehicle.Lights"] == "PARKING"
+				)
 			end
 			--
 			--
@@ -856,7 +942,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					-- Siren 1 Indicator
 					local sirenDisplay
 					local label = target.CurrentModes["Emergency.Siren"]
-					local icon = icons["speaker"]
+					local icon = toneIcons["speaker"]
 					local sirenSelection = siren1.OrderedTones[target.CurrentModes["Emergency.Siren"]] or -1
 					local indicatorMode = 0
 
@@ -871,7 +957,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 					end
 
 					if (sirenDisplay) then
-						icon = icons[sirenDisplay.Icon] or icons["siren"]
+						icon = toneIcons[sirenDisplay.Icon] or toneIcons["siren"]
 						label = sirenDisplay.Label
 					end
 
@@ -886,7 +972,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 				else
 					nextH = 32
 					HUD.DiscreteIndicator( mainX, nextY, mainWidth, 
-						icons["speaker"], 
+						toneIcons["speaker"], 
 						"ERROR", 
 						0, 
 						0, 
@@ -943,7 +1029,7 @@ hook.Add( "HUDPaint", "Photon2:RenderHudRT", function()
 			HUD.FunctionsIndicator( mainX, nextY, mainWidth - 52 - margin, 48, 2, indicators )
 
 			-- The scene light indicator is currently fixed at 52x48
-			HUD.SceneLightingIndicator( mainX + ( mainWidth - 52 - margin ) + margin, nextY, vehicleIcon, 
+			HUD.SceneLightingIndicator( mainX + ( mainWidth - 52 - margin ) + margin, nextY, iconVehicle, 
 				target.CurrentModes["Emergency.SceneForward"] ~= "OFF", 
 				target.CurrentModes["Emergency.SceneForward"] == "FLOOD", 
 				target.CurrentModes["Emergency.SceneRight"] ~= "OFF",
