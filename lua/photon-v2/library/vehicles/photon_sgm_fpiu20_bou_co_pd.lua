@@ -345,7 +345,7 @@ VEHICLE.Equipment = {
 							alley_hotfeet = 1
 						},
 						States = {
-							[1] = "R", [2] = "B", [3] = "W"
+							[1] = "R", [2] = "B", [3] = "A"
 						},
 						Features = {
 							ParkMode = { "Emergency.Warning", "MODE2" },
@@ -706,6 +706,20 @@ VEHICLE.Equipment = {
 									ReverseFlasher = "MODE3" 
 								},
 							}
+						}
+					}
+				},
+				SubMaterials = {
+					{ Id = 3, Material = "photon/common/blank" },
+					-- { Id = 1, Material = "photon/common/blank" },
+				},
+				Props = {
+					{
+						Model = "models/schmal/sgm_fpiu20_win.mdl",
+						Position = Vector(),
+						Angles = Angle(0, 0, 0),
+						SubMaterials = {
+							-- [1] = "schmal/sgm_fpiu20/uscp_glass"
 						}
 					}
 				}
