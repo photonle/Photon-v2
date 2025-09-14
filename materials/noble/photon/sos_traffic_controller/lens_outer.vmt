@@ -1,0 +1,27 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "sentry/props/soundofffascia/lens"
+	"$bumpmap"    "sentry/shared/skin_nm"
+	"$envmap" env_cubemap
+	"$translucent" 1
+	"$halflambert" 1
+	"$phong" "1" 
+	"$phongboost" "1" 
+	"$phongexponent" "512"
+	"$phongfresnelranges" "[8 6 4]"
+	"$surfaceprop" "Glass"
+	"$envmapFresnel" "1"
+	"$envmaptint" "[.05 .05 .05]"
+	"$carfixenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // 
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+ }
+
+

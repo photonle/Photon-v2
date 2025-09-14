@@ -19,7 +19,8 @@ end
 local processName = function( name )
 	name = string.lower(name)
 	name = string.gsub(name, " ", "_")
-	name = string.gsub(name, "%W", "")
+	name = string.gsub(name, "[^%w_]", "")
+	name = string.gsub(name, "_+", "_")
 	return name
 end
 
@@ -256,6 +257,7 @@ function PANEL:PostAutoRefresh()
 end
 
 function PANEL:GenerateVehicleCode( name, title, category, components, siren, livery, vehicle )
+	name = processName( name )
 	local skin = 0
 	local color = Color( 255, 255, 255 )
 	local vehicleClass = "ERROR"
