@@ -53,7 +53,6 @@ Photon2.RegisterCommand({
 		-- Plays controller sound.
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "CYCLE", Channel = "Emergency.Siren", Query = "NEXT" }
-		-- { Action = "CYCLE", Channel = "Emergency.Warning", Value = { "MODE1", "MODE2", "MODE3" } }
 	},
 })
 
@@ -444,5 +443,43 @@ Photon2.RegisterCommand({
 	OnRelease = {
 		{ Action = "SOUND", Sound = "Controller" },
 		{ Action = "OFF_TOGGLE", Channel = "Emergency.Directional", Query = "FIRST" }
+	}
+})
+
+Photon2.RegisterCommand({
+	Author = "Photon",
+	Name = "hold_warning_cycle_modes",
+	Title = "Warning Lights (Hold/Cycle Modes)",
+	Category = "Emergency",
+	Description = "Long hold toggles lights on/off. If activated, quick press cycles through modes.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller", IfNot = { ["Emergency.Warning"] = "OFF" } },
+	},
+	OnHold = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Warning", Query = "FIRST" }
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller", IfNot = { ["Emergency.Warning"] = "OFF" } },
+		{ Action = "ON_CYCLE", Channel = "Emergency.Warning", Query = "NEXT" },
+	}
+})
+
+Photon2.RegisterCommand({
+	Author = "Photon",
+	Name = "hold_siren_cycle_tones",
+	Title = "Siren (Hold/Cycle Tones)",
+	Category = "Siren",
+	Description = "Long hold toggles siren on/off. When activated, quick press cycles through tones.",
+	OnPress = {
+		{ Action = "SOUND", Sound = "Controller", IfNot = { ["Emergency.Siren"] = "OFF" } },
+	},
+	OnHold = {
+		{ Action = "SOUND", Sound = "Controller" },
+		{ Action = "OFF_TOGGLE", Channel = "Emergency.Siren", Query = "FIRST" }
+	},
+	OnRelease = {
+		{ Action = "SOUND", Sound = "Controller", IfNot = { ["Emergency.Siren"] = "OFF" } },
+		{ Action = "ON_CYCLE", Channel = "Emergency.Siren", Query = "NEXT" },
 	}
 })

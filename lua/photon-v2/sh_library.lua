@@ -151,6 +151,32 @@ local commands = {
 							action.ValueMap[value] = j
 						end
 					end
+					if ( istable( action.If ) ) then
+						action.IfMap = {}
+						for channel, modes in pairs( action.If ) do
+							action.IfMap[channel] = {}
+							-- Support single string
+							if ( isstring( modes ) ) then
+								modes = { modes }
+							end
+							for k, mode in pairs( modes ) do
+								action.IfMap[channel][mode] = true
+							end
+						end
+					end
+					if ( istable( action.IfNot ) ) then
+						action.IfNotMap = {}
+						for channel, modes in pairs( action.IfNot ) do
+							action.IfNotMap[channel] = {}
+							-- Support single string
+							if ( isstring( modes ) ) then
+								modes = { modes }
+							end
+							for k, mode in pairs( modes ) do
+								action.IfNotMap[channel][mode] = true
+							end
+						end
+					end
 				end
 			end
 		end

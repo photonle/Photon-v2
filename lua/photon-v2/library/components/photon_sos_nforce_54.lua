@@ -92,6 +92,14 @@ COMPONENT.Templates = {
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.5
 		}
+	},
+	["Projected"] = {
+		Illumination = {
+			Material = "photon/flashlight/led_linear.png",
+			NearZ = 100,
+			FOV = 50,
+			Brightness = 1.5
+		}
 	}
 }
 
@@ -139,6 +147,16 @@ COMPONENT.Elements = {
 	[25] = { "Main", Vector( 7.7, -6.6, -0.2 ), Angle( 0, 180, 0 ) },
 
 	[26] = { "Main", Vector( 0, -6.6, -0.2 ), Angle( 0, 180, 0 ) },
+
+	[27] = { "Corner3", Vector( 31.8, 0, -0.2 ), Angle( 0, -90, 0 ), Width = 7.7 },
+	[28] = { "Corner3", Vector( -31.8, 0, -0.2 ), Angle( 0, 90, 0 ), Width = 7.7 },
+
+	[29] = { "Illumination", Vector( -7.7, 6.6, -0.2 ), Angle( 5, 0, 0 ) },
+	[30] = { "Illumination", Vector( 7.7, 6.6, -0.2 ), Angle( 5, 0, 0 ) },
+	[31] = { "Illumination", Vector( 0, 6.6, -0.2 ), Angle( 2, 0, 0 ), FOV = 90, Material = "photon/flashlight/wide.png" },
+
+	[32] = { "Illumination", Vector( -31.8, 0, -0.2 ), Angle( 0, 90, 0 ), FOV = 90 },
+	[33] = { "Illumination", Vector( 31.8, 0, -0.2 ), Angle( 5, -90, 0 ), FOV = 90 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -163,6 +181,64 @@ COMPONENT.Segments = {
 			["PHOTO"] = { 3 },
 			["TEASER"] = { }
 		}
+	},
+	ForwardIllumination = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 31",
+			[2] = "[W] 2 3 29 30"
+		},
+		Sequences = {
+			["FLOOD"] = { 1 },
+			["TKDN"] = { 2 }
+		}
+	},
+	LeftAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 8 10 12 28 14 16 18 32"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	},
+	RightAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 9 11 13 27 15 17 19 33"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	},
+	Traffic = {
+		Frames = {
+			[1] = "[A] 21",
+			[2] = "[A] 23 21",
+			[3] = "[A] 25 23 21",
+			[4] = "[A] 26 25 23 21",
+			[5] = "[A] 24 26 25 23 21",
+			[6] = "[A] 22 24 26 25 23 21",
+			[7] = "[A] 20 22 24 26 25 23 21",
+			[8] = "[A] 20 22 24 26 25 23",
+			[9] = "[A] 20 22 24 26 25",
+			[10] = "[A] 20 22 24 26",
+			[11] = "[A] 20 22 24",
+			[12] = "[A] 20 22",
+			[13] = "[A] 20",
+			[14] = "[A] 26",
+			[15] = "[A] 24 26 25",
+			[16] = "[A] 22 24 26 25 23",
+			[17] = "[A] 20 22 24 26 25 23 21",
+			[18] = "[A] 20 22 24 25 23 21",
+			[19] = "[A] 20 22 23 21",
+			[20] = "[A] 20 21",
+		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 13 ):Add( 0 ):SetTiming( .273 ),
+			["RIGHT"] = sequence():Sequential( 13, 1 ):Add( 0 ):SetTiming( .273 ),
+			["CENOUT"] = sequence():Sequential( 14, 20 ):Add( 0 ):SetTiming( .273 ),
+		}
 	}
 }
 
@@ -182,5 +258,20 @@ COMPONENT.Inputs = {
 		["CRUISE"] = {
 			All = "STEADY"
 		}
-	}
+	},
+	["Emergency.SceneForward"] = {
+		["ON"] = { ForwardIllumination = "TKDN" },
+		["FLOOD"] = { ForwardIllumination = "FLOOD" }
+	},
+	["Emergency.SceneLeft"] = {
+		["ON"] = { LeftAlley = "ON" },
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = { RightAlley = "ON" },
+	},
+	["Emergency.Directional"] = {
+        ["LEFT"] = { Traffic = "LEFT" },
+        ["RIGHT"] = { Traffic = "RIGHT" },
+        ["CENOUT"] = { Traffic = "CENOUT" }
+	},
 }

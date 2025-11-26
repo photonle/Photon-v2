@@ -38,6 +38,7 @@ ENT.DefaultInputPriorities = {
 	["Emergency.Siren2"] 			= 51,
 	["Emergency.Siren"] 			= 50,
 	["Emergency.Warning"] 			= 40,
+	["Emergency.Message"]			= 35,
 	["Emergency.Marker"] 			= 30,
 	["Vehicle.HighBeam"]			= 20,
 	["Vehicle.Lights"]	 			= 10,

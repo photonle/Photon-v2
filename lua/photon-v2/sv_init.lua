@@ -35,7 +35,8 @@ local printf = Photon2.Debug.PrintF
 -- Hacky fix for some dumbass code in original Photon
 local function photonLegacySpawnOverride( self, ent )
 	if not IsValid( ent ) then return end
-	if ( not ent.VehicleTable.IsEMV ) then return end
+	local vehicleTable = ent.VehicleTable or list.Get("Vehicles")[ent.VehicleName]
+	if ( not vehicleTable.IsEMV ) then return end
 	EMVU:OriginalSpawnedVehicle( ent )
 end
 

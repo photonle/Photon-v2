@@ -85,42 +85,41 @@ VEHICLE.Equipment = {
 					{ Bone = "bl_wheel", Scale = 0, Position = Vector(0, 0, 0), Angles = Angle(0, 0, 0) },
 					{ Bone = "br_wheel", Scale = 0, Position = Vector(0, 0, 0), Angles = Angle(0, 0, 0) },
 				},
-				Props = {
-					{
-						-- It took five hours to get these wheels exported in the correct orientation
-						Model = "models/schmal/sgm_fpis13_wheels.mdl",
-						Position = Vector( 0, 0, 0 ),
-						Angles = Angle( 0, 0, 0 ),
-						Scale = 1,
-						Bones = {
-							["wheel_fl"] = { 
-								Position = Vector( -2.7, 0, 0 ),
-								Angles = Angle( 0, 0, 0 ),
-								Scale = 1,
-								Follow = { Attachment = "wheel_fl" }
-							},
-							["wheel_fr"] = { 
-								Position = Vector( -2.7, 0, 0 ),
-								Angles = Angle( 0, 0, 0 ),
-								Scale = 1,
-								Follow = { Attachment = "wheel_fr" }
-							},
-							["wheel_rl"] = { 
-								Position = Vector( -2.7, 0, 0 ),
-								Angles = Angle( 0, 0, 0 ),
-								Scale = 1,
-								Follow = { Attachment = "wheel_rl" }
-							},
-							["wheel_rr"] = { 
-								Position = Vector( -2.7, 0, 0 ),
-								Angles = Angle( 0, 0, 0 ),
-								Scale = 1,
-								Follow = { Attachment = "wheel_rr" }
-								-- Follow = { Bone = "door_fl" }
-							},
-						},
-					}	
-				}
+Props = {
+	{
+		Model = "models/schmal/sgm_fpis13_wheels.mdl",
+		Position = Vector( 0, 0, 0 ),
+		Angles = Angle( 0, 0, 0 ),
+		Scale = 1,
+		Bones = {
+			["wheel_fl"] = { 
+				Position = Vector( -2.7, 0, 0 ),
+				Angles = Angle( 0, 0, 0 ),
+				Scale = 1,
+				Follow = { Attachment = "wheel_fl" }
+			},
+			["wheel_fr"] = { 
+				Position = Vector( -2.7, 0, 0 ),
+				Angles = Angle( 0, 0, 0 ),
+				Scale = 1,
+				Follow = { Attachment = "wheel_fr" }
+			},
+			["wheel_rl"] = { 
+				Position = Vector( -2.7, 0, 0 ),
+				Angles = Angle( 0, 0, 0 ),
+				Scale = 1,
+				Follow = { Attachment = "wheel_rl" }
+			},
+			["wheel_rr"] = { 
+				Position = Vector( -2.7, 0, 0 ),
+				Angles = Angle( 0, 0, 0 ),
+				Scale = 1,
+				Follow = { Attachment = "wheel_rr" }
+				-- Follow = { Bone = "door_fl" }
+			},
+		},
+	}	
+}
 			}
 		}
 	},

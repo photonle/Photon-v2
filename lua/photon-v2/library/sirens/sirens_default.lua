@@ -310,3 +310,20 @@ Photon2.RegisterSiren(
 		}
 	}
 )
+
+Photon2.RegisterSiren(
+	{
+		Name = "whelen_gamma_new",
+		Make = "Whelen",
+		Model = "Gamma",
+		Author = "Schmal",
+		-- Time Smoothing: 10%
+		Sounds = {
+			["AIRHORN"] = { Sound = "photon/sirens/whelen_epsilon/airhorn.wav", Default = "AIR", Label = "AIR" },
+			["WAIL"] = { Sound = "photon/sirens/whelen_gamma_new/wail.wav", Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/whelen_gamma_new/yelp.wav", Default = "T2" },
+			["PIERCER"] = { Sound = "photon/sirens/whelen_gamma_new/piercer.wav", Default = "T3", Icon = "bolt" },
+			["HILO"] = { Sound = "photon/sirens/whelen_gamma_new/hilo.wav", 	Default = "T4", Icon = "hilo" },
+		}
+	}
+)

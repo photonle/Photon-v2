@@ -102,8 +102,7 @@ function PANEL:UpdateColours( skin )
 
 end
 
-function PANEL:PerformLayout()
-
+function PANEL:PerformLayoutImage()
 	--
 	-- If we have an image we have to place the image on the left
 	-- and make the text align to the left, then set the inset
@@ -111,29 +110,38 @@ function PANEL:PerformLayout()
 	--
 	if ( IsValid( self.m_Image ) ) then
 
-		self.m_Image:SetPos( 4, ( self:GetTall() - self.m_Image:GetTall() ) * 0.5 )
+		local targetSize = math.min( self:GetWide() - 4, self:GetTall() - 4 )
 
-		self:SetTextInset( self.m_Image:GetWide() + 16, 0 )
+		local imgW, imgH = self.m_Image.ActualWidth, self.m_Image.ActualHeight
+		local zoom = math.min( targetSize / imgW, targetSize / imgH, 1 )
+		local newSizeX = math.ceil( imgW * zoom )
+		local newSizeY = math.ceil( imgH * zoom )
 
-	elseif (IsValid(self.m_Icon)) then
-		self.m_Icon:SetPos( 4, ( self:GetTall() - self.m_Icon:GetTall() ) * 0.5 )
-		if ( self.m_Icon:GetTall() > 24 ) then
-			self.m_Icon:SetWidth( self.m_Icon:GetTall() )
+		self.m_Image:SetWide( newSizeX )
+		self.m_Image:SetTall( newSizeY )
+
+		if ( self:GetWide() < self:GetTall() ) then
+			self.m_Image:SetPos( 4, ( self:GetTall() - self.m_Image:GetTall() ) * 0.5 )
+		else
+			self.m_Image:SetPos( 2 + ( targetSize - self.m_Image:GetWide() ) * 0.5, ( self:GetTall() - self.m_Image:GetTall() ) * 0.5 )
 		end
-		-- self:SetTextInset( 8, 0 )
-		self:SetTextInset( self.m_Icon:GetWide() * 1.5, 0 )
-		self:SetContentAlignment( 5 )
+
+		-- For center alignments, reduce the inset of the image, so the text appears more centered visually
+		local alignment = self:GetContentAlignment()
+		if ( alignment == 8 || alignment == 5 || alignment == 2 ) then
+			self:SetTextInset( self.m_Image:GetWide() + 4, 0 )
+		else
+			self:SetTextInset( self.m_Image:GetWide() + 8, 0 )
+		end
+
 	end
-
-	DLabel.PerformLayout( self )
-
 end
 
-function PANEL:SetConsoleCommand( strName, strArgs )
+function PANEL:PerformLayout( w, h )
 
-	self.DoClick = function( self, val )
-		RunConsoleCommand( strName, strArgs )
-	end
+	self:PerformLayoutImage()
+
+	DLabel.PerformLayout( self, w, h )
 
 end
 

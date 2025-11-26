@@ -24,7 +24,7 @@ VEHICLE.Equipment = {
 						}
 					},
 				},
-			}
+			},
 		}
 	}
 }

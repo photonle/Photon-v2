@@ -45,6 +45,14 @@ COMPONENT.Templates = {
 			ForwardVisibilityOffset = -0.1,
 			ForwardBloomOffset = 0.5
 		}
+	},
+	["Projected"] = {
+		Illumination = {
+			Material = "photon/flashlight/led_linear.png",
+			NearZ = 100,
+			FOV = 50,
+			Brightness = 1.5
+		}
 	}
 }
 
@@ -89,6 +97,12 @@ COMPONENT.Elements = {
 
 	[25] = { "Corner3", Vector( -27.65, 0, -0.2 ), Angle( 0, 90, 0 ), Width = 7.3 },
 	[26] = { "Corner3", Vector( 27.65, 0, -0.2 ), Angle( 0, -90, 0 ), Width = 7.3 },
+
+	[27] = { "Illumination", Vector( 0, 6.6, -0.2 ), Angle( 5, 0, 0 ) },
+	[28] = { "Illumination", Vector( 0, 6.6, -0.2 ), Angle( 2, 0, 0 ), FOV = 90, Material = "photon/flashlight/wide.png" },
+
+	[29] = { "Illumination", Vector( -27.65, 0, -0.2 ), Angle( 0, 90, 0 ), FOV = 90 },
+	[30] = { "Illumination", Vector( 27.65, 0, -0.2 ), Angle( 5, -90, 0 ), FOV = 90 },
 }
 
 local sequence = Photon2.SequenceBuilder.New
@@ -111,13 +125,57 @@ COMPONENT.Segments = {
 		}
 	},
 	ForwardIllumination = {
+		Off = "PASS",
 		Frames = {
-			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12",
-			[2] = "[W] 3 4",
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 28",
+			[2] = "[W] 1 2 27",
 		},
 		Sequences = {
 			["FLOOD"] = { 1 },
 			["TKDN"] = { 2 }
+		}
+	},
+	LeftAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 7 9 11 25 13 15 17 29"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	},
+	RightAlley = {
+		Off = "PASS",
+		Frames = {
+			[1] = "[W] 8 10 12 26 14 16 18 30"
+		},
+		Sequences = {
+			["ON"] = { 1 }
+		}
+	},
+	Traffic = {
+		Frames = {
+			[1] = "[A] 20",
+			[2] = "[A] 22 20",
+			[3] = "[A] 24 22 20",
+			[4] = "[A] 23 24 22 20",
+			[5] = "[A] 21 23 24 22 20",
+			[6] = "[A] 19 21 23 24 22 20",
+			[7] = "[A] 19 21 23 24 22",
+			[8] = "[A] 19 21 23 24",
+			[9] = "[A] 19 21 23",
+			[10] = "[A] 19 21",
+			[11] = "[A] 19",
+			[12] = "[A] 23 24",
+			[13] = "[A] 21 23 24 22",
+			[14] = "[A] 19 21 23 24 22 20",
+			[15] = "[A] 19 21 22 20",
+			[16] = "[A] 19 20"
+ 		},
+		Sequences = {
+			["LEFT"] = sequence():Sequential( 1, 11 ):Add( 0 ):SetTiming( .273 ),
+			["RIGHT"] = sequence():Sequential( 11, 1 ):Add( 0 ):SetTiming( .273 ),
+			["CENOUT"] = sequence():Sequential( 12, 16 ):Add( 0 ):SetTiming( .273 ),
 		}
 	},
 	-- "Wireless Advanced Communications" patterns
@@ -211,7 +269,18 @@ COMPONENT.Inputs = {
 		}
 	},
 	["Emergency.SceneForward"] = {
-		["ON"] = { ForwardIllumination = "FLOOD" }
+		["ON"] = { ForwardIllumination = "TKDN" },
+		["FLOOD"] = { ForwardIllumination = "FLOOD" }
 	},
-	
+	["Emergency.SceneLeft"] = {
+		["ON"] = { LeftAlley = "ON" },
+	},
+	["Emergency.SceneRight"] = {
+		["ON"] = { RightAlley = "ON" },
+	},
+	["Emergency.Directional"] = {
+        ["LEFT"] = { Traffic = "LEFT" },
+        ["RIGHT"] = { Traffic = "RIGHT" },
+        ["CENOUT"] = { Traffic = "CENOUT" }
+	},
 }
