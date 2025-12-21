@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "sentry/props/westin_36-2125/westin"
+	"$bumpmap" "sentry/shared/skin_nm"
+	"$envmap" env_cubemap
+	"$envmaptint" "[0.05 0.05 0.05]"
+    $phong "1"
+    $phongexponent "7"
+    $phongboost "0.5"
+    $phongfresnelranges "[.05 .3 1]"
+	"$carfixenabled" "1"
+	Proxies // proxies are listed inside this block
+	{
+		Equals // a proxy which produces a fix
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color // The shader parameter to be manipulated
+
+		}
+	}
+}
