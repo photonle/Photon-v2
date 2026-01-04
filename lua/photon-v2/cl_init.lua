@@ -119,6 +119,10 @@ hook.Add( "InitPostEntity", "Photon2:SirenDSPChannel", function()
 	Photon2.MaintainDSPChannels()
 end)
 
+hook.Add( "PreDrawTranslucentRenderables", "Photon2:UpdateEyePos", function()
+	EyePos()
+end)
+
 local lastObserverUpdate = 0
 local lastObserverPosition = Vector()
 local lastObserverMovement = Vector()
