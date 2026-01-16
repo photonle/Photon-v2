@@ -207,6 +207,13 @@ function ENT:SetupStaticBones()
 		if ( isstring( boneId ) ) then
 			boneId = self:LookupBone( boneName )
 			if ( not boneId ) then
+				if self:GetBoneCount() < 1 then -- bone data not yet available
+					timer.Simple( 0.001, function()
+						if ( not IsValid( self ) ) then return end
+						self:SetupStaticBones()
+					end)
+					return
+				end
 				ErrorNoHaltWithStack("Bone name [" .. tostring(boneName) .. "] does not exist in model [" .. tostring(self:GetModel() .. "]"))
 				return
 			end
