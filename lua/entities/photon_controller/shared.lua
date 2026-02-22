@@ -1491,7 +1491,7 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 
 	-- and ( ( velocity < 1 ) )
 	-- and ( vehicle:GetSpeed() > 0 )
-	if ( moveData:KeyDown( IN_BACK ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) then
+	if ( (moveData:KeyDown( IN_BACK ) or (velocity < -20 and self:GetVehicleReversing()) ) and ( not (moveData:KeyDown( IN_FORWARD ) and velocity > -20) ) ) then
 		if ( self:GetVehicleReversing() ) then
 
 		elseif ( velocity < 1 ) then
@@ -1501,7 +1501,7 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 		self:UpdateVehicleReversing( false )
 	end
 
-	if ( moveData:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( moveData:KeyDown( IN_BACK ) ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) ) then
+	if ( moveData:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( moveData:KeyDown( IN_BACK ) ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) or ( ( ( velocity < -1 ) and ( ( moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) )  then
 		self:UpdateVehicleBraking( true )
 	else
 		self:UpdateVehicleBraking( false )
