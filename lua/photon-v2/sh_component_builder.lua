@@ -89,7 +89,7 @@ function Photon2.ComponentBuilder.SetupAutomaticVehicleLighting( component )
 				{
 					Mode = "HEADLIGHTS",
 					Conditions = {
-						["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
+						--["Vehicle.Transmission"] = { "DRIVE", "REVERSE" },
 						["Vehicle.Ambient"] = { "DARK" },
 						["Vehicle.Lights"] = { "AUTO" }
 					}

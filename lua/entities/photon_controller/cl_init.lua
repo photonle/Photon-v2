@@ -183,7 +183,7 @@ end
 
 local darkMapThreshold = 0.2
 local darkMapMultiplier = 4
-local normalThreshold = 1.5
+local normalThreshold = 1.45
 
 function ENT:RefreshAmbient()
 	local mapAmbient = render.GetAmbientLightColor()

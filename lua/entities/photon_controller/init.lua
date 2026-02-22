@@ -158,9 +158,14 @@ function ENT:PlayerExitedLinkedVehicle( ply, vehicle )
 	self:UpdateVehicleReversing( false )
 	self:SetChannelMode( "Vehicle.Transmission", "PARK" )
 	if ( not self:GetEngineRunning() ) then
-		if ( self:GetChannelMode( "Vehicle.Lights" ) == "AUTO" ) then
-			self:SetChannelMode( "Vehicle.Lights", "OFF" )
-		end
+		--super basic 'coming home lights feature'
+		timer.Simple(10, function()
+			if not IsValid(self) then return end
+			if self:GetEngineRunning() then return end
+			if ( self:GetChannelMode( "Vehicle.Lights" ) == "AUTO" ) then
+				self:SetChannelMode( "Vehicle.Lights", "OFF" )
+			end
+		end)
 	end
 end
 
