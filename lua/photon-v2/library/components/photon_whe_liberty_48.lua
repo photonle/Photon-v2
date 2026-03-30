@@ -95,14 +95,14 @@ COMPONENT.Elements = {
 	[9] = { "Corner", Vector( -4.9, 30, 1.35 ), Angle( 0, 90 - 36, 0 ) },
 	[10] = { "Corner", Vector( -4.9, -30, 1.35 ), Angle( 0, 90 + 36, 0 ) },
 
-	[11] = { "Main", Vector( -8.6, 20.1, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_inner"] = 0 } },
-	[12] = { "Main", Vector( -8.6, -20.04, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_inner"] = 0 } },
+	[11] = { "Main", Vector( -8.6, 20.1, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_outer"] = 0 } },
+	[12] = { "Main", Vector( -8.6, -20.04, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_outer"] = 0 } },
 
 	[13] = { "Main", Vector( -8.6, 12.15, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_middle"] = 0 } },
 	[14] = { "Main", Vector( -8.6, -12.08, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_middle"] = 0 } },
 
-	[15] = { "Main", Vector( -8.6, 4.1, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_outer"] = 0 } },
-	[16] = { "Main", Vector( -8.6, -4.02, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_outer"] = 0 } },
+	[15] = { "Main", Vector( -8.6, 4.1, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_inner"] = 0 } },
+	[16] = { "Main", Vector( -8.6, -4.02, 1.35 ), Angle( 0, 90, 0 ), RequiredBodyGroups = { ["rear_inner"] = 0 } },
 
 	[17] = { "Takedown", Vector( 0, 34.2, 1.37 ), Angle( 0, 0, 0 ) },
 	[18] = { "Takedown", Vector( 0, -34.2, 1.37 ), Angle( 0, 180, 0 ) },
