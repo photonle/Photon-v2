@@ -26,6 +26,8 @@ local red = { r = 255, g = 0, b = 0 }
 local blue = { r = 0, g = 0, b = 255 }
 local green = { r = 0, g = 255, b = 0 }
 local amber = { r = 255, g = 210, b = 0 }
+local miku = { r = 0, g = 221, b = 192 }
+
 
 Light.States = {
 	["~OFF"] = {
@@ -52,6 +54,9 @@ Light.States = {
 	},
 	["G"] = {
 		Color = PhotonColor( 0, 255, 0 ):Blend( green ):GetBlendColor()
+	},
+	["M"] = {
+		Color = PhotonColor( 0, 255, 222 ):Blend( miku ):GetBlendColor()
 	}
 }
 
