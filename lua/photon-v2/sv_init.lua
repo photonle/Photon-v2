@@ -99,7 +99,9 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	controller:SetProfileName( profile )
 	controller:SetupProfile( profile )
 
-	if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
+	-- if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
+	--hacky glide compat
+	if ( string.find(vehicle:GetClass(), "prop_vehicle_") ) then controller.IsLinkedToStandardVehicle = true end
 
 	vehicle:SetPhotonController( controller )
 	
