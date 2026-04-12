@@ -96,6 +96,18 @@ function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
 end
 hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )
 
+if Glide then
+	hook.Add("Glide_CanSwitchSeat", "Photon2:GlideSwitchSeat", function (ply, seat)
+		local controller = ply:GetVehicle():GetPhotonControllerFromAncestor()
+		local vehicle = controller:GetParent()
+		if IsValid(ply:GetVehicle():GetPhotonControllerFromAncestor()) and IsValid(vehicle) then
+			if vehicle:GetSeatDriver(1) == ply then
+				return false
+			end
+		end
+	end)
+end
+
 -- function Photon2.OnVehicleMove( ply, vehicle, moveData )
 -- 	if ( IsValid( vehicle:GetPhotonController() ) ) then
 -- 		vehicle:GetPhotonController():UpdateVehicleParameters( ply, vehicle, moveData )
