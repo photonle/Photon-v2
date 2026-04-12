@@ -89,9 +89,13 @@ function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
 			vehicle:Fire( "steer", increment )
 		end
 	end
-
-	controller:UpdateVehicleBraking( false )
-	controller:UpdateVehicleReversing( false )
+	timer.Simple(0.1, function()
+		if IsValid(controller) then
+			controller:UpdateVehicleBraking( false )
+			controller:UpdateVehicleReversing( false )
+		end
+	end)
+	
 
 end
 hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )
