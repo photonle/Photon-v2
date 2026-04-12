@@ -91,6 +91,7 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 	local controller = Photon2.CreateController( params )
 	
 	controller:SetLinkedToVehicle( true )
+	controller:SetLinkedToGlideVehicle( false )
 	controller:SetParent( vehicle )
 	controller:Initialize()
 	controller:SetLocalPos((Vector(0, 0, 50)))
@@ -101,7 +102,14 @@ function Photon2.AddControllerToVehicle( vehicle, profile )
 
 	-- if ( vehicle:IsVehicle() ) then controller.IsLinkedToStandardVehicle = true end
 	--hacky glide compat
-	if ( string.find(vehicle:GetClass(), "prop_vehicle_") ) then controller.IsLinkedToStandardVehicle = true end
+	if ( string.find(vehicle:GetClass(), "prop_vehicle_") ) then
+		controller.IsLinkedToStandardVehicle = true
+	else
+		if ( string.find(vehicle.Base, "glide") ) then
+			controller.IsLinkedToGlideVehicle = true
+			controller:SetLinkedToGlideVehicle( true )
+		end
+	end
 
 	vehicle:SetPhotonController( controller )
 	

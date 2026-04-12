@@ -5,6 +5,7 @@ AddCSLuaFile("cl_init.lua")
 
 ---@class sv_PhotonController : PhotonController
 ---@field IsLinkedToStandardVehicle boolean
+---@---@field IsLinkedToGlideVehicle boolean
 ENT = ENT
 
 local globalEngineIdleEnabled = GetConVar( "ph2_engine_idle_enabled" )
@@ -175,7 +176,15 @@ function ENT:ParentSubMaterialChanged()
 	self.LastSubMaterialUpdate = CurTime()
 end
 
+local thinkVehicle = nil
+
 function ENT:Think()
+	if !IsValid(thinkVehicle) then
+		thinkVehicle = self:GetParent() --[[@as Vehicle]]
+	end
+	if IsValid(thinkVehicle:GetDriver()) then
+		self:UpdateVehicleParameters( thinkVehicle:GetDriver(), thinkVehicle )
+	end
 	if ( self.DoHardReload ) then
 		self:HardReload()
 	end

@@ -191,6 +191,7 @@ function ENT:SetupDataTables()
 	self:NetworkVar( "Bool", 1, "VehicleReversing" )
 	self:NetworkVar( "Bool", 2, "VehicleBraking" )
 	self:NetworkVar( "Bool", 3, "EngineRunning" )
+	self:NetworkVar( "Bool", 4, "LinkedToGlideVehicle" )
 
 	self:NetworkVar( "Int",  0, "VehicleSpeed" )
 
@@ -1483,15 +1484,21 @@ end
 
 -- Vehicle-specific code
 ---@param ply Player
----@param moveData CMoveData
-function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
+---@param ply Cply
+local velocity = 0
+local speed = 0
+function ENT:UpdateVehicleParameters( ply, vehicle )
 	if ( not self:GetLinkedToVehicle() ) then return end
 
-	local velocity = vehicle:WorldToLocal( vehicle:GetVelocity() + vehicle:GetPos() ).y
+	speed = vehicle:GetVelocity():Length() / 17.6
 
-	-- and ( ( velocity < 1 ) )
-	-- and ( vehicle:GetSpeed() > 0 )
-	if ( (moveData:KeyDown( IN_BACK ) or (velocity < -20 and self:GetVehicleReversing()) ) and ( not (moveData:KeyDown( IN_FORWARD ) and velocity > -20) ) ) then
+	if not self:GetLinkedToGlideVehicle() then
+		velocity = vehicle:WorldToLocal( vehicle:GetVelocity() + vehicle:GetPos() ).y
+	else
+		velocity = vehicle:WorldToLocal( vehicle:GetVelocity() + vehicle:GetPos() ).x
+	end
+
+	if ( (ply:KeyDown( IN_BACK ) or (velocity < -20 and self:GetVehicleReversing()) ) and ( not (ply:KeyDown( IN_FORWARD ) and velocity > -20) ) ) then
 		if ( self:GetVehicleReversing() ) then
 
 		elseif ( velocity < 1 ) then
@@ -1501,7 +1508,7 @@ function ENT:UpdateVehicleParameters( ply, vehicle, moveData )
 		self:UpdateVehicleReversing( false )
 	end
 
-	if ( moveData:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( moveData:KeyDown( IN_BACK ) ) and ( not moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) or ( ( ( velocity < -1 ) and ( ( moveData:KeyDown( IN_FORWARD ) ) ) ) and ( vehicle:GetSpeed() > 0 ) ) )  then
+	if ( ply:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( ply:KeyDown( IN_BACK ) ) and ( not ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) or ( ( ( velocity < -1 ) and ( ( ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) )  then
 		self:UpdateVehicleBraking( true )
 	else
 		self:UpdateVehicleBraking( false )

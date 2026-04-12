@@ -90,17 +90,19 @@ function Photon2.OnPlayerLeaveVehicle( ply, vehicle )
 		end
 	end
 
+	controller:UpdateVehicleBraking( false )
+	controller:UpdateVehicleReversing( false )
+
 end
 hook.Add( "PlayerLeaveVehicle", "Photon2:OnPlayerLeaveVehicle", Photon2.OnPlayerLeaveVehicle )
 
-function Photon2.OnVehicleMove( ply, vehicle, moveData )
-	if ( IsValid( vehicle:GetPhotonController() ) ) then
-		vehicle:GetPhotonController():UpdateVehicleParameters( ply, vehicle, moveData )
-		vehicle.PhotonLastVehicleSteering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
-	end
-end
-hook.Add( "VehicleMove", "Photon2:OnVehicleMove", Photon2.OnVehicleMove )
-
+-- function Photon2.OnVehicleMove( ply, vehicle, moveData )
+-- 	if ( IsValid( vehicle:GetPhotonController() ) ) then
+-- 		vehicle:GetPhotonController():UpdateVehicleParameters( ply, vehicle, moveData )
+-- 		vehicle.PhotonLastVehicleSteering = vehicle:GetSteeringDegrees() * vehicle:GetSteering()
+-- 	end
+-- end
+-- hook.Add( "VehicleMove", "Photon2:OnVehicleMove", Photon2.OnVehicleMove )
 
 local lastModelAttachScanTime = 0
 local modelAttachScanRate = 1
