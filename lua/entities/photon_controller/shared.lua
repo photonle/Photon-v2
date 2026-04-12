@@ -1508,7 +1508,7 @@ function ENT:UpdateVehicleParameters( ply, vehicle )
 		self:UpdateVehicleReversing( false )
 	end
 
-	if ( ply:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( ply:KeyDown( IN_BACK ) ) and ( not ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) or ( ( ( velocity < -1 ) and ( ( ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) )  then
+	if ( ply:KeyDown( IN_JUMP ) or ( ( ( velocity > 1 ) and ( ( ply:KeyDown( IN_BACK ) ) and ( not ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) or ( ( ( velocity < -1 ) and ( ( ply:KeyDown( IN_FORWARD ) ) ) ) and ( speed > 0 ) ) ) or (self:GetLinkedToGlideVehicle() and ply:KeyDown( IN_FORWARD) and ply:KeyDown( IN_BACK)) then
 		self:UpdateVehicleBraking( true )
 	else
 		self:UpdateVehicleBraking( false )
