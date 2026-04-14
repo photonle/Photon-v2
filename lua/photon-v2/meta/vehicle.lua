@@ -271,14 +271,21 @@ function Vehicle.New( data )
 
 	local title = data.Title
 	local invalidVehicle = false
+	local glideVehicle = false
 
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
-		warn("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
-		target = Vehicle.GetError()
-		invalidVehicle = true
-		title = "[ERROR] " .. title
+		target = scripted_ents.GetList()[data.Vehicle].t --glide compat (and possibly other entity based vehicles, havent tested)
+		if target.GlideCategory then
+			glideVehicle = true
+		end
+		if ( not target ) then
+			warn("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
+			target = Vehicle.GetError()
+			invalidVehicle = true
+			title = "[ERROR] " .. title
+		end
 	end
 
 	-- Handle vehicle itself
@@ -287,8 +294,8 @@ function Vehicle.New( data )
 		Name				= data.Name,
 		ID 					= data.Name,
 		Title 				= data.Title,
-		Model 				= string.lower(target.Model),
-		EntityClass 		= target.Class,
+		Model 				= string.lower(target.Model or target.ChassisModel), --glide compat
+		EntityClass 		= target.Class or data.Vehicle, --glide compat
 		Target 				= data.Vehicle,
 		Equipment 			= Equipment.GetTemplate(),
 		SubMaterials 		= data.SubMaterials,
