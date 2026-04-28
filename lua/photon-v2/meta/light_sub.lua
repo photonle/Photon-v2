@@ -54,7 +54,7 @@ end
 
 
 function Light:DeactivateNow()
-	self.IsAcivated = false
+	self.IsActivated = false
 	self.Deactivate = false
 end
 
