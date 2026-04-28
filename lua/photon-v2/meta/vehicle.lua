@@ -277,7 +277,7 @@ function Vehicle.New( data )
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
 		target = scripted_ents.GetList()[data.Vehicle].t --glide compat (and possibly other entity based vehicles, havent tested)
-		if target.GlideCategory then
+		if target and target.GlideCategory then
 			glideVehicle = true
 		end
 		if ( not target ) then
