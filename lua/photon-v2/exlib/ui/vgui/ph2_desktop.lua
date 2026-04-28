@@ -306,6 +306,11 @@ function PANEL:SetupServerPage()
 	form:AddDivider()
 	form:AddParagraph( "The Photon 2 camera SWEP removes camera roll rotation and displays a rule-of-thirds grid. It does not replace the original camera SWEP." )
 	form:CreateCheckBoxProperty( { "ph2_camera_swep_enabled", "Bool" }, "Photon 2 Camera", true, { Descriptor = "Enable Photon 2 camera" } )
+
+	-- Sound
+	form:AddDivider()
+	form:AddParagraph( "The sound options below adjust the behavior of siren and horn sounds." )
+	form:CreateNumericSlider( { "ph2_siren_volume", "Int" }, "Siren Volume", 0, 0, 100, 0, { Descriptor = "Adjust the volume of siren sounds" } )
 end
 
 function PANEL:PostAutoRefresh()

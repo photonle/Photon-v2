@@ -32,3 +32,4 @@ CreateClientConVar( "ph2_bloom_outer_blur_y", "5", true, false, "Outer blur Y va
 CreateClientConVar( "ph2_bloom_inner_blur_passes", "1", true, false, "Number of inner blur passes in bloom shader." )
 CreateClientConVar( "ph2_bloom_inner_blur_x", "1", true, false, "Inner blur X value in bloom shader." )
 CreateClientConVar( "ph2_bloom_inner_blur_y", "1", true, false, "Inner blur Y value in bloom shader." )
+CreateClientConVar( "ph2_siren_volume", "100", true, false, "Adjust the volume of siren sounds." )
