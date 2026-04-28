@@ -276,15 +276,17 @@ function Vehicle.New( data )
 	---@type VehicleTable
 	local target = list.GetForEdit( "Vehicles" )[data.Vehicle]
 	if ( not target ) then
-		target = scripted_ents.GetList()[data.Vehicle].t --glide compat (and possibly other entity based vehicles, havent tested)
-		if target.GlideCategory then
-			glideVehicle = true
-		end
-		if ( not target ) then
+		target = scripted_ents.GetList()[data.Vehicle] --glide compat (and possibly other entity based vehicles, havent tested)
+		if ( not target or not istable(target.t) ) then
 			warn("Vehicle target [" .. tostring(data.Vehicle) .. "] does not appear to exist. Ensure the name is correct and you have the required addons.")
 			target = Vehicle.GetError()
 			invalidVehicle = true
 			title = "[ERROR] " .. title
+		end
+		
+		target = target.t
+		if target and target.GlideCategory then
+			glideVehicle = true
 		end
 	end
 
