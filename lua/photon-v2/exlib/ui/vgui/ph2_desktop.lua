@@ -309,7 +309,7 @@ function PANEL:SetupServerPage()
 
 	-- Sound
 	form:AddDivider()
-	form:AddParagraph( "The sound options below adjust the behavior of siren and horn sounds." )
+	form:AddParagraph( "The sound options below adjust the behavior of siren sounds." )
 	form:CreateNumericSlider( { "ph2_siren_volume", "Int" }, "Siren Volume", 0, 0, 100, 0, { Descriptor = "Adjust the volume of siren sounds" } )
 end
 
