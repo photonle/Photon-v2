@@ -1,0 +1,13 @@
+patch
+{
+	include "materials/sentry/shared/env_cubemap_model.vmt"
+	insert
+	{
+		"$basetexture" "sentry/props/mpower/label"
+		"$phongboost" "1.5"
+		"$phongexponent" "6"
+		"$envmaptint" "[0.5 0.5 0.5]"
+		"$blendtintbybasealpha" "1"
+		"$carfixenabled" "[0.5 0.5 0.5]"
+	}
+}

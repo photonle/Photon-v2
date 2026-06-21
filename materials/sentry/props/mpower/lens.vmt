@@ -1,0 +1,26 @@
+"Refract"
+{
+	"$model" 1
+	"$bluramount" "1"
+	"$refractamount" "0.002"
+	"$refracttint" "{255 255 255}"
+	"$dudvmap" "sentry/props/mpower/lens_nm"
+	"$normalmap" "sentry/props/mpower/lens_nm"
+	"$nowritez" "1"
+	"$carfixenabled" "1"
+	"Proxies"
+	{
+		"Equals"
+		{
+			srcVar1 $carfixenabled
+			resultVar	$color
+		}
+	}
+}
+
+
+
+
+
+
+
