@@ -242,7 +242,7 @@ COMPONENT.Segments = {
 	},
 	["Flood"] = {
 		Frames = {
-			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14 [FLOOD] 29",
+			[1] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
 			[2] = "[W] 1 2 3 4 5 6 7 8 9 10 11 12 13 14",
 		},
 		Sequences = {
@@ -264,7 +264,7 @@ COMPONENT.Segments = {
 	-- will be forcefully turned off
 	["Takedown"] = {
 		Frames = {
-			[1] = "[W] 9 10 11 12 [TAKEDOWN] 29",
+			[1] = "[W] 9 10 11 12",
 		},
 		Sequences = {
 			["ON"] = { 1 },
