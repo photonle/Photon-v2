@@ -114,7 +114,7 @@ function Sound:Activate()
 end
 
 function Sound:DeactivateNow()
-	self.IsAcivated = false
+	self.IsActivated = false
 	self.Deactivate = false
 	if ( self.Sound ) then self.Sound:Stop() end
 	self.Sound = nil
