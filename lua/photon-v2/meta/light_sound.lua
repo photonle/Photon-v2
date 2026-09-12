@@ -101,6 +101,7 @@ function Sound:Sync()
 	self:SetDSP( self.DSP )
 end
 
+local tAllSounds = {}
 function Sound:Activate()
 	self.Deactivate = false
 	if (self.IsActivated) then return end
@@ -109,6 +110,7 @@ function Sound:Activate()
 		if ( not self.Sound ) then
 			self.Sound = CreateSound( self.Parent, self.File )
 			self:Sync()
+			table.insert( tAllSounds, self )
 		end
 	end
 end
@@ -118,13 +120,27 @@ function Sound:DeactivateNow()
 	self.Deactivate = false
 	if ( self.Sound ) then self.Sound:Stop() end
 	self.Sound = nil
+	table.RemoveByValue( tAllSounds, self )
 end
+
+local convarVolume = GetConVar("ph2_siren_volume")
+local function getVolume( volume )
+	return math.Clamp( volume * ( convarVolume and convarVolume:GetInt() or 1 ) / 100, 0, 1 )
+end
+
+cvars.AddChangeCallback( "ph2_siren_volume", function( convar, oldValue, newValue )
+	for _, oSound in ipairs( tAllSounds ) do
+		local sound = oSound.Sound
+		sound:ChangeVolume( getVolume( oSound.Volume ), 0.1 )
+	end
+
+end, "Photon2:SoundVolumeChange" )
 
 function Sound:SetVolume( volume, transition )
 	transition = transition or 0
 	-- self.Volume = volume
 	if ( self.Muted ) then volume = 0; transition = 0; end
-	if ( self.Sound ) then self.Sound:ChangeVolume( volume, transition ) end
+	if ( self.Sound ) then self.Sound:ChangeVolume( getVolume( volume ), transition ) end
 end
 
 function Sound:SetPitch( pitch, transition )
