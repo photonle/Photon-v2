@@ -176,14 +176,13 @@ function ENT:ParentSubMaterialChanged()
 	self.LastSubMaterialUpdate = CurTime()
 end
 
-local thinkVehicle = nil
-
 function ENT:Think()
-	if !IsValid(thinkVehicle) then
-		thinkVehicle = self:GetParent() --[[@as Vehicle]]
-	end
-	if IsValid(thinkVehicle:GetDriver()) then
-		self:UpdateVehicleParameters( thinkVehicle:GetDriver(), thinkVehicle )
+	local thinkVehicle = self:GetParent() --[[@as Vehicle]]
+	if IsValid( thinkVehicle ) then
+		local driver = thinkVehicle:GetDriver()
+		if IsValid( driver ) then
+			self:UpdateVehicleParameters( driver, thinkVehicle )
+		end
 	end
 	if ( self.DoHardReload ) then
 		self:HardReload()
