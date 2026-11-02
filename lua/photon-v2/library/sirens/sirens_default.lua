@@ -123,6 +123,24 @@ Photon2.RegisterSiren(
 
 Photon2.RegisterSiren(
 	{
+		Name = "sos_nergy400_as",
+		Make = "SoundOff Signal",
+		Model = "nErgy 400 Aftershock",
+		Author = "SGM",
+		Sounds = {
+			["WAIL"] = { Sound = "photon/sirens/sos_nergy400/aftershock/wail.wav", 	Default = "T1" },
+			["YELP"] = { Sound = "photon/sirens/sos_nergy400/aftershock/yelp.wav", 	Default = "T2" },
+			["PIERCER"] = { Sound = "photon/sirens/sos_nergy400/aftershock/priority.wav", Icon = "bolt",	Default = "T3", Label = "PRTY" },
+			["ALERT"] = { Sound = "photon/sirens/sos_nergy400/aftershock/alert.wav", Icon = "bolt",	Default = "T4", Label = "ALRT" },
+			["HILO"] = { Sound = "photon/sirens/sos_nergy400/aftershock/hilo.wav",	Default = "T5", Label = "HILO" },
+			["AIRHORN"]  = { Sound = "photon/sirens/sos_nergy400/aftershock/horn.wav", Default = "AIR", Label = "AIR" },
+			["MANUAL"]  = { Sound = "photon/sirens/sos_nergy400/aftershock/wail.wav", 	Default = "MAN", Label = "MAN" },
+		}
+	}
+)
+
+Photon2.RegisterSiren(
+	{
 		Name = "whelen_gamma",
 		Make = "Whelen",
 		Model = "Gamma",
