@@ -16,12 +16,39 @@ COMPONENT.Title = "Photon Siren Prototype"
 
 COMPONENT.Model = "models/tdmcars/emergency/equipment/dynamax_siren.mdl"
 
+COMPONENT.DefineOptions = {
+	DisableInterrupt = {
+		Arguments = { { "interrupt", "boolean" }, },
+		Description = "Enable siren interrupting.",
+		Action = function( self, interrupt )
+			self.Inputs = self.Inputs or {}
+			if !interrupt then
+					self.Inputs["Emergency.SirenOverride"]["AIR"] = { Horn = "AIR", Siren = "KILL" }
+			else
+				self.Inputs["Emergency.SirenOverride"]["AIR"] = { Horn = "AIR" }
+			end
+		end
+	},
+	DisableParkKill = {
+		Arguments = { { "parkkill", "boolean" }, },
+		Description = "Disable siren park kill.",
+		Action = function( self, parkkill, pause )
+			self.Inputs = self.Inputs or {}
+			if !parkkill then
+					self.Inputs["Emergency.SirenParkKill"]["PARK"] = { Siren = "KILL" }
+			else
+				self.Inputs["Emergency.SirenParkKill"]["PARK"] = { }
+			end
+		end
+	},
+}
+
 COMPONENT.Templates = {
 	["Sound"] = { 
 		Tone = {
 			DSP = 118,
 			Pitch = 100
-		} 
+		}
 	}
 }
 
@@ -55,10 +82,15 @@ COMPONENT.Segments = {
 			["T6"] = { 6 },
 			["T7"] = { 7 },
 			["T8"] = { 8 },
-			["AIR"] = { 9 },
 			["MAN"] = { 10 },
 		}
-	}
+	},
+	Horn = {
+		Frames = { [0] = "", "9" },
+		Sequences = {
+			["AIR"] = { 1 },
+		}
+	},
 }
 
 COMPONENT.InputPriorities = {
@@ -68,13 +100,62 @@ COMPONENT.InputPriorities = {
 
 COMPONENT.VirtualOutputs = {
 	["Virtual.SirenOverride"] = {
+		-- {
+		-- 	Mode = "MANOVRD",
+		-- 	Conditions = {
+		-- 		["Emergency.Siren"] = { "T1", "T2", "T4" },
+		-- 		["Emergency.SirenOverride"] = { "MAN" }
+		-- 	}
+		-- },
 		{
-			Mode = "MANOVRD",
+			Mode = "MANOVRDT1",
 			Conditions = {
-				["Emergency.Siren"] = { "T1", "T2", "T4" },
+				["Emergency.Siren"] = { "T1" },
 				["Emergency.SirenOverride"] = { "MAN" }
 			}
-		}
+		},
+		{
+			Mode = "MANOVRDT2",
+			Conditions = {
+				["Emergency.Siren"] = { "T2" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
+		{
+			Mode = "MANOVRDT3",
+			Conditions = {
+				["Emergency.Siren"] = { "T3" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
+		{
+			Mode = "MANOVRDT4",
+			Conditions = {
+				["Emergency.Siren"] = { "T4" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
+		{
+			Mode = "MANOVRDT5",
+			Conditions = {
+				["Emergency.Siren"] = { "T5" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
+		{
+			Mode = "MANOVRDT6",
+			Conditions = {
+				["Emergency.Siren"] = { "T6" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
+		{
+			Mode = "MANOVRDT7",
+			Conditions = {
+				["Emergency.Siren"] = { "T7" },
+				["Emergency.SirenOverride"] = { "MAN" }
+			}
+		},
 	},
 	["Emergency.SirenParkKill"] = {
 		{
@@ -86,7 +167,7 @@ COMPONENT.VirtualOutputs = {
 	}
 }
 
-COMPONENT.Inputs = { 
+COMPONENT.Inputs = {
 	["Emergency.Siren"] = {
 		["T1"] = { Siren = "T1" },
 		["T2"] = { Siren = "T2" },
@@ -98,11 +179,18 @@ COMPONENT.Inputs = {
 		["T8"] = { Siren = "T8" },
 	},
 	["Emergency.SirenOverride"] = {
-		["AIR"] = { Siren = "AIR" },
+		["AIR"] = { Horn = "AIR" },
 		["MAN"] = { Siren = "MAN" },
 	},
 	["Virtual.SirenOverride"] = {
-		["MANOVRD"] = { Siren = "T3" }
+		--["MANOVRD"] = { Siren = "T3" }
+		["MANOVRDT1"] = { Siren = "T2" },
+		["MANOVRDT2"] = { Siren = "T3" },
+		["MANOVRDT3"] = { Siren = "T4" },
+		["MANOVRDT4"] = { Siren = "T5" },
+		["MANOVRDT5"] = { Siren = "T6" },
+		["MANOVRDT6"] = { Siren = "T7" },
+		["MANOVRDT7"] = { Siren = "T8" },
 	},
 	["Emergency.SirenParkKill"] = {
 		["PARK"] = { Siren = "KILL" }

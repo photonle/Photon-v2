@@ -829,6 +829,10 @@ VEHICLE.Equipment = {
 						SubMaterials = {
 							[0] = "sentry/bpd/speaker",
 						},
+						Options = {
+							DisableInterrupt = true,
+							DisableParkKill = true,
+						}
 					},
 					--use a prop instead because 2 sirens is very loud
 					-- {
