@@ -179,7 +179,7 @@ COMPONENT.Inputs = {
 		["T8"] = { Siren = "T8" },
 	},
 	["Emergency.SirenOverride"] = {
-		["AIR"] = { Horn = "AIR" },
+		["AIR"] = { Horn = "AIR", Siren = "KILL" },
 		["MAN"] = { Siren = "MAN" },
 	},
 	["Virtual.SirenOverride"] = {
